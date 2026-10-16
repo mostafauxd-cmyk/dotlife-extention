@@ -8,6 +8,7 @@ import { Icon } from "../ui/Icon";
 import type { IconName } from "../ui/icons";
 import { Qr } from "../ui/Qr";
 import { Painting } from "./Painting";
+import { PersonaPicker } from "./PersonaPicker";
 
 /**
  * Signing in to نقطه, or signing up: a phone number, then the code sent to it by SMS — the same
@@ -49,7 +50,7 @@ export function SignIn({
   start?: "hello" | "phone";
   onClose: (created: boolean) => void;
 }) {
-  const [step, setStep] = useState<"hello" | "phone" | "code">(start);
+  const [step, setStep] = useState<"hello" | "persona" | "phone" | "code">(start);
   const [phone, setPhone] = useState("");
   const [code, setCode] = useState("");
   const [busy, setBusy] = useState(false);
@@ -103,12 +104,12 @@ export function SignIn({
   };
 
   const ready =
-    step === "hello"
+    step === "hello" || step === "persona"
       ? true
       : step === "phone"
         ? latin(phone).replace(/\D/g, "").length >= 10
         : latin(code).trim().length >= 4;
-  const steps = start === "hello" ? ["hello", "phone", "code"] : ["phone", "code"];
+  const steps = start === "hello" ? ["hello", "persona", "phone", "code"] : ["phone", "code"];
   const progress = `${String(((steps.indexOf(step) + 1) / steps.length) * 100)}%`;
 
   return (
@@ -124,6 +125,10 @@ export function SignIn({
           onSubmit={(e) => {
             e.preventDefault();
             if (step === "hello") {
+              setStep("persona");
+              return;
+            }
+            if (step === "persona") {
               setStep("phone");
               return;
             }
@@ -163,6 +168,15 @@ export function SignIn({
                     </li>
                   ))}
                 </ul>
+              </>
+            ) : step === "persona" ? (
+              <>
+                <h2 id="signTitle">کدام بیشتر شبیه توست؟</h2>
+                <p className="lead">
+                  دسترسی سریع زیر سرچ را با سایت‌های کارت می‌چینیم؛ هر وقت خواستی در شخصی‌سازی عوضش
+                  کن.
+                </p>
+                <PersonaPicker />
               </>
             ) : step === "phone" ? (
               <>
@@ -244,6 +258,17 @@ export function SignIn({
                 برگشت
               </button>
             )}
+            {step === "persona" && (
+              <button
+                type="button"
+                className="back"
+                onClick={() => {
+                  setStep("hello");
+                }}
+              >
+                برگشت
+              </button>
+            )}
             {step === "hello" && <p className="legal">رایگان است و کمتر از یک دقیقه طول می‌کشد.</p>}
             {step === "phone" && <p className="legal">با ادامه، حریم خصوصی نقطه را می‌پذیرم.</p>}
             <button
@@ -252,14 +277,20 @@ export function SignIn({
               disabled={busy || !ready}
               autoFocus={step === "hello"}
             >
-              {step === "hello" ? "شروع" : step === "phone" ? "فرستادن کد" : "ورود"}{" "}
+              {step === "hello"
+                ? "شروع"
+                : step === "persona"
+                  ? "ادامه"
+                  : step === "phone"
+                    ? "فرستادن کد"
+                    : "ورود"}{" "}
               <svg className="kbd" viewBox="0 0 24 24" aria-hidden="true">
                 <path d="M19 6v5a3 3 0 0 1-3 3H6m0 0 4-4m-4 4 4 4" />
               </svg>
             </button>
           </div>
         </form>
-        <Painting step={step} />
+        <Painting step={step === "persona" ? "hello" : step} />
       </div>
     </div>
   );

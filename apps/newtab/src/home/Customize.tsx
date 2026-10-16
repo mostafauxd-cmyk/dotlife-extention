@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import { useSession, useSettings, useSyncState } from "../hooks";
 import { signOut } from "../noghte/api";
@@ -16,9 +16,30 @@ import {
 } from "../settings";
 import { ago, fa } from "../ui/fa";
 import { Icon } from "../ui/Icon";
+import { PersonaPicker } from "./PersonaPicker";
 
 /** «شخصی‌سازی»: the colour, what shows on the first view, and the نقطه account. */
-export function Customize({ onClose, onSignIn }: { onClose: () => void; onSignIn: () => void }) {
+export function Customize({
+  onClose: closed,
+  onSignIn,
+}: {
+  onClose: () => void;
+  onSignIn: () => void;
+}) {
+  // the panel slides in from the left and leaves the same way; it is gone from the page only after
+  const [leaving, setLeaving] = useState(false);
+  const timer = useRef<ReturnType<typeof setTimeout>>(undefined);
+  const onClose = useCallback((): void => {
+    if (timer.current !== undefined) return;
+    setLeaving(true);
+    timer.current = setTimeout(closed, 300);
+  }, [closed]);
+  useEffect(
+    () => () => {
+      clearTimeout(timer.current);
+    },
+    [],
+  );
   const s = useSettings();
   const session = useSession();
   const sync = useSyncState();
@@ -34,8 +55,8 @@ export function Customize({ onClose, onSignIn }: { onClose: () => void; onSignIn
   return (
     <>
       {/* a click anywhere outside the panel closes it */}
-      <div className="cust-bg" onMouseDown={onClose} />
-      <aside className="cust" aria-label="شخصی‌سازی">
+      <div className={leaving ? "cust-bg out" : "cust-bg"} onMouseDown={onClose} />
+      <aside className={leaving ? "cust out" : "cust"} aria-label="شخصی‌سازی">
         <div className="cust-h">
           <h2>شخصی‌سازی</h2>
           <button type="button" className="rbtn" aria-label="بستن" onClick={onClose}>
@@ -70,6 +91,12 @@ export function Customize({ onClose, onSignIn }: { onClose: () => void; onSignIn
             </button>
           </div>
         )}
+
+        <h3>کدام بیشتر شبیه توست؟</h3>
+        <div className="chint">
+          پوشه‌ای از سایت‌های همین کار به دسترسی سریع زیر سرچ اضافه می‌شود.
+        </div>
+        <PersonaPicker />
 
         <h3>صفحه‌ی اول</h3>
         <div className="chint">صفحه‌ی اول فقط نقطه و سرچ است؛ بقیه در گوشه‌ها و لبه منتظرند.</div>

@@ -41,12 +41,27 @@ export type SlideId = (typeof SLIDES)[number][0];
 export type BlockId = (typeof BLOCKS)[number][0] | SlideId;
 
 export type QuickSite = { title: string; url: string };
+/** A folder in the quick-access row: made by dropping one tile on another, or from the persona. */
+export type QuickFolder = {
+  kind: "folder";
+  id: string;
+  name: string;
+  items: QuickSite[];
+  persona?: string;
+};
+export type QuickItem = QuickSite | QuickFolder;
+export const isFolder = (i: QuickItem): i is QuickFolder => "kind" in i;
+/** Every site in the row, folders opened. */
+export const allSites = (items: readonly QuickItem[]): QuickSite[] =>
+  items.flatMap((i) => (isFolder(i) ? i.items : [i]));
 
 export type Settings = {
   theme: string;
   /** Parts switched off; everything else shows. «کارت‌ها همیشه باز» starts off. */
   off: BlockId[];
-  sites: QuickSite[];
+  sites: QuickItem[];
+  /** «کدام بیشتر شبیه توست؟»: a persona id, or null when none was picked. */
+  persona: string | null;
   /** The welcome (what an account gives, then sign-in) has been shown once, on the first new tab. */
   welcomed: boolean;
   /** Calendars hidden on the plans slide: list ids, «occ» (occasions), «pr» (prayer times). */
@@ -73,6 +88,7 @@ export const DEFAULTS: Settings = {
   off: ["pin"],
   sites: [...DEFAULT_SITES],
   welcomed: false,
+  persona: null,
   hiddenCals: [],
   slideOrder: SLIDES.map(([id]) => id),
   social: {

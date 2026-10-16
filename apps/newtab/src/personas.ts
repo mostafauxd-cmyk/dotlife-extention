@@ -1,11 +1,17 @@
-import type { QuickSite } from "./settings";
+import { isFolder, settings, updateSettings, type QuickFolder, type QuickSite } from "./settings";
 
 /**
  * «کدام بیشتر شبیه توست؟» — asked once in the welcome, changeable in «شخصی‌سازی». The answer adds a
  * folder of that work's sites to the quick-access row (the design's personas and their sites).
  */
 
-export type Persona = { id: string; name: string; hint: string; folder: string; sites: QuickSite[] };
+export type Persona = {
+  id: string;
+  name: string;
+  hint: string;
+  folder: string;
+  sites: QuickSite[];
+};
 
 export const PERSONAS: readonly Persona[] = [
   {
@@ -96,3 +102,26 @@ export const PERSONAS: readonly Persona[] = [
 
 export const personaById = (id: string | null): Persona | undefined =>
   PERSONAS.find((p) => p.id === id);
+
+/**
+ * Picks a persona: its folder of sites joins the end of the row (the previous persona's folder goes,
+ * the person's own tiles and folders stay). Null takes the persona folder away.
+ */
+export function applyPersona(id: string | null): void {
+  const s = settings();
+  const kept = s.sites.filter((i) => !(isFolder(i) && i.persona !== undefined));
+  const p = personaById(id);
+  const folder: QuickFolder[] =
+    p === undefined
+      ? []
+      : [
+          {
+            kind: "folder",
+            id: `persona-${p.id}`,
+            name: p.folder,
+            items: [...p.sites],
+            persona: p.id,
+          },
+        ];
+  updateSettings({ persona: id, sites: [...kept, ...folder] });
+}

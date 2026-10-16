@@ -1435,12 +1435,29 @@ svg {
   background: color-mix(in srgb, var(--bgc) 92%, #000);
   border-inline-start: 1px solid var(--stroke-hi);
   box-shadow: 0 0 80px rgba(0, 0, 0, 0.5);
-  animation: fade 0.25s ease both;
+  animation: custIn 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.cust.out {
+  pointer-events: none;
+  animation: custOut 0.3s cubic-bezier(0.55, 0, 0.8, 0.4) both;
 }
 .cust-bg {
   position: absolute;
   inset: 0;
   z-index: 19;
+}
+/* in from the left edge, and out the same way (the panel sits on the left in this right-to-left page) */
+@keyframes custIn {
+  from {
+    transform: translateX(-100%);
+    box-shadow: 0 0 0 rgba(0, 0, 0, 0);
+  }
+}
+@keyframes custOut {
+  to {
+    transform: translateX(-100%);
+    box-shadow: 0 0 0 rgba(0, 0, 0, 0);
+  }
 }
 .cust > * {
   flex-shrink: 0;
@@ -5190,7 +5207,11 @@ a.ts-link {
   height: 360px;
   margin: -180px 0 0 -180px;
   border-radius: 50%;
-  background: radial-gradient(closest-side, color-mix(in srgb, var(--sc) 55%, transparent), transparent);
+  background: radial-gradient(
+    closest-side,
+    color-mix(in srgb, var(--sc) 55%, transparent),
+    transparent
+  );
   filter: blur(30px);
   animation: sxBreath 6s ease-in-out infinite;
 }
@@ -5319,7 +5340,14 @@ a.ts-link {
   mask: var(--logo) center / contain no-repeat;
 }
 .mk.ig {
-  background: radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285aeb 90%) !important;
+  background: radial-gradient(
+    circle at 30% 107%,
+    #fdf497 0%,
+    #fdf497 5%,
+    #fd5949 45%,
+    #d6249f 60%,
+    #285aeb 90%
+  ) !important;
 }
 .mk.x {
   background: #000 !important;
@@ -5343,4 +5371,103 @@ a.ts-link {
 }
 .sx-glyph.mk.icon img {
   border-radius: inherit;
+}
+
+/* ---------- quick access: folders (drop one tile on another), the open folder, the persona picker ---------- */
+.lt.fold .ic.fold {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 5px;
+  padding: 11px;
+  background: color-mix(in srgb, var(--bgc) 82%, #fff);
+  border-color: rgba(255, 255, 255, 0.16);
+}
+.lt.fold .ic.fold img {
+  width: 100%;
+  height: 100%;
+  border-radius: 5px;
+  object-fit: contain;
+}
+.lt.fold .lb {
+  opacity: 1;
+  transform: none;
+}
+.lt.dragging {
+  opacity: 0.4;
+}
+.lt.target .ic {
+  outline: 2px solid var(--tint);
+  outline-offset: 3px;
+  transform: scale(1.06);
+}
+.launch.infolder .lt.back {
+  cursor: default;
+}
+.lt.back .ic {
+  background: var(--tint);
+  border-color: transparent;
+  color: #0b0d12;
+  cursor: pointer;
+}
+.lt.back .ic .ico {
+  width: 26px;
+  height: 26px;
+}
+.fname-in {
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  width: 84px;
+  text-align: center;
+  color: var(--ink);
+  background: transparent;
+  border: 0;
+  border-bottom: 1px dashed rgba(255, 255, 255, 0.3);
+  padding: 2px 0;
+  outline: none;
+}
+.fname-in:focus {
+  border-bottom-color: var(--tint);
+}
+
+.personas {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+.persona {
+  font: inherit;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  padding: 11px 14px;
+  text-align: start;
+  color: var(--ink);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 14px;
+  cursor: pointer;
+  transition:
+    background 0.2s,
+    border-color 0.2s;
+}
+.persona b {
+  font-size: 15px;
+  font-weight: 600;
+}
+.persona small {
+  font-size: 12.5px;
+  color: var(--ink-3);
+  line-height: 1.6;
+}
+.persona:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+.persona[aria-pressed="true"] {
+  background: color-mix(in srgb, var(--tint) 22%, transparent);
+  border-color: var(--tint);
+}
+.dia .personas .persona {
+  background: #0d0d0d;
 }

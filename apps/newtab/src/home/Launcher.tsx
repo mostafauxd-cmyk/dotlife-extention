@@ -3,7 +3,13 @@ import { createPortal } from "react-dom";
 
 import { useSettings } from "../hooks";
 import { faviconUrl, siteName, topSites, type Site } from "../platform";
-import { updateSettings, type QuickSite } from "../settings";
+import {
+  isFolder,
+  updateSettings,
+  type QuickFolder,
+  type QuickItem,
+  type QuickSite,
+} from "../settings";
 import { Icon } from "../ui/Icon";
 import { cleanIcon } from "./iconClean";
 
@@ -112,12 +118,28 @@ function firstLetter(name: string): string {
   return seg[Symbol.iterator]().next().value?.segment ?? "؟";
 }
 
-function Tile({ site, onRemove }: { site: QuickSite; onRemove: () => void }) {
+function Tile({
+  site,
+  onRemove,
+  removeLabel,
+  drag,
+}: {
+  site: QuickSite;
+  onRemove: () => void;
+  removeLabel?: string;
+  drag?: React.HTMLAttributes<HTMLElement> & { className?: string };
+}) {
   const src = faviconUrl(site.url, 64);
   const look = useLook(src);
   const icon = useClean(src);
+  const { className: dragClass, ...dragProps } = drag ?? {};
   return (
-    <a className="lt" href={site.url} aria-label={site.title}>
+    <a
+      className={dragClass === undefined ? "lt" : `lt ${dragClass}`}
+      href={site.url}
+      aria-label={site.title}
+      {...dragProps}
+    >
       <span
         className="ic"
         style={
@@ -129,14 +151,15 @@ function Tile({ site, onRemove }: { site: QuickSite; onRemove: () => void }) {
         {look?.letter === true ? (
           <span className="letter">{firstLetter(site.title)}</span>
         ) : (
-          <img src={icon ?? src} alt="" />
+          <img src={icon ?? src} alt="" draggable={false} />
         )}
       </span>
       <span className="lb">{site.title}</span>
       <button
         type="button"
         className="x"
-        aria-label={`برداشتن ${site.title}`}
+        aria-label={`${removeLabel ?? "برداشتن"} ${site.title}`}
+        title={removeLabel}
         onClick={(e) => {
           e.preventDefault();
           e.stopPropagation();
@@ -149,20 +172,215 @@ function Tile({ site, onRemove }: { site: QuickSite; onRemove: () => void }) {
   );
 }
 
+/** A folder's tile: its first four sites' icons in a little grid, its name under it. */
+function FolderTile({
+  folder,
+  onOpen,
+  drag,
+}: {
+  folder: QuickFolder;
+  onOpen: () => void;
+  drag: React.HTMLAttributes<HTMLElement> & { className?: string };
+}) {
+  const { className: dragClass, ...dragProps } = drag;
+  return (
+    <button
+      type="button"
+      className={`lt fold ${dragClass ?? ""}`.trim()}
+      aria-label={`پوشه‌ی ${folder.name}`}
+      onClick={onOpen}
+      {...dragProps}
+    >
+      <span className="ic fold">
+        {folder.items.slice(0, 4).map((x) => (
+          <img key={x.url} src={faviconUrl(x.url, 32)} alt="" draggable={false} />
+        ))}
+      </span>
+      <span className="lb">{folder.name}</span>
+    </button>
+  );
+}
+
+const newFolderId = (): string =>
+  `f${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}`;
+
+/**
+ * The row under the search box. Dropping a tile on another makes a folder of the two (named right
+ * away); dropping one on a folder puts it in. A folder opens in the row itself: its name can be
+ * changed there, a site can be taken out (back to the row) or added.
+ */
 export function Launcher() {
   const s = useSettings();
+  const items = s.sites;
   const [adding, setAdding] = useState(false);
+  const [open, setOpen] = useState<string | null>(null);
+  const [from, setFrom] = useState<number | null>(null);
+  const [over, setOver] = useState<number | null>(null);
+  const [naming, setNaming] = useState(false);
+  const folder = items.find((i): i is QuickFolder => isFolder(i) && i.id === open);
+  const put = (next: QuickItem[]): void => {
+    updateSettings({ sites: next });
+  };
+
+  const drop = (a: number, b: number): void => {
+    const src = items[a];
+    const dst = items[b];
+    if (a === b || src === undefined || dst === undefined) return;
+    // a folder moves to where it was dropped
+    if (isFolder(src)) {
+      const next = items.filter((_, i) => i !== a);
+      next.splice(b, 0, src);
+      put(next);
+      return;
+    }
+    if (isFolder(dst)) {
+      const inside = { ...dst, items: [...dst.items.filter((x) => x.url !== src.url), src] };
+      put(items.flatMap((x, i) => (i === a ? [] : i === b ? [inside] : [x])));
+      return;
+    }
+    const made: QuickFolder = {
+      kind: "folder",
+      id: newFolderId(),
+      name: "پوشه‌ی تازه",
+      items: [dst, src],
+    };
+    put(items.flatMap((x, i) => (i === a ? [] : i === b ? [made] : [x])));
+    setOpen(made.id);
+    setNaming(true);
+  };
+
+  const dragOf = (i: number) => ({
+    className: [from === i ? "dragging" : "", over === i && from !== i ? "target" : ""]
+      .join(" ")
+      .trim(),
+    draggable: true,
+    onDragStart: (e: React.DragEvent) => {
+      setFrom(i);
+      e.dataTransfer.effectAllowed = "move";
+      e.dataTransfer.setData("text/plain", String(i));
+    },
+    onDragOver: (e: React.DragEvent) => {
+      e.preventDefault();
+      if (over !== i) setOver(i);
+    },
+    onDragLeave: () => {
+      if (over === i) setOver(null);
+    },
+    onDrop: (e: React.DragEvent) => {
+      e.preventDefault();
+      if (from !== null) drop(from, i);
+      setFrom(null);
+      setOver(null);
+    },
+    onDragEnd: () => {
+      setFrom(null);
+      setOver(null);
+    },
+  });
+
+  if (folder !== undefined) {
+    const at = items.indexOf(folder);
+    const takeOut = (site: QuickSite): void => {
+      const left = folder.items.filter((x) => x.url !== site.url);
+      const next = items.flatMap((x) =>
+        x === folder ? (left.length === 0 ? [site] : [{ ...folder, items: left }, site]) : [x],
+      );
+      put(next);
+      if (left.length === 0) setOpen(null);
+    };
+    return (
+      <div className="launch infolder">
+        <div className="lt back">
+          <button
+            type="button"
+            className="ic"
+            aria-label="بستن پوشه"
+            onClick={() => {
+              setOpen(null);
+              setNaming(false);
+            }}
+          >
+            <Icon name="arrow-left" className="flip" />
+          </button>
+          <input
+            className="fname-in"
+            value={folder.name}
+            aria-label="اسم پوشه"
+            autoFocus={naming}
+            onFocus={(e) => {
+              if (naming) e.currentTarget.select();
+            }}
+            onChange={(e) => {
+              put(items.map((x, i) => (i === at ? { ...folder, name: e.target.value } : x)));
+            }}
+            onBlur={() => {
+              setNaming(false);
+              if (folder.name.trim() === "")
+                put(items.map((x, i) => (i === at ? { ...folder, name: "پوشه" } : x)));
+            }}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === "Escape") e.currentTarget.blur();
+            }}
+          />
+        </div>
+        {folder.items.map((site) => (
+          <Tile
+            key={site.url}
+            site={site}
+            removeLabel="بیرون آوردن از پوشه"
+            onRemove={() => {
+              takeOut(site);
+            }}
+          />
+        ))}
+        <button
+          type="button"
+          className="lt"
+          aria-label="افزودن به این پوشه"
+          onClick={() => {
+            setAdding(true);
+          }}
+        >
+          <span className="ic">
+            <Icon name="plus" />
+          </span>
+          <span className="lb">افزودن</span>
+        </button>
+        {adding && (
+          <AddSite
+            folderId={folder.id}
+            onClose={() => {
+              setAdding(false);
+            }}
+          />
+        )}
+      </div>
+    );
+  }
+
   return (
     <div className="launch">
-      {s.sites.map((site) => (
-        <Tile
-          key={site.url}
-          site={site}
-          onRemove={() => {
-            updateSettings({ sites: s.sites.filter((x) => x.url !== site.url) });
-          }}
-        />
-      ))}
+      {items.map((item, i) =>
+        isFolder(item) ? (
+          <FolderTile
+            key={item.id}
+            folder={item}
+            drag={dragOf(i)}
+            onOpen={() => {
+              setOpen(item.id);
+            }}
+          />
+        ) : (
+          <Tile
+            key={item.url}
+            site={item}
+            drag={dragOf(i)}
+            onRemove={() => {
+              put(items.filter((_, k) => k !== i));
+            }}
+          />
+        ),
+      )}
       <button
         type="button"
         className="lt"
@@ -178,7 +396,7 @@ export function Launcher() {
       </button>
       {adding && (
         <AddSite
-          have={s.sites}
+          folderId={null}
           onClose={() => {
             setAdding(false);
           }}
@@ -243,7 +461,25 @@ function Preview({ url, title }: { url: string; title: string }) {
 }
 
 /** Pick from the most visited sites, or type an address and a name. */
-function AddSite({ have, onClose }: { have: readonly QuickSite[]; onClose: () => void }) {
+function AddSite({ folderId, onClose }: { folderId: string | null; onClose: () => void }) {
+  const s = useSettings();
+  const folder = s.sites.find((i): i is QuickFolder => isFolder(i) && i.id === folderId);
+  // where a pick goes: the open folder, or the row itself
+  const have: QuickSite[] = folder?.items ?? s.sites.filter((i): i is QuickSite => !isFolder(i));
+  const store = (next: QuickSite[]): void => {
+    if (folder === undefined) {
+      const folders = s.sites.filter(isFolder);
+      const order = s.sites.filter((i) => isFolder(i) || next.some((x) => x.url === i.url));
+      const added = next.filter((x) => !order.some((o) => !isFolder(o) && o.url === x.url));
+      updateSettings({
+        sites: [...order, ...added].filter((i) => (isFolder(i) ? folders.includes(i) : true)),
+      });
+    } else {
+      updateSettings({
+        sites: s.sites.map((i) => (i === folder ? { ...folder, items: next } : i)),
+      });
+    }
+  };
   const [top, setTop] = useState<Site[]>([]);
   const [url, setUrl] = useState("");
   const [title, setTitle] = useState("");
@@ -271,7 +507,7 @@ function AddSite({ have, onClose }: { have: readonly QuickSite[]; onClose: () =>
           ...have,
           { title: site.title.split(/[-–|·]/)[0]?.trim() || siteName(site.url), url: site.url },
         ];
-    updateSettings({ sites: next });
+    store(next);
   };
 
   const addTyped = (): void => {
@@ -282,7 +518,7 @@ function AddSite({ have, onClose }: { have: readonly QuickSite[]; onClose: () =>
       return;
     }
     const site = { title: title.trim() || siteName(u.href), url: u.href };
-    if (!has(site.url)) updateSettings({ sites: [...have, site] });
+    if (!has(site.url)) store([...have, site]);
     onClose();
   };
 
