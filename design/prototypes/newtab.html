@@ -1956,7 +1956,7 @@ td.them { color: var(--ink-2); }
 
     <section>
       <h2>پرسونا و بوکمارک‌های اختصاصی</h2>
-      <p>در آنبوردینگ یک سؤال می‌پرسیم: «بیشتر وقتت پشت سیستم صرف چه کاری می‌شود؟» با ۶ گزینه. جواب در تنظیمات شخصی‌سازی نقطه به‌عنوان فیلد تازه‌ی <code>profile.role</code> ذخیره و سینک می‌شود و ردیف دسترسی سریع از روی آن چیده می‌شود. بعداً هم از کاشی اول ردیف عوض می‌شود.</p>
+      <p>در آنبوردینگ یک سؤال می‌پرسیم: «کدام بیشتر شبیه توست؟» با ۶ گزینه. جواب در تنظیمات شخصی‌سازی نقطه به‌عنوان فیلد تازه‌ی <code>profile.role</code> ذخیره و سینک می‌شود و ردیف دسترسی سریع از روی آن چیده می‌شود. بعداً هم از کاشی اول ردیف عوض می‌شود.</p>
       <p>پوشه‌ها و سایت‌های هر شغل مثل مناسبت‌ها و پروموها از سرور می‌آیند (<code>packages/content</code>) و از پنل ادمین عوض می‌شوند، بدون انتشار نسخه‌ی جدید. هر تغییری که کاربر می‌دهد (برداشتن، افزودن، جابه‌جا کردن) روی همان پایه ذخیره و سینک می‌شود.</p>
       <div class="tbl"><table>
         <thead><tr><th>شغل</th><th>ردیف دسترسی سریع (بعد از یوتیوب، جیمیل و دیجی‌کالا)</th><th>ویجت پیش‌فرض متفاوت</th></tr></thead>
@@ -3236,7 +3236,7 @@ td.them { color: var(--ink-2); }
     if (s === "login") B.innerHTML = `<h2>شماره‌ات در نقطه چیست؟</h2><label class="fl">شماره‌ی موبایل<input class="ltr" id="onbPhone" placeholder="0912 000 0000" inputmode="tel" value="${onbPhone}"></label>
       <div class="or"><div class="qr">${qrSvg(3)}</div><div><b>یا با اپ نقطه اسکن کن</b>تنظیمات ← پشتیبان و همگام‌سازی ← «اتصال میز»، بعد دوربین را روی این کد بگیر.</div></div>`;
     if (s === "mods") B.innerHTML = `<h2>چی‌ها روی میزت باشد؟</h2><div class="opts">${MODS.map(([k, n, dd, a]) => `<button class="opt" data-m="${k}" aria-pressed="${onbSt.mods.has(k)}"><i>${okTick}</i><span><b>${n}</b><small>${dd} · ${a}</small></span></button>`).join("")}</div>`;
-    if (s === "persona") B.innerHTML = `<h2>بیشتر وقتت پشت سیستم صرف چه کاری می‌شود؟</h2><p class="lead">ردیف دسترسی سریع زیر سرچ را بر همین اساس می‌چینیم.</p><div class="opts big">${Object.entries(P).map(([k, v]) => `<button class="opt" data-p="${k}" aria-pressed="${onbSt.persona === k}"><i>${okTick}</i><span><b>${v.n}</b><small>${PDESC[k]}</small></span></button>`).join("")}</div>`;
+    if (s === "persona") B.innerHTML = `<h2>کدام بیشتر شبیه توست؟</h2><p class="lead">ردیف دسترسی سریع زیر سرچ را با سایت‌های همان کار می‌چینیم. بعداً از شخصی‌سازی هم عوض می‌شود.</p><div class="opts big">${Object.entries(P).map(([k, v]) => `<button class="opt" data-p="${k}" aria-pressed="${onbSt.persona === k}"><i>${okTick}</i><span><b>${v.n}</b><small>${PDESC[k]}</small></span></button>`).join("")}</div>`;
     if (s === "paket") B.innerHTML = `<h2>پاکت را هم وصل کن</h2><p class="lead">برای دیدن موجودی، خرج‌ها و قبض‌ها. قیمت روز و خبرها بدون ورود هم کار می‌کنند.</p>
       <div class="pair"><label class="fl">نام کاربری پاکت<input class="ltr" autocomplete="off"></label><label class="fl">رمز<input class="ltr" type="password"></label></div>
       <div class="or"><div class="qr">${qrSvg(11)}</div><div><b>یا با اپ پاکت اسکن کن</b>تنظیمات ← دستگاه‌ها ← «اتصال میز».</div></div>`;
