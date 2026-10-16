@@ -1294,6 +1294,84 @@ td.them { color: var(--ink-2); }
 .mtabs button { padding: 8px 0 9px; border-radius: 0; font-size: 14.5px; }
 .mtabs button[aria-selected="true"] { background: none; font-weight: 600; }
 .mtabs.morph > .mpill { top: auto !important; bottom: -1px; height: 2px !important; border-radius: 2px; background: var(--ink); box-shadow: none; }
+
+/* ---------- v21 ---------- */
+/* tiles: a quiet glass square tinted by the logo's own colour, so the icon blends in and still reads clearly */
+.lt .ic, .lt .ic.fav, .lt.addt .ic, .lt.pchip .ic, .lt .ic.fold { --bc: #9AA3B5;
+  background: color-mix(in srgb, var(--bc) 15%, color-mix(in srgb, var(--bgc) 90%, #fff)); border: 1px solid color-mix(in srgb, var(--bc) 26%, rgba(255,255,255,.10));
+  color: var(--ink); --darkfill: #F5F6F8; box-shadow: inset 0 1px 0 rgba(255,255,255,.07), 0 8px 20px rgba(0,0,0,.24); }
+.lt:hover .ic, .lt:hover .ic.fav, .lt:focus-visible .ic { background: color-mix(in srgb, var(--bc) 24%, color-mix(in srgb, var(--bgc) 86%, #fff)); }
+.lt .ic.fav > .fl { width: auto; height: auto; background: none; box-shadow: none; font-size: 26px; color: color-mix(in srgb, var(--fc) 72%, #fff) !important; }
+.lt.back .ic { background: var(--tint); border-color: transparent; color: #0B0D12; }
+/* corner cards and the edge panel: fully solid, and above the search box when open */
+.hz .ccard.g, .edge .side2.g { background: color-mix(in srgb, var(--bgc) 84%, #fff); backdrop-filter: none; -webkit-backdrop-filter: none; }
+.edge:hover, .edge:focus-within, .edge.pin { z-index: 12; }
+/* send: lights up white as soon as there is something to send */
+.sbox .ibtn.go { transition: background .2s, color .2s; }
+.sbox .ibtn.go.ready { background: #fff; color: #0B0D12; }
+/* quick note / quick task under the box */
+.qpanel { padding: 12px; display: flex; flex-direction: column; gap: 10px; }
+.qpanel textarea { font: inherit; font-size: 16px; line-height: 1.8; color: var(--ink); background: rgba(255,255,255,.05); border: 1px solid var(--stroke); border-radius: 16px; padding: 10px 14px; resize: none; outline: none; }
+.qpanel textarea:focus { border-color: color-mix(in srgb, var(--tint) 50%, transparent); }
+.qp-lists, .qp-when { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; font-size: 14px; color: var(--ink-3); }
+.qp-lists > span { margin-inline-end: 2px; }
+.qp-lists button, .qp-when button { font: inherit; font-size: 14px; display: inline-flex; align-items: center; gap: 6px; padding: 3px 11px; border-radius: 999px; border: 1px solid var(--stroke); background: none; color: var(--ink-2); cursor: pointer; }
+.qp-lists button i { width: 7px; height: 7px; border-radius: 50%; }
+.qp-lists button[aria-pressed="true"], .qp-when button[aria-pressed="true"] { color: var(--ink); background: rgba(255,255,255,.10); border-color: var(--stroke-hi); }
+.qpanel .dhd { padding: 4px 4px 0; }
+.qpanel .row { font: inherit; color: var(--ink); background: none; border: 0; text-align: start; width: 100%; display: flex; align-items: center; gap: 12px; padding: 8px 10px; border-radius: 14px; cursor: pointer; }
+.qpanel .row:hover { background: rgba(255,255,255,.06); }
+.qpanel .row svg { width: 19px; height: 19px; color: var(--ink-2); flex: none; }
+.qpanel .row span { display: flex; flex-direction: column; line-height: 1.5; min-width: 0; }
+.qpanel .row b { font-weight: 500; font-size: 16px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.qpanel .row small { font-size: 12.5px; color: var(--ink-3); }
+.qpanel .row.fresh2 { background: color-mix(in srgb, var(--tint) 14%, transparent); }
+/* groups (Noghte lists): one modal to add, rename, recolour and delete */
+.gp-sub { margin: -6px 0 0; font-size: 14.5px; color: var(--ink-2); }
+.gp-list { display: flex; flex-direction: column; gap: 4px; max-height: 330px; overflow-y: auto; }
+.gp-row { display: grid; grid-template-columns: 34px minmax(0,1fr) auto 34px; align-items: center; gap: 10px; padding: 6px 8px; border-radius: 16px; }
+.gp-row:hover, .gp-row.open { background: rgba(255,255,255,.05); }
+.gp-dot { width: 26px; height: 26px; border-radius: 50%; border: 0; cursor: pointer; box-shadow: inset 0 0 0 2px rgba(0,0,0,.25); justify-self: center; }
+.gp-row input, .gp-new input { font: inherit; font-size: 16px; color: var(--ink); background: none; border: 1px solid transparent; border-radius: 10px; padding: 6px 10px; outline: none; min-width: 0; }
+.gp-row input:hover { border-color: var(--stroke); }
+.gp-row input:focus, .gp-new input:focus { border-color: color-mix(in srgb, var(--tint) 55%, transparent); background: rgba(255,255,255,.04); }
+.gp-row .cnt2 { font-size: 13px; color: var(--ink-3); white-space: nowrap; }
+.gp-row .gdel { width: 30px; height: 30px; border-radius: 9px; border: 0; background: none; color: var(--ink-3); display: grid; place-items: center; cursor: pointer; }
+.gp-row .gdel:hover { color: #F0817A; background: rgba(240,129,122,.12); }
+.gp-row .gdel svg { width: 17px; height: 17px; }
+.gp-sw { grid-column: 2 / -1; display: none; gap: 8px; padding: 2px 10px 6px; }
+.gp-row.open .gp-sw { display: flex; }
+.gp-sw button, .gp-colors button { width: 22px; height: 22px; border-radius: 50%; border: 2px solid transparent; cursor: pointer; padding: 0; }
+.gp-sw button[aria-pressed="true"], .gp-colors button[aria-pressed="true"] { border-color: #fff; }
+.gp-new { display: grid; grid-template-columns: minmax(0,1fr) auto auto; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 18px; border: 1px dashed var(--stroke-hi); }
+.gp-new input { border-color: var(--stroke); }
+.gp-colors { display: flex; gap: 6px; }
+.gp-new .cta { padding: 7px 18px; font-size: 15px; }
+.gp-new .cta:disabled { opacity: .4; cursor: default; }
+.flist button .fedit { margin-inline-start: auto; width: 26px; height: 26px; border-radius: 8px; display: none; place-items: center; color: var(--ink-3); }
+.flist button:hover .fedit { display: grid; }
+.flist button:hover .fedit + span { margin-inline-start: 6px; }
+.flist button .fedit:hover { color: var(--ink); background: rgba(255,255,255,.1); }
+.flist button[aria-pressed="true"] .fedit:hover { background: rgba(0,0,0,.08); }
+.flist button .fedit svg { width: 16px; height: 16px; }
+.cgroups { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.cgroups span { display: inline-flex; align-items: center; gap: 7px; font-size: 14px; padding: 4px 12px; border-radius: 999px; border: 1px solid var(--stroke); color: var(--ink-2); }
+.cgroups span i { width: 8px; height: 8px; border-radius: 50%; }
+.cgroups .ghost { padding: 5px 14px; font-size: 14px; }
+/* customise drawer: an odd last switch spans the row, so no hole is left */
+.tgrid > :last-child:nth-child(odd) { grid-column: 1 / -1; }
+
+/* ---------- v22 ---------- */
+/* tabs: choosing one changes only its colour; size and weight never move */
+.morph > button, .morph > span, .mtabs button, .ptabs button, .seg span, .seg2 button { font-weight: 500 !important; }
+.mtabs button { color: var(--ink-3); }
+.mtabs button[aria-selected="true"] { color: var(--ink); }
+.morph > button:focus:not(:focus-visible), .morph > span:focus:not(:focus-visible) { outline: none; }
+.morph > button:focus-visible, .morph > span:focus-visible { outline: none; }
+.morph:has(> :focus-visible) > .mpill { box-shadow: 0 0 0 2px color-mix(in srgb, var(--tint) 65%, transparent); }
+.mtabs.morph:has(> :focus-visible) > .mpill { box-shadow: none; background: var(--tint); }
+/* panels under the search box are solid too */
+.search2 .drop.g { background: color-mix(in srgb, var(--bgc) 86%, #fff); backdrop-filter: none; -webkit-backdrop-filter: none; }
 </style>
 </head>
 <body>
@@ -1340,6 +1418,7 @@ td.them { color: var(--ink-2); }
                     <button type="submit" class="ibtn go" aria-label="جستجو در گوگل"><span data-ico="arrow-up"></span></button>
                   </div>
                 </form>
+                <div class="drop g qpanel" id="qpanel" hidden></div>
                 <div class="drop g" id="drop" hidden>
                   <div class="dhd">گوگل</div>
                   <div class="row"><span class="gmark" data-brand="google"></span><span id="dq0">جستجو در گوگل</span><span class="k">Enter</span></div>
@@ -1606,6 +1685,9 @@ td.them { color: var(--ink-2); }
             <div class="jobs" id="jobs"></div>
             <h3>اسلایدها</h3>
             <div class="tgrid" id="tSlides"></div>
+            <h3>دسته‌ها</h3>
+            <div class="chint">همان دسته‌های اپ نقطه؛ اسم، رنگ، افزودن و حذف در یک پنجره.</div>
+            <div class="cgroups" id="custGroups"></div>
             <h3>رنگ پس‌زمینه</h3>
             <div class="wps" id="wpGrid"></div>
             <div style="display:flex;gap:10px;margin-top:4px"><button class="ghost" id="custReset">چیدمان پیش‌فرض</button><button class="ghost" id="custOnb">آنبوردینگ دوباره</button></div>
@@ -1653,6 +1735,17 @@ td.them { color: var(--ink-2); }
           </div>
 
           <!-- delete a «دسته»: type its name to confirm -->
+          <!-- groups: the same lists as the Noghte app -->
+          <div class="modal-bg" id="grpModal" hidden>
+            <div class="modal sm" role="dialog" aria-modal="true" aria-labelledby="grpTitle">
+              <div class="card-h"><h2 id="grpTitle">دسته‌ها</h2><button class="rbtn sm" id="grpClose" aria-label="بستن" style="margin-inline-start:auto"><span data-ico="close"></span></button></div>
+              <p class="gp-sub">همان دسته‌های اپ نقطه برای کارها، یادداشت‌ها و برنامه‌ها. هر تغییری این‌جا روی گوشی هم می‌نشیند.</p>
+              <div class="gp-list" id="grpList"></div>
+              <form class="gp-new" id="grpNew"><input id="grpNewName" placeholder="اسم دسته‌ی تازه" autocomplete="off" aria-label="اسم دسته‌ی تازه"><div class="gp-colors" id="grpNewColors"></div><button class="cta" id="grpAdd" disabled>افزودن</button></form>
+              <div class="mfoot"><span class="cnt">اسم را همان‌جا عوض کن؛ با زدن دایره‌ی رنگی، رنگش را.</span><button class="cta" id="grpDone" type="button">تمام</button></div>
+            </div>
+          </div>
+
           <div class="modal-bg" id="delModal" hidden>
             <div class="modal sm" role="dialog" aria-modal="true" aria-labelledby="delTitle">
               <div class="card-h"><h2 id="delTitle">حذف دسته</h2><button class="rbtn sm" id="delClose" aria-label="بستن" style="margin-inline-start:auto"><span data-ico="close"></span></button></div>
@@ -1748,6 +1841,7 @@ td.them { color: var(--ink-2); }
       <p>سرچ بزرگ‌ترین چیز صفحه است: یک کادر دوخطی مثل Dia. خط اول متن است (نشانه‌ی ساده‌ی G، هم‌رنگ متن)، و با متن طولانی تا چند خط بزرگ می‌شود، چون گوگل هم تا ۲۰۴۸ نویسه می‌پذیرد. Enter جستجو می‌کند و Shift+Enter خط تازه می‌زند. خط دوم کاربردی است: «به کارها» و «به یادداشت‌ها» دو حالت کادرند و قبل یا بعد از نوشتن انتخاب می‌شوند. با انتخاب هر کدام، نشانه‌ی G جایش را به آیکون همان (تیک یا یادداشت) به رنگ تم می‌دهد، متن راهنما عوض می‌شود («کار تازه برای امروز…» یا «یادداشت تازه… خط اول عنوانش می‌شود»)، دور کادر کمی رنگ تم می‌گیرد و فهرست پیشنهادهای گوگل بسته می‌ماند. Enter به‌جای جستجو در نقطه ذخیره می‌کند و گوشه‌ی مربوط، فشرده و بدون پوشاندن سرچ، باز می‌شود و نشانش می‌دهد. کلیک دوباره روی همان دکمه یا Esc کادر را به جستجوی گوگل برمی‌گرداند. کنارشان میکروفون و فلش جستجو است.</p>
       <p><b>کارها و یادداشت‌های خود کاربر در همان سرچ:</b> وقتی کاربر تایپ می‌کند، فهرست پیشنهادها دو بخش دارد. بالا «گوگل» (جستجو در گوگل و پیشنهادهای آن) و پایین «در نقطه‌ی تو»، یعنی کارها و یادداشت‌هایی که آن کلمه را دارند. این بخش دوم روی خود دستگاه گشته می‌شود: کارها و یادداشت‌ها از قبل با سینک در IndexedDB افزونه هستند و افزونه همان‌جا در آن‌ها می‌گردد، پس چیزی از این جستجو به سرور ما یا به گوگل نمی‌رود. با کلیک روی یک کار یا یادداشت، همان در اسلاید خودش باز می‌شود. اگر چیزی پیدا نشود، این بخش اصلاً نشان داده نمی‌شود؛ کلید جدایی لازم نیست و در شخصی‌سازی می‌شود کلاً خاموشش کرد.</p>
       <p><b>سرچ صوتی:</b> دکمه‌ی میکروفون از تشخیص گفتار خود کروم (<code>SpeechRecognition</code> با زبان <code>fa-IR</code>) استفاده می‌کند. رایگان است، کلید و سرور ما را لازم ندارد، فارسی و انگلیسی را می‌فهمد و متن را هم‌زمان با حرف زدن در کادر می‌نویسد. صدا را خود کروم برای گوگل می‌فرستد، همان‌جایی که جستجو هم می‌رود. بار اول کروم اجازه‌ی میکروفون را برای صفحه‌ی افزونه می‌پرسد. اگر سرویس گفتار گوگل از ایران جواب ندهد (قبل از انتشار باید آزمایش شود)، میز صدا را با <code>MediaRecorder</code> ضبط می‌کند و به همان سرویس تبدیل صدا به متن سرور نقطه می‌فرستد که اپ برای «نوشتن متنِ صدا» در نظر گرفته است (<code>transcribe.ts</code>، مثلاً Whisper روی سرور خودمان). یادداشت صوتی از نیوتب هم از همین سرویس سرور متن می‌گیرد، تا با اپ یکی باشد.</p>
+      <p><b>یادداشت و کار سریع از سرچ:</b> با انتخاب «به یادداشت‌ها»، متن کادر عنوان یادداشت می‌شود و زیر کادر یک پنل باز می‌شود: بالا جای توضیح (با Tab به آن می‌رسی)، بعد انتخاب دسته، و پایینش دو یادداشت اخیر که با کلیک باز می‌شوند. «به کارها» همین پنل را با «امروز / فردا / بدون تاریخ»، دسته و دو کار اخیر دارد. فلش ارسال تا وقتی چیزی نوشته نشده کم‌رنگ است و با اولین حرف سفید و فعال می‌شود.</p>
       <p>ارسال با <code>chrome.search.query</code> انجام می‌شود که موتور پیش‌فرض کروم را صدا می‌زند (برای بیشتر کاربران گوگل)؛ اگر موتور پیش‌فرض کسی گوگل نباشد، نشانه و متن راهنما اسم همان موتور را نشان می‌دهند تا قول نادرستی نداده باشیم و سیاست استور هم رعایت شود.</p>
       <h3>ردیف دسترسی سریع</h3>
       <p>دسترسی سریع و بوکمارک‌های شغلی یکی شده‌اند: یک ردیف زیر سرچ. اولش چند سایت مشترک برای همه (یوتیوب، جیمیل، دیجی‌کالا)، بعد پوشه‌ها و سایت‌های همان شغلی که کاربر انتخاب کرده، بعد کاشی اسپانسری و «افزودن». کاشی‌ها فقط آیکون‌اند و اسمشان با رفتن موس می‌آید تا ردیف شلوغ نشود.</p>
@@ -1755,7 +1849,7 @@ td.them { color: var(--ink-2); }
         <li><b>پوشه:</b> کاشی پوشه چهار آیکون کوچک داخلش را نشان می‌دهد. با کلیک، محتوای پوشه در همان ردیف باز می‌شود و کاشی اول «بازگشت» با اسم پوشه است.</li>
         <li><b>شغل:</b> در ردیف دیده نمی‌شود؛ یک بار در آنبوردینگ انتخاب می‌شود و بعد از «شخصی‌سازی» عوض می‌شود. با عوض کردنش پوشه‌ها و سایت‌های ردیف عوض می‌شوند و سایت‌های مشترک می‌مانند.</li>
         <li><b>افزودن:</b> پنجره‌ی «افزودن به دسترسی سریع» دو بخش دارد: پیشنهادها (سایت‌های پربازدید کاربر از <code>chrome.topSites</code> به‌اضافه‌ی فهرست ما) و آدرس دلخواه (نام، آدرس، رنگ کاشی، پیش‌نمایش). در هر دو می‌شود انتخاب کرد که کاشی به ردیف اصلی برود یا داخل یکی از پوشه‌ها.</li>
-        <li><b>آیکون‌ها:</b> همه‌ی کاشی‌ها یک قاب مربعی ساده و یکسان دارند (۶۶ پیکسل، شیشه‌ای کم‌رنگ) و favicon سایت بدون دستکاری وسطش می‌نشیند، تا ردیف یکدست بماند. افزونه آن را با مجوز <code>favicon</code> از خود کروم می‌گیرد (<code>chrome-extension://…/_favicon/?pageUrl=…&amp;size=64</code>)، پس آیکون هر سایتی که کاربر اضافه کند خودبه‌خود درست است. در ماک‌آپ برندهای جهانی از simple-icons آمده‌اند و سایت‌های ایرانی، که از این محیط در دسترس نبودند، با حرف اول روی رنگ برند نشان داده شده‌اند.</li>
+        <li><b>آیکون‌ها:</b> همه‌ی کاشی‌ها یک قاب مربعی ساده و یکسان دارند (۶۶ پیکسل). رنگ قاب از رنگ خود لوگو گرفته می‌شود (حدود ۱۵٪ روی شیشه‌ی تیره)، پس آیکون با قابش یکی می‌شود و هم از زمینه جداست هم چشم را نمی‌زند. favicon سایت بدون دستکاری وسط قاب است؛ لوگوهای مشکی (آنسپلش، X، گیت‌هاب) روی قاب تیره روشن کشیده می‌شوند. افزونه آن را با مجوز <code>favicon</code> از خود کروم می‌گیرد (<code>chrome-extension://…/_favicon/?pageUrl=…&amp;size=64</code>)، پس آیکون هر سایتی که کاربر اضافه کند خودبه‌خود درست است. در ماک‌آپ برندهای جهانی از simple-icons آمده‌اند و سایت‌های ایرانی، که از این محیط در دسترس نبودند، با حرف اول روی رنگ برند نشان داده شده‌اند.</li>
         <li><b>برداشتن:</b> با رفتن موس روی هر کاشی، دکمه‌ی کوچک برداشتن می‌آید. ردیف حداکثر ۹ کاشی خود کاربر دارد؛ بیشتر از آن باید در پوشه برود.</li>
       </ul>
     </section>
@@ -1877,6 +1971,7 @@ td.them { color: var(--ink-2); }
       <h2>یک منبع برای دسته‌ها<small>کارها، یادداشت‌ها و برنامه‌ها همان دسته‌های اپ نقطه را دارند</small></h2>
       <p>در اپ نقطه «دسته‌ها» یک مجموعه‌اند: لیست‌های کار همان پوشه‌های یادداشت‌اند (<code>TaskList</code> با نام و رنگ؛ صفحه‌ی <code>profile/lists</code> برای هر دسته هم کارها و هم یادداشت‌ها را می‌شمارد). این مجموعه در سینک موجودیت <code>list</code> است. نیوتب هیچ دسته‌ی جدایی نمی‌سازد و همه‌جا همان را نشان می‌دهد:</p>
       <ul>
+        <li><b>ویرایش دسته‌ها:</b> یک پنجره برای همه‌چیز: هر دسته یک ردیف دارد با دایره‌ی رنگ (با کلیک، هشت رنگ اپ باز می‌شود)، اسمی که همان‌جا عوض می‌شود، و تعداد یادداشت و کارش. پایین پنجره «دسته‌ی تازه» با اسم و رنگ است. حذف از همین پنجره است ولی با همان تأیید تایپ اسم. «شخصی» حذف نمی‌شود. این پنجره از آیکون مداد کنار هر پوشه در اسلاید یادداشت‌ها، از «دسته‌ی تازه»، و از بخش «دسته‌ها» در شخصی‌سازی باز می‌شود. هر تغییری با همان کانال سینک به اپ می‌رسد.</li>
         <li><b>کارها</b> (گوشه‌ی صفحه‌ی اول و برنامه‌ها) نقطه‌ی رنگ دسته‌شان را دارند و رنگ بلوکشان در جدول هفته همان رنگ دسته است.</li>
         <li><b>تب «کارها»:</b> بالای اسلاید برنامه‌ها یک سوییچ کوچک «تقویم · کارها» هست. «کارها» همان فهرست کارهای اپ است: فیلتر دسته‌ها با تعدادشان، بخش‌های عقب‌افتاده، امروز، پیش رو و بدون تاریخ، تیک زدن، و یک خط «کار تازه» که در دسته‌ی انتخاب‌شده می‌سازد. این فهرست با گوشه‌ی کارهای صفحه‌ی اول و با گوشی یکی است. ستون کناری (ماه، مناسبت‌ها، تقویم‌ها) در هر دو حالت می‌ماند.</li>
         <li><b>ساختن برنامه:</b> کشیدن روی ساعت‌ها فقط بازه را مشخص می‌کند و چیزی ذخیره نمی‌شود. یک پنجره باز می‌شود با زمان، عنوان، دسته (همان دسته‌های اپ) و جای ذخیره (کار در نقطه، یا تقویم گوگل شخصی یا کار)؛ «ساختن» تا عنوان نوشته نشود فعال نیست و «انصراف» یا Esc همه‌چیز را پاک می‌کند، مثل اپ موبایل.</li>
@@ -1976,6 +2071,7 @@ td.them { color: var(--ink-2); }
     if (b) return `<svg class="bm2" viewBox="0 0 24 24" aria-hidden="true"><path d="${b.p}" ${lum(b.h) < 0.22 ? `style="fill:var(--darkfill, #F5F6F8)"` : `fill="${b.h}"`}/></svg>`;
     return `<span class="fl" style="--fc:${color};color:${color}">${letter}</span>`;
   };
+  const favC = (name, color) => { const b = BR[SLUG[name]]; return b ? (lum(b.h) < 0.22 ? "#C9CED8" : b.h) : color; };
   const paintIcons = (root = document) => root.querySelectorAll("[data-ico]").forEach((el) => { if (!el.firstChild) el.innerHTML = ICO[el.dataset.ico] || ""; });
   paintIcons();
 
@@ -2031,7 +2127,7 @@ td.them { color: var(--ink-2); }
   const plusSvg = '<svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>';
   const tile = (s, i, attrs = "") => s.folder
     ? `<button class="lt" data-i="${i}" ${attrs} aria-label="پوشه‌ی ${s.n}"><span class="ic fold">${s.items.slice(0, 4).map((x) => `<i>${fav(x.n, x.l, x.c)}</i>`).join("")}</span><span class="lb">${s.n}</span><span class="x" data-rm="${i}" role="button" aria-label="برداشتن">${xSvg}</span></button>`
-    : `<button class="lt${s.ad ? " adt" : ""}" ${s.ad ? 'data-slot="۲"' : ""} data-i="${i}" ${attrs} aria-label="${s.n}"><span class="ic fav">${fav(s.n, s.l, s.c)}</span><span class="lb">${s.n}</span>${s.ad ? '<span class="tag">معرفی‌شده</span>' : `<span class="x" data-rm="${i}" role="button" aria-label="برداشتن">${xSvg}</span>`}</button>`;
+    : `<button class="lt${s.ad ? " adt" : ""}" ${s.ad ? 'data-slot="۲"' : ""} data-i="${i}" ${attrs} aria-label="${s.n}"><span class="ic fav" style="--bc:${favC(s.n, s.c)}">${fav(s.n, s.l, s.c)}</span><span class="lb">${s.n}</span>${s.ad ? '<span class="tag">معرفی‌شده</span>' : `<span class="x" data-rm="${i}" role="button" aria-label="برداشتن">${xSvg}</span>`}</button>`;
   function renderLaunch(anim) {
     const L = $("launch"), items = rowItems();
     let h = "";
@@ -2042,7 +2138,7 @@ td.them { color: var(--ink-2); }
         + `<button class="lt addt" id="lAddIn"><span class="ic">${plusSvg}</span><span class="lb">افزودن</span></button>`;
     } else {
       h += items.map((s, i) => tile(s, i)).join("")
-        + `<button class="lt adt" data-slot="۱"><span class="ic fav">${fav("بیمه‌ی آنلاین", "ب", "#D9862B")}</span><span class="lb">بیمه‌ی آنلاین</span><span class="sdot"></span></button>`
+        + `<button class="lt adt" data-slot="۱"><span class="ic fav" style="--bc:#D9862B">${fav("بیمه‌ی آنلاین", "ب", "#D9862B")}</span><span class="lb">بیمه‌ی آنلاین</span><span class="sdot"></span></button>`
         + (items.length < MAXROW ? `<button class="lt addt" id="qAdd"><span class="ic">${plusSvg}</span><span class="lb">افزودن</span></button>` : "");
     }
     L.innerHTML = h;
@@ -2300,7 +2396,7 @@ td.them { color: var(--ink-2); }
   // search: Google, plus the user's own tasks and notes
   $("sform").addEventListener("submit", (e) => { e.preventDefault(); });
   // the box grows with long text (Google takes up to 2,048 characters); Enter searches, Shift+Enter breaks the line
-  const grow = () => { q.style.height = "auto"; q.style.height = Math.min(q.scrollHeight, 150) + "px"; };
+  const grow = () => { q.style.height = "auto"; q.style.height = Math.min(q.scrollHeight, 150) + "px"; document.querySelector(".sbox .ibtn.go").classList.toggle("ready", !!q.value.trim()); };
   q.addEventListener("input", grow); grow();
   q.addEventListener("keydown", (e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); $("sform").requestSubmit(); } });
   const saveAs = (kind) => {
@@ -2335,8 +2431,8 @@ td.them { color: var(--ink-2); }
   const gm = document.querySelector(".sbox .gmark"), gHTML = () => gm.dataset.g ??= gm.innerHTML;
   const MODES = {
     google: { ph: "در گوگل جستجو کن یا آدرس بنویس…", hint: "Enter جستجو · Shift+Enter خط تازه", label: "جستجو در گوگل", go: "جستجو در گوگل", title: "جستجو در گوگل" },
-    task: { ph: "کار تازه برای امروز…", hint: "Enter افزودن به کارها · Esc برگشت به جستجو", label: "کار تازه", go: "افزودن به کارها", title: "به کارهای امروز اضافه می‌شود", ico: "tick-square" },
-    note: { ph: "یادداشت تازه… خط اول عنوانش می‌شود", hint: "Enter ذخیره · Shift+Enter خط تازه · Esc برگشت", label: "یادداشت تازه", go: "ذخیره در یادداشت‌ها", title: "در یادداشت‌ها ذخیره می‌شود", ico: "sticker-note" },
+    task: { ph: "کار تازه…", hint: "Enter افزودن به کارها · Esc برگشت به جستجو", label: "کار تازه", go: "افزودن به کارها", title: "به کارهای امروز اضافه می‌شود", ico: "tick-square" },
+    note: { ph: "عنوان یادداشت تازه…", hint: "Enter ذخیره · Tab توضیح · Esc برگشت", label: "یادداشت تازه", go: "ذخیره در یادداشت‌ها", title: "در یادداشت‌ها ذخیره می‌شود", ico: "sticker-note" },
   };
   let mode = "google";
   const setMode = (m) => {
@@ -2347,14 +2443,14 @@ td.them { color: var(--ink-2); }
     gm.classList.remove("swap"); void gm.offsetWidth; gm.classList.add("swap");
     q.placeholder = M.ph; q.setAttribute("aria-label", M.label); q.classList.remove("swap"); void q.offsetWidth; q.classList.add("swap");
     $("hintk").textContent = M.hint; box.querySelector(".ibtn.go").setAttribute("aria-label", M.go);
-    drop.hidden = m !== "google" || document.activeElement !== q;
+    drop.hidden = m !== "google" || document.activeElement !== q; renderQP();
     q.focus();
   };
   $("toTask").addEventListener("click", () => setMode(mode === "task" ? "google" : "task"));
   $("toNote").addEventListener("click", () => setMode(mode === "note" ? "google" : "note"));
   q.addEventListener("focus", () => { if (mode !== "google") drop.hidden = true; });
   q.addEventListener("keydown", (e) => { if (e.key === "Escape" && mode !== "google") { e.preventDefault(); setMode("google"); } });
-  $("sform").addEventListener("submit", () => { if (mode !== "google") saveAs(mode); });
+  $("sform").addEventListener("submit", () => { if (mode !== "google") saveQuick(mode); });
   // Google's G as a plain outline glyph in the text colour (no badge, no brand colours)
   document.querySelectorAll("[data-brand=google]").forEach((el) => { el.innerHTML = `<svg class="gline" viewBox="0 0 24 24" aria-hidden="true"><path d="M19.5 12a7.5 7.5 0 1 1-2.2-5.3"/><path d="M19.5 12H12.5"/></svg>`; });
 
@@ -2619,7 +2715,7 @@ td.them { color: var(--ink-2); }
   function renderFolders() {
     $("flist").innerHTML = FOLDERS.map(([k, n]) => `<button data-f="${k}" aria-pressed="${folder === k}">${k === "all" ? ICON.all : `<span class="fdot" style="background:${LST[k].c}"></span>`}${n}<span>${fa(k === "all" ? NOTES.length : NOTES.filter((x) => x.f === k).length)}</span></button>`).join("")
       + `<div class="fsep"></div><button data-f="trash" aria-pressed="false">${ICON.trash}حذف‌شده‌ها<span>۰</span></button>`;
-    $("flist").querySelectorAll("button[data-f]").forEach((b) => { const k = b.dataset.f; if (k === "all" || k === "trash" || k === "personal") return; b.querySelector("span:last-child").insertAdjacentHTML("beforebegin", `<span class="fdel" data-del="${k}" role="button" aria-label="حذف دسته">${ICON.trash}</span>`); });
+    $("flist").querySelectorAll("button[data-f]").forEach((b) => { const k = b.dataset.f; if (k === "all" || k === "trash") return; b.querySelector("span:last-child").insertAdjacentHTML("beforebegin", `<span class="fedit" data-edit="${k}" role="button" aria-label="ویرایش دسته">${ICO.edit}</span>`); });
   }
   function renderNoteList() {
     const q = $("nq").value.trim();
@@ -2661,7 +2757,7 @@ td.them { color: var(--ink-2); }
   }
   function selectNote(i) { curNote = i; if (folder !== "all" && NOTES[i].f !== folder) folder = "all"; renderFolders(); renderNoteList(); renderEditor(); }
   renderFolders(); renderNoteList(); renderEditor();
-  $("flist").addEventListener("click", (e) => { const dl = e.target.closest("[data-del]"); if (dl) { e.stopPropagation(); openDel(dl.dataset.del); return; } const b = e.target.closest("button"); if (!b || b.dataset.f === "trash") return; folder = b.dataset.f; const first = NOTES.findIndex((n) => folder === "all" || n.f === folder); if (first >= 0) curNote = first; renderFolders(); renderNoteList(); renderEditor(); });
+  $("flist").addEventListener("click", (e) => { const ed = e.target.closest("[data-edit]"); if (ed) { e.stopPropagation(); openGrp(ed.dataset.edit); return; } const b = e.target.closest("button"); if (!b || b.dataset.f === "trash") return; folder = b.dataset.f; const first = NOTES.findIndex((n) => folder === "all" || n.f === folder); if (first >= 0) curNote = first; renderFolders(); renderNoteList(); renderEditor(); });
   // deleting a «دسته» needs its name typed back; it is the same list on the phone
   let delKey = null;
   function openDel(k) {
@@ -3299,6 +3395,95 @@ td.them { color: var(--ink-2); }
     // segments with no handler of their own (the planner's day / 3 days / week) still switch
     if (!sg.id) sg.addEventListener("click", (e) => { const s = e.target.closest("span"); if (!s || s.parentElement !== sg) return; sg.querySelectorAll(":scope > span").forEach((x) => x.classList.toggle("on", x === s)); });
   });
+  /* ================= groups: add, rename, recolour, delete — all in one modal ================= */
+  const GCOLORS = ["#8C9EFF", "#5AB0FF", "#4FD1C5", "#35D07F", "#F2C94C", "#F2A65A", "#F0817A", "#CDB7FF"];
+  let grpNewColor = GCOLORS[2];
+  const grpCount = (k) => { const nn = NOTES.filter((x) => x.f === k).length, tt = tasks.filter((x) => x.l === k).length + LATER.filter((x) => x.l === k).length; return `${fa(nn)} یادداشت · ${fa(tt)} کار`; };
+  function renderGrp() {
+    if (LISTS.some((l) => l.c === grpNewColor)) grpNewColor = GCOLORS.find((c) => !LISTS.some((l) => l.c === c)) || grpNewColor;
+    $("grpList").innerHTML = LISTS.map((l) => `<div class="gp-row" data-g="${l.id}"><button type="button" class="gp-dot" style="background:${l.c}" aria-label="رنگ ${l.n}"></button>
+      <input value="${l.n}" aria-label="اسم دسته" data-gn="${l.id}"><span class="cnt2">${grpCount(l.id)}</span>
+      ${l.id === "personal" ? "<span></span>" : `<button type="button" class="gdel" data-gd="${l.id}" aria-label="حذف ${l.n}">${ICO.delete}</button>`}
+      <div class="gp-sw">${GCOLORS.map((c) => `<button type="button" style="background:${c}" data-gc="${c}" aria-pressed="${c === l.c}" aria-label="رنگ"></button>`).join("")}</div></div>`).join("");
+    $("grpNewColors").innerHTML = GCOLORS.filter((c) => c === grpNewColor || !LISTS.some((l) => l.c === c)).concat(GCOLORS).filter((c, i, a) => a.indexOf(c) === i).slice(0, 5).map((c) => `<button type="button" style="background:${c}" data-nc="${c}" aria-pressed="${c === grpNewColor}" aria-label="رنگ"></button>`).join("");
+  }
+  function refreshLists() {
+    FOLDERS.splice(1, FOLDERS.length - 1, ...LISTS.map((l) => [l.id, l.n]));
+    for (const l of LISTS) LST[l.id] = l;
+    renderFolders(); renderNoteList(); renderEditor(); renderCals(); renderTasks(); renderGroupsCust();
+    if (!$("grpModal").hidden) renderGrp();
+  }
+  function openGrp(focusKey, isNew) {
+    renderGrp(); $("grpModal").hidden = false; paintIcons($("grpModal"));
+    setTimeout(() => { const el = isNew ? $("grpNewName") : focusKey ? $("grpList").querySelector(`[data-gn="${focusKey}"]`) : null; if (el) { el.focus(); el.select?.(); } }, 0);
+  }
+  const closeGrp = () => { $("grpModal").hidden = true; };
+  $("grpClose").addEventListener("click", closeGrp); $("grpDone").addEventListener("click", closeGrp);
+  $("grpModal").addEventListener("click", (e) => {
+    if (e.target === $("grpModal")) return closeGrp();
+    const dot = e.target.closest(".gp-dot"); if (dot) { const r = dot.closest(".gp-row"); $("grpList").querySelectorAll(".gp-row").forEach((x) => x !== r && x.classList.remove("open")); r.classList.toggle("open"); return; }
+    const sw = e.target.closest("[data-gc]"); if (sw) { const l = LST[sw.closest(".gp-row").dataset.g]; l.c = sw.dataset.gc; refreshLists(); return; }
+    const del = e.target.closest("[data-gd]"); if (del) { openDel(del.dataset.gd); return; }
+    const nc = e.target.closest("[data-nc]"); if (nc) { grpNewColor = nc.dataset.nc; $("grpNewColors").querySelectorAll("button").forEach((b) => b.setAttribute("aria-pressed", String(b === nc))); }
+  });
+  // renaming: live as you type, saved (and synced) when you leave the field or press Enter
+  $("grpList").addEventListener("input", (e) => { const k = e.target.dataset.gn; if (!k) return; const v = e.target.value.trim(); if (v) { LST[k].n = v; e.target.closest(".gp-row").querySelector(".gp-dot").setAttribute("aria-label", `رنگ ${v}`); } });
+  $("grpList").addEventListener("change", (e) => { if (e.target.dataset.gn) { if (!e.target.value.trim()) e.target.value = LST[e.target.dataset.gn].n; refreshLists(); pulse("اسم دسته عوض شد · روی گوشی هم هست"); } });
+  $("grpList").addEventListener("keydown", (e) => { if (e.key === "Enter" && e.target.dataset.gn) { e.preventDefault(); e.target.blur(); } });
+  $("grpNewName").addEventListener("input", () => { $("grpAdd").disabled = !$("grpNewName").value.trim() || LISTS.some((l) => norm(l.n) === norm($("grpNewName").value)); });
+  $("grpNew").addEventListener("submit", (e) => {
+    e.preventDefault(); const n = $("grpNewName").value.trim(); if (!n) return;
+    const id = "g" + Date.now().toString(36); LISTS.push({ id, n, c: grpNewColor }); LST[id] = LISTS.at(-1);
+    $("grpNewName").value = ""; $("grpAdd").disabled = true; refreshLists(); pulse(`دسته‌ی «${n}» ساخته شد · روی گوشی هم هست`);
+    $("grpList").scrollTop = $("grpList").scrollHeight;
+  });
+  $("delGo").addEventListener("click", () => setTimeout(refreshLists));
+  document.querySelector(".newf").addEventListener("click", () => openGrp(null, true));
+  function renderGroupsCust() {
+    $("custGroups").innerHTML = LISTS.map((l) => `<span><i style="background:${l.c}"></i>${l.n}</span>`).join("") + `<button class="ghost" id="custGrpEdit" type="button">ویرایش دسته‌ها</button>`;
+  }
+  $("custGroups").addEventListener("click", (e) => { if (e.target.closest("#custGrpEdit")) openGrp(); });
+  renderGroupsCust();
+  document.addEventListener("keydown", (e) => { if (e.key === "Escape" && !$("grpModal").hidden && $("delModal").hidden) closeGrp(); });
+
+  /* ================= quick note / quick task under the search box ================= */
+  let qpList = "personal", qpWhen = "today";
+  function renderQP() {
+    const P = $("qpanel");
+    if (mode === "google") { P.hidden = true; return; }
+    const chips = LISTS.filter((l) => mode === "note" || !l.shop || true).map((l) => `<button type="button" data-ql="${l.id}" aria-pressed="${l.id === qpList}"><i style="background:${l.c}"></i>${l.n}</button>`).join("");
+    const top = mode === "note"
+      ? `<textarea id="qpDesc" rows="3" placeholder="توضیح… (اختیاری؛ عنوان همان متن بالاست)" aria-label="توضیح یادداشت"></textarea>`
+      : `<div class="qp-when"><span>کی؟</span>${[["today", "امروز"], ["tomorrow", "فردا"], ["none", "بدون تاریخ"]].map(([k, n]) => `<button type="button" data-qw="${k}" aria-pressed="${k === qpWhen}">${n}</button>`).join("")}</div>`;
+    const recent = mode === "note"
+      ? NOTES.slice(0, 2).map((n, i) => `<button type="button" class="row${n.fresh ? " fresh2" : ""}" data-qn="${i}">${ICO["sticker-note"]}<span><b>${n.title || "یادداشت بی‌عنوان"}</b><small>${n.when} · ${LST[n.f]?.n || ""}</small></span></button>`).join("")
+      : tasks.slice(0, 2).map((t) => `<button type="button" class="row${t.isNew ? " fresh2" : ""}" data-qt="1">${ICO["tick-square"]}<span><b>${t.t}</b><small>${t.m || "امروز"} · ${LST[t.l]?.n || ""}</small></span></button>`).join("");
+    P.innerHTML = `${top}<div class="qp-lists"><span>در</span>${chips}</div><div class="dhd">${mode === "note" ? "یادداشت‌های اخیر" : "کارهای اخیر"}</div>${recent}`;
+    P.hidden = false;
+  }
+  $("qpanel").addEventListener("mousedown", (e) => { if (e.target.closest("button")) e.preventDefault(); }); // keep the caret in the box
+  $("qpanel").addEventListener("click", (e) => {
+    const l = e.target.closest("[data-ql]"); if (l) { qpList = l.dataset.ql; $("qpanel").querySelectorAll("[data-ql]").forEach((b) => b.setAttribute("aria-pressed", String(b === l))); return; }
+    const w = e.target.closest("[data-qw]"); if (w) { qpWhen = w.dataset.qw; $("qpanel").querySelectorAll("[data-qw]").forEach((b) => b.setAttribute("aria-pressed", String(b === w))); return; }
+    const n = e.target.closest("[data-qn]"); if (n) { setMode("google"); go("s4"); selectNote(+n.dataset.qn); return; }
+    if (e.target.closest("[data-qt]")) { setMode("google"); go("s2"); $("ptabs").querySelector('[data-v="todo"]').click(); }
+  });
+  $("qpanel").addEventListener("keydown", (e) => { if (e.target.id === "qpDesc" && e.key === "Enter" && (e.ctrlKey || e.metaKey)) { e.preventDefault(); $("sform").requestSubmit(); } if (e.key === "Escape") { e.preventDefault(); setMode("google"); } });
+  q.addEventListener("keydown", (e) => { if (e.key === "Tab" && !e.shiftKey && mode === "note") { e.preventDefault(); $("qpDesc")?.focus(); } });
+  function saveQuick(kind) {
+    const v = q.value.trim(); if (!v) { q.focus(); return; }
+    if (kind === "task") {
+      tasks.forEach((t) => (t.isNew = false));
+      tasks.unshift({ t: v.split("\n")[0].slice(0, 80), m: qpWhen === "tomorrow" ? "فردا" : "", l: qpList, isNew: true }); tasks = tasks.slice(0, 5); renderTasks(); peekCorner("tasks", "از سرچ · همین حالا");
+    } else {
+      const desc = ($("qpDesc")?.value || "").trim(), title = v.split("\n")[0].slice(0, 60), body = [v.split("\n").slice(1).join("\n"), desc].filter(Boolean).join("\n");
+      NOTES.forEach((x) => (x.fresh = false));
+      NOTES.unshift({ f: qpList, title, when: "همین حالا", fresh: true, blocks: [{ k: "p", t: body }] }); curNote++;
+      renderFolders(); renderNoteList();
+      $("cNote").innerHTML = `<div class="fresh"><div class="nt-title">${title}</div>${body ? `<div class="meta">${body.replace(/\n/g, " ").slice(0, 60)}</div>` : ""}</div>`; peekCorner("notes", "از سرچ · همین حالا");
+    }
+    pulse("ذخیره شد · روی گوشی هم هست"); q.value = ""; grow(); q.dispatchEvent(new Event("input")); renderQP(); q.focus();
+  }
 })();
 </script>
 </body>
