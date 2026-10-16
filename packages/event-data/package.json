@@ -1,0 +1,17 @@
+{
+  "name": "@dotlife/event-data",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./all": "./src/all.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json"
+  },
+  "dependencies": {
+    "@dotlife/calendar-core": "workspace:*",
+    "@dotlife/shared": "workspace:*"
+  }
+}

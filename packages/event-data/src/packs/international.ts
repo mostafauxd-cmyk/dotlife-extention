@@ -1,0 +1,67 @@
+import type { CalendarEvent, Provenance } from "../types";
+
+/** روزهای جهانی (میلادی) — بسته‌ی اختیاری. */
+const SRC: Provenance = {
+  source: "United Nations international days",
+  url: "https://www.un.org/en/observances/international-days-and-weeks",
+  retrievedAt: "2026-10-11",
+};
+
+const g = (
+  id: string,
+  title: string,
+  month: number,
+  day: number,
+  alsoIn?: CalendarEvent["alsoIn"],
+): CalendarEvent => ({
+  id,
+  pack: "international",
+  title,
+  holiday: false,
+  rule: { kind: "fixed", calendar: "gregorian", month, day },
+  ...(alsoIn ? { alsoIn } : {}),
+  provenance: SRC,
+});
+
+export const INTERNATIONAL_EVENTS: readonly CalendarEvent[] = [
+  g("new-year-gregorian", "آغاز سال نو میلادی", 1, 1),
+  g("womens-day", "روز جهانی زن", 3, 8),
+  g("pi-day", "روز جهانی عدد پی", 3, 14),
+  g("happiness-day", "روز جهانی شادی", 3, 20),
+  g("intl-nowruz-day", "روز جهانی نوروز", 3, 21),
+  g("world-poetry-day", "روز جهانی شعر", 3, 21),
+  g("world-meteorological-day", "روز جهانی هواشناسی", 3, 23),
+  g("world-theatre-day", "روز جهانی تئاتر", 3, 27),
+  g("world-health-day", "روز جهانی بهداشت", 4, 7, ["health"]),
+  g("earth-day", "روز زمین", 4, 22),
+  g("world-design-day", "روز جهانی طراحی و گرافیک", 4, 27),
+  g("workers-day", "روز جهانی کارگر", 5, 1, ["professions"]),
+  g("women-in-maths-day", "روز جهانی زن در ریاضیات (زادروز مریم میرزاخانی)", 5, 12),
+  g("museum-day", "روز جهانی موزه و میراث فرهنگی", 5, 18),
+  g("world-environment-day", "روز جهانی محیط زیست", 6, 5),
+  g("world-crafts-day", "روز جهانی صنایع دستی", 6, 10),
+  g("child-labour-day", "روز جهانی مبارزه با کار کودکان", 6, 12),
+  g("desertification-day", "روز جهانی مبارزه با بیابان‌زایی", 6, 17),
+  g("world-population-day", "روز جهانی جمعیت", 7, 11),
+  g("left-handers-day", "روز جهانی چپ‌دست‌ها", 8, 13),
+  g("world-photography-day", "روز جهانی عکاسی", 8, 19),
+  g("world-literacy-day", "روز جهانی سوادآموزی", 9, 8),
+  g("programmers-day", "روز برنامه‌نویس", 9, 13, ["professions"]),
+  g("peace-day", "روز جهانی صلح", 9, 21),
+  g("world-tourism-day", "روز جهانی جهانگردی", 9, 27),
+  g("world-translation-day", "روز جهانی ترجمه و مترجم", 9, 30),
+  g("space-week", "آغاز هفته‌ی جهانی فضا", 10, 4),
+  g("world-teachers-day", "روز جهانی معلم", 10, 5),
+  g("world-post-day", "روز جهانی پست", 10, 9),
+  g("girl-child-day", "روز جهانی دختر", 10, 11),
+  g("world-standards-day", "روز جهانی استاندارد", 10, 14),
+  g("world-food-day", "روز جهانی غذا", 10, 16, ["health"]),
+  g("poverty-eradication-day", "روز جهانی ریشه‌کنی فقر", 10, 17),
+  g("students-day-intl", "روز جهانی دانش‌آموز", 11, 17),
+  g("mens-day", "روز جهانی مردان", 11, 19),
+  g("world-childrens-day", "روز جهانی کودک", 11, 20),
+  g("violence-against-women-day", "روز جهانی مبارزه با خشونت علیه زنان", 11, 25),
+  g("human-rights-day", "روز جهانی حقوق بشر", 12, 10),
+  g("mountain-day", "روز جهانی کوهستان", 12, 11),
+  g("christmas", "کریسمس (میلاد مسیح)", 12, 25),
+];
