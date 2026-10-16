@@ -3801,3 +3801,464 @@ svg {
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
+/* ---------- the task form: the app's sheet, in the middle of the page ---------- */
+.modal.tsheet {
+  width: min(520px, calc((100vw / var(--z)) - 32px));
+  max-height: calc((100vh / var(--z)) - 64px);
+  padding: 18px 22px 18px;
+  gap: 6px;
+  position: relative;
+  overflow: hidden;
+}
+.ts-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 14px;
+  color: var(--ink-3);
+}
+.ts-done {
+  height: 32px;
+  padding: 0 14px;
+  border: 0;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.12);
+  color: var(--ink);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.ts-done.plain {
+  font-weight: 400;
+}
+.ts-done:hover {
+  background: rgba(255, 255, 255, 0.18);
+}
+.ts-scroll {
+  min-height: 0;
+  overflow-y: auto;
+  scrollbar-width: none;
+  display: flex;
+  flex-direction: column;
+}
+.ts-title {
+  field-sizing: content;
+  resize: none;
+  border: 0;
+  outline: 0;
+  background: none;
+  padding: 8px 0;
+  color: var(--ink);
+  font: inherit;
+  font-size: 22px;
+  font-weight: 600;
+  line-height: 1.5;
+}
+.ts-title::placeholder {
+  color: var(--ink-3);
+}
+.ts-chips {
+  display: flex;
+  gap: 8px;
+  padding: 4px 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.ts-chips button {
+  flex: none;
+  height: 32px;
+  padding: 0 12px;
+  border-radius: 16px;
+  border: 1px solid var(--stroke);
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--ink-2);
+  font: inherit;
+  font-size: 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+}
+.ts-chips button i {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+.ts-chips button[aria-pressed="true"] {
+  background: #fff;
+  border-color: #fff;
+  color: #0b0d12;
+  font-weight: 600;
+}
+.ts-chips button.add {
+  padding: 0 10px;
+  background: none;
+  border: 1px dashed var(--stroke-hi);
+}
+.ts-chips .ico {
+  width: 15px;
+  height: 15px;
+}
+.ts-newlist {
+  flex: none;
+  width: 140px;
+  height: 32px;
+  padding: 0 12px;
+  border-radius: 16px;
+  border: 1px solid color-mix(in srgb, var(--tint) 55%, transparent);
+  background: none;
+  color: var(--ink);
+  font: inherit;
+  font-size: 14px;
+  outline: none;
+}
+.ts-div {
+  height: 1px;
+  flex: none;
+  margin: 10px 0;
+  background: var(--stroke);
+}
+.ts-seg {
+  display: flex;
+  padding: 3px;
+  margin-bottom: 6px;
+  border-radius: 12px;
+  background: rgba(0, 0, 0, 0.25);
+}
+.ts-seg button {
+  flex: 1;
+  height: 34px;
+  border: 0;
+  border-radius: 9px;
+  background: none;
+  color: var(--ink-2);
+  font: inherit;
+  font-size: 14px;
+  cursor: pointer;
+}
+.ts-seg button[aria-checked="true"] {
+  background: rgba(255, 255, 255, 0.14);
+  color: var(--ink);
+  font-weight: 600;
+}
+.ts-line {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-height: 44px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--ink);
+  font: inherit;
+  font-size: 15px;
+  text-align: start;
+  cursor: pointer;
+}
+div.ts-line,
+label.ts-line {
+  cursor: default;
+}
+.ts-line > .ico {
+  flex: none;
+  width: 20px;
+  height: 20px;
+  color: var(--ink-3);
+}
+.ts-line.in {
+  padding-inline-start: 34px;
+}
+.ts-line .ico.flip,
+.ts-line.in > .ico {
+  width: 16px;
+  height: 16px;
+}
+.ts-line.on > span,
+.ts-time.on {
+  color: #c6f135;
+}
+.ts-line.dim > span {
+  color: var(--ink-3);
+}
+.ts-line .grow {
+  flex: 1;
+  min-width: 0;
+}
+.ts-line.note .grow {
+  display: flex;
+  flex-direction: column;
+}
+.ts-line.note b {
+  font-weight: 400;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.ts-line.note small {
+  font-size: 12.5px;
+  color: var(--ink-3);
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.ts-line.note .ico {
+  color: var(--tint);
+}
+.ts-line.danger,
+.ts-line.danger .ico {
+  color: var(--coral);
+}
+.ts-line.top {
+  align-items: flex-start;
+  padding-top: 10px;
+}
+.ts-time {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--ink);
+  font: inherit;
+  font-size: 15px;
+  cursor: pointer;
+}
+.ts-notes {
+  flex: 1;
+  min-height: 60px;
+  field-sizing: content;
+  resize: none;
+  border: 0;
+  outline: 0;
+  padding: 0;
+  background: none;
+  color: var(--ink);
+  font: inherit;
+  font-size: 14.5px;
+  line-height: 1.8;
+}
+.ts-notes::placeholder {
+  color: var(--ink-3);
+}
+/* a switch, as the app's */
+.switch {
+  appearance: none;
+  flex: none;
+  width: 44px;
+  height: 26px;
+  margin: 0;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.16);
+  position: relative;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.switch::after {
+  content: "";
+  position: absolute;
+  top: 3px;
+  inset-inline-start: 3px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #fff;
+  transition: inset-inline-start 0.2s var(--ease);
+}
+.switch:checked {
+  background: var(--noghte);
+}
+.switch:checked::after {
+  inset-inline-start: 21px;
+}
+/* the pickers open under the form, one step off it, as on the phone */
+.ts-panel {
+  flex: none;
+  margin: 8px -22px -18px;
+  padding: 12px 22px 16px;
+  border-radius: 22px 22px 0 0;
+  background: #202023;
+  display: flex;
+  flex-direction: column;
+}
+.ts-opt {
+  min-height: 44px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--ink);
+  font: inherit;
+  font-size: 15px;
+  text-align: start;
+  cursor: pointer;
+}
+.ts-opt small {
+  font-size: 15px;
+  color: var(--ink-3);
+}
+.ts-opt.on {
+  color: #c6f135;
+}
+.ts-confirm {
+  height: 50px;
+  margin-top: 10px;
+  border: 0;
+  border-radius: 16px;
+  background: #fff;
+  color: #0b0d12;
+  font: inherit;
+  font-size: 17px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.ts-tp {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  height: 180px;
+}
+.ts-tp .col {
+  height: 100%;
+  width: 72px;
+  overflow-y: auto;
+  scrollbar-width: none;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 70px 0;
+}
+.ts-tp .col button {
+  flex: none;
+  height: 36px;
+  border: 0;
+  border-radius: 10px;
+  background: none;
+  color: var(--ink-3);
+  font: inherit;
+  font-size: 20px;
+  cursor: pointer;
+}
+.ts-tp .col button.on {
+  background: rgba(255, 255, 255, 0.12);
+  color: var(--ink);
+  font-weight: 600;
+}
+.ts-tp > span {
+  font-size: 22px;
+  color: var(--ink-2);
+}
+.ts-dp .h {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: 6px;
+}
+.ts-dp .h b {
+  flex: 1;
+  font-size: 17px;
+  font-weight: 600;
+}
+.ts-dp .h button {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 0;
+  border-radius: 10px;
+  background: none;
+  color: var(--ink-2);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+}
+.ts-dp .h .ico {
+  width: 16px;
+  height: 16px;
+}
+.ts-dp .g {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  row-gap: 2px;
+  justify-items: center;
+}
+.ts-dp .wk {
+  font-size: 13px;
+  color: var(--ink-3);
+  padding-bottom: 4px;
+}
+.ts-dp .g button {
+  width: 36px;
+  height: 36px;
+  border: 0;
+  border-radius: 50%;
+  background: none;
+  color: var(--ink);
+  font: inherit;
+  font-size: 15px;
+  cursor: pointer;
+}
+.ts-dp .g button:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+.ts-dp .g button.fri {
+  color: var(--coral);
+}
+.ts-dp .g button.tdy {
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.35);
+}
+.ts-dp .g button.on {
+  background: #c6f135;
+  color: #0b0d12;
+  font-weight: 600;
+}
+/* «فقط همین / این و بعدی‌ها / همه» */
+.ts-ask {
+  position: absolute;
+  inset: auto 14px 14px;
+  z-index: 3;
+  padding: 16px;
+  border-radius: 20px;
+  background: #26262a;
+  border: 1px solid var(--stroke-hi);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.ts-ask b {
+  font-size: 15px;
+  padding-bottom: 6px;
+}
+.ts-ask button {
+  height: 44px;
+  border: 0;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--ink);
+  font: inherit;
+  font-size: 15px;
+  cursor: pointer;
+}
+.ts-ask button.danger {
+  color: var(--coral);
+}
+.ts-ask button.cancel {
+  background: none;
+  color: var(--ink-2);
+}
+/* a task's title opens the form */
+.task .t,
+.td-row .t {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: start;
+  cursor: pointer;
+}
+.task .t:hover,
+.td-row .t:hover {
+  text-decoration: underline;
+  text-decoration-color: rgba(255, 255, 255, 0.3);
+  text-underline-offset: 4px;
+}

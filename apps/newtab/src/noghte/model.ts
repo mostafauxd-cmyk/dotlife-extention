@@ -152,14 +152,20 @@ export function addTask(
   return task;
 }
 
-/** A task drawn on the planner: from one time to another on a day, as the app's planner makes it. */
-export function addTimedTask(
-  title: string,
-  day: LocalDate,
-  start: string,
-  end: string,
-  listId?: string,
-): Task {
+/** Tasks changed in the editor, written whole (what the app's `putMany` does). */
+export function putTasks(tasks: readonly Task[]): void {
+  for (const t of tasks) records.write("task", t.id, t);
+}
+
+/** A task made in the editor, with everything it chose: the app's `draft` then `upsert`. */
+export function createTask(fields: {
+  title: string;
+  schedule: Task["schedule"];
+  listId?: string;
+  reminders: Task["reminders"];
+  recurrence?: Task["recurrence"];
+  notes?: string;
+}): Task {
   const lists = liveLists();
   const tasks = records.all<Task>("task");
   const last = tasks.reduce<string | undefined>(
@@ -169,20 +175,26 @@ export function addTimedTask(
   const now = nowIso();
   const task: Task = {
     id: newId(),
-    listId: (lists.find((l) => l.id === listId) ?? defaultList(lists) ?? ensureDefaultList()).id,
-    title: title.trim(),
+    listId: (lists.find((l) => l.id === fields.listId) ?? defaultList(lists) ?? ensureDefaultList()).id,
+    title: fields.title.trim(),
     status: "todo",
     priority: "none",
-    schedule: { kind: "range", start: { date: day, time: start }, end: { date: day, time: end } },
+    schedule: fields.schedule,
     timeZone: TIME_ZONE,
-    reminders: [],
+    reminders: fields.reminders,
     order: last === undefined ? FIRST_ORDER : orderBetween(last, undefined),
     createdAt: now,
     updatedAt: now,
+    ...(fields.recurrence === undefined ? {} : { recurrence: fields.recurrence }),
+    ...(fields.notes === undefined || fields.notes === "" ? {} : { notes: fields.notes }),
   };
   records.write("task", task.id, task);
   return task;
 }
+
+/** The task as it is now in the store (after a sync or another edit). */
+export const taskById = (id: string): Task | undefined =>
+  records.all<Task>("task").find((t) => t.id === id);
 
 /** Ticks a task (or one occurrence of a repeating one) on or off. */
 export function toggleTask(row: TodayRow): void {
@@ -235,7 +247,7 @@ export function saveNote(note: Note): Note {
 }
 
 /** An empty note in a folder (or the default one): a blank title, as the app's «یادداشت تازه». */
-export function newNote(folderId?: string): Note {
+export function newNote(folderId?: string, link: { taskId?: string } = {}): Note {
   const lists = liveLists();
   const now = nowIso();
   const list = lists.find((l) => l.id === folderId) ?? defaultList(lists) ?? ensureDefaultList();
@@ -246,6 +258,7 @@ export function newNote(folderId?: string): Note {
     pinned: false,
     createdAt: now,
     updatedAt: now,
+    ...(link.taskId === undefined ? {} : { taskId: link.taskId }),
   };
   records.write("note", note.id, note);
   return note;

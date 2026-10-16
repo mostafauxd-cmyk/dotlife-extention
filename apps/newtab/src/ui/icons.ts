@@ -38,6 +38,8 @@ export const ICONS = {
   "voice-play":
     '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"> <path d="M8 5.5v13l11-6.5z" fill="currentColor"/> </svg>',
   home: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"> <path d="M9.2 20.5v-3.1c0-.8.6-1.4 1.4-1.4h2.8c.8 0 1.4.6 1.4 1.4v3.1M3.5 10.6 12 3.5l8.5 7.1V18c0 1.4-1.1 2.5-2.5 2.5H6c-1.4 0-2.5-1.1-2.5-2.5z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/> </svg>',
+  notification:
+    '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"> <path d="M12 17.85c5.64 0 8.25-.72 8.5-3.63 0-2.9-1.82-2.71-1.82-6.27C18.68 5.17 16.04 2 12 2S5.32 5.17 5.32 7.95c0 3.56-1.82 3.37-1.82 6.27.25 2.92 2.86 3.63 8.5 3.63z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/> <path d="M14.39 20.86c-1.37 1.51-3.5 1.53-4.88 0" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/> </svg>',
 } as const;
 
 export type IconName = keyof typeof ICONS;

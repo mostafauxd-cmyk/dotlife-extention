@@ -19,6 +19,7 @@ import { ago, fa } from "../ui/fa";
 import { Icon } from "../ui/Icon";
 import type { IconName } from "../ui/icons";
 import { Qr } from "../ui/Qr";
+import { openEditor } from "./TaskEditor";
 
 /**
  * The four corners of the first view: a faint mark in each; the card slides in when the mouse
@@ -177,7 +178,15 @@ export function TasksCard({
                 >
                   <Icon name="tick" />
                 </button>
-                <span className="t">{r.task.title}</span>
+                <button
+                  type="button"
+                  className="t"
+                  onClick={() => {
+                    openEditor({ mode: "edit", task: r.task, occurrence: r.occurrence });
+                  }}
+                >
+                  {r.occurrence?.title ?? r.task.title}
+                </button>
                 <span
                   className="ld"
                   style={{ background: lists.get(r.task.listId)?.color ?? "transparent" }}

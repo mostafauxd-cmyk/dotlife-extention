@@ -11,6 +11,7 @@ import { PlansSlide } from "./home/PlansSlide";
 import { Rail, type SlideInfo } from "./home/Rail";
 import { SearchBox } from "./home/SearchBox";
 import { SignIn } from "./home/SignIn";
+import { TaskEditorHost } from "./home/TaskEditor";
 import { useSession, useSettings } from "./hooks";
 import { onArrival } from "./noghte/sync";
 import { isOn, themeOf, updateSettings } from "./settings";
@@ -237,6 +238,7 @@ export function App() {
           }}
         />
       )}
+      <TaskEditorHost />
       {toast !== null && <div className="toast">{toast}</div>}
     </div>
   );

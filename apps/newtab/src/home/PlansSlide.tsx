@@ -21,7 +21,6 @@ import {
 import { useNow, useRecordsVersion, useSettings } from "../hooks";
 import {
   addTask,
-  addTimedTask,
   liveLists,
   liveNotes,
   liveTasks,
@@ -34,6 +33,7 @@ import { updateSettings } from "../settings";
 import { occasionsOn } from "../today";
 import { fa } from "../ui/fa";
 import { Icon } from "../ui/Icon";
+import { openEditor } from "./TaskEditor";
 
 /**
  * The plans slide, as the app's «برنامه‌ها». Two tabs:
@@ -120,8 +120,6 @@ export function PlansSlide() {
   const [view, setView] = useState<View>("cal");
   const [anchor, setAnchor] = useState<LocalDate>(todayD);
   const [span, setSpan] = useState<Span>(7);
-  const [draft, setDraft] = useState<Draft | null>(null);
-  const [picked, setPicked] = useState<string | null>(null);
   const body = useRef<HTMLDivElement>(null);
 
   const first = span === 7 ? weekStart(anchor) : anchor;
@@ -140,10 +138,6 @@ export function PlansSlide() {
     if (view === "cal" && body.current !== null) body.current.scrollTop = 8 * HOUR - 6;
   }, [view]);
 
-  const toggle = (o: Occurrence): void => {
-    const t = taskOf.get(o.taskId);
-    if (t !== undefined) toggleTask({ occurrence: o, task: t, late: false });
-  };
   const goTo = (d: LocalDate): void => {
     setView("cal");
     setAnchor(d);
@@ -311,10 +305,11 @@ export function PlansSlide() {
                         key={`${o.taskId}@${o.originalDate}`}
                         type="button"
                         className={o.status === "done" ? "chipd task done" : "chipd task"}
-                        title={`${o.title} · ${o.status === "done" ? "برگرداندن" : "انجام شد"}`}
+                        title={o.title}
                         style={{ background: `${c}29`, color: c }}
                         onClick={() => {
-                          toggle(o);
+                          const t = taskOf.get(o.taskId);
+                          if (t !== undefined) openEditor({ mode: "edit", task: t, occurrence: o });
                         }}
                       >
                         {o.title}
@@ -351,11 +346,13 @@ export function PlansSlide() {
                       return [{ o, ...p, color: c }];
                     }),
                   )}
-                  draft={draft?.day === d ? draft : null}
-                  picked={picked}
-                  onPick={setPicked}
-                  onToggle={toggle}
-                  onDraft={setDraft}
+                  onEdit={(o) => {
+                    const t = taskOf.get(o.taskId);
+                    if (t !== undefined) openEditor({ mode: "edit", task: t, occurrence: o });
+                  }}
+                  onNew={(d2) => {
+                    openEditor({ mode: "new", date: d2.day, start: d2.start, end: d2.end });
+                  }}
                 />
               ))}
               {/* «now»: one line across every day, from its time in the gutter */}
@@ -366,16 +363,6 @@ export function PlansSlide() {
           </div>
         </div>
       )}
-
-      {draft !== null && (
-        <NewPlan
-          draft={draft}
-          lists={lists}
-          onClose={() => {
-            setDraft(null);
-          }}
-        />
-      )}
     </div>
   );
 }
@@ -384,20 +371,14 @@ function DayColumn({
   day,
   isToday,
   timed,
-  draft,
-  picked,
-  onPick,
-  onToggle,
-  onDraft,
+  onEdit,
+  onNew,
 }: {
   day: LocalDate;
   isToday: boolean;
   timed: Timed[];
-  draft: Draft | null;
-  picked: string | null;
-  onPick: (key: string | null) => void;
-  onToggle: (o: Occurrence) => void;
-  onDraft: (d: Draft | null) => void;
+  onEdit: (o: Occurrence) => void;
+  onNew: (d: Draft) => void;
 }) {
   const col = useRef<HTMLDivElement>(null);
   const [drag, setDrag] = useState<{ from: number; to: number } | null>(null);
@@ -423,7 +404,7 @@ function DayColumn({
           const a = Math.min(d.from, d.to);
           const b = Math.max(d.from, d.to) + SNAP;
           // a click (or a short drag) makes an hour, as the design does
-          onDraft({ day, start: a, end: Math.min(b - a < 30 ? a + 60 : b, DAY_MIN - 1) });
+          onNew({ day, start: a, end: Math.min(b - a < 30 ? a + 60 : b, DAY_MIN - 1) });
         }
         return null;
       });
@@ -440,7 +421,7 @@ function DayColumn({
   const ghost =
     drag !== null
       ? { start: Math.min(drag.from, drag.to), end: Math.max(drag.from, drag.to) + SNAP }
-      : draft;
+      : null;
 
   return (
     <div
@@ -450,7 +431,6 @@ function DayColumn({
       onMouseDown={(e) => {
         if (e.button !== 0 || e.target !== e.currentTarget) return;
         e.preventDefault();
-        onPick(null);
         const m = minuteAt(e.clientY);
         setDrag({ from: m, to: m });
       }}
@@ -461,9 +441,7 @@ function DayColumn({
         return (
           <div
             key={key}
-            className={["ev", t.o.status === "done" ? "done" : "", picked === key ? "on" : ""].join(
-              " ",
-            )}
+            className={t.o.status === "done" ? "ev done" : "ev"}
             style={{
               top: y(t.start) + 1,
               height: h,
@@ -473,7 +451,7 @@ function DayColumn({
               borderColor: t.color,
             }}
             onClick={() => {
-              onPick(picked === key ? null : key);
+              onEdit(t.o);
             }}
           >
             <b>{t.o.title}</b>
@@ -482,20 +460,6 @@ function DayColumn({
                 <Icon name="time-circle" />
                 <bdi>{hhmm(t.start)}</bdi> تا <bdi>{hhmm(t.end)}</bdi>
               </small>
-            )}
-            {picked === key && (
-              <button
-                type="button"
-                className="ev-done"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onToggle(t.o);
-                  onPick(null);
-                }}
-              >
-                <Icon name="tick" />
-                {t.o.status === "done" ? "برگرداندن" : "انجام شد"}
-              </button>
             )}
           </div>
         );
@@ -511,105 +475,6 @@ function DayColumn({
           </small>
         </div>
       )}
-    </div>
-  );
-}
-
-/**
- * «برنامه‌ی تازه»: nothing is saved on the drag itself; this asks for the title and the list, as the
- * app's sheet does, and the plan becomes a نقطه task at that time (so it is on the phone too).
- */
-function NewPlan({
-  draft,
-  lists,
-  onClose,
-}: {
-  draft: Draft;
-  lists: readonly TaskList[];
-  onClose: () => void;
-}) {
-  const [title, setTitle] = useState("");
-  const usable = lists.filter((l) => l.kind !== "shopping");
-  const [listId, setListId] = useState(usable.find((l) => l.isDefault)?.id ?? usable[0]?.id);
-  const save = (): void => {
-    if (title.trim() === "") return;
-    addTimedTask(title, draft.day, minutesToTime(draft.start), minutesToTime(draft.end), listId);
-    onClose();
-  };
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent): void => {
-      if (e.key === "Escape") onClose();
-    };
-    addEventListener("keydown", onKey);
-    return () => {
-      removeEventListener("keydown", onKey);
-    };
-  }, [onClose]);
-  return (
-    <div
-      className="modal-bg"
-      onMouseDown={(e) => {
-        if (e.target === e.currentTarget) onClose();
-      }}
-    >
-      <div className="modal sm" role="dialog" aria-modal="true" aria-labelledby="evTitle">
-        <div className="card-h">
-          <h2 id="evTitle">برنامه‌ی تازه</h2>
-          <button type="button" className="rbtn sm" aria-label="بستن" onClick={onClose}>
-            <Icon name="close" />
-          </button>
-        </div>
-        <div className="ef">
-          <div className="when">
-            <Icon name="time-circle" />
-            <span>
-              {WEEKDAY_NAMES_FA[weekdayOf(draft.day)]} {dayMonth(draft.day)} ·{" "}
-              <b>{hhmm(draft.start)}</b> تا <b>{hhmm(draft.end)}</b>
-            </span>
-          </div>
-          <input
-            className="big"
-            autoFocus
-            value={title}
-            maxLength={80}
-            placeholder="عنوان برنامه"
-            aria-label="عنوان برنامه"
-            autoComplete="off"
-            onChange={(e) => {
-              setTitle(e.target.value);
-            }}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") save();
-            }}
-          />
-          {usable.length > 0 && (
-            <>
-              <div className="sec">دسته</div>
-              <div className="lchips">
-                {usable.map((l) => (
-                  <button
-                    key={l.id}
-                    type="button"
-                    aria-pressed={l.id === listId}
-                    onClick={() => {
-                      setListId(l.id);
-                    }}
-                  >
-                    <i style={{ background: l.color }} />
-                    {l.name}
-                  </button>
-                ))}
-              </div>
-            </>
-          )}
-        </div>
-        <div className="mfoot">
-          <span className="cnt">روی گوشی هم همین‌جا می‌نشیند</span>
-          <button type="button" className="cta" disabled={title.trim() === ""} onClick={save}>
-            ساختن
-          </button>
-        </div>
-      </div>
     </div>
   );
 }
@@ -766,7 +631,15 @@ function TodoView({
                         className="ld"
                         style={{ background: colorOf.get(r.task.listId) ?? "#8C9EFF" }}
                       />
-                      <span className="t">{r.task.title}</span>
+                      <button
+                        type="button"
+                        className="t"
+                        onClick={() => {
+                          openEditor({ mode: "edit", task: r.task, occurrence: r.o });
+                        }}
+                      >
+                        {r.o?.title ?? r.task.title}
+                      </button>
                       <span className={r.late ? "m late" : "m"}>{r.meta}</span>
                     </div>
                   );
