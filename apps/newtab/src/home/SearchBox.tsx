@@ -57,7 +57,7 @@ const Speech = ((window as unknown as Record<string, unknown>).SpeechRecognition
 
 const reduced = (): boolean => matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-/** Two thin lines from the bottom middle of the box, round both sides, meeting at the top. */
+/** One thin line from the bottom middle of the box, round both sides, meeting at the top: sharp at its head, faded at its tail. */
 function traceBox(box: HTMLElement): void {
   if (reduced()) return;
   box.querySelector(".trace")?.remove();
@@ -79,18 +79,17 @@ function traceBox(box: HTMLElement): void {
   svg.setAttribute("height", String(h));
   svg.setAttribute("viewBox", `0 0 ${String(w)} ${String(h)}`);
   svg.setAttribute("aria-hidden", "true");
-  const layers: [string, number, number][] = [
-    ["mid", 0.22, 0.4],
-    ["core", 0.09, 0.85],
-  ];
-  const parts: { p: SVGPathElement; tail: number; op: number }[] = [];
+  // one line, drawn as K slices: the head is sharp and white, the tail fades into the tint
+  const K = 18;
+  const parts: { p: SVGPathElement; i: number }[] = [];
   for (const dir of [-1, 1] as const) {
-    for (const [cls, tail, op] of layers) {
+    for (let i = 0; i < K; i++) {
       const p = document.createElementNS(NS, "path");
       p.setAttribute("d", half(dir));
-      p.setAttribute("class", cls);
+      p.setAttribute("class", "seg");
+      p.style.stroke = `color-mix(in srgb, var(--tint) ${String(Math.round((i / K) * 100))}%, #fff)`;
       svg.append(p);
-      parts.push({ p, tail, op });
+      parts.push({ p, i });
     }
   }
   box.append(svg);
@@ -101,13 +100,15 @@ function traceBox(box: HTMLElement): void {
   const step = (now: number): void => {
     t0 ??= now;
     const k = (now - t0) / T;
-    const head = ease(k / 0.72) * L;
-    const fade = k < 0.72 ? 1 : Math.max(0, 1 - (k - 0.72) / 0.28);
-    for (const { p, tail, op } of parts) {
-      const from = Math.max(0, head - tail * L * (k < 0.72 ? 1 : 1 + (k - 0.72) * 2));
-      p.style.strokeDasharray = `${String(Math.max(0.01, head - from))} ${String(L * 3)}`;
+    const head = ease(k / 0.75) * L;
+    const fade = k < 0.75 ? 1 : Math.max(0, 1 - (k - 0.75) / 0.25);
+    const slice = (0.28 * L * (k < 0.75 ? 1 : 1 + (k - 0.75) * 3)) / K;
+    for (const { p, i } of parts) {
+      const to = Math.max(0, head - i * slice);
+      const from = Math.max(0, head - (i + 1) * slice);
+      p.style.strokeDasharray = `${String(Math.max(0.01, to - from))} ${String(L * 3)}`;
       p.style.strokeDashoffset = String(-from);
-      p.style.opacity = String(fade * op);
+      p.style.opacity = String(fade * Math.pow(1 - i / K, 1.6));
     }
     if (k < 1) requestAnimationFrame(step);
     else svg.remove();

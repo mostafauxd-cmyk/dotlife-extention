@@ -40,8 +40,8 @@
   --ease: cubic-bezier(0.22, 1, 0.36, 1);
   /* concentric cards: boxes sit --cp from every edge, their corner is the card's minus that gap */
   --cr: 32px;
-  --cp: 16px;
-  --cx: 8px;
+  --cp: 12px;
+  --cx: 12px;
   --ir: calc(var(--cr) - var(--cp));
 }
 * {
@@ -527,16 +527,11 @@ svg {
 }
 .trace path {
   fill: none;
-  stroke-linecap: round;
 }
-.trace .core {
-  stroke: #fff;
-  stroke-width: 1.1;
-  filter: drop-shadow(0 0 2px color-mix(in srgb, var(--tint) 70%, transparent));
-}
-.trace .mid {
-  stroke: color-mix(in srgb, var(--tint) 70%, #fff);
-  stroke-width: 1;
+/* one line cut into slices: the head is sharp white, each slice behind it fainter and more tinted */
+.trace .seg {
+  stroke-width: 1.4;
+  stroke-linecap: butt;
 }
 
 /* quick access: one row of square tiles, each tinted by its own icon */
@@ -1628,5 +1623,371 @@ svg {
   }
   .hero {
     gap: 16px;
+  }
+}
+
+/* ---------- signing in, in Dia's manner: a black card, the form on one side, a painted scene on the other ---------- */
+.dia-bg {
+  background: rgba(0, 0, 0, 0.62);
+}
+.dia {
+  width: min(1100px, calc(100vw - 32px));
+  height: min(680px, calc(100vh - 32px));
+  border-radius: 36px;
+  display: grid;
+  grid-template-columns: 480px minmax(0, 1fr);
+  background: #000;
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  overflow: hidden;
+  box-shadow: 0 50px 140px rgba(0, 0, 0, 0.7);
+  animation: rise 0.4s var(--ease) both;
+}
+.dia-form {
+  min-height: 0;
+  padding: 42px 46px 38px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.dia-top {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.dia .prog {
+  width: 150px;
+  height: 10px;
+  border-radius: 99px;
+  background: rgba(255, 255, 255, 0.06);
+  overflow: hidden;
+}
+.dia .prog b {
+  display: block;
+  height: 100%;
+  border-radius: 99px;
+  background: linear-gradient(to left, var(--amber) 62%, transparent);
+  transition: width 0.5s var(--ease);
+}
+.dia-top button,
+.dia .again {
+  margin-inline-start: auto;
+  padding: 0;
+  font-size: 14px;
+  background: none;
+  border: 0;
+  color: var(--ink-3);
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.dia .again {
+  margin-inline-start: 0;
+  align-self: flex-start;
+}
+.dia .again:disabled {
+  cursor: default;
+  text-decoration: none;
+}
+.dia-body {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding-top: 18px;
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+.dia h2 {
+  margin: 0;
+  font-size: 40px;
+  font-weight: 700;
+  line-height: 1.35;
+  text-wrap: balance;
+}
+.dia .lead {
+  margin: 0;
+  font-size: 16px;
+  color: var(--ink-2);
+  line-height: 1.9;
+}
+.dia .fl {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 15px;
+  color: rgba(255, 255, 255, 0.78);
+  font-weight: 500;
+}
+.dia .fl input {
+  height: 56px;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: #111;
+  color: var(--ink);
+  font: inherit;
+  font-size: 18px;
+  padding: 0 18px;
+  outline: none;
+}
+.dia .fl input:focus {
+  border-color: rgba(255, 255, 255, 0.4);
+}
+.dia .fl input.ltr {
+  direction: ltr;
+  text-align: left;
+  letter-spacing: 0.04em;
+}
+.dia-foot {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 12px;
+}
+.dia-foot .back {
+  align-self: flex-start;
+  font-size: 15px;
+  background: none;
+  border: 0;
+  padding: 0;
+  color: rgba(255, 255, 255, 0.7);
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 5px;
+}
+.dia-foot .legal {
+  margin: 0;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.6);
+}
+.dia-foot .next {
+  height: 58px;
+  border-radius: 16px;
+  border: 0;
+  background: #fff;
+  color: #000;
+  font-size: 18px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  transition:
+    background 0.2s,
+    color 0.2s;
+}
+.dia-foot .next:disabled {
+  background: #d9d9d9;
+  color: #6b6b6b;
+  cursor: default;
+}
+.dia-foot .kbd {
+  width: 20px;
+  height: 20px;
+  opacity: 0.6;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* the painted side; its edge toward the form breaks up into grain */
+.dia-art {
+  position: relative;
+  overflow: hidden;
+  mask: url("/dissolve.png") 0 0 / 100% 100% no-repeat;
+}
+.dia-art .paint {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+.dia-art .stage {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 660px;
+  height: 740px;
+  transform: scale(0.92);
+  transform-origin: 0 0;
+  animation: artin 0.9s var(--ease) both;
+}
+@keyframes artin {
+  from {
+    opacity: 0;
+    translate: -26px 0;
+  }
+}
+.dia-art .win {
+  position: absolute;
+  top: 236px;
+  left: -96px;
+  width: 610px;
+  height: 520px;
+  border-radius: 26px;
+  background: rgba(214, 218, 224, 0.55);
+  box-shadow:
+    0 30px 80px rgba(0, 0, 0, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.5);
+  transform: perspective(1600px) rotateY(-14deg) rotateZ(2.4deg);
+  transform-origin: 100% 50%;
+}
+.dia-art .bar {
+  position: absolute;
+  top: 18px;
+  right: 26px;
+  display: flex;
+  gap: 9px;
+}
+.dia-art .bar i {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.18);
+}
+.dia-art .tab {
+  position: absolute;
+  top: -2px;
+  right: 110px;
+  width: 220px;
+  height: 52px;
+  border-radius: 18px 18px 0 0;
+  background: rgba(214, 218, 224, 0.6);
+}
+.dia-art .tab::after {
+  content: "";
+  position: absolute;
+  top: 20px;
+  right: 24px;
+  width: 110px;
+  height: 10px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.75);
+}
+.dia-art .scr {
+  position: absolute;
+  top: 56px;
+  inset-inline: 18px;
+  bottom: 0;
+  border-radius: 18px 18px 0 0;
+  background: rgba(44, 48, 56, 0.9);
+  overflow: hidden;
+}
+.dia-art .sx {
+  position: absolute;
+  top: 140px;
+  right: 40px;
+  width: 440px;
+  height: 108px;
+  border-radius: 22px;
+  background: rgba(20, 20, 22, 0.88);
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.35);
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 22px 24px;
+  font-size: 18px;
+  color: rgba(255, 255, 255, 0.62);
+}
+.dia-art .sx svg {
+  width: 22px;
+  height: 22px;
+  flex: none;
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.55);
+  stroke-width: 2;
+}
+.dia-art .dot2 {
+  position: absolute;
+  top: 40px;
+  right: 222px;
+  width: 76px;
+  height: 76px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    color-mix(in srgb, var(--tint) 85%, #fff) 0 18%,
+    var(--tint) 19% 34%,
+    color-mix(in srgb, var(--tint) 70%, #000) 35% 52%,
+    var(--tint) 53% 70%,
+    transparent 71%
+  );
+  opacity: 0.9;
+}
+.dia-art .mini {
+  position: absolute;
+  top: 286px;
+  right: 46px;
+  width: 250px;
+  border-radius: 16px;
+  background: rgba(28, 28, 32, 0.9);
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  font-size: 13px;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.8);
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.35);
+}
+.dia-art .mini b {
+  font-size: 14px;
+  color: #fff;
+}
+.dia-art .mini .r {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.dia-art .mini .r i {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(255, 255, 255, 0.5);
+  flex: none;
+}
+.dia-art .mini .r i.ok {
+  background: #fff;
+  border-color: #fff;
+}
+.dia-art .ping2 {
+  font-size: 11px;
+  color: var(--tint);
+}
+.dia-art .phone2 {
+  position: absolute;
+  top: 120px;
+  right: 70px;
+  width: 150px;
+  height: 300px;
+  border-radius: 30px;
+  background: #0d0e11;
+  border: 6px solid rgba(214, 218, 224, 0.55);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.4);
+  transform: rotate(-6deg);
+  padding: 34px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.dia-art .phone2 i {
+  height: 30px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.08);
+}
+.dia-art .phone2 i:first-child {
+  background: color-mix(in srgb, var(--tint) 35%, transparent);
+}
+@media (max-width: 900px) {
+  .dia {
+    grid-template-columns: minmax(0, 1fr);
+    width: min(520px, calc(100vw - 32px));
+  }
+  .dia-art {
+    display: none;
   }
 }

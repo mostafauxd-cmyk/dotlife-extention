@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 
 import { ApiError, requestCode, verifyCode } from "../noghte/api";
 import { fa, latin } from "../ui/fa";
-import { Icon } from "../ui/Icon";
+import { Painting } from "./Painting";
 
 /**
  * Signing in to نقطه with the phone number the app uses: a code by SMS, then the code — the same
@@ -76,87 +76,110 @@ export function SignIn({ onClose }: { onClose: () => void }) {
     }
   };
 
+  const ready =
+    step === "phone"
+      ? latin(phone).replace(/\D/g, "").length >= 10
+      : latin(code).trim().length >= 4;
+
   return (
     <div
-      className="modal-bg"
+      className="modal-bg dia-bg"
       onMouseDown={(e) => {
         if (e.target === e.currentTarget) onClose();
       }}
     >
-      <div className="modal" role="dialog" aria-modal="true" aria-labelledby="signTitle">
-        <div className="card-h">
-          <h2 id="signTitle">ورود به نقطه</h2>
-          <button type="button" className="rbtn" aria-label="بستن" onClick={onClose}>
-            <Icon name="close" />
-          </button>
-        </div>
-        <p>
-          با همان شماره‌ای وارد شو که در اپ نقطه داری. کارها، یادداشت‌ها و دسته‌هایت این‌جا می‌آیند
-          و هر چه این‌جا بنویسی روی گوشی هم دیده می‌شود.
-        </p>
+      <div className="dia" role="dialog" aria-modal="true" aria-labelledby="signTitle">
         <form
+          className="dia-form"
           onSubmit={(e) => {
             e.preventDefault();
-            void (step === "phone" ? ask() : verify());
+            if (ready && !busy) void (step === "phone" ? ask() : verify());
           }}
-          style={{ display: "flex", flexDirection: "column", gap: 12 }}
         >
-          {step === "phone" ? (
-            <label className="field">
-              شماره‌ی موبایل
-              <input
-                className="ltr"
-                inputMode="tel"
-                autoFocus
-                value={phone}
-                placeholder="0912 345 6789"
-                onChange={(e) => {
-                  setPhone(e.target.value);
-                }}
-              />
-            </label>
-          ) : (
-            <label className="field">
-              کدی که به {fa(phone)} پیامک شد
-              <input
-                ref={codeInput}
-                className="ltr"
-                inputMode="numeric"
-                autoComplete="one-time-code"
-                value={code}
-                placeholder="------"
-                onChange={(e) => {
-                  setCode(e.target.value);
-                }}
-              />
-            </label>
-          )}
-          <div className="mfoot">
+          <div className="dia-top">
+            <span className="prog">
+              <b style={{ width: step === "phone" ? "50%" : "100%" }} />
+            </span>
+            <button type="button" onClick={onClose}>
+              بعداً
+            </button>
+          </div>
+          <div className="dia-body">
+            {step === "phone" ? (
+              <>
+                <h2 id="signTitle">شماره‌ات در نقطه چیست؟</h2>
+                <p className="lead">
+                  با همان شماره‌ای که در اپ نقطه داری. کارها، یادداشت‌ها و دسته‌هایت این‌جا می‌آیند
+                  و هر چه این‌جا بنویسی روی گوشی هم دیده می‌شود.
+                </p>
+                <label className="fl">
+                  شماره‌ی موبایل
+                  <input
+                    className="ltr"
+                    inputMode="tel"
+                    autoFocus
+                    value={phone}
+                    placeholder="0912 345 6789"
+                    onChange={(e) => {
+                      setPhone(e.target.value);
+                    }}
+                  />
+                </label>
+              </>
+            ) : (
+              <>
+                <h2 id="signTitle">کد را بنویس</h2>
+                <p className="lead">کدی که به {fa(phone)} پیامک شد.</p>
+                <label className="fl">
+                  کد ورود
+                  <input
+                    ref={codeInput}
+                    className="ltr"
+                    inputMode="numeric"
+                    autoComplete="one-time-code"
+                    value={code}
+                    placeholder="------"
+                    onChange={(e) => {
+                      setCode(e.target.value);
+                    }}
+                  />
+                </label>
+                <button
+                  type="button"
+                  className="again"
+                  disabled={wait > 0 || busy}
+                  onClick={() => void ask()}
+                >
+                  {wait > 0 ? `کد تازه تا ${fa(wait)} ثانیه` : "کد تازه بفرست"}
+                </button>
+              </>
+            )}
             {err !== "" && <span className="err">{err}</span>}
+          </div>
+          <div className="dia-foot">
             {step === "code" && (
               <button
                 type="button"
-                className="ghost"
-                disabled={wait > 0 || busy}
-                onClick={() => void ask()}
+                className="back"
+                onClick={() => {
+                  setStep("phone");
+                  setCode("");
+                  setErr("");
+                }}
               >
-                {wait > 0 ? `کد تازه تا ${fa(wait)} ثانیه` : "کد تازه"}
+                برگشت
               </button>
             )}
-            <button
-              type="submit"
-              className="cta"
-              disabled={
-                busy ||
-                (step === "phone"
-                  ? latin(phone).replace(/\D/g, "").length < 10
-                  : latin(code).trim().length < 4)
-              }
-            >
-              {step === "phone" ? "فرستادن کد" : "ورود"}
+            {step === "phone" && <p className="legal">با ادامه، حریم خصوصی نقطه را می‌پذیرم.</p>}
+            <button type="submit" className="next" disabled={busy || !ready}>
+              {step === "phone" ? "فرستادن کد" : "ورود"}{" "}
+              <svg className="kbd" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M19 6v5a3 3 0 0 1-3 3H6m0 0 4-4m-4 4 4 4" />
+              </svg>
             </button>
           </div>
         </form>
+        <Painting step={step} />
       </div>
     </div>
   );
