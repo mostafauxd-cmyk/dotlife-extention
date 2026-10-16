@@ -226,8 +226,8 @@ export function SyncInvite({ place, onSignIn }: { place: string; onSignIn: () =>
   return (
     <div className="sync-invite">
       <div className="si-text">
-        <b>فقط روی همین مرورگر است</b>
-        <span>وارد شو تا روی گوشی هم بیاید.</span>
+        <b>روی گوشی هم داشته باش</b>
+        <span>وارد شو؛ این‌جا و گوشی‌ات یکی می‌شوند.</span>
         <button type="button" className="cta" onClick={onSignIn}>
           ورود به نقطه
         </button>
