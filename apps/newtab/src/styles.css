@@ -5053,3 +5053,255 @@ a.ts-link {
 .morph:has(> :focus-visible)::before {
   box-shadow: 0 0 0 2px color-mix(in srgb, var(--tint) 65%, transparent);
 }
+
+/* the services' intro: an editorial title beside a glowing mark with drifting chat bubbles */
+.sx-intro {
+  flex: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+  align-items: center;
+  gap: 40px;
+  padding: 40px 56px;
+  overflow: hidden;
+  animation: rise 0.6s var(--ease) both;
+}
+.sx-copy {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 18px;
+  max-width: 520px;
+}
+.sx-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 12px 5px 14px;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--sc) 35%, transparent);
+  background: color-mix(in srgb, var(--sc) 10%, transparent);
+  font-size: 13px;
+  letter-spacing: 0.02em;
+  color: color-mix(in srgb, var(--sc) 70%, #fff);
+}
+.sx-kicker i {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--sc);
+  box-shadow: 0 0 10px var(--sc);
+}
+.sx-copy h3 {
+  margin: 0;
+  font-size: 54px;
+  font-weight: 700;
+  line-height: 1.18;
+  letter-spacing: -0.01em;
+}
+.sx-copy h3 em {
+  font-style: normal;
+  background: linear-gradient(100deg, color-mix(in srgb, var(--sc) 55%, #fff), var(--sc));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.sx-copy p {
+  margin: 0;
+  font-size: 17px;
+  line-height: 1.9;
+  color: var(--ink-2);
+  max-width: 44ch;
+}
+.sx-steps {
+  list-style: none;
+  margin: 2px 0 6px;
+  padding: 0;
+  align-self: stretch;
+  display: flex;
+  flex-direction: column;
+}
+.sx-steps li {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 11px 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+  font-size: 15px;
+  color: rgba(255, 255, 255, 0.86);
+}
+.sx-steps li:last-child {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+}
+.sx-steps li span {
+  flex: none;
+  width: 28px;
+  font-size: 13px;
+  font-weight: 600;
+  color: color-mix(in srgb, var(--sc) 75%, #fff);
+}
+.sx-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  height: 54px;
+  padding: 0 22px 0 26px;
+  border: 0;
+  border-radius: 999px;
+  background: #fff;
+  color: #0b0d12;
+  font: inherit;
+  font-size: 17px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 14px 40px color-mix(in srgb, var(--sc) 35%, transparent);
+  transition:
+    transform 0.25s var(--ease),
+    box-shadow 0.25s;
+}
+.sx-cta .ico {
+  width: 18px;
+  height: 18px;
+  transition: transform 0.25s var(--ease);
+}
+.sx-cta:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 18px 50px color-mix(in srgb, var(--sc) 50%, transparent);
+}
+.sx-cta:hover .ico {
+  transform: translateX(-4px);
+}
+.sx-art {
+  position: relative;
+  height: min(440px, 100%);
+  min-height: 320px;
+}
+.sx-grid {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.12) 1px, transparent 1px);
+  background-size: 22px 22px;
+  mask-image: radial-gradient(closest-side, #000, transparent);
+}
+.sx-orb {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 360px;
+  height: 360px;
+  margin: -180px 0 0 -180px;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--sc) 55%, transparent), transparent);
+  filter: blur(30px);
+  animation: sxBreath 6s ease-in-out infinite;
+}
+.sx-glyph {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 150px;
+  height: 150px;
+  margin: -75px 0 0 -75px;
+  border-radius: 44px;
+  display: grid;
+  place-items: center;
+  color: #fff;
+  font-size: 68px;
+  font-weight: 700;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.35),
+    inset 0 -20px 40px rgba(0, 0, 0, 0.18),
+    0 0 0 10px rgba(255, 255, 255, 0.04),
+    0 30px 80px color-mix(in srgb, var(--sc) 45%, transparent);
+  transform: rotate(-8deg);
+  animation: sxFloat 7s ease-in-out infinite;
+}
+.sx-glyph.dark {
+  border: 1px solid #333;
+}
+.sx-glyph::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(150deg, rgba(255, 255, 255, 0.3), transparent 45%);
+}
+.sx-bub {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  padding: 14px 16px;
+  border-radius: 20px 20px 20px 6px;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(12px);
+}
+.sx-bub i {
+  display: block;
+  height: 7px;
+  width: 120px;
+  border-radius: 9px;
+  background: rgba(255, 255, 255, 0.22);
+}
+.sx-bub i + i {
+  width: 78px;
+  background: rgba(255, 255, 255, 0.12);
+}
+.sx-bub.me {
+  border-radius: 20px 20px 6px 20px;
+  background: color-mix(in srgb, var(--sc) 28%, transparent);
+  border-color: color-mix(in srgb, var(--sc) 30%, transparent);
+}
+.sx-bub.me i {
+  width: 92px;
+  background: rgba(255, 255, 255, 0.5);
+}
+.sx-bub.b1 {
+  left: 6%;
+  top: 14%;
+  animation: sxDrift 8s ease-in-out infinite;
+}
+.sx-bub.b2 {
+  right: 4%;
+  top: 30%;
+  animation: sxDrift 9s ease-in-out -3s infinite;
+}
+.sx-bub.b3 {
+  left: 16%;
+  bottom: 12%;
+  animation: sxDrift 10s ease-in-out -6s infinite;
+}
+@keyframes sxFloat {
+  50% {
+    transform: rotate(-4deg) translateY(-10px);
+  }
+}
+@keyframes sxDrift {
+  50% {
+    transform: translateY(-12px);
+  }
+}
+@keyframes sxBreath {
+  50% {
+    transform: scale(1.08);
+    opacity: 0.85;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sx-glyph,
+  .sx-bub,
+  .sx-orb {
+    animation: none;
+  }
+}
+@container (max-width: 760px) {
+  .sx-intro {
+    grid-template-columns: 1fr;
+  }
+  .sx-art {
+    display: none;
+  }
+}
+.tablet {
+  container-type: inline-size;
+}

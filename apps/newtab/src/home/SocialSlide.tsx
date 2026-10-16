@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useSettings } from "../hooks";
 import { inExtension } from "../platform";
 import { updateSettings, type Settings } from "../settings";
+import { fa } from "../ui/fa";
 import { Icon } from "../ui/Icon";
 
 /**
@@ -242,42 +243,61 @@ export function SocialSlide() {
 
 function Intro({ svc, onStart }: { svc: Service; onStart: () => void }) {
   const dark = svc.id === "x";
+  const tone = dark ? "#e7e9ea" : svc.color;
+  const steps = [
+    `ورود فقط یک بار، در صفحه‌ی خود ${svc.name}`,
+    "رمز و پیام‌هایت هیچ‌وقت به نقطه نمی‌رسد",
+    `هر وقت خواستی از خود ${svc.name} خارج شو`,
+  ];
   return (
-    <div className="sonb" style={{ "--sc": dark ? "#fff" : svc.color } as React.CSSProperties}>
-      <div className="sonb-art" aria-hidden="true">
-        <span className="b1" />
-        <span className="b2" />
-        <span className="b3" />
-        <span className={dark ? "slg dark" : "slg"} style={{ background: svc.color }}>
+    <div className="sx-intro" style={{ "--sc": tone } as React.CSSProperties}>
+      <div className="sx-copy">
+        <span className="sx-kicker">
+          <i />
+          شبکه‌ها · {svc.name}
+        </span>
+        <h3>
+          {svc.name}،
+          <br />
+          <em>همین‌جا</em> کنار کارهایت
+        </h3>
+        <p>
+          {svc.what}، {svc.how}. هر وقت خواستی با یک اسکرول برمی‌گردی به صفحه‌ی اول.
+        </p>
+        <ol className="sx-steps">
+          {steps.map((t, i) => (
+            <li key={t}>
+              <span>{fa(String(i + 1).padStart(2, "0"))}</span>
+              {t}
+            </li>
+          ))}
+        </ol>
+        <button type="button" className="sx-cta" onClick={onStart}>
+          ورود به {svc.name}
+          <Icon name="arrow-left" />
+        </button>
+      </div>
+      <div className="sx-art" aria-hidden="true">
+        <span className="sx-grid" />
+        <span className="sx-orb" />
+        <span className="sx-bub b1">
+          <i />
+          <i />
+        </span>
+        <span className="sx-bub b2 me">
+          <i />
+        </span>
+        <span className="sx-bub b3">
+          <i />
+          <i />
+        </span>
+        <span
+          className={dark ? "sx-glyph dark" : "sx-glyph"}
+          style={{ background: dark ? "#000" : svc.color }}
+        >
           {svc.letter}
         </span>
       </div>
-      <h3>{svc.name} را همین‌جا داشته باش</h3>
-      <p>
-        {svc.what}، {svc.how}. هر وقت خواستی با یک اسکرول برمی‌گردی به صفحه‌ی اول.
-      </p>
-      <ul>
-        <li>
-          <Icon name="tick" />
-          ورود فقط یک بار، در صفحه‌ی خود {svc.name}
-        </li>
-        <li>
-          <Icon name="tick" />
-          رمز و پیام‌هایت هیچ‌وقت به نقطه نمی‌رسد
-        </li>
-        <li>
-          <Icon name="tick" />
-          هر وقت خواستی از خود {svc.name} خارج شو
-        </li>
-      </ul>
-      <button
-        type="button"
-        className="cta"
-        style={{ background: dark ? "#fff" : svc.color, color: dark ? "#000" : "#fff" }}
-        onClick={onStart}
-      >
-        ورود به {svc.name}
-      </button>
     </div>
   );
 }
