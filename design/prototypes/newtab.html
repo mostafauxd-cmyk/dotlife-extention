@@ -659,8 +659,10 @@ tr.grp td { background: rgba(255,255,255,.04); font-weight: 600; color: var(--in
 .s1 { overflow: hidden; }
 .hero { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 22px; padding-bottom: 70px; }
 .dotlogo { width: 108px; height: 108px; }
-.dotlogo svg { width: 100%; height: 100%; overflow: visible; animation: spin 200s linear infinite; }
-.dotlogo path { stroke: var(--tint); }
+.dotlogo { cursor: pointer; border-radius: 50%; }
+.dotlogo svg { width: 100%; height: 100%; overflow: visible; transition: transform .4s var(--ease); }
+.dotlogo:hover svg { transform: scale(1.04); }
+.dotlogo path { stroke: url(#dotShine); }
 .dotlogo { opacity: .9; }
 @keyframes spin { to { transform: rotate(360deg); } }
 .search2 { position: relative; width: 780px; z-index: 7; }
@@ -689,20 +691,21 @@ tr.grp td { background: rgba(255,255,255,.04); font-weight: 600; color: var(--in
 /* corners: a faint mark; the card slides in from its own corner */
 .hz { position: absolute; width: 150px; height: 150px; z-index: 5; outline: none; }
 .c-tr { top: 0; right: 0; } .c-tl { top: 0; left: 0; } .c-br { bottom: 0; right: 0; } .c-bl { bottom: 0; left: 0; }
-.cm { position: absolute; width: 18px; height: 18px; border: 0 solid rgba(255,255,255,.30); transition: opacity .3s; }
-.c-tr .cm { top: 22px; right: 22px; border-top-width: 2px; border-right-width: 2px; border-top-right-radius: 8px; }
-.c-tl .cm { top: 22px; left: 22px; border-top-width: 2px; border-left-width: 2px; border-top-left-radius: 8px; }
-.c-br .cm { bottom: 22px; right: 22px; border-bottom-width: 2px; border-right-width: 2px; border-bottom-right-radius: 8px; }
-.c-bl .cm { bottom: 22px; left: 22px; border-bottom-width: 2px; border-left-width: 2px; border-bottom-left-radius: 8px; }
+.cmk { position: absolute; width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; color: var(--ink-2); background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.09); opacity: .8; transition: opacity .3s, transform .3s var(--ease); }
+.cmk svg { width: 19px; height: 19px; }
+.c-tr .cmk { top: 20px; right: 20px; }
+.c-tl .cmk { top: 20px; left: 20px; }
+.c-br .cmk { bottom: 20px; right: 20px; }
+.c-bl .cmk { bottom: 20px; left: 20px; }
 .cl { position: absolute; font-size: 14px; color: var(--ink-2); opacity: 0; transition: opacity .4s; white-space: nowrap; }
-.c-tr .cl { top: 20px; right: 50px; } .c-tl .cl { top: 20px; left: 50px; } .c-br .cl { bottom: 20px; right: 50px; } .c-bl .cl { bottom: 20px; left: 50px; }
+.c-tr .cl { top: 29px; right: 70px; } .c-tl .cl { top: 29px; left: 70px; } .c-br .cl { bottom: 29px; right: 70px; } .c-bl .cl { bottom: 29px; left: 70px; }
 .ccard { position: absolute; width: 380px; border-radius: 26px; padding: 18px 20px; display: flex; flex-direction: column; gap: 12px; opacity: 0; pointer-events: none; transition: opacity .22s ease .22s, transform .45s var(--ease) .22s; }
 .c-tr .ccard { top: 18px; right: 18px; transform-origin: top right; transform: translate(36px, -36px) scale(.9); }
 .c-tl .ccard { top: 18px; left: 18px; transform-origin: top left; transform: translate(-36px, -36px) scale(.9); }
 .c-br .ccard { bottom: 18px; right: 18px; transform-origin: bottom right; transform: translate(36px, 36px) scale(.9); }
 .c-bl .ccard { bottom: 18px; left: 18px; transform-origin: bottom left; transform: translate(-36px, 36px) scale(.9); }
 .hz:hover .ccard, .hz:focus-within .ccard, .hz.pin .ccard { opacity: 1; transform: none; pointer-events: auto; transition-delay: 0s; }
-.hz:hover .cm, .hz:focus-within .cm, .hz.pin .cm { opacity: 0; }
+.hz:hover .cmk, .hz:focus-within .cmk, .hz.pin .cmk { opacity: 0; }
 .ccard h3 { margin: 0; display: flex; align-items: center; gap: 10px; font-size: 19px; font-weight: 600; }
 .ccard .sync { height: auto; padding: 0; border-radius: 0; font-size: 13px; color: var(--ink-2); margin-inline-start: auto; gap: 6px; background: none; border: 0; box-shadow: none; }
 .ccard .sync i { width: 7px; height: 7px; }
@@ -715,8 +718,8 @@ tr.grp td { background: rgba(255,255,255,.04); font-weight: 600; color: var(--in
 .nextp { display: flex; justify-content: space-between; padding: 8px 14px; border-radius: 14px; background: rgba(0,0,0,.22); font-size: 16px; }
 .nextp b { font-weight: 500; font-variant-numeric: tabular-nums; }
 .s1.hinting .cl { opacity: .9; }
-.s1.hinting .cm { animation: cpulse 1.1s ease 3; }
-@keyframes cpulse { 50% { border-color: rgba(255,255,255,.85); } }
+.s1.hinting .cmk { animation: cpulse 1.1s ease 3; }
+@keyframes cpulse { 50% { transform: scale(1.18); opacity: 1; color: var(--ink); } }
 .coach { position: absolute; bottom: 140px; left: 50%; transform: translateX(-50%); padding: 8px 20px; border-radius: 999px; background: rgba(255,255,255,.08); border: 1px solid var(--stroke); font-size: 15px; color: var(--ink-2); white-space: nowrap; animation: fade .5s ease both; z-index: 4; }
 
 /* right edge: quick access + bookmarks, like Dia's sidebar */
@@ -749,8 +752,142 @@ tr.grp td { background: rgba(255,255,255,.04); font-weight: 600; color: var(--in
 .nt.enter-bg .wall { animation: fade 1s ease both; }
 .s1.enter .sbox { animation: rise .9s var(--ease) .7s both; }
 .s1.enter .dateline { animation: fade .8s ease 1.2s both; }
-.s1.enter .cm, .s1.enter .em { animation: fade .6s ease 1.8s both; }
+.s1.enter .cmk, .s1.enter .em { animation: fade .6s ease 1.8s both; }
 .th i { position: relative; }
+
+/* ================= v8 ================= */
+/* launcher row under search */
+.launch { display: flex; align-items: flex-start; justify-content: center; gap: 14px; min-height: 96px; position: relative; z-index: 6; }
+.lt { font: inherit; color: var(--ink); background: none; border: 0; padding: 0; cursor: pointer; width: 70px; display: flex; flex-direction: column; align-items: center; gap: 7px; position: relative; }
+.lt .ic { width: 54px; height: 54px; border-radius: 18px; display: grid; place-items: center; font-weight: 700; font-size: 20px; color: #fff; box-shadow: inset 0 1px 0 rgba(255,255,255,.22), 0 10px 24px rgba(0,0,0,.28); transition: transform .25s var(--ease), box-shadow .25s; }
+.lt .ic svg { width: 22px; height: 22px; }
+.lt:hover .ic, .lt:focus-visible .ic { transform: translateY(-3px); box-shadow: inset 0 1px 0 rgba(255,255,255,.25), 0 14px 30px rgba(0,0,0,.35); }
+.lt .lb { font-size: 13px; color: var(--ink-2); max-width: 74px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.lt .ic.fold { background: rgba(255,255,255,.09); border: 1px solid rgba(255,255,255,.14); display: grid; grid-template-columns: 1fr 1fr; gap: 4px; padding: 8px; backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); }
+.lt .ic.fold i { border-radius: 6px; display: grid; place-items: center; font-size: 9px; font-style: normal; font-weight: 700; color: #fff; }
+.lt .x { position: absolute; top: -6px; inset-inline-start: 2px; width: 22px; height: 22px; border-radius: 50%; background: rgba(16,18,26,.92); color: var(--ink); display: none; place-items: center; z-index: 2; }
+.lt .x svg { width: 11px; height: 11px; stroke-width: 2.6; }
+.lt:hover .x { display: grid; }
+.lt .sdot { position: absolute; top: -2px; inset-inline-end: 8px; width: 9px; height: 9px; border-radius: 50%; background: var(--amber); border: 2px solid var(--bgc); }
+.lt.adt .tag { position: absolute; top: 74px; font-size: 11px; line-height: 18px; padding: 0 7px; white-space: nowrap; background: rgba(16,18,26,.7); }
+.lt.addt .ic, .lt.back .ic, .lt.pchip .ic { background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.14); color: var(--ink); box-shadow: none; }
+.lt.back .ic { background: #fff; color: #0B0D12; }
+.lt.back .lb { color: var(--ink); font-weight: 600; }
+.lt.pchip .lb { color: var(--ink); }
+.lsep { width: 1px; height: 40px; margin-top: 7px; background: rgba(255,255,255,.12); }
+.pwrap { position: relative; }
+.ppop { position: absolute; top: 92px; inset-inline-start: -8px; z-index: 12; width: 200px; border-radius: 20px; padding: 6px; display: flex; flex-direction: column; background: rgba(18,18,22,.94); }
+.ppop button { font: inherit; font-size: 16px; color: var(--ink); background: none; border: 0; text-align: start; padding: 8px 12px; border-radius: 14px; cursor: pointer; }
+.ppop button:hover { background: rgba(255,255,255,.07); }
+.ppop button[aria-pressed="true"] { background: #fff; color: #0B0D12; font-weight: 600; }
+.lt.tin { animation: tilein .38s var(--ease) both; }
+@keyframes tilein { from { opacity: 0; transform: translateX(14px) scale(.92); } to { opacity: 1; transform: none; } }
+.where { display: flex; align-items: center; gap: 10px; font-size: 15px; color: var(--ink-2); }
+.where select { height: 40px; border-radius: 12px; border: 1px solid var(--stroke-hi); background: rgba(0,0,0,.3); color: var(--ink); font: inherit; font-size: 16px; padding: 0 12px; }
+.bml { display: flex; flex-direction: column; gap: 2px; margin-top: 6px; }
+.bml div { display: flex; align-items: center; gap: 10px; padding: 7px 8px; border-radius: 12px; font-size: 15px; }
+.bml div:hover { background: rgba(255,255,255,.06); }
+.bml svg { width: 18px; height: 18px; color: var(--ink-2); flex: none; }
+.bml span { margin-inline-start: auto; font-size: 13px; color: var(--ink-3); }
+
+/* slide rail: the order of the pages is always readable */
+.rail button .tip { inset-inline: auto; left: 62px; }
+.rail:hover button .tip, .rail:focus-within button .tip { opacity: 1; }
+.rail:not(:hover):not(:focus-within) button .tip { opacity: 0; left: 22px; background: none; padding: 0; font-size: 14px; color: var(--ink-2); }
+.rail:not(:hover):not(:focus-within) button[aria-current="true"] .tip { opacity: 1; color: var(--ink); }
+.rail .tip { direction: rtl; }
+.rail .tip b { font-weight: 400; color: var(--ink-3); margin-inline-end: 6px; font-variant-numeric: tabular-nums; }
+
+/* slide 6: one tablet frame, tabs switch the service */
+.s6 .s-pad { display: flex; flex-direction: column; align-items: center; gap: 14px; padding: 26px 56px 22px 110px; }
+.s6 .soc-top { width: 1100px; max-width: 100%; display: flex; align-items: center; gap: 18px; }
+.stabs { display: flex; gap: 6px; padding: 5px; border-radius: 999px; background: rgba(0,0,0,.25); border: 1px solid var(--stroke); }
+.stabs button { font: inherit; font-size: 16px; color: rgba(255,255,255,.8); background: none; border: 0; border-radius: 999px; padding: 6px 14px 6px 10px; display: flex; align-items: center; gap: 8px; cursor: pointer; }
+.stabs button .lg { width: 26px; height: 26px; border-radius: 8px; display: grid; place-items: center; color: #fff; font-size: 13px; font-weight: 700; }
+.stabs button i { width: 7px; height: 7px; border-radius: 50%; background: #6D6D6D; }
+.stabs button i.on { background: var(--paket); }
+.stabs button[aria-selected="true"] { background: #fff; color: #0B0D12; font-weight: 600; }
+.tablet { width: 1100px; max-width: 100%; flex: 1; min-height: 0; border-radius: 36px; border: 11px solid #0c0d10; box-shadow: 0 0 0 1px rgba(255,255,255,.12), 0 40px 100px rgba(0,0,0,.55); background: #0f1116; display: flex; flex-direction: column; overflow: hidden; }
+.tb-bar { height: 52px; flex: none; display: flex; align-items: center; gap: 10px; padding: 0 16px; border-bottom: 1px solid var(--stroke); font-size: 15px; }
+.tb-bar .lg { width: 28px; height: 28px; border-radius: 9px; display: grid; place-items: center; color: #fff; font-size: 13px; font-weight: 700; }
+.tb-bar .url { direction: ltr; font-size: 13px; color: var(--ink-3); background: rgba(255,255,255,.05); border-radius: 999px; padding: 3px 12px; }
+.tb-bar .st { font-size: 13px; color: var(--ink-2); display: flex; align-items: center; gap: 6px; }
+.tb-bar .st i { width: 7px; height: 7px; border-radius: 50%; background: var(--paket); }
+.tb-bar .ghost { padding: 4px 14px; font-size: 14px; }
+.tb-body { flex: 1; min-height: 0; position: relative; display: flex; }
+.soc-note { font-size: 14px; color: var(--ink-2); }
+.tp-list { width: 330px; flex: none; border-inline-end: 1px solid var(--stroke); overflow-y: auto; scrollbar-width: none; padding-top: 6px; }
+.tp-list .chat { cursor: pointer; border-radius: 14px; margin: 0 6px; }
+.tp-list .chat.on { background: rgba(255,255,255,.07); }
+.tp-chat { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.tp-h { height: 60px; display: flex; align-items: center; gap: 12px; padding: 0 18px; border-bottom: 1px solid var(--stroke); }
+.tp-h .av { width: 38px; height: 38px; border-radius: 50%; display: grid; place-items: center; color: #fff; font-weight: 700; }
+.tp-h b { font-size: 17px; } .tp-h small { font-size: 13px; color: var(--ink-2); display: block; }
+.tp-msgs { flex: 1; min-height: 0; overflow-y: auto; padding: 18px 22px; display: flex; flex-direction: column; gap: 8px; background: radial-gradient(600px 400px at 70% 20%, rgba(255,255,255,.03), transparent); }
+.bub { max-width: 60%; padding: 8px 14px; border-radius: 18px; font-size: 16px; line-height: 1.8; background: rgba(255,255,255,.08); align-self: flex-start; }
+.bub small { display: block; font-size: 12px; color: var(--ink-3); }
+.bub.me { align-self: flex-end; }
+.bub .who { font-size: 13px; font-weight: 600; }
+.tp-in { height: 58px; flex: none; display: flex; align-items: center; gap: 10px; padding: 0 16px; border-top: 1px solid var(--stroke); }
+.tp-in input { flex: 1; height: 40px; border-radius: 999px; border: 1px solid var(--stroke); background: rgba(0,0,0,.25); color: var(--ink); font: inherit; font-size: 16px; padding: 0 16px; outline: none; }
+.ig { flex: 1; display: flex; justify-content: center; background: #000; position: relative; }
+.ig .reel { position: relative; inset: auto; width: 400px; height: 100%; }
+.ig .side { position: absolute; top: 20px; inset-inline-end: 24px; display: flex; flex-direction: column; gap: 12px; width: 240px; }
+.ig .side b { font-size: 15px; }
+.ig .sugg-u { display: flex; align-items: center; gap: 10px; font-size: 14px; color: var(--ink-2); }
+.ig .sugg-u i { width: 34px; height: 34px; border-radius: 50%; display: block; }
+.loginc { margin: auto; width: 440px; display: flex; flex-direction: column; align-items: center; gap: 14px; text-align: center; padding: 20px; }
+.loginc h3 { margin: 0; font-size: 24px; font-weight: 600; }
+.loginc p { margin: 0; font-size: 16px; color: var(--ink-2); line-height: 1.8; }
+.loginc .qr { width: 180px; height: 180px; }
+.loginc .steps { text-align: start; align-self: stretch; font-size: 15px; }
+.loginc .xb { width: 72px; height: 72px; border-radius: 20px; background: #000; border: 1px solid var(--stroke-hi); display: grid; place-items: center; font: 700 34px/1 Arial, sans-serif; color: #fff; }
+.loginc .wide { align-self: stretch; }
+.loginc .safe { font-size: 13px; color: var(--ink-3); }
+.xfeed { flex: 1; overflow-y: auto; display: flex; justify-content: center; scrollbar-width: none; }
+.xcol { width: 600px; border-inline: 1px solid var(--stroke); }
+.xpost { display: flex; gap: 12px; padding: 14px 18px; border-bottom: 1px solid var(--stroke); }
+.xpost .av { width: 44px; height: 44px; border-radius: 50%; flex: none; display: grid; place-items: center; color: #fff; font-weight: 700; }
+.xpost b { font-size: 16px; } .xpost small { font-size: 13px; color: var(--ink-3); }
+.xpost p { margin: 4px 0 8px; font-size: 16px; line-height: 1.9; }
+.xpost .acts { display: flex; gap: 28px; font-size: 13px; color: var(--ink-3); }
+
+/* slide 5: source first */
+.s5 .s-pad { grid-template-columns: 270px minmax(0, 1fr) 290px; }
+.srcl { display: flex; flex-direction: column; gap: 4px; }
+.srcl .grp { font-size: 13px; color: var(--ink-3); margin-top: 6px; }
+.srow3 { display: flex; align-items: center; gap: 10px; padding: 6px 6px; border-radius: 12px; font-size: 15px; }
+.srow3 .sl { width: 28px; height: 28px; border-radius: 9px; display: grid; place-items: center; color: #fff; font-size: 13px; font-weight: 700; flex: none; }
+.srow3 small { display: block; font-size: 12px; color: var(--ink-3); }
+.srow3 .sw2 { margin-inline-start: auto; transform: scale(.85); }
+.addsrc { font: inherit; font-size: 14px; color: var(--ink-2); background: none; border: 1px dashed var(--stroke-hi); border-radius: 12px; padding: 7px 12px; cursor: pointer; margin-top: 6px; text-align: start; }
+.fcats { display: flex; gap: 6px; flex-wrap: wrap; flex: none; }
+.fcats button { font: inherit; font-size: 14px; border-radius: 999px; border: 1px solid var(--stroke); background: none; color: rgba(255,255,255,.8); padding: 3px 12px; cursor: pointer; }
+.fcats button[aria-pressed="true"] { background: #fff; color: #0B0D12; border-color: #fff; }
+.srcb { display: inline-flex; align-items: center; gap: 7px; font-size: 14px; font-weight: 600; color: var(--ink); }
+.srcb i { width: 20px; height: 20px; border-radius: 6px; display: grid; place-items: center; color: #fff; font-size: 11px; font-style: normal; font-weight: 700; }
+.alts { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; font-size: 13px; color: var(--ink-2); margin-top: 2px; }
+.alts .srcb { font-size: 13px; font-weight: 500; padding: 2px 10px 2px 4px; border-radius: 999px; background: rgba(255,255,255,.07); }
+.compare { display: flex; flex-direction: column; gap: 10px; }
+.compare div { border-radius: 16px; padding: 10px 14px; background: rgba(255,255,255,.05); border: 1px solid var(--stroke); display: flex; flex-direction: column; gap: 4px; }
+.compare b { font-size: 18px; font-weight: 600; line-height: 1.7; }
+
+/* v9: icons, search, launcher labels, lists */
+.gmark { width: 28px; height: 28px; border-radius: 50%; background: #fff; color: #4285F4; font: 700 15px/1 Arial, Helvetica, sans-serif; display: grid; place-items: center; flex: none; }
+.scope { display: inline-flex; align-items: center; gap: 8px; }
+.scope span[data-ico] svg { width: 17px; height: 17px; display: block; }
+.scope[aria-pressed="false"] span[data-ico] { opacity: .35; }
+.ibtn span[data-ico] svg { width: 21px; height: 21px; display: block; }
+.ri { display: grid; place-items: center; }
+.ri svg { width: 22px; height: 22px; }
+.lt:not(.back):not(.pchip) .lb { opacity: 0; transform: translateY(-3px); transition: opacity .2s, transform .2s; }
+.lt:hover .lb, .lt:focus-visible .lb { opacity: 1; transform: none; }
+.task .ld { width: 7px; height: 7px; border-radius: 50%; flex: none; }
+.cgrp { font-size: 12px; color: var(--ink-3); padding: 6px 8px 0; }
+.side { overflow-y: auto; scrollbar-width: none; }
+.ev small svg { width: 12px; height: 12px; vertical-align: -2px; margin-inline-end: 4px; }
+.ev.editing { box-shadow: 0 0 0 2px var(--noghte); }
+.fdot { width: 10px; height: 10px; border-radius: 3px; flex: none; }
 
 /* ad-slot overlay */
 [data-slot] { position: relative; }
@@ -819,29 +956,28 @@ td.them { color: var(--ink-2); }
         <div class="nt" id="nt" data-wall="night">
           <div class="wall"></div>
           <nav class="rail" aria-label="اسلایدها">
-            <button aria-current="true" aria-label="خانه" data-s="s1"><svg viewBox="0 0 24 24"><path d="M3 11.5 12 4l9 7.5"/><path d="M5 10v10h14V10"/></svg><span class="tip">خانه</span></button>
-            <button aria-current="false" aria-label="برنامه‌ها" data-s="s2"><svg viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15" rx="3"/><path d="M8 3v4M16 3v4M3.5 10h17"/></svg><span class="tip">برنامه‌ها</span></button>
-            <button aria-current="false" aria-label="پول" data-s="s3"><svg viewBox="0 0 24 24"><path d="M4 7.5A2.5 2.5 0 0 1 6.5 5H18v4"/><rect x="4" y="7.5" width="16" height="11.5" rx="2.5"/><circle cx="16" cy="13.2" r="1.3"/></svg><span class="tip">پول</span><span class="bdg" aria-label="خبر تازه"></span></button>
-            <button aria-current="false" aria-label="یادداشت‌ها" data-s="s4"><svg viewBox="0 0 24 24"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6M8 13h8M8 17h5"/></svg><span class="tip">یادداشت‌ها</span></button>
-            <button aria-current="false" aria-label="خبر" data-s="s5"><svg viewBox="0 0 24 24"><path d="M4 5h13v14H6a2 2 0 0 1-2-2z"/><path d="M17 9h3v8a2 2 0 0 1-2 2M8 9h5M8 13h5M8 16h3"/></svg><span class="tip">خبر</span></button>
-            <button aria-current="false" aria-label="شبکه‌ها" data-s="s6"><svg viewBox="0 0 24 24"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/><path d="M9 11h.01M12 11h.01M15 11h.01"/></svg><span class="tip">شبکه‌ها</span></button>
+            <button aria-current="true" aria-label="خانه" data-s="s1"><span class="ri" data-ico="category"></span><span class="tip">خانه</span></button>
+            <button aria-current="false" aria-label="برنامه‌ها" data-s="s2"><span class="ri" data-ico="calendar-desk"></span><span class="tip">برنامه‌ها</span></button>
+            <button aria-current="false" aria-label="پول" data-s="s3"><span class="ri" data-ico="activity"></span><span class="tip">پول</span><span class="bdg" aria-label="خبر تازه"></span></button>
+            <button aria-current="false" aria-label="یادداشت‌ها" data-s="s4"><span class="ri" data-ico="sticker-note"></span><span class="tip">یادداشت‌ها</span></button>
+            <button aria-current="false" aria-label="خبر" data-s="s5"><span class="ri" data-ico="document"></span><span class="tip">خبر</span></button>
+            <button aria-current="false" aria-label="شبکه‌ها" data-s="s6"><span class="ri" data-ico="discovery"></span><span class="tip">شبکه‌ها</span></button>
           </nav>
           <div class="scroller" id="scroller">
           <section class="slide s1" id="s1" aria-label="خانه">
             <div class="hero" id="hero">
-              <div class="dotlogo" id="dotLogo" aria-label="نقطه"><svg viewBox="-2 -2 104 104" aria-hidden="true"><path id="dotPath" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              <div class="dotlogo" id="dotLogo" role="button" tabindex="0" aria-label="نقطه؛ برای کشیدن دوباره بزن"><svg viewBox="-2 -2 104 104" aria-hidden="true"><defs><linearGradient id="dotShine" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="100" y2="100"><stop offset="0" style="stop-color:var(--tint)"/><stop offset=".40" style="stop-color:var(--tint)"/><stop offset=".5" style="stop-color:color-mix(in srgb, var(--tint) 35%, #fff)"/><stop offset=".60" style="stop-color:var(--tint)"/><stop offset="1" style="stop-color:var(--tint)"/><animateTransform id="shineAnim" attributeName="gradientTransform" type="translate" values="-150 -150; 150 150" dur="5s" repeatCount="indefinite"/></linearGradient></defs><path id="dotPath" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
               <div class="search2" id="search">
                 <form class="sbox" id="sform">
                   <div class="srow">
-                    <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+                    <b class="gmark" title="جستجو با گوگل">G</b>
                     <input id="q" placeholder="در گوگل جستجو کن یا آدرس بنویس…" autocomplete="off" aria-label="جستجو در گوگل">
                   </div>
                   <div class="srow2">
-                    <span class="gchip" title="جستجو با موتور پیش‌فرض کروم: گوگل"><b>G</b>جستجو در گوگل</span>
-                    <button type="button" class="scope" id="scope" aria-pressed="true">+ کارها و یادداشت‌های من</button>
+                    <button type="button" class="scope" id="scope" aria-pressed="true" title="پیشنهادهای سرچ از کارها و یادداشت‌های نقطه‌ی خودت هم بیاید"><span data-ico="tick-square"></span>کارها و یادداشت‌های من هم</button>
                     <span class="grow"></span>
-                    <button type="button" class="ibtn" aria-label="جستجوی صوتی"><svg viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></button>
-                    <button type="submit" class="ibtn go" aria-label="جستجو"><svg viewBox="0 0 24 24"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button>
+                    <button type="button" class="ibtn" aria-label="جستجوی صوتی"><span data-ico="voice"></span></button>
+                    <button type="submit" class="ibtn go" aria-label="جستجو در گوگل"><span data-ico="arrow-up"></span></button>
                   </div>
                 </form>
                 <div class="drop g" id="drop" hidden>
@@ -853,13 +989,14 @@ td.them { color: var(--ink-2); }
                   <div class="row" data-slot="۴"><svg viewBox="0 0 24 24"><path d="M12 3l2.6 5.6 6 .7-4.5 4.1 1.2 6L12 16.4 6.7 19.4l1.2-6-4.5-4.1 6-.7z"/></svg><span>بیمه‌ی بدنه‌ی آنلاین، استعلام در ۲ دقیقه</span><span class="k"><span class="tag">معرفی‌شده</span></span></div>
                 </div>
               </div>
+              <div class="launch" id="launch" data-blk="launcher"></div>
               <div class="dateline" data-blk="dateline"><span id="clock">۱۵:۳۰</span><i></i>جمعه ۲۴ مهر ۱۴۰۵<i></i>روز جهانی غذا</div>
             </div>
             <div class="coach" id="coach" hidden>موس را به گوشه‌ها و لبه‌ی راست ببر؛ کارها، یادداشت‌ها، پول و دسترسی سریع آن‌جاست.</div>
 
             <!-- corner: tasks (top-right) -->
             <div class="hz c-tr" data-blk="tasks" tabindex="0" aria-label="کارهای امروز">
-              <span class="cm"></span><span class="cl">کارها</span>
+              <span class="cmk" data-ico="tick-square" title="کارها"></span><span class="cl">کارها</span>
               <div class="ccard g">
                 <h3>کارهای امروز <span class="sync" id="sync"><i></i><span id="syncTxt">همگام با گوشی</span></span></h3>
                 <ul class="tasks" id="tasks"></ul>
@@ -869,7 +1006,7 @@ td.them { color: var(--ink-2); }
             </div>
             <!-- corner: notes (top-left) -->
             <div class="hz c-tl" data-blk="notes" tabindex="0" aria-label="یادداشت‌ها">
-              <span class="cm"></span><span class="cl">یادداشت‌ها</span>
+              <span class="cmk" data-ico="sticker-note" title="یادداشت‌ها"></span><span class="cl">یادداشت‌ها</span>
               <div class="ccard g">
                 <h3>یادداشت‌ها</h3>
                 <div class="note"><div class="nt-title">ایده‌های کمپین پاییز</div><ul><li class="ok"><i></i>بنر «بازگشت به مدرسه»</li><li><i></i>بودجه‌ی تبلیغات</li></ul></div>
@@ -879,7 +1016,7 @@ td.them { color: var(--ink-2); }
             </div>
             <!-- corner: money (bottom-right) -->
             <div class="hz c-br" data-blk="money" tabindex="0" aria-label="پول من">
-              <span class="cm"></span><span class="cl">پول</span>
+              <span class="cmk" data-ico="activity" title="پول"></span><span class="cl">پول</span>
               <div class="ccard g money" id="money">
                 <h3>پول من <button id="eye" class="more" aria-label="پنهان کردن مبالغ"><svg viewBox="0 0 24 24"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></button></h3>
                 <div><div class="lbl">خرج امروز</div><div class="big"><span class="amt">۴۸۵٬۰۰۰</span><small>تومان</small></div></div>
@@ -890,7 +1027,7 @@ td.them { color: var(--ink-2); }
             </div>
             <!-- corner: today (bottom-left) -->
             <div class="hz c-bl" data-blk="today" tabindex="0" aria-label="امروز">
-              <span class="cm"></span><span class="cl">امروز</span>
+              <span class="cmk" data-ico="calendar-face" title="امروز"></span><span class="cl">امروز</span>
               <div class="ccard g">
                 <h3 id="greet">عصر بخیر، نسیم</h3>
                 <div class="tday"><b>جمعه ۲۴ مهر</b><span>۱۶ اکتبر ۲۰۲۶ · ۴ جمادی‌الاول ۱۴۴۸</span></div>
@@ -905,8 +1042,7 @@ td.them { color: var(--ink-2); }
             <div class="edge" id="edge" tabindex="0" aria-label="دسترسی سریع و بوکمارک‌ها">
               <span class="em"></span>
               <aside class="side2 g">
-                <div data-blk="quick"><div class="sec">دسترسی سریع</div><div class="quick" id="quick"></div></div>
-                <div data-blk="shelf" class="shelfwrap"><div class="shelf" id="shelf"></div></div>
+                <div data-blk="bookmarks"><div class="sec">بوکمارک‌های کروم</div><div class="bml"><div><svg viewBox="0 0 24 24"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>کار<span>۱۲</span></div><div><svg viewBox="0 0 24 24"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>خرید<span>۸</span></div><div><svg viewBox="0 0 24 24"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>خواندنی‌ها<span>۲۳</span></div><div><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg>درگاه دانشگاه</div><div><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg>اینترنت‌بانک</div></div></div>
                 <div class="spcard" data-slot="۶"><b>بلیت قطار مشهد از ۴۵۰ هزار تومان</b><span class="tag">معرفی‌شده</span></div>
                 <button class="ghost" id="custBtn">شخصی‌سازی</button>
               </aside>
@@ -1025,7 +1161,7 @@ td.them { color: var(--ink-2); }
                 <div class="card-h"><h2>یادداشت‌ها</h2><span class="app n" style="font-size:14px;color:var(--ink-2);display:flex;gap:6px;align-items:center;margin-inline-start:auto"><i style="width:8px;height:8px;border-radius:50%;background:var(--noghte);display:block"></i>نقطه</span></div>
                 <div class="flist" id="flist"></div>
                 <div class="tpl" data-slot="۱۳"><span class="sec">قالب پیشنهادی</span><b>چک‌لیست سفر شمال</b><span>از طرف یک آژانس سفر<span class="tag">معرفی‌شده</span></span><button class="chip">استفاده از قالب</button></div>
-                <button class="newf"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>پوشه‌ی تازه</button>
+                <button class="newf"><span data-ico="plus"></span>دسته‌ی تازه</button>
               </aside>
               <div class="card g nlist">
                 <div class="nsearch"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="nq" placeholder="جستجو در یادداشت‌ها…" autocomplete="off" aria-label="جستجو در یادداشت‌ها"></div>
@@ -1040,17 +1176,17 @@ td.them { color: var(--ink-2); }
           <section class="slide s5" id="s5" aria-label="خبر">
             <div class="s-pad">
               <aside class="card g ncat">
-                <div class="card-h"><h2>خبر</h2></div>
-                <div class="flist" id="ncatl"></div>
-                <div class="hr" style="margin-top:6px"></div>
-                <div class="sec">موضوع‌های تو</div>
-                <div class="occs" id="ntopics"></div>
+                <div class="card-h"><h2>منبع‌های من</h2></div>
+                <div class="chint" style="font-size:14px;color:var(--ink-2);line-height:1.8">هر رسانه روایت خودش را دارد. خودت انتخاب کن از کدام‌ها خبر بخوانی.</div>
+                <div class="srcl" id="srcl"></div>
+                <button class="addsrc">+ منبع دلخواه با آدرس RSS</button>
               </aside>
               <div class="card g feed">
                 <div class="feed-top">
                   <div class="nsearch"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="fq" placeholder="جستجو در خبرها…" autocomplete="off" aria-label="جستجو در خبرها"></div>
                   <div class="seg" id="fsort"><span class="on" data-s="for">برای تو</span><span data-s="new">تازه‌ترین</span></div>
                 </div>
+                <div class="fcats" id="fcats"></div>
                 <div class="flistv" id="flistv"></div>
               </div>
               <aside class="card g topn">
@@ -1061,7 +1197,7 @@ td.them { color: var(--ink-2); }
             </div>
             <div class="sheet-bg" id="fsheetBg" hidden>
               <article class="sheet g" role="dialog" aria-modal="true" aria-labelledby="fsTitle">
-                <div class="card-h"><span class="kind" id="fsKind"></span><span class="sub" id="fsMeta"></span><button class="rbtn sm" id="fsClose" aria-label="بستن" style="margin-inline-start:auto"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
+                <div class="card-h"><span id="fsSrc"></span><span class="sub" id="fsMeta"></span><button class="rbtn sm" id="fsClose" aria-label="بستن" style="margin-inline-start:auto"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
                 <h3 id="fsTitle"></h3>
                 <div id="fsBody"></div>
                 <div class="sh-foot"><button class="cta">خواندن در سایت منبع</button><button class="ghost">ذخیره برای بعد</button></div>
@@ -1073,50 +1209,15 @@ td.them { color: var(--ink-2); }
           <section class="slide s6" id="s6" aria-label="شبکه‌ها">
             <div class="s-pad">
               <div class="soc-top">
-                <h2>شبکه‌ها</h2>
-                <span class="lead">تلگرام، اینستاگرام و واتس‌اپ در همین تب. ورود فقط در صفحه‌ی خود هر سرویس انجام می‌شود و میز رمز یا پیام‌هایت را نمی‌بیند.</span>
-                <span class="acct"><i style="background:#2AABEE"></i>تلگرام · وصل</span>
-                <span class="acct"><i style="background:#DD2A7B"></i>اینستاگرام · وصل</span>
-                <span class="acct" id="waAcct"><i style="background:#6D6D6D"></i>واتس‌اپ · وصل نیست</span>
-                <div class="spev chan" data-slot="۱۵"><span class="pst" style="background:linear-gradient(135deg,#2AABEE,#1d6fa5)">کانال</span><div><b>آموزش عکاسی با موبایل</b><span>کانال تلگرام · معرفی‌شده</span></div><button>عضویت</button></div>
+                <h2 style="margin:0;font-size:30px;font-weight:600">شبکه‌ها</h2>
+                <div class="stabs" id="stabs" role="tablist" aria-label="سرویس‌ها"></div>
+                <div class="spev chan" data-slot="۱۵" style="margin-inline-start:auto"><span class="pst" style="background:linear-gradient(135deg,#2AABEE,#1d6fa5)">کانال</span><div><b>آموزش عکاسی با موبایل</b><span>کانال تلگرام · معرفی‌شده</span></div><button>عضویت</button></div>
               </div>
-
-              <div class="phonef">
-                <div class="pf-h"><span class="lg" style="background:#2AABEE">T</span>تلگرام<small>۴ نخوانده</small>
-                  <span class="pm"><button aria-label="باز کردن در پنجره‌ی جدا"><svg viewBox="0 0 24 24"><path d="M14 4h6v6M20 4l-8 8M18 14v4a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4"/></svg></button></span></div>
-                <div class="pf-b" id="tgList"></div>
+              <div class="tablet">
+                <div class="tb-bar"><span class="lg" id="tbLg"></span><b id="tbName"></b><span class="url" id="tbUrl"></span><span class="st" id="tbSt"></span><span class="grow"></span><button class="ghost" id="tbOut">خروج</button><button class="rbtn sm" aria-label="باز کردن در پنجره‌ی جدا"><svg viewBox="0 0 24 24"><path d="M14 4h6v6M20 4l-8 8M18 14v4a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4"/></svg></button></div>
+                <div class="tb-body" id="tbBody"></div>
               </div>
-
-              <div class="phonef">
-                <div class="pf-b" style="overflow:hidden">
-                  <div class="reel" id="reel">
-                    <div class="rtabs"><span class="on">ریلز</span><span>دنبال‌شده‌ها</span></div>
-                    <button class="play" id="reelPlay" aria-label="پخش"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></button>
-                    <div class="ract">
-                      <div><svg viewBox="0 0 24 24"><path d="M12 21s-7-4.5-9.5-9A5.5 5.5 0 0 1 12 6a5.5 5.5 0 0 1 9.5 6c-2.5 4.5-9.5 9-9.5 9z"/></svg><span id="rLikes">۱۲ هزار</span></div>
-                      <div><svg viewBox="0 0 24 24"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/></svg><span>۳۴۰</span></div>
-                      <div><svg viewBox="0 0 24 24"><path d="M22 3 11 14M22 3l-7 18-4-7-7-4z"/></svg><span>اشتراک</span></div>
-                    </div>
-                    <div class="rcap"><b><i></i><span id="rUser">پیج سفر · نمونه</span></b><span id="rCap">یک صبح بارانی در صحن؛ صدای کبوترها را بشنوید.</span></div>
-                    <button class="nextr" id="reelNext">ریل بعدی ↓</button>
-                    <div class="prog"><b id="rProg"></b></div>
-                  </div>
-                </div>
-              </div>
-
-              <div class="phonef">
-                <div class="pf-h"><span class="lg" style="background:#25D366">W</span>واتس‌اپ<small id="waSub">وصل نیست</small></div>
-                <div class="pf-b" id="waBody">
-                  <div class="wlog">
-                    <h3>واتس‌اپ را وصل کن</h3>
-                    <p>یک بار اسکن کن؛ از این به بعد پیام‌هایت همین‌جاست.</p>
-                    <div class="qr" id="waQr"></div>
-                    <ol class="steps"><li>واتس‌اپ را روی گوشی باز کن.</li><li>برو به «دستگاه‌های متصل» و «اتصال دستگاه».</li><li>دوربین را روی این کد بگیر.</li></ol>
-                    <button class="cta" id="waLink">وصل شدم</button>
-                    <span class="safe">این کد را خود واتس‌اپ می‌سازد، نه میز.</span>
-                  </div>
-                </div>
-              </div>
+              <div class="soc-note">ورود یک بار انجام می‌شود و تا وقتی خودت «خروج» نزنی در همین کروم می‌ماند. رمز و پیام‌هایت هیچ‌وقت به میز نمی‌رسد.</div>
             </div>
           </section>
         </div>
@@ -1153,6 +1254,7 @@ td.them { color: var(--ink-2); }
                   <div style="display:flex;flex-direction:column;gap:8px"><span class="sec">رنگ کاشی</span><div class="colors" id="qmColors"></div></div>
                 </div>
               </div>
+              <label class="where">اضافه کن به<select id="qmWhere" aria-label="کجا اضافه شود"></select></label>
               <div class="mfoot"><span class="cnt" id="qmCount"></span><span class="warn" id="qmWarn"></span><button class="ghost" id="qmCancel">بستن</button><button class="cta" id="qmAdd">افزودن</button></div>
             </div>
           </div>
@@ -1199,12 +1301,12 @@ td.them { color: var(--ink-2); }
       <div class="tbl"><table>
         <thead><tr><th>اسلاید</th><th>چه چیزی</th><th>داده از</th></tr></thead>
         <tbody>
-          <tr><td>۱ · خانه</td><td>نقطه‌ی نقطه (به رنگ پس‌زمینه) بالای یک سرچ بزرگ گوگل و یک خط آرام تاریخ. چهار گوشه: کارهای امروز (بالا راست)، یادداشت‌ها (بالا چپ)، پول من (پایین راست)، امروز با تاریخ‌ها و مناسبت و اذان بعدی (پایین چپ). لبه‌ی راست: دسترسی سریع و بوکمارک‌های پرسونا، مثل نوار کناری Dia</td><td>نقطه، پاکت، <code>chrome.topSites</code>، <code>chrome.search</code></td></tr>
+          <tr><td>۱ · خانه</td><td>نقطه‌ی نقطه (به رنگ پس‌زمینه) بالای یک سرچ بزرگ گوگل، زیرش یک ردیف دسترسی سریع (سایت‌های مشترک، پوشه‌ها و سایت‌های شغل کاربر) و یک خط آرام تاریخ. چهار گوشه با آیکون: کارها، یادداشت‌ها، پول، امروز. لبه‌ی راست: بوکمارک‌های خود کروم و شخصی‌سازی</td><td>نقطه، پاکت، <code>chrome.topSites</code>، <code>chrome.bookmarks</code>، <code>chrome.search</code></td></tr>
           <tr><td>۲ · برنامه‌ها</td><td>نمای هفته به سبک تقویم گوگل، مثل بخش «برنامه‌ها»ی اپ: ستون هر روز با ساعت‌ها، ردیف «تمام‌روز» با مناسبت‌ها و قبض‌ها و کارهای بی‌ساعت، خط اذان صبح و ظهر و مغرب، خط «الان». با کشیدن روی ساعت‌ها برنامه ساخته می‌شود و در تقویم گوگل هم می‌نشیند. کنارش تقویم ماه کوچک با نقطه‌ی مناسبت، فهرست مناسبت‌های پیش رو و کلید روشن/خاموش هر تقویم. بالای صفحه سرچ که برنامه‌ها، مناسبت‌ها و یادداشت‌ها را با هم می‌گردد</td><td><code>calendar-core</code>، <code>event-data</code>، <code>prayer-times</code>، <code>tasks</code>، Google Calendar API از راه relay، قبض‌های پاکت</td></tr>
           <tr><td>۳ · پول</td><td>موجودی حساب‌ها، خرج‌های پیش رو، نمودار خرج تجمعی ماه با مسیر بودجه و پیش‌بینی پاکت، خرج بر اساس دسته، قیمت روز طلا و سکه و ارز و کریپتو با نمودار، ارزش دارایی‌های خود کاربر، و ردیف «خبر و پیشنهاد» با همان خبرهایی که تیم در اپ پاکت می‌گذارد</td><td>پاکت (حساب‌ها، <code>category_period_aggregates</code>، <code>expense_predictions</code>، <code>upcoming_expenses</code>، <code>investments.positions</code>، <code>/v1/news</code>) و منبع قیمت</td></tr>
           <tr><td>۴ · یادداشت‌ها</td><td>مثل یادداشت‌های اپ: پوشه‌ها، فهرست با سنجاق‌شده‌ها و سرچ، و ویرایشگر کامل با تیتر، متن، چک‌لیست، فهرست و یادداشت صوتی (موج صدا و متن آن). یادداشتی که به یک روز یا یک کار وصل است، برچسبش را نشان می‌دهد. هر تغییر چند ثانیه بعد روی گوشی است</td><td><code>packages/notes</code> (تازه)، <code>@dotlife/sync</code></td></tr>
-          <tr><td>۵ · خبر</td><td>فید خبر: دسته‌ها و موضوع‌های دنبال‌شده در ستون کناری، فهرست «برای تو / تازه‌ترین» با سرچ، کارت بزرگ اول و ردیف‌های تصویردار، «پربازدید امروز» و ذخیره برای بعد. خبرهای اقتصادی تیم پاکت با برچسب خودشان بالای دسته‌ی اقتصادی می‌نشینند</td><td>خبرخوان سرور نقطه (RSS منبع‌ها)، <code>/v1/news</code> پاکت</td></tr>
-          <tr><td>۶ · شبکه‌ها</td><td>تلگرام، اینستاگرام (ریلز) و واتس‌اپ، هر کدام در یک قاب گوشی کنار هم. ورود هر سرویس با QR یا صفحه‌ی ورود خودش، با توضیح ساده‌ی مرحله‌به‌مرحله</td><td>صفحه‌های وب خود سرویس‌ها</td></tr>
+          <tr><td>۵ · خبر</td><td>فید خبر با منبع در صدر: کاربر منبع‌هایش را انتخاب می‌کند، هر کارت اول اسم و نشان منبع را نشان می‌دهد، و خبری که چند رسانه پوشش داده‌اند «روایت منبع‌های دیگر» را کنار هم نشان می‌دهد. دسته‌ها، سرچ، «برای تو / تازه‌ترین»، پربازدید امروز، ذخیره برای بعد</td><td>خبرخوان سرور نقطه (RSS)، منبع‌های دلخواه کاربر، <code>/v1/news</code> پاکت</td></tr>
+          <tr><td>۶ · شبکه‌ها</td><td>یک قاب تبلتی بزرگ با زبانه‌های تلگرام، اینستاگرام، واتس‌اپ و ایکس؛ هر زبانه نسخه‌ی وب همان سرویس را در قاب نشان می‌دهد و وضعیت ورودش را دارد</td><td>صفحه‌های وب خود سرویس‌ها</td></tr>
         </tbody>
       </table></div>
       <p>اتصال دو اپ در اسلاید برنامه‌ها دیده می‌شود: قبض «برق» که در پاکت ثبت شده، در ردیف تمام‌روزِ یکشنبه سبز می‌نشیند. یعنی کاربر برنامه‌ی کاری و برنامه‌ی پولی‌اش را یک‌جا می‌بیند.</p>
@@ -1229,24 +1331,30 @@ td.them { color: var(--ink-2); }
       <h2>گوشه‌ها، لبه و شخصی‌سازی<small>موس را به گوشه‌ها ببرید؛ «شخصی‌سازی» در نوار لبه‌ی راست است</small></h2>
       <p>نمای اول خالی است تا کاربر شلوغی نبیند. هر چیز دیگری جای ثابت خودش را دارد و فقط وقتی موس به آن‌جا برسد می‌آید:</p>
       <ul>
-        <li><b>چهار گوشه:</b> در هر گوشه فقط یک نشانه‌ی کوچک L شکل است. موس که به گوشه برسد، کارت همان گوشه از بیرون صفحه به داخل می‌لغزد و تا وقتی موس روی آن است می‌ماند؛ با رفتن موس، بعد از یک مکث کوتاه برمی‌گردد. با کیبورد هم با Tab می‌شود به هر گوشه رسید.</li>
-        <li><b>لبه‌ی راست:</b> یک خط کوچک کنار صفحه؛ موس که برسد، نوار دسترسی سریع و بوکمارک‌ها مثل نوار کناری Dia باز می‌شود.</li>
+        <li><b>چهار گوشه:</b> در هر گوشه فقط یک آیکون کوچک کم‌رنگ است (تیک برای کارها، یادداشت، نمودار برای پول، تقویم برای امروز) تا کاربر بداند هر گوشه چه دارد. موس که به گوشه برسد، کارت همان گوشه از بیرون صفحه به داخل می‌لغزد و تا وقتی موس روی آن است می‌ماند؛ با رفتن موس، بعد از یک مکث کوتاه برمی‌گردد. با کیبورد هم با Tab می‌شود به هر گوشه رسید.</li>
+        <li><b>لبه‌ی راست:</b> یک خط کوچک کنار صفحه؛ موس که برسد، نواری با بوکمارک‌های خود کروم (<code>chrome.bookmarks</code>)، یک کارت پیشنهاد و دکمه‌ی شخصی‌سازی باز می‌شود.</li>
         <li><b>نوار اسلایدها</b> در لبه‌ی چپ فقط چند نقطه است و با رفتن موس به آیکون‌ها باز می‌شود.</li>
         <li><b>بار اول</b> بعد از افکت ورود، نشانه‌های گوشه چند بار چشمک می‌زنند و یک خط راهنما می‌گوید کارت‌ها کجا هستند.</li>
         <li><b>شخصی‌سازی:</b> هر گوشه، هر بخش لبه، خط تاریخ و هر اسلاید یک کلید دارد. کسی که کارت‌ها را همیشه جلوی چشم می‌خواهد، «کارت‌ها همیشه باز» را روشن می‌کند. چون هر کارت جای ثابت خودش را در گوشه دارد، خاموش و روشن کردن هیچ‌چیز بقیه را جابه‌جا نمی‌کند.</li>
         <li>همه‌ی این انتخاب‌ها در شخصی‌سازی نقطه (بخش تازه‌ی <code>newtab</code>) سینک می‌شود.</li>
       </ul>
       <h3>سرچ گوگل</h3>
-      <p>سرچ بزرگ‌ترین چیز صفحه است و جای شکی نمی‌گذارد که در گوگل جستجو می‌شود: متن راهنما «در گوگل جستجو کن»، نشانه‌ی G و کپسول «جستجو در گوگل» کنار آن، و اولین پیشنهاد هم «جستجو در گوگل: …». کپسول «کارها و یادداشت‌های من» نتیجه‌های نقطه را هم کنارش می‌آورد و می‌شود خاموشش کرد. ارسال با <code>chrome.search.query</code> انجام می‌شود که موتور پیش‌فرض کروم را صدا می‌زند (برای بیشتر کاربران گوگل)؛ اگر موتور پیش‌فرض کسی گوگل نباشد، کپسول اسم همان موتور را نشان می‌دهد تا قول نادرستی نداده باشیم و سیاست استور هم رعایت شود.</p>
-      <h3>دسترسی سریع</h3>
-      <p>کاشی «افزودن» یک پنجره باز می‌کند با دو بخش: «پیشنهادها» (سایت‌هایی که کاربر زیاد باز می‌کند از <code>chrome.topSites</code>، به‌اضافه‌ی فهرست ما) که با یک کلیک اضافه یا برداشته می‌شوند، و «آدرس دلخواه» با نام، آدرس و رنگ کاشی و پیش‌نمایش زنده. با رفتن موس روی هر کاشی دکمه‌ی برداشتن می‌آید. سقف ۸ کاشی است (یکی اسپانسری)؛ وقتی پر شد، پنجره همین را می‌گوید و کاشی «افزودن» پنهان می‌شود. ترتیب با کشیدن عوض می‌شود.</p>
+      <p>سرچ بزرگ‌ترین چیز صفحه است و جای شکی نمی‌گذارد که در گوگل جستجو می‌شود: نشانه‌ی G گوگل اول خود کادر، متن راهنمای «در گوگل جستجو کن»، و اولین پیشنهاد هم «جستجو در گوگل: …». تنها کلید زیر کادر، «کارها و یادداشت‌های من هم»، تعیین می‌کند پیشنهادهای سرچ از کارها و یادداشت‌های نقطه‌ی خود کاربر هم بیاید یا فقط پیشنهادهای گوگل؛ با هر کلیک روشن و خاموش می‌شود و تیکش وضعیت را نشان می‌دهد. Enter همیشه در گوگل جستجو می‌کند و فلش کنار میکروفون همان کار را با موس انجام می‌دهد. ارسال با <code>chrome.search.query</code> انجام می‌شود که موتور پیش‌فرض کروم را صدا می‌زند (برای بیشتر کاربران گوگل)؛ اگر موتور پیش‌فرض کسی گوگل نباشد، نشانه و متن راهنما اسم همان موتور را نشان می‌دهند تا قول نادرستی نداده باشیم و سیاست استور هم رعایت شود.</p>
+      <h3>ردیف دسترسی سریع</h3>
+      <p>دسترسی سریع و بوکمارک‌های شغلی یکی شده‌اند: یک ردیف زیر سرچ. اولش چند سایت مشترک برای همه (یوتیوب، جیمیل، دیجی‌کالا)، بعد پوشه‌ها و سایت‌های همان شغلی که کاربر انتخاب کرده، بعد کاشی اسپانسری و «افزودن». کاشی‌ها فقط آیکون‌اند و اسمشان با رفتن موس می‌آید تا ردیف شلوغ نشود.</p>
+      <ul>
+        <li><b>پوشه:</b> کاشی پوشه چهار آیکون کوچک داخلش را نشان می‌دهد. با کلیک، محتوای پوشه در همان ردیف باز می‌شود و کاشی اول «بازگشت» با اسم پوشه است.</li>
+        <li><b>شغل:</b> اولین کاشی ردیف، شغل فعلی است (مثلاً «طراح ▾»). با کلیک یک فهرست کوچک باز می‌شود و با عوض کردن شغل، پوشه‌ها و سایت‌های ردیف عوض می‌شوند؛ سایت‌های مشترک می‌مانند.</li>
+        <li><b>افزودن:</b> پنجره‌ی «افزودن به دسترسی سریع» دو بخش دارد: پیشنهادها (سایت‌های پربازدید کاربر از <code>chrome.topSites</code> به‌اضافه‌ی فهرست ما) و آدرس دلخواه (نام، آدرس، رنگ کاشی، پیش‌نمایش). در هر دو می‌شود انتخاب کرد که کاشی به ردیف اصلی برود یا داخل یکی از پوشه‌ها.</li>
+        <li><b>برداشتن:</b> با رفتن موس روی هر کاشی، دکمه‌ی کوچک برداشتن می‌آید. ردیف حداکثر ۹ کاشی خود کاربر دارد؛ بیشتر از آن باید در پوشه برود.</li>
+      </ul>
     </section>
 
     <section>
       <h2>رنگ‌ها و افکت ورود</h2>
       <p>نسخه‌ی پیش‌فرض عکس ندارد؛ فقط چند رنگ تیره و آرام: نقطه، گرافیت، آسمان، کهربا، جنگل، شب بنفش و رز، به‌اضافه‌ی «تم روز» اسپانسری (جایگاه ۳). هر رنگ دو مقدار دارد: زمینه و یک رنگ روشن‌تر هم‌خانواده. زمینه یک هاله‌ی محو از همان رنگ روشن و کمی دانه (grain) دارد تا تخت و مرده دیده نشود.</p>
       <ul>
-        <li><b>نقطه‌ی بالای سرچ</b> همان خط‌خطی نقطه‌ی اپ است (همان مولد seed‌دار <code>BrandMark.tsx</code>) و با رنگ روشن همان تم کشیده می‌شود، پس با هر زمینه یکی می‌شود؛ مثل لوگوی Dia که با رنگ پنجره عوض می‌شود. بعد از کشیده شدن، خیلی آرام (هر ۲۰۰ ثانیه یک دور) می‌چرخد.</li>
+        <li><b>نقطه‌ی بالای سرچ</b> همان خط‌خطی نقطه‌ی اپ است (همان مولد seed‌دار <code>BrandMark.tsx</code>) و با رنگ روشن همان تم کشیده می‌شود، پس با هر زمینه یکی می‌شود؛ مثل لوگوی Dia که با رنگ پنجره عوض می‌شود. بعد از کشیده شدن، یک برق روشن هر چند ثانیه از روی خط‌هایش رد می‌شود (مثل لوگوی Dia در ویدیو)، و با کلیک روی نقطه دوباره با قلم کشیده می‌شود.</li>
         <li><b>افکت ورود</b> (هر بار که تب باز می‌شود، کوتاه): رنگ زمینه از سیاه بالا می‌آید، نقطه مثل اپ با قلم کشیده می‌شود (۱٫۹ ثانیه)، سرچ از کمی پایین‌تر بالا می‌آید و خط تاریخ ظاهر می‌شود. برای کسی که «کاهش حرکت» را در سیستم روشن کرده، همه‌چیز بی‌حرکت می‌آید.</li>
         <li>عکس‌ها و درخت زنده‌ی اپ بعداً به‌عنوان گزینه‌ی اختیاری می‌آیند، نه پیش‌فرض.</li>
       </ul>
@@ -1254,10 +1362,10 @@ td.them { color: var(--ink-2); }
 
     <section>
       <h2>پرسونا و بوکمارک‌های اختصاصی</h2>
-      <p>اولین بار که تب باز می‌شود یک سؤال می‌پرسیم: «بیشتر وقتت پشت سیستم صرف چه کاری می‌شود؟» با ۶ گزینه‌ی بزرگ. جواب در تنظیمات شخصی‌سازی نقطه به‌عنوان یک فیلد تازه، <code>profile.role</code>، ذخیره و سینک می‌شود. پس گوشی هم نقش کاربر را می‌داند.</p>
-      <p>محتوای قفسه‌ها مثل مناسبت‌ها و پروموها از سرور می‌آید (<code>packages/content</code>) و از پنل ادمین عوض می‌شود، بدون انتشار نسخه‌ی جدید. کاربر هر بوکمارک را می‌تواند حذف یا سنجاق کند و بوکمارک خودش را اضافه کند.</p>
+      <p>در آنبوردینگ یک سؤال می‌پرسیم: «بیشتر وقتت پشت سیستم صرف چه کاری می‌شود؟» با ۶ گزینه. جواب در تنظیمات شخصی‌سازی نقطه به‌عنوان فیلد تازه‌ی <code>profile.role</code> ذخیره و سینک می‌شود و ردیف دسترسی سریع از روی آن چیده می‌شود. بعداً هم از کاشی اول ردیف عوض می‌شود.</p>
+      <p>پوشه‌ها و سایت‌های هر شغل مثل مناسبت‌ها و پروموها از سرور می‌آیند (<code>packages/content</code>) و از پنل ادمین عوض می‌شوند، بدون انتشار نسخه‌ی جدید. هر تغییری که کاربر می‌دهد (برداشتن، افزودن، جابه‌جا کردن) روی همان پایه ذخیره و سینک می‌شود.</p>
       <div class="tbl"><table>
-        <thead><tr><th>پرسونا</th><th>نمونه‌ی قفسه</th><th>ویجت پیش‌فرض متفاوت</th></tr></thead>
+        <thead><tr><th>شغل</th><th>ردیف دسترسی سریع (بعد از یوتیوب، جیمیل و دیجی‌کالا)</th><th>ویجت پیش‌فرض متفاوت</th></tr></thead>
         <tbody id="personaTable"></tbody>
       </table></div>
     </section>
@@ -1269,8 +1377,8 @@ td.them { color: var(--ink-2); }
         <thead><tr><th></th><th>جایگاه</th><th>شکل</th><th>سقف</th><th>هدف‌گیری</th><th>مدل فروش</th></tr></thead>
         <tbody>
           <tr class="grp"><td colspan="6">اسلاید ۱ · خانه</td></tr>
-          <tr><td class="n"><span class="num">۱</span></td><td>کاشی دسترسی سریع</td><td>یک کاشی هم‌شکل بقیه در نوار لبه، با نقطه‌ی کهربایی</td><td>۱ از ۸</td><td>پرسونا، شهر</td><td>هر کلیک</td></tr>
-          <tr><td class="n"><span class="num">۲</span></td><td>بوکمارک پرسونا</td><td>یک ردیف در فهرست بوکمارک‌های نوار لبه</td><td>۱ در هر فهرست</td><td>پرسونا</td><td>هر کلیک</td></tr>
+          <tr><td class="n"><span class="num">۱</span></td><td>کاشی دسترسی سریع</td><td>یک کاشی هم‌شکل بقیه در ردیف زیر سرچ، با نقطه‌ی کهربایی</td><td>۱ در ردیف</td><td>شغل، شهر</td><td>هر کلیک</td></tr>
+          <tr><td class="n"><span class="num">۲</span></td><td>کاشی داخل پوشه</td><td>یک کاشی با برچسب «معرفی‌شده» داخل یکی از پوشه‌های شغل (مثلاً «دوره‌ی UI» در پوشه‌ی الهام)</td><td>۱ در هر شغل</td><td>شغل</td><td>هر کلیک</td></tr>
           <tr><td class="n"><span class="num">۳</span></td><td>تم روز</td><td>رنگ زمینه و نقطه به رنگ برند، با یک خط کردیت پایین صفحه</td><td>۱ روز در هفته؛ قابل خاموش کردن</td><td>همه</td><td>اسپانسر روزانه</td></tr>
           <tr><td class="n"><span class="num">۴</span></td><td>پیشنهاد سرچ</td><td>یک ردیف بین پیشنهادهای سرچ</td><td>۱ در هر جستجو</td><td>کلمه‌ی تایپ‌شده</td><td>هر کلیک</td></tr>
           <tr><td class="n"><span class="num">۵</span></td><td>زیر مناسبت امروز</td><td>یک خط در کارت گوشه‌ی «امروز»</td><td>روزهای دارای مناسبت</td><td>مناسبت، شهر</td><td>اسپانسر روزانه</td></tr>
@@ -1317,7 +1425,7 @@ td.them { color: var(--ink-2); }
         <li><b>هدف:</b> زیر ۳ ثانیه از گوشی تا نیوتب و برعکس، وقتی هر دو آنلاین‌اند.</li>
         <li><b>چرا long-poll و نه WebSocket:</b> همه‌ی ترافیک API از CDN آروان رد می‌شود. یک درخواست HTTP معمولی که دیر جواب می‌گیرد از هر CDN و فیلتری رد می‌شود و سرور Fastify فعلی با چند خط آن را پشتیبانی می‌کند. اگر بیش از یک نمونه‌ی سرور داشتیم، با <code>LISTEN/NOTIFY</code> پستگرس به هم خبر می‌دهند.</li>
         <li><b>باز شدن فوری تب:</b> آخرین وضعیت هر چهار اسلاید در IndexedDB نگه داشته می‌شود و تب در کمتر از ۱۰۰ میلی‌ثانیه پر می‌شود؛ بعد pull در پس‌زمینه. بقیه‌ی اسلایدها فقط وقتی به آن‌ها اسکرول می‌شود داده‌ی تازه می‌گیرند.</li>
-        <li><b>نوشتن از نیوتب:</b> همان outbox گوشی و همان قانون ادغام از <code>@dotlife/sync</code>. مدل یادداشت از اپ موبایل به پکیج <code>packages/notes</code> منتقل می‌شود و موجودیت <code>folder</code> به سینک اضافه می‌شود. یادداشت صوتی امروز فقط روی همان گوشی فایل دارد و با سینک فقط موج صدا و متنش می‌آید؛ برای پخش در نیوتب، فایل صدا باید به سرور برود. تا آن موقع نیوتب موج و متن را نشان می‌دهد.</li>
+        <li><b>نوشتن از نیوتب:</b> همان outbox گوشی و همان قانون ادغام از <code>@dotlife/sync</code>. مدل یادداشت از اپ موبایل به پکیج <code>packages/notes</code> منتقل می‌شود. پوشه‌های یادداشت جدا سینک نمی‌شوند، چون در نقطه پوشه‌ها همان لیست‌های کارند (بخش «یک منبع برای دسته‌ها»). یادداشت صوتی امروز فقط روی همان گوشی فایل دارد و با سینک فقط موج صدا و متنش می‌آید؛ برای پخش در نیوتب، فایل صدا باید به سرور برود. تا آن موقع نیوتب موج و متن را نشان می‌دهد.</li>
         <li><b>تقویم گوگل:</b> اپ نقطه رویدادهای گوگل را از تقویم خود اندروید می‌خواند و طبق قاعده‌ی PLAN §۱۳ آن‌ها را هرگز به سرور ما نمی‌فرستد. نیوتب همین قاعده را نگه می‌دارد: با <code>chrome.identity</code> و حساب گوگلِ خود کروم اجازه‌ی تقویم می‌گیرد و Calendar API را مستقیم صدا می‌زند، از راه همان relay آروان (<code>www.googleapis.com</code> از قبل در فهرستش هست) چون گوگل آی‌پی ایران را می‌بندد. برنامه‌ای که با کشیدن ساخته می‌شود مستقیم در تقویم گوگل نوشته می‌شود و گوشی آن را از همان راه همیشگی اندروید می‌بیند. رویدادها فقط در کش خود مرورگر می‌مانند.</li>
         <li><b>پاکت فقط خواندنی است.</b> چون صفحه‌ی خانه‌ی پاکت روی گوشی ساخته می‌شود، یک مسیر تازه لازم است: <code>GET /v1/home/summary</code> با موجودی حساب‌ها، خرج روزانه‌ی ماه، جمع هر دسته (از <code>category_period_aggregates</code>)، پیش‌بینی پایان ماه (از <code>expense_predictions</code>)، خرج‌های پیش رو، بدهی و طلب و تعداد پیامک‌های منتظر. هر ۶۰ ثانیه و هر بار که تب فوکوس می‌گیرد. بودجه‌ها هنوز به سرور نمی‌روند؛ تا وقتی آپلود نشوند، نوار و مسیر بودجه نمایش داده نمی‌شود.</li>
         <li><b>قیمت روز:</b> پاکت امروز منبع قیمت ندارد. ماژول <code>investments</code> دارایی‌ها را با کد و مقدار نگه می‌دارد ولی قیمت ندارد. پیشنهاد: worker پاکت هر ۵ دقیقه از یک منبع قیمت (طلا، سکه، ارز، کریپتو) می‌خواند و در <code>GET /v1/market/prices</code> با تاریخچه برای نمودار می‌گذارد. همین مسیر به اپ پاکت هم ارزش دارایی‌ها را می‌دهد.</li>
@@ -1333,7 +1441,7 @@ td.them { color: var(--ink-2); }
         <li><b>سلام:</b> میز در یک جمله و پیش‌نمایش صفحه.</li>
         <li><b>حساب نقطه:</b> اسکن QR با اپ نقطه (تنظیمات ← پشتیبان و همگام‌سازی ← «اتصال میز»)، یا شماره‌ی موبایل و کد پیامکی، یا گوگل. «فعلاً بدون حساب» هم هست؛ آن وقت همه‌چیز فقط در همین مرورگر می‌ماند.</li>
         <li><b>چی‌ها باشد:</b> ۱۲ کارت که همه روشن شروع می‌شوند، مثل «چی‌ها رو می‌خوای؟» در آنبوردینگ اپ. هر کارت خاموش، بلوک یا اسلاید مربوطش را برمی‌دارد.</li>
-        <li><b>پرسونا:</b> شش نقش؛ قفسه‌ی بوکمارک از روی آن چیده می‌شود.</li>
+        <li><b>شغل:</b> شش نقش؛ ردیف دسترسی سریع و پوشه‌هایش از روی آن چیده می‌شود.</li>
         <li><b>پاکت، جدا:</b> فقط اگر «پول من» روشن مانده باشد. اسکن QR با اپ پاکت (تنظیمات ← دستگاه‌ها ← «اتصال میز») یا نام کاربری و رمز پاکت، یا «بعداً». قیمت روز و خبرها بدون ورود هم کار می‌کنند.</li>
         <li><b>رنگ:</b> یکی از رنگ‌ها؛ نقطه‌ی بالای سرچ همان رنگ را می‌گیرد.</li>
       </ol>
@@ -1341,22 +1449,43 @@ td.them { color: var(--ink-2); }
     </section>
 
     <section>
-      <h2>اسلاید خبر</h2>
+      <h2>یک منبع برای دسته‌ها<small>کارها، یادداشت‌ها و برنامه‌ها همان دسته‌های اپ نقطه را دارند</small></h2>
+      <p>در اپ نقطه «دسته‌ها» یک مجموعه‌اند: لیست‌های کار همان پوشه‌های یادداشت‌اند (<code>TaskList</code> با نام و رنگ؛ صفحه‌ی <code>profile/lists</code> برای هر دسته هم کارها و هم یادداشت‌ها را می‌شمارد). این مجموعه در سینک موجودیت <code>list</code> است. نیوتب هیچ دسته‌ی جدایی نمی‌سازد و همه‌جا همان را نشان می‌دهد:</p>
       <ul>
-        <li><b>منبع:</b> سرور نقطه هر چند دقیقه RSS چند خبرگزاری و سایت تخصصی را می‌خواند و فقط تیتر، خلاصه، تصویر کوچک و لینک را نگه می‌دارد. متن کامل همیشه در سایت منبع باز می‌شود؛ هم برای حق نشر، هم برای اینکه منبع بازدیدش را بگیرد. فهرست منبع‌ها از پنل ادمین عوض می‌شود.</li>
-        <li><b>خبرهای پاکت:</b> همان <code>/v1/news</code> با برچسب «از تیم پاکت» در دسته‌ی اقتصادی می‌آید و خبر سنجاق‌شده بالای آن می‌نشیند.</li>
-        <li><b>«برای تو»</b> روی دستگاه چیده می‌شود: از دسته‌ها و موضوع‌هایی که کاربر دنبال می‌کند و پرسونا. چیزی از خوانده‌های کاربر به سرور نمی‌رود.</li>
-        <li>«ذخیره برای بعد» در حساب نقطه سینک می‌شود و روی گوشی هم دیده می‌شود.</li>
+        <li><b>کارها</b> (گوشه‌ی صفحه‌ی اول و برنامه‌ها) نقطه‌ی رنگ دسته‌شان را دارند و رنگ بلوکشان در جدول هفته همان رنگ دسته است.</li>
+        <li><b>برنامه‌ها:</b> فهرست «تقویم‌ها» سه گروه دارد: دسته‌های نقطه (هر کدام کلید روشن و خاموش)، تقویم‌های گوگل، و مناسبت‌ها و قبض‌ها و اوقات شرعی.</li>
+        <li><b>یادداشت‌ها:</b> ستون پوشه‌ها همان دسته‌هاست با همان رنگ‌ها، و هر یادداشت برچسب دسته‌اش را دارد.</li>
+        <li><b>یک کانال:</b> ساختن، تغییر نام، رنگ یا حذف یک دسته در نیوتب یک تغییر <code>list</code> است که از همان <code>/sync/push</code> می‌رود؛ گوشی آن را مثل هر تغییر دیگری می‌گیرد و برعکس. ترتیب و رنگ‌ها از خود رکورد می‌آید، نه از تنظیمات نیوتب.</li>
+        <li>تقویم‌های گوگل از خود گوگل می‌آیند و مثل اپ به سرور ما نمی‌روند؛ فقط انتخاب اینکه کدام‌ها نشان داده شوند، در تنظیمات سینک می‌شود.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>اسلاید خبر<small>منبع، مهم‌ترین چیز هر خبر</small></h2>
+      <ul>
+        <li><b>منبع در صدر:</b> هر کارت اول نشان و اسم منبع را با خط پررنگ نشان می‌دهد، بعد دسته و زمان. ستون «منبع‌های من» فهرست منبع‌ها را با یک کلید برای هر کدام دارد، گروه‌بندی‌شده (داخلی، برون‌مرزی، پاکت)، و «منبع دلخواه با آدرس RSS».</li>
+        <li><b>روایت‌ها کنار هم:</b> وقتی چند منبع یک خبر را پوشش داده‌اند (با شباهت تیتر و زمان در سرور گروه می‌شوند)، کارت می‌گوید «همین خبر در ۲ منبع دیگر» و در صفحه‌ی خبر تیتر هر منبع زیر هم می‌آید. کاربر خودش تفاوت روایت‌ها را می‌بیند؛ میز درباره‌ی هیچ منبعی قضاوت نمی‌کند.</li>
+        <li><b>منبع‌های داخلی:</b> سرور نقطه RSS آن‌ها را می‌خواند و فقط تیتر، خلاصه، تصویر کوچک و لینک را نگه می‌دارد؛ متن کامل همیشه در سایت منبع باز می‌شود.</li>
+        <li><b>خبرهای پاکت:</b> همان <code>/v1/news</code> با منبع «تیم پاکت».</li>
+        <li><b>«برای تو»</b> روی دستگاه چیده می‌شود؛ چیزی از خوانده‌های کاربر به سرور نمی‌رود. «ذخیره برای بعد» در حساب نقطه سینک می‌شود.</li>
+      </ul>
+      <h3>سایت‌های فیلترشده، مثل بی‌بی‌سی فارسی</h3>
+      <p>از نظر فنی شدنی است: سروری بیرون از ایران RSS را بخواند یا حتی صفحه را پراکسی کند. ولی پیشنهاد ما این نیست:</p>
+      <ul>
+        <li><b>ریسک حقوقی:</b> سرورهای نقطه و پاکت روی لیارا و در ایران‌اند و خودشان هم به این سایت‌ها دسترسی ندارند. راه انداختن پراکسی یا رساندن محتوای سایت فیلترشده از طرف یک شرکت ایرانی می‌تواند به معنای ارائه‌ی ابزار دور زدن فیلتر باشد. این برای شرکت و برای حضور اپ‌ها در بازار و مایکت ریسک جدی دارد.</li>
+        <li><b>حق نشر:</b> بازنشر محتوای این رسانه‌ها از سرور خودمان اجازه‌ی خودشان را می‌خواهد.</li>
+        <li><b>راه پیشنهادی:</b> این منبع‌ها را «از اتصال خود کاربر» می‌خوانیم. افزونه RSS را مستقیم از مرورگر کاربر می‌گیرد، بدون عبور از سرور ما. اگر کاربر به آن سایت دسترسی دارد، خبرها می‌آیند؛ اگر ندارد، کارت منبع می‌گوید «در دسترس نیست». هیچ پراکسی‌ای از طرف ما نیست. همین راه برای هر منبع دلخواهی که کاربر با آدرس RSS اضافه کند هم کار می‌کند. پیش از انتشار، این تصمیم را با مشاور حقوقی هم چک کنیم.</li>
       </ul>
     </section>
 
     <section>
       <h2>اسلاید شبکه‌ها</h2>
-      <p>سه قاب گوشی کنار هم: تلگرام، اینستاگرام با ریلز، واتس‌اپ. هر قاب نسخه‌ی وب خود همان سرویس است (<code>web.telegram.org</code>، <code>instagram.com</code>، <code>web.whatsapp.com</code>) در اندازه‌ی موبایل. ورود در صفحه‌ی خود سرویس انجام می‌شود (QR برای تلگرام و واتس‌اپ، نام کاربری برای اینستاگرام) و ما فقط راهنمای مرحله‌به‌مرحله‌ی دوستانه را دورش می‌گذاریم. افزونه هیچ اسکریپتی روی این سایت‌ها اجرا نمی‌کند و پیام یا رمزی نمی‌خواند.</p>
+      <p>یک قاب تبلتی بزرگ وسط صفحه و بالای آن زبانه‌های تلگرام، اینستاگرام، واتس‌اپ و ایکس. هر زبانه یک نقطه‌ی سبز دارد اگر کاربر واردش شده باشد. قاب نسخه‌ی وب همان سرویس است (<code>web.telegram.org</code>، <code>instagram.com</code>، <code>web.whatsapp.com</code>، <code>x.com</code>) در اندازه‌ی تبلت، که برای فهرست چت کنار گفت‌وگو و برای ریلز و تایم‌لاین جای کافی دارد.</p>
       <ul>
-        <li><b>چطور در قاب می‌آیند:</b> این سایت‌ها اجازه‌ی نمایش در iframe نمی‌دهند. افزونه با <code>declarativeNetRequest</code> هدرهای <code>X-Frame-Options</code> و <code>frame-ancestors</code> را فقط برای قاب‌هایی که خود صفحه‌ی نیوتب باز کرده برمی‌دارد. کروم با قاب‌هایی که یک افزونه‌ی دارای <code>host_permissions</code> باز می‌کند مثل سایت اصلی رفتار می‌کند، پس کوکی ورود باید بماند؛ این را در نسخه‌ی آزمایشی روی هر سه سرویس امتحان می‌کنیم.</li>
-        <li><b>راه جایگزین:</b> اگر سرویسی در قاب خراب شد یا استور این روش را نپذیرفت، دکمه‌ی «باز کردن در پنجره‌ی جدا» همان سرویس را در یک پنجره‌ی هم‌اندازه‌ی گوشی (<code>chrome.windows.create</code> با نوع popup) باز می‌کند که هیچ ترفندی لازم ندارد.</li>
-        <li>این اسلاید در فاز آخر می‌آید، بعد از اینکه با یک نسخه‌ی آزمایشی رفتار هر سه سرویس و بررسی استور را دیدیم.</li>
+        <li><b>ورود و ذخیره‌اش:</b> ورود در صفحه‌ی خود سرویس انجام می‌شود (QR برای تلگرام و واتس‌اپ، صفحه‌ی ورود خود اینستاگرام و ایکس) و ما فقط راهنمای ساده‌ی دورش را می‌گذاریم. «ذخیره‌ی ورود» یعنی نشست همان سرویس در کوکی‌های خود کروم می‌ماند، پس دفعه‌ی بعد که تب را باز کند وارد است. میز هیچ رمز یا توکنی را نمی‌خواند یا روی سرور نگه نمی‌دارد. دکمه‌ی «خروج» در نوار بالای قاب نشست را پاک می‌کند.</li>
+        <li><b>چطور در قاب می‌آیند:</b> این سایت‌ها اجازه‌ی نمایش در iframe نمی‌دهند. افزونه با <code>declarativeNetRequest</code> هدرهای <code>X-Frame-Options</code> و <code>frame-ancestors</code> را فقط برای قاب‌هایی که خود نیوتب باز کرده برمی‌دارد. ماندن کوکی ورود در قاب را در نسخه‌ی آزمایشی روی هر چهار سرویس امتحان می‌کنیم.</li>
+        <li><b>راه جایگزین:</b> اگر سرویسی در قاب کار نکرد یا استور این روش را نپذیرفت، دکمه‌ی «باز کردن در پنجره‌ی جدا» همان سرویس را در یک پنجره‌ی هم‌اندازه‌ی تبلت باز می‌کند.</li>
+        <li>این اسلاید در فاز آخر می‌آید، بعد از نسخه‌ی آزمایشی و بررسی استور.</li>
       </ul>
     </section>
 
@@ -1391,7 +1520,7 @@ td.them { color: var(--ink-2); }
         <li><b>منبع قیمت:</b> قیمت بازار آزاد طلا و ارز منبع رسمی ندارد. باید منبعی انتخاب کنیم که اجازه‌ی استفاده‌ی تجاری بدهد و همیشه زمان آخرین به‌روزرسانی را کنار قیمت نشان دهیم.</li>
         <li><b>سیاست‌های استور:</b> تبلیغ در نیوتب مجاز است اگر شفاف باشد، ولی پیشنهاد سرچ اسپانسری بررسی دقیق می‌خواهد. جایگاه ۴ را بعد از خواندن سیاست‌ها فعال کنیم.</li>
         <li><b>ورود گوگل از ایران:</b> اجازه‌ی تقویم گوگل در کروم صفحه‌ی ورود گوگل را باز می‌کند که برای بخشی از کاربران بدون فیلترشکن باز نمی‌شود. برنامه‌ها بدون گوگل هم کار می‌کنند (کارها، مناسبت‌ها، قبض‌ها) و اتصال گوگل اختیاری است.</li>
-        <li><b>شبکه‌ها:</b> هر سه سرویس در ایران فیلترند و بدون فیلترشکن قاب‌ها خالی می‌مانند؛ قاب باید این حالت را با یک پیام ساده نشان دهد. برداشتن هدرهای قاب ممکن است در بررسی استور سؤال‌برانگیز باشد و شرایط استفاده‌ی متا و تلگرام را هم باید خواند. هر سرویس می‌تواند هر وقت جلوی نمایش در قاب را بگیرد؛ پنجره‌ی جدا همیشه کار می‌کند.</li>
+        <li><b>شبکه‌ها:</b> هر چهار سرویس در ایران فیلترند و بدون فیلترشکن قاب‌ها خالی می‌مانند؛ قاب باید این حالت را با یک پیام ساده نشان دهد. برداشتن هدرهای قاب ممکن است در بررسی استور سؤال‌برانگیز باشد و شرایط استفاده‌ی متا و تلگرام را هم باید خواند. هر سرویس می‌تواند هر وقت جلوی نمایش در قاب را بگیرد؛ پنجره‌ی جدا همیشه کار می‌کند.</li>
         <li><b>حق نشر خبر:</b> فقط تیتر و خلاصه با لینک؛ از هر منبع که امکانش هست اجازه‌ی کتبی بگیریم.</li>
         <li><b>دو حساب جدا:</b> نقطه و پاکت حساب مشترک ندارند. برای فاز ۱ دو اتصال جدا کافی است. آیا در بلندمدت ورود مشترک می‌خواهیم؟</li>
         <li><b>صفحه‌های کوتاه:</b> فولد اول برای ۱۴۴۰×۹۰۰ طراحی شده. در لپ‌تاپ‌های ۷۶۸ پیکسلی ویجت‌ها کوتاه‌تر می‌شوند و کارهای کمتری نشان می‌دهند. این حالت باید جدا طراحی و تست شود.</li>
@@ -1404,6 +1533,10 @@ td.them { color: var(--ink-2); }
 (function () {
   const fa = (s) => String(s).replace(/\d/g, (d) => "۰۱۲۳۴۵۶۷۸۹"[d]);
   const $ = (id) => document.getElementById(id);
+  // Iconly Light, taken from the app (apps/mobile/src/ui/iconXml.ts, design/icons)
+  const ICO = {"tick-square": "<svg  viewBox=\"0 0 24 24\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\"> <g id=\"Iconly/Light/Tick-Square\" stroke=\"none\" stroke-width=\"1\" fill=\"none\" fill-rule=\"evenodd\" stroke-linecap=\"round\" stroke-linejoin=\"round\"> <g id=\"Tick-Square\" transform=\"translate(2.000000, 2.000000)\" stroke=\"currentColor\" stroke-width=\"1.5\"> <path d=\"M14.3344,0.7502 L5.6654,0.7502 C2.6444,0.7502 0.7504,2.8892 0.7504,5.9162 L0.7504,14.0842 C0.7504,17.1112 2.6354,19.2502 5.6654,19.2502 L14.3334,19.2502 C17.3644,19.2502 19.2504,17.1112 19.2504,14.0842 L19.2504,5.9162 C19.2504,2.8892 17.3644,0.7502 14.3344,0.7502 Z\" id=\"Stroke-1\"></path> <polyline id=\"Stroke-3\" points=\"6.4399 10.0002 8.8139 12.3732 13.5599 7.6272\"></polyline> </g> </g> </svg>", "sticker-note": "<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\"> <path d=\"M14.526 21C15.0845 21 15.6187 20.7723 16.0049 20.3695L19.7966 16.4202C20.1624 16.0388 20.3677 15.5299 20.3677 15.0006V6.83545C20.3823 4.77956 18.7643 3.0827 16.7103 3H8.94409C8.91393 3 8.88376 3 8.85457 3.00097C6.78214 3.04573 5.1388 4.76302 5.18453 6.83545V17.3426C5.2322 19.3819 6.90377 21.0078 8.94409 21H14.526Z\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/> <path d=\"M15.0098 20.9379V18.0452C15.0088 16.6335 16.152 15.4883 17.5638 15.4844H20.3027\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/> <path d=\"M3.63281 16.9673H6.95843M3.63281 12.0007H6.95843M3.63281 7.03516H6.95843\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/> </svg>", "activity": "<svg  viewBox=\"0 0 24 24\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\"> <g id=\"Iconly/Light/Activity\" stroke=\"none\" stroke-width=\"1\" fill=\"none\" fill-rule=\"evenodd\" stroke-linecap=\"round\" stroke-linejoin=\"round\"> <g id=\"Activity\" transform=\"translate(2.000000, 1.500000)\" stroke=\"currentColor\" stroke-width=\"1.5\"> <polyline id=\"Path_33966\" points=\"5.24485128 13.2814646 8.23798631 9.39130439 11.652174 12.0732266 14.5812358 8.29290622\"></polyline> <circle id=\"Ellipse_741\" cx=\"17.9954234\" cy=\"2.70022885\" r=\"1.92219681\"></circle> <path d=\"M12.9244852,1.62013731 L5.6567506,1.62013731 C2.64530894,1.62013731 0.778032041,3.75286043 0.778032041,6.76430209 L0.778032041,14.846682 C0.778032041,17.8581237 2.60869567,19.9816935 5.6567506,19.9816935 L14.2608696,19.9816935 C17.2723113,19.9816935 19.1395882,17.8581237 19.1395882,14.846682 L19.1395882,7.80778036\" id=\"Path\"></path> </g> </g> </svg>", "calendar-face": "<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\"> <path d=\"M3.98389 9.66447H20.0253\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/> <path d=\"M15.6388 3V5.96174\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/> <path d=\"M8.36832 3V5.96174\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/> <path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M15.8145 4.42151H8.19413C5.55056 4.42151 3.90039 5.89362 3.90039 8.59947V16.7452C3.90039 19.4939 5.55056 21.0001 8.19413 21.0001H15.8067C18.4581 21.0001 20.1004 19.5202 20.1004 16.8133V8.59947C20.1082 5.89362 18.4658 4.42151 15.8145 4.42151Z\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/> <path d=\"M7.99023 13.3711H11.9549\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/> <path d=\"M7.99023 16.8477H8.00023\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/> <path d=\"M12.0098 16.8477H15.959\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/> <path d=\"M16.0195 13.3711H16.0295\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/> </svg>", "calendar-desk": "<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\"> <path d=\"M2.94385 7.91261V18.0699C2.94385 20.153 4.21426 21 6.24945 21H16.5916C18.6328 21 19.8972 20.153 19.8912 18.0699V17.6121\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/> <path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M17.9596 17.9332H7.36353C5.72904 17.9332 4.58783 17.2022 4.20181 15.8353C3.53884 13.4877 3.00141 8.78691 3.00141 8.78691C2.65376 6.19522 3.8964 5.16992 6.30516 5.16992H16.6413C18.3538 5.16992 19.5205 5.84013 19.8506 7.46063C19.8506 7.46063 20.6039 12.3186 21.0053 14.7167C21.3402 16.7178 20.0008 17.9332 17.9596 17.9332Z\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/> <path d=\"M7.47296 7.1316C7.67486 7.37516 7.80779 7.3375 8.07225 7.3375C8.76193 7.3375 9.32104 6.36654 9.32104 5.1688C9.32104 3.97106 8.76193 3.0001 8.07225 3.0001C7.7042 3.0001 7.4888 3.04317 7.26025 3.48308\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/> <path d=\"M13.7269 7.1316C13.9288 7.37516 14.0617 7.3375 14.3262 7.3375C15.0158 7.3375 15.5749 6.36654 15.5749 5.1688C15.5749 3.97106 15.0158 3.0001 14.3262 3.0001C13.9581 3.0001 13.7427 3.04317 13.5142 3.48308\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/> <path d=\"M8.63867 10.949H8.64771\" stroke=\"currentColor\" stroke-width=\"1.36873\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/> <path d=\"M12.0469 10.949H12.0559\" stroke=\"currentColor\" stroke-width=\"1.36873\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/> <path d=\"M15.4551 10.949H15.4641\" stroke=\"currentColor\" stroke-width=\"1.36873\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/> <path d=\"M9.1875 13.9683H9.19654\" stroke=\"currentColor\" stroke-width=\"1.36873\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/> <path d=\"M12.5957 13.9683H12.6047\" stroke=\"currentColor\" stroke-width=\"1.36873\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/> <path d=\"M16.0039 13.9683H16.0129\" stroke=\"currentColor\" stroke-width=\"1.36873\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/> </svg>", "search": "<svg  viewBox=\"0 0 24 24\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\"> <g id=\"Iconly/Light/Search\" stroke=\"none\" stroke-width=\"1\" fill=\"none\" fill-rule=\"evenodd\" stroke-linecap=\"round\" stroke-linejoin=\"round\"> <g id=\"Search\" transform=\"translate(2.000000, 2.000000)\" stroke=\"currentColor\" stroke-width=\"1.5\"> <circle id=\"Ellipse_739\" cx=\"9.76659044\" cy=\"9.76659044\" r=\"8.9885584\"></circle> <line x1=\"16.0183067\" y1=\"16.4851259\" x2=\"19.5423342\" y2=\"20.0000001\" id=\"Line_181\"></line> </g> </g> </svg>", "voice": "<svg  viewBox=\"0 0 24 24\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\"> <g id=\"Iconly/Light/Voice\" stroke=\"none\" stroke-width=\"1\" fill=\"none\" fill-rule=\"evenodd\" stroke-linecap=\"round\" stroke-linejoin=\"round\"> <g id=\"Voice\" transform=\"translate(4.000000, 2.000000)\" stroke=\"currentColor\" stroke-width=\"1.5\"> <line x1=\"7.99979045\" y1=\"20\" x2=\"7.99979045\" y2=\"16.8390306\" id=\"Stroke-1\"></line> <path d=\"M7.99979045,12.8480829 L7.99979045,12.8480829 C5.75658438,12.8480829 3.937712,11.0218152 3.937712,8.76819031 L3.937712,4.08094524 C3.937712,1.82732033 5.75658438,-3.55271368e-15 7.99979045,-3.55271368e-15 C10.2440443,-3.55271368e-15 12.0618689,1.82732033 12.0618689,4.08094524 L12.0618689,8.76819031 C12.0618689,11.0218152 10.2440443,12.8480829 7.99979045,12.8480829 Z\" id=\"Stroke-3\"></path> <path d=\"M16,8.80061051 C16,13.2394411 12.4188331,16.8382937 7.99947613,16.8382937 C3.58116692,16.8382937 0,13.2394411 0,8.80061051\" id=\"Stroke-5\"></path> </g> </g> </svg>", "arrow-up": "<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\"> <path d=\"M12 19.5V4.5\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/> <path d=\"M5.5 11L12 4.5L18.5 11\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/> </svg>", "close": "<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\"><g stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M6.5 6.5L17.5 17.5M17.5 6.5L6.5 17.5\"/></g></svg>", "edit": "<svg  viewBox=\"0 0 24 24\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\"> <g id=\"Iconly/Light/Edit\" stroke=\"none\" stroke-width=\"1\" fill=\"none\" fill-rule=\"evenodd\" stroke-linecap=\"round\" stroke-linejoin=\"round\"> <g id=\"Edit\" transform=\"translate(3.000000, 3.000000)\" stroke=\"currentColor\" stroke-width=\"1.5\"> <line x1=\"10.7473996\" y1=\"17.4429051\" x2=\"18\" y2=\"17.4429051\" id=\"Stroke-1\"></line> <path d=\"M9.7800071,0.794792587 C10.5556498,-0.132213323 11.949987,-0.268144478 12.8962256,0.491732963 C12.9485416,0.532957985 14.6294799,1.83878843 14.6294799,1.83878843 C15.6689776,2.46719147 15.9919725,3.80310504 15.3493946,4.8225887 C15.3152754,4.877184 5.81194644,16.7644749 5.81194644,16.7644749 C5.49577537,17.1588981 5.01583223,17.3917638 4.50290722,17.3973347 L0.863527997,17.4430165 L0.0435303654,13.9723153 C-0.0713375414,13.4843002 0.0435303654,12.9717729 0.359701436,12.5773497 L9.7800071,0.794792587 Z\" id=\"Stroke-3\"></path> <line x1=\"8.02082217\" y1=\"3.00088838\" x2=\"13.4730672\" y2=\"7.18801364\" id=\"Stroke-5\"></line> </g> </g> </svg>", "folder": "<svg  viewBox=\"0 0 24 24\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\"> <g id=\"Iconly/Light/Folder\" stroke=\"none\" stroke-width=\"1\" fill=\"none\" fill-rule=\"evenodd\" stroke-linecap=\"round\" stroke-linejoin=\"round\"> <g id=\"Folder\" transform=\"translate(1.500000, 1.500000)\" stroke=\"currentColor\" stroke-width=\"1.5\"> <path d=\"M19.9189,14.2321 C19.9189,17.8101 17.8099,19.9191 14.2319,19.9191 L6.4499,19.9191 C2.8629,19.9191 0.7499,17.8101 0.7499,14.2321 L0.7499,6.4321 C0.7499,2.8591 2.0639,0.7501 5.6429,0.7501 L7.6429,0.7501 C8.3609,0.7511 9.0369,1.0881 9.4669,1.6631 L10.3799,2.8771 C10.8119,3.4511 11.4879,3.7891 12.2059,3.7901 L15.0359,3.7901 C18.6229,3.7901 19.9469,5.6161 19.9469,9.2671 L19.9189,14.2321 Z\" id=\"Stroke-1\"></path> <line x1=\"5.981\" y1=\"12.963\" x2=\"14.716\" y2=\"12.963\" id=\"Stroke-3\"></line> </g> </g> </svg>", "plus": "<svg  viewBox=\"0 0 24 24\" xmlns=\"http://www.w3.org/2000/svg\"> <g fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"> <path d=\"M12 5.5 L12 18.5\"></path> <path d=\"M5.5 12 L18.5 12\"></path> </g> </svg>", "setting": "<svg  viewBox=\"0 0 24 24\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\"> <g id=\"Iconly/Light/Setting\" stroke=\"none\" stroke-width=\"1\" fill=\"none\" fill-rule=\"evenodd\" stroke-linecap=\"round\" stroke-linejoin=\"round\"> <g id=\"Setting\" transform=\"translate(2.500000, 1.500000)\" stroke=\"currentColor\" stroke-width=\"1.5\"> <path d=\"M18.3066362,6.12356982 L17.6842106,5.04347829 C17.1576365,4.12955711 15.9906873,3.8142761 15.0755149,4.33867279 L15.0755149,4.33867279 C14.6398815,4.59529992 14.1200613,4.66810845 13.6306859,4.54104256 C13.1413105,4.41397667 12.7225749,4.09747295 12.4668193,3.66132725 C12.3022855,3.38410472 12.2138742,3.06835005 12.2105264,2.74599544 L12.2105264,2.74599544 C12.2253694,2.22917739 12.030389,1.72835784 11.6700024,1.3576252 C11.3096158,0.986892553 10.814514,0.777818938 10.2974829,0.778031878 L9.04347831,0.778031878 C8.53694532,0.778031878 8.05129106,0.97987004 7.69397811,1.33890085 C7.33666515,1.69793166 7.13715288,2.18454839 7.13958814,2.69107553 L7.13958814,2.69107553 C7.12457503,3.73688099 6.27245786,4.57676682 5.22654465,4.57665906 C4.90419003,4.57331126 4.58843537,4.48489995 4.31121284,4.32036615 L4.31121284,4.32036615 C3.39604054,3.79596946 2.22909131,4.11125048 1.70251717,5.02517165 L1.03432495,6.12356982 C0.508388616,7.03634945 0.819378585,8.20256183 1.72997713,8.73226549 L1.72997713,8.73226549 C2.32188101,9.07399614 2.68650982,9.70554694 2.68650982,10.3890161 C2.68650982,11.0724852 2.32188101,11.704036 1.72997713,12.0457667 L1.72997713,12.0457667 C0.820534984,12.5718952 0.509205679,13.7352837 1.03432495,14.645309 L1.03432495,14.645309 L1.6659039,15.7345539 C1.9126252,16.1797378 2.3265816,16.5082503 2.81617164,16.6473969 C3.30576167,16.7865435 3.83061824,16.7248517 4.27459956,16.4759726 L4.27459956,16.4759726 C4.71105863,16.2212969 5.23116727,16.1515203 5.71931837,16.2821523 C6.20746948,16.4127843 6.62321383,16.7330005 6.87414191,17.1716248 C7.03867571,17.4488473 7.12708702,17.764602 7.13043482,18.0869566 L7.13043482,18.0869566 C7.13043482,19.1435014 7.98693356,20.0000001 9.04347831,20.0000001 L10.2974829,20.0000001 C11.3504633,20.0000001 12.2054882,19.1490783 12.2105264,18.0961099 L12.2105264,18.0961099 C12.2080776,17.5879925 12.4088433,17.0999783 12.7681408,16.7406809 C13.1274382,16.3813834 13.6154524,16.1806176 14.1235699,16.1830664 C14.4451523,16.1916732 14.7596081,16.2797208 15.0389017,16.4393593 L15.0389017,16.4393593 C15.9516813,16.9652957 17.1178937,16.6543057 17.6475973,15.7437072 L17.6475973,15.7437072 L18.3066362,14.645309 C18.5617324,14.2074528 18.6317479,13.6859659 18.5011783,13.1963297 C18.3706086,12.7066935 18.0502282,12.2893121 17.6109841,12.0366133 L17.6109841,12.0366133 C17.17174,11.7839145 16.8513595,11.3665332 16.7207899,10.876897 C16.5902202,10.3872608 16.6602358,9.86577384 16.9153319,9.42791767 C17.0812195,9.13829096 17.3213574,8.89815312 17.6109841,8.73226549 L17.6109841,8.73226549 C18.5161253,8.20284891 18.8263873,7.04344892 18.3066362,6.13272314 L18.3066362,6.13272314 L18.3066362,6.12356982 Z\" id=\"Path_33946\"></path> <circle id=\"Ellipse_737\" cx=\"9.67505726\" cy=\"10.3890161\" r=\"2.63615562\"></circle> </g> </g> </svg>", "time-circle": "<svg  viewBox=\"0 0 24 24\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\"> <g id=\"Iconly/Light/Time-Circle\" stroke=\"none\" stroke-width=\"1\" fill=\"none\" fill-rule=\"evenodd\" stroke-linecap=\"round\" stroke-linejoin=\"round\"> <g id=\"Time-Circle\" transform=\"translate(2.000000, 2.000000)\" stroke=\"currentColor\" stroke-width=\"1.5\"> <path d=\"M19.2498,10.0005 C19.2498,15.1095 15.1088,19.2505 9.9998,19.2505 C4.8908,19.2505 0.7498,15.1095 0.7498,10.0005 C0.7498,4.8915 4.8908,0.7505 9.9998,0.7505 C15.1088,0.7505 19.2498,4.8915 19.2498,10.0005 Z\" id=\"Stroke-1\"></path> <polyline id=\"Stroke-3\" points=\"13.4314 12.9429 9.6614 10.6939 9.6614 5.8469\"></polyline> </g> </g> </svg>", "star": "<svg  viewBox=\"0 0 24 24\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\"> <g id=\"Iconly/Light/Star\" stroke=\"none\" stroke-width=\"1\" fill=\"none\" fill-rule=\"evenodd\" stroke-linecap=\"round\" stroke-linejoin=\"round\"> <g id=\"Star\" transform=\"translate(3.000000, 3.500000)\" stroke=\"currentColor\" stroke-width=\"1.5\"> <path d=\"M10.1042564,0.67700614 L11.9316681,4.32775597 C12.1107648,4.68615589 12.4564632,4.93467388 12.8573484,4.99218218 L16.9453359,5.58061527 C17.9553583,5.72643988 18.3572847,6.95054503 17.6263201,7.65194084 L14.6701824,10.4924399 C14.3796708,10.7717659 14.2474307,11.173297 14.3161539,11.5676396 L15.0137982,15.5778163 C15.1856062,16.5698344 14.1297683,17.3266846 13.2269958,16.8573759 L9.57321374,14.9626829 C9.21502023,14.7768079 8.78602103,14.7768079 8.42678626,14.9626829 L4.77300425,16.8573759 C3.87023166,17.3266846 2.81439382,16.5698344 2.98724301,15.5778163 L3.68384608,11.5676396 C3.75256926,11.173297 3.62032921,10.7717659 3.32981762,10.4924399 L0.373679928,7.65194084 C-0.357284727,6.95054503 0.0446417073,5.72643988 1.05466409,5.58061527 L5.14265161,4.99218218 C5.54353679,4.93467388 5.89027643,4.68615589 6.06937319,4.32775597 L7.89574356,0.67700614 C8.34765049,-0.225668713 9.65234951,-0.225668713 10.1042564,0.67700614 Z\" id=\"Stroke-1\"></path> </g> </g> </svg>", "category": "<svg  viewBox=\"0 0 24 24\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\"> <g id=\"Iconly/Light/Category\" stroke=\"none\" stroke-width=\"1\" fill=\"none\" fill-rule=\"evenodd\" stroke-linecap=\"round\" stroke-linejoin=\"round\"> <g id=\"Category\" transform=\"translate(2.999141, 3.000000)\" stroke=\"currentColor\" stroke-width=\"1.5\"> <path d=\"M0.000858865205,3.5 C0.000858865205,0.874787053 0.0289681101,0 3.50085887,0 C6.9727494,0 7.00085887,0.874787053 7.00085887,3.5 C7.00085887,6.12521295 7.01193168,7 3.50085887,7 C-0.010214169,7 0.000858865205,6.12521295 0.000858865205,3.5 Z\" id=\"Stroke-1\"></path> <path d=\"M11.0008589,3.5 C11.0008589,0.874787053 11.0289681,0 14.5008589,0 C17.9727494,0 18.0008589,0.874787053 18.0008589,3.5 C18.0008589,6.12521295 18.0119317,7 14.5008589,7 C10.9897858,7 11.0008589,6.12521295 11.0008589,3.5 Z\" id=\"Stroke-3\"></path> <path d=\"M0.000858865205,14.5 C0.000858865205,11.8747871 0.0289681101,11 3.50085887,11 C6.9727494,11 7.00085887,11.8747871 7.00085887,14.5 C7.00085887,17.1252129 7.01193168,18 3.50085887,18 C-0.010214169,18 0.000858865205,17.1252129 0.000858865205,14.5 Z\" id=\"Stroke-5\"></path> <path d=\"M11.0008589,14.5 C11.0008589,11.8747871 11.0289681,11 14.5008589,11 C17.9727494,11 18.0008589,11.8747871 18.0008589,14.5 C18.0008589,17.1252129 18.0119317,18 14.5008589,18 C10.9897858,18 11.0008589,17.1252129 11.0008589,14.5 Z\" id=\"Stroke-7\"></path> </g> </g> </svg>", "document": "<svg  viewBox=\"0 0 24 24\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\"> <g id=\"Iconly/Light/Document\" stroke=\"none\" stroke-width=\"1\" fill=\"none\" fill-rule=\"evenodd\" stroke-linecap=\"round\" stroke-linejoin=\"round\"> <g id=\"Document\" transform=\"translate(3.000000, 2.000000)\" stroke=\"currentColor\" stroke-width=\"1.5\"> <line x1=\"12.7162\" y1=\"14.2234\" x2=\"5.4962\" y2=\"14.2234\" id=\"Stroke-1\"></line> <line x1=\"12.7162\" y1=\"10.0369\" x2=\"5.4962\" y2=\"10.0369\" id=\"Stroke-2\"></line> <line x1=\"8.2513\" y1=\"5.8601\" x2=\"5.4963\" y2=\"5.8601\" id=\"Stroke-3\"></line> <path d=\"M12.9086,0.7498 C12.9086,0.7498 5.2316,0.7538 5.2196,0.7538 C2.4596,0.7708 0.7506,2.5868 0.7506,5.3568 L0.7506,14.5528 C0.7506,17.3368 2.4726,19.1598 5.2566,19.1598 C5.2566,19.1598 12.9326,19.1568 12.9456,19.1568 C15.7056,19.1398 17.4156,17.3228 17.4156,14.5528 L17.4156,5.3568 C17.4156,2.5728 15.6926,0.7498 12.9086,0.7498 Z\" id=\"Stroke-4\"></path> </g> </g> </svg>", "discovery": "<svg  viewBox=\"0 0 24 24\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\"> <g id=\"Iconly/Light/Discovery\" stroke=\"none\" stroke-width=\"1\" fill=\"none\" fill-rule=\"evenodd\" stroke-linecap=\"round\" stroke-linejoin=\"round\"> <g id=\"Discovery\" transform=\"translate(2.000000, 2.000000)\" stroke=\"currentColor\" stroke-width=\"1.5\"> <polygon id=\"Path_33947\" points=\"6.27002291 12.9519451 7.86270027 7.86270027 12.9519451 6.27002291 11.3592678 11.3592678\"></polygon> <circle id=\"Ellipse_738\" cx=\"9.61098403\" cy=\"9.61098403\" r=\"9.61098403\"></circle> </g> </g> </svg>", "buy": "<svg  viewBox=\"0 0 24 24\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\"> <g stroke=\"none\" stroke-width=\"1\" fill=\"none\" fill-rule=\"evenodd\" stroke-linecap=\"round\" stroke-linejoin=\"round\"> <g transform=\"translate(2.000000, 2.500000)\" stroke=\"currentColor\" stroke-width=\"1.5\"> <path d=\"M0.7501,0.7499 L2.8301,1.1099 L3.7931,12.5829 C3.8701,13.5199 4.6531,14.2389 5.5931,14.2359094 L16.5021,14.2359094 C17.3991,14.2379 18.1601,13.5779 18.2871,12.6899 L19.2361,6.1319 C19.3421,5.3989 18.8331,4.7189 18.1011,4.6129 C18.0371,4.6039 3.1641,4.5989 3.1641,4.5989\"></path> <line x1=\"12.1251\" y1=\"8.2948\" x2=\"14.8981\" y2=\"8.2948\"></line> <path d=\"M5.1544,17.7025 C5.4554,17.7025 5.6984,17.9465 5.6984,18.2465 C5.6984,18.5475 5.4554,18.7915 5.1544,18.7915 C4.8534,18.7915 4.6104,18.5475 4.6104,18.2465 C4.6104,17.9465 4.8534,17.7025 5.1544,17.7025 Z\" fill=\"currentColor\"></path> <path d=\"M16.4347,17.7025 C16.7357,17.7025 16.9797,17.9465 16.9797,18.2465 C16.9797,18.5475 16.7357,18.7915 16.4347,18.7915 C16.1337,18.7915 15.8907,18.5475 15.8907,18.2465 C15.8907,17.9465 16.1337,17.7025 16.4347,17.7025 Z\" fill=\"currentColor\"></path> </g> </g></svg>", "notification": "<svg  viewBox=\"0 0 24 24\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\"> <g id=\"Iconly/Light/Notification\" stroke=\"none\" stroke-width=\"1\" fill=\"none\" fill-rule=\"evenodd\" stroke-linecap=\"round\" stroke-linejoin=\"round\"> <g id=\"Notification\" transform=\"translate(3.500000, 2.000000)\" stroke=\"currentColor\" stroke-width=\"1.5\"> <path d=\"M8.5,15.8476424 C14.13923,15.8476424 16.7480515,15.1242108 17,12.220506 C17,9.31879687 15.1811526,9.50539234 15.1811526,5.94511102 C15.1811526,3.16414015 12.5452291,-1.86517468e-14 8.5,-1.86517468e-14 C4.4547709,-1.86517468e-14 1.81884743,3.16414015 1.81884743,5.94511102 C1.81884743,9.50539234 0,9.31879687 0,12.220506 C0.252952291,15.135187 2.86177374,15.8476424 8.5,15.8476424 Z\" id=\"Stroke-1\"></path> <path d=\"M10.8887931,18.8572176 C9.52465753,20.3719337 7.3966462,20.3898948 6.0194615,18.8572176\" id=\"Stroke-3\"></path> </g> </g> </svg>", "book-open": "<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M5.17459 18.3741C7.55059 18.5454 9.61913 19.5174 10.8383 20.2238C11.5592 20.6412 12.4408 20.6412 13.1617 20.2238C14.3809 19.5174 16.4494 18.5454 18.8254 18.3741C20.0406 18.2866 21 17.3136 21 16.0954V5.75371C21 4.38182 19.7994 3.33004 18.4362 3.4789C16.2246 3.72117 14.3137 4.62507 13.1617 5.2935C12.4408 5.7109 11.5592 5.7109 10.8383 5.2935C9.68627 4.62507 7.77535 3.72117 5.56378 3.4789C4.19968 3.33004 3 4.38182 3 5.75371V16.0954C3 17.3136 3.95935 18.2866 5.17459 18.3741Z\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M12 5.87891V20.4803\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg>", "arrow-left": "<svg  viewBox=\"0 0 24 24\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\"> <g id=\"Iconly/Light/Arrow---Left-2\" stroke=\"none\" stroke-width=\"1\" fill=\"none\" fill-rule=\"evenodd\" stroke-linecap=\"round\" stroke-linejoin=\"round\"> <g id=\"Arrow---Left-2\" transform=\"translate(12.000000, 12.000000) rotate(-270.000000) translate(-12.000000, -12.000000) translate(5.000000, 8.500000)\" stroke=\"currentColor\" stroke-width=\"1.5\"> <polyline id=\"Stroke-1\" points=\"14 0 7 7 0 0\"></polyline> </g> </g> </svg>", "more-circle": "<svg  viewBox=\"0 0 24 24\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\"> <g id=\"Iconly/Light/More-Circle\" stroke=\"none\" stroke-width=\"1\" fill=\"none\" fill-rule=\"evenodd\" stroke-linecap=\"round\" stroke-linejoin=\"round\"> <g id=\"More-Circle\" transform=\"translate(2.000000, 2.000000)\" stroke=\"currentColor\"> <path d=\"M10.0002,0.7501 C15.1082,0.7501 19.2502,4.8911 19.2502,10.0001 C19.2502,15.1081 15.1082,19.2501 10.0002,19.2501 C4.8912,19.2501 0.7502,15.1081 0.7502,10.0001 C0.7502,4.8921 4.8922,0.7501 10.0002,0.7501 Z\" id=\"Stroke-1\" stroke-width=\"1.5\"></path> <line x1=\"13.9394\" y1=\"10.013\" x2=\"13.9484\" y2=\"10.013\" id=\"Stroke-11\" stroke-width=\"2\"></line> <line x1=\"9.9304\" y1=\"10.013\" x2=\"9.9394\" y2=\"10.013\" id=\"Stroke-13\" stroke-width=\"2\"></line> <line x1=\"5.9214\" y1=\"10.013\" x2=\"5.9304\" y2=\"10.013\" id=\"Stroke-15\" stroke-width=\"2\"></line> </g> </g> </svg>", "delete": "<svg  viewBox=\"0 0 24 24\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\"> <g id=\"Iconly/Light/Delete\" stroke=\"none\" stroke-width=\"1\" fill=\"none\" fill-rule=\"evenodd\" stroke-linecap=\"round\" stroke-linejoin=\"round\"> <g id=\"Delete\" transform=\"translate(3.000000, 2.000000)\" stroke=\"currentColor\" stroke-width=\"1.5\"> <path d=\"M16.3249,7.4682 C16.3249,7.4682 15.7819,14.2032 15.4669,17.0402 C15.3169,18.3952 14.4799,19.1892 13.1089,19.2142 C10.4999,19.2612 7.8879,19.2642 5.2799,19.2092 C3.9609,19.1822 3.1379,18.3782 2.9909,17.0472 C2.6739,14.1852 2.1339,7.4682 2.1339,7.4682\" id=\"Stroke-1\"></path> <line x1=\"17.7082\" y1=\"4.2397\" x2=\"0.7502\" y2=\"4.2397\" id=\"Stroke-3\"></line> <path d=\"M14.4406,4.2397 C13.6556,4.2397 12.9796,3.6847 12.8256,2.9157 L12.5826,1.6997 C12.4326,1.1387 11.9246,0.7507 11.3456,0.7507 L7.1126,0.7507 C6.5336,0.7507 6.0256,1.1387 5.8756,1.6997 L5.6326,2.9157 C5.4786,3.6847 4.8026,4.2397 4.0176,4.2397\" id=\"Stroke-5\"></path> </g> </g> </svg>", "play": "<svg  viewBox=\"0 0 24 24\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\"> <g id=\"Iconly/Light/Play\" stroke=\"none\" stroke-width=\"1\" fill=\"none\" fill-rule=\"evenodd\" stroke-linecap=\"round\" stroke-linejoin=\"round\"> <g id=\"Play\" transform=\"translate(2.500000, 2.500000)\" stroke=\"currentColor\" stroke-width=\"1.5\"> <path d=\"M9.5,0 C14.7459,0 19,4.25315 19,9.5 C19,14.74685 14.7459,19 9.5,19 C4.25315,19 0,14.74685 0,9.5 C0,4.25315 4.25315,0 9.5,0 Z\" id=\"Stroke-1\"></path> <path d=\"M12.5,9.49514457 C12.5,8.68401476 8.34252742,6.08911717 7.87091185,6.55569627 C7.39929629,7.02227536 7.35394864,11.9240477 7.87091185,12.4345929 C8.38787507,12.9469326 12.5,10.3062744 12.5,9.49514457 Z\" id=\"Stroke-3\"></path> </g> </g> </svg>", "google": "<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\"> <path d=\"M17.66 6.34A8 8 0 1 0 20 12H12.5\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/> </svg>", "refresh": "<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\"> <path d=\"M4.309 14.2922C3.492 13.3172 3 12.0612 3 10.6892C3 7.58822 5.514 5.07422 8.615 5.07422H15.386C18.487 5.07422 21 7.58822 21 10.6892C21 13.7902 18.487 16.3032 15.386 16.3032H8.615\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/> <path d=\"M11.2363 13.6797L8.61328 16.3027L11.2363 18.9267\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/> </svg>", "tick": "<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\"> <polyline points=\"5 12.6 9.6 17 19 7.4\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/> </svg>", "profile": "<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" xmlns=\"http://www.w3.org/2000/svg\"><g fill=\"none\" fill-rule=\"evenodd\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><g transform=\"translate(4.814286, 2.814476)\" stroke=\"#000\"><path stroke-width=\"1.5\" d=\"M7.17047619,12.531714 C3.30285714,12.531714 0,13.1164759 0,15.4583807 C0,17.8002854 3.28190476,18.4059997 7.17047619,18.4059997 C11.0380952,18.4059997 14.34,17.8202854 14.34,15.479333 C14.34,13.1383807 11.0590476,12.531714 7.17047619,12.531714 Z\"/><path stroke-width=\"1.42857143\" d=\"M7.17047634,9.19142857 C9.70857158,9.19142857 11.7657144,7.13333333 11.7657144,4.5952381 C11.7657144,2.05714286 9.70857158,0 7.17047634,0 C4.6323811,0 2.574259,2.05714286 2.574259,4.5952381 C2.56571443,7.1247619 4.60952396,9.18285714 7.13809539,9.19142857 L7.17047634,9.19142857 Z\"/></g></g></svg>"};
+  const paintIcons = (root = document) => root.querySelectorAll("[data-ico]").forEach((el) => { if (!el.firstChild) el.innerHTML = ICO[el.dataset.ico] || ""; });
+  paintIcons();
 
   /* ---------- scale the 1440×900 canvas ---------- */
   const stage = $("stage"), vp = $("vp"), canvas = $("canvas");
@@ -1435,64 +1568,113 @@ td.them { color: var(--ink-2); }
   }
   tick(); setInterval(tick, 15000);
 
-  /* ---------- quick access (editable, max 8 with the sponsored tile) ---------- */
-  const SITES = [
-    ["گوگل", "G", "#4C6BFF", "google.com"], ["یوتیوب", "▶", "#E2453C", "youtube.com"], ["دیجی‌کالا", "د", "#EF3A55", "digikala.com"],
-    ["دیوار", "د", "#A62626", "divar.ir"], ["اسنپ", "ا", "#1FB25A", "snapp.ir"], ["بله", "ب", "#2EA6A6", "web.bale.ai"],
-    ["آپارات", "آ", "#ED145B", "aparat.com"], ["فیلیمو", "ف", "#D9A400", "filimo.com"], ["اسنپ‌فود", "ا", "#FF5C8A", "snappfood.ir"],
-    ["ترب", "ت", "#E74C3C", "torob.com"], ["جیمیل", "G", "#D93025", "mail.google.com"], ["تلگرام وب", "T", "#2AABEE", "web.telegram.org"],
-    ["ایرانسل من", "ا", "#C99700", "my.irancell.ir"], ["همراه من", "ه", "#1F8FBF", "my.mci.ir"], ["ویکی‌پدیا", "W", "#3a3d48", "fa.wikipedia.org"],
-    ["نشان", "ن", "#2B6CF6", "neshan.org"], ["تپسی", "ت", "#F0691F", "tapsi.ir"], ["علی‌بابا", "ع", "#C98F00", "alibaba.ir"],
-  ];
-  let quick = SITES.slice(0, 6).map(([n, l, c, u]) => ({ n, l, c, u }));
-  const MAXQ = 7; // + 1 sponsored tile = 8
+  /* ---------- launcher: one row under search — shared sites + the persona's folders and sites ---------- */
+  const T = (n, l, c, u = "") => ({ n, l, c, u });
+  const AD = (n) => ({ n, l: "★", c: "#E58A3A", ad: true });
+  const F = (n, items) => ({ n, folder: true, items });
+  const COMMON = [T("یوتیوب", "▶", "#E2453C", "youtube.com"), T("جیمیل", "G", "#D93025", "mail.google.com"), T("دیجی‌کالا", "د", "#EF3A55", "digikala.com")];
+  const LAUNCH = {
+    designer: [F("ابزار طراحی", [T("فیگما", "F", "#A259FF"), T("Coolors", "C", "#2BB3A3"), T("فونت‌های فارسی", "ف", "#6B5BD2"), T("Mobbin", "M", "#3a3d48")]), F("الهام", [T("دریبل", "D", "#EA4C89"), T("بیهنس", "B", "#1769FF"), T("پینترست", "P", "#E60023"), AD("دوره‌ی UI")]), T("آنسپلش", "U", "#2b2b2e")],
+    dev: [F("کد", [T("GitHub", "G", "#24292F"), T("Stack Overflow", "S", "#F48024"), T("MDN", "M", "#1B1B1B"), T("npm", "n", "#CB3837")]), F("سرور", [T("لیارا", "ل", "#2D7FF9"), T("آروان", "آ", "#00B2A9"), AD("هاست ابری")]), T("مترجم", "م", "#3D6B8C")],
+    acc: [F("سامانه‌ها", [T("مودیان", "م", "#1E6F50"), T("امور مالیاتی", "ا", "#2C5F8A"), T("تأمین اجتماعی", "ت", "#1A6EA8"), AD("نرم‌افزار حسابداری")]), F("بازار", [T("کدال", "ک", "#7A4E2D"), T("TSETMC", "T", "#3B4BA8"), T("نرخ ارز", "ن", "#5B6C2E")]), T("پاکت", "پ", "#3FA98A")],
+    student: [F("دانشگاه", [T("گلستان", "گ", "#2F7D4A"), T("ایرانداک", "ا", "#8A3B3B"), T("گوگل اسکالر", "G", "#4285F4")]), F("یادگیری", [T("Coursera", "C", "#0056D2"), T("فرادرس", "ف", "#D9532B"), AD("کلاس زبان")]), T("مترجم", "م", "#3D6B8C")],
+    seller: [F("فروش", [T("باسلام", "ب", "#E05A2A"), T("دیجی‌کالا سلر", "د", "#EF3A55"), T("ترب", "ت", "#E74C3C")]), F("ارسال و پرداخت", [T("تیپاکس", "ت", "#C0392B"), T("زرین‌پال", "ز", "#C99700"), AD("پنل پیامک")]), T("اینستاگرام", "I", "#C13584")],
+    manager: [F("کار", [T("تقویم گوگل", "۳۱", "#1A73E8"), T("گوگل درایو", "D", "#188038"), T("Jira", "J", "#0052CC")]), F("جلسه", [T("اسکای‌روم", "S", "#2E86C1"), T("گوگل میت", "M", "#00897B"), AD("اتاق جلسه‌ی ابری")]), T("بله", "ب", "#2EA6A6")],
+  };
+  let persona = "designer", openF = null, extra = [];
+  const removed = new Set();
+  const MAXROW = 9; // root tiles; + 1 sponsored + the add tile
+  const rowItems = () => [...COMMON, ...LAUNCH[persona], ...extra].filter((x) => !removed.has(x.n));
   const xSvg = '<svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg>';
   const okSvg = '<svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
-  function renderQuick() {
-    $("quick").innerHTML = quick.map((s, i) => `<div class="q"><button class="x" data-rm="${i}" aria-label="برداشتن ${s.n}">${xSvg}</button><div class="ic" style="background:${s.c}">${s.l}</div>${s.n}</div>`).join("")
-      + `<div class="q" data-slot="۱"><span class="spons"></span><div class="ic" style="background:linear-gradient(135deg,#F2C94C,#E58A3A)">ب</div>بیمه‌ی آنلاین</div>`
-      + (quick.length < MAXQ ? `<button class="q addq" id="qAdd" style="background:none;border:0;color:inherit;font:inherit;font-size:15px;padding:0"><div class="ic"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></div>افزودن</button>` : "");
+  const plusSvg = '<svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>';
+  const tile = (s, i, attrs = "") => s.folder
+    ? `<button class="lt" data-i="${i}" ${attrs} aria-label="پوشه‌ی ${s.n}"><span class="ic fold">${s.items.slice(0, 4).map((x) => `<i style="background:${x.c}">${x.l}</i>`).join("")}</span><span class="lb">${s.n}</span><span class="x" data-rm="${i}" role="button" aria-label="برداشتن">${xSvg}</span></button>`
+    : `<button class="lt${s.ad ? " adt" : ""}" ${s.ad ? 'data-slot="۲"' : ""} data-i="${i}" ${attrs} aria-label="${s.n}"><span class="ic" style="background:${s.c}">${s.l}</span><span class="lb">${s.n}</span>${s.ad ? '<span class="tag">معرفی‌شده</span>' : `<span class="x" data-rm="${i}" role="button" aria-label="برداشتن">${xSvg}</span>`}</button>`;
+  function renderLaunch(anim) {
+    const L = $("launch"), items = rowItems();
+    let h = `<div class="pwrap"><button class="lt pchip" id="pchip" aria-haspopup="true"><span class="ic">${'<svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>'}</span><span class="lb">${P[persona].n} ▾</span></button>
+      <div class="ppop g" id="ppop" hidden>${Object.entries(P).map(([k, v]) => `<button data-p="${k}" aria-pressed="${k === persona}">${v.n}</button>`).join("")}</div></div><span class="lsep"></span>`;
+    if (openF !== null && items[openF]?.folder) {
+      const f = items[openF];
+      h += `<button class="lt back" id="lback" aria-label="بازگشت"><span class="ic"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span><span class="lb">${f.n}</span></button>`
+        + f.items.map((s, j) => tile(s, j, `data-f="1"`).replace(/<span class="x"[^]*?<\/span>/, "")).join("")
+        + `<button class="lt addt" id="lAddIn"><span class="ic">${plusSvg}</span><span class="lb">افزودن</span></button>`;
+    } else {
+      h += items.map((s, i) => tile(s, i)).join("")
+        + `<button class="lt adt" data-slot="۱"><span class="ic" style="background:linear-gradient(135deg,#F2C94C,#E58A3A)">ب</span><span class="lb">بیمه‌ی آنلاین</span><span class="sdot"></span></button>`
+        + (items.length < MAXROW ? `<button class="lt addt" id="qAdd"><span class="ic">${plusSvg}</span><span class="lb">افزودن</span></button>` : "");
+    }
+    L.innerHTML = h;
+    if (anim) L.querySelectorAll(".lt:not(.pchip)").forEach((el, k) => { el.style.animationDelay = `${k * 28}ms`; el.classList.add("tin"); });
   }
-  renderQuick();
-  $("quick").addEventListener("click", (e) => {
+  function shelf(k) { persona = k; openF = null; renderLaunch(true); pills.querySelectorAll?.(".chip").forEach((x) => x.setAttribute("aria-pressed", String(x.dataset.k === k))); }
+  $("launch").addEventListener("click", (e) => {
     const rm = e.target.closest("[data-rm]");
-    if (rm) { quick.splice(+rm.dataset.rm, 1); renderQuick(); return; }
-    if (e.target.closest("#qAdd")) openQ();
+    if (rm) { e.stopPropagation(); removed.add(rowItems()[+rm.dataset.rm].n); renderLaunch(); return; }
+    if (e.target.closest("#pchip")) { $("ppop").hidden = !$("ppop").hidden; return; }
+    const pp = e.target.closest("[data-p]"); if (pp) { shelf(pp.dataset.p); return; }
+    if (e.target.closest("#lback")) { openF = null; renderLaunch(true); return; }
+    if (e.target.closest("#qAdd")) { openQ(null); return; }
+    if (e.target.closest("#lAddIn")) { openQ(openF); return; }
+    const t = e.target.closest(".lt[data-i]");
+    if (t && !t.dataset.f && rowItems()[+t.dataset.i]?.folder) { openF = +t.dataset.i; renderLaunch(true); }
   });
 
-  // the add modal: suggestions or a custom address
+  // the add modal: suggestions or a custom address, into the row or into a folder
+  const SITES = [
+    ["گوگل", "G", "#4C6BFF", "google.com"], ["آپارات", "آ", "#ED145B", "aparat.com"], ["دیوار", "د", "#A62626", "divar.ir"],
+    ["اسنپ", "ا", "#1FB25A", "snapp.ir"], ["بله", "ب", "#2EA6A6", "web.bale.ai"], ["فیلیمو", "ف", "#D9A400", "filimo.com"],
+    ["اسنپ‌فود", "ا", "#FF5C8A", "snappfood.ir"], ["ترب", "ت", "#E74C3C", "torob.com"], ["تلگرام وب", "T", "#2AABEE", "web.telegram.org"],
+    ["ایرانسل من", "ا", "#C99700", "my.irancell.ir"], ["همراه من", "ه", "#1F8FBF", "my.mci.ir"], ["ویکی‌پدیا", "W", "#3a3d48", "fa.wikipedia.org"],
+    ["نشان", "ن", "#2B6CF6", "neshan.org"], ["تپسی", "ت", "#F0691F", "tapsi.ir"], ["علی‌بابا", "ع", "#C98F00", "alibaba.ir"],
+    ["دیجی‌کالا", "د", "#EF3A55", "digikala.com"], ["جیمیل", "G", "#D93025", "mail.google.com"], ["یوتیوب", "▶", "#E2453C", "youtube.com"],
+  ];
   const QCOLORS = ["#4C6BFF", "#1FB25A", "#EF3A55", "#C98F00", "#8E5CF7", "#2EA6A6", "#3a3d48"];
   let qmTab = "sugg", qmColor = QCOLORS[0];
+  const allNames = () => rowItems().flatMap((x) => (x.folder ? x.items.map((y) => y.n) : [x.n]));
   function qmCount() {
-    $("qmCount").textContent = `${fa(quick.length + 1)} از ۸ کاشی`;
-    $("qmWarn").textContent = quick.length >= MAXQ ? "جا پر است؛ اول یکی را بردار." : "";
+    $("qmCount").textContent = `${fa(rowItems().length)} از ${fa(MAXROW)} جای ردیف`;
+    $("qmWarn").textContent = rowItems().length >= MAXROW && $("qmWhere").value === "row" ? "ردیف پر است؛ در یک پوشه بگذار یا یکی را بردار." : "";
   }
   function renderSugg() {
-    $("suggGrid").innerHTML = SITES.map(([n, l, c, u], i) => `<button class="sg${quick.some((s) => s.u === u) ? " on" : ""}" data-i="${i}"><span class="ok">${okSvg}</span><span class="ic" style="background:${c}">${l}</span>${n}</button>`).join("");
+    const have = allNames();
+    $("suggGrid").innerHTML = SITES.map(([n, l, c], i) => `<button class="sg${have.includes(n) ? " on" : ""}" data-i="${i}"><span class="ok">${okSvg}</span><span class="ic" style="background:${c}">${l}</span>${n}</button>`).join("");
   }
   function setQTab(t) {
     qmTab = t;
     $("qmTabs").querySelectorAll("span").forEach((x) => x.classList.toggle("on", x.dataset.t === t));
     $("qmSugg").hidden = t !== "sugg"; $("qmCustom").hidden = t !== "custom";
     $("qmAdd").textContent = t === "sugg" ? "تمام" : "افزودن";
-    $("qmWarn").textContent = "";
     if (t === "custom") setTimeout(() => $("qmName").focus(), 0);
+    qmCount();
   }
   function qmPreview() {
     const n = $("qmName").value.trim();
     $("qmIc").textContent = n ? [...n][0] : "؟"; $("qmIc").style.background = qmColor; $("qmLbl").textContent = n || "پیش‌نمایش";
     $("qmColors").innerHTML = QCOLORS.map((c) => `<button style="background:${c}" data-c="${c}" aria-pressed="${c === qmColor}" aria-label="رنگ"></button>`).join("");
   }
-  function openQ() { $("qmodal").hidden = false; setQTab("sugg"); renderSugg(); qmCount(); qmPreview(); }
+  const targetOf = () => { const v = $("qmWhere").value; return v === "row" ? null : +v; };
+  function addTo(target, item) {
+    if (target === null) { if (rowItems().length >= MAXROW) { qmCount(); return false; } extra.push(item); }
+    else rowItems()[target].items.push(item);
+    removed.delete(item.n); renderLaunch(); return true;
+  }
+  function openQ(target) {
+    $("qmodal").hidden = false;
+    $("qmWhere").innerHTML = `<option value="row">ردیف اصلی</option>` + rowItems().map((x, i) => (x.folder ? `<option value="${i}">پوشه‌ی ${x.n}</option>` : "")).join("");
+    $("qmWhere").value = target === null ? "row" : String(target);
+    setQTab("sugg"); renderSugg(); qmPreview();
+  }
   const closeQ = () => { $("qmodal").hidden = true; };
   $("qmTabs").addEventListener("click", (e) => { const s = e.target.closest("span"); if (s) setQTab(s.dataset.t); });
+  $("qmWhere").addEventListener("change", qmCount);
   $("suggGrid").addEventListener("click", (e) => {
     const b = e.target.closest(".sg"); if (!b) return;
-    const [n, l, c, u] = SITES[+b.dataset.i], at = quick.findIndex((s) => s.u === u);
-    if (at >= 0) quick.splice(at, 1);
-    else if (quick.length >= MAXQ) { qmCount(); return; }
-    else quick.push({ n, l, c, u });
-    renderQuick(); renderSugg(); qmCount();
+    const [n, l, c, u] = SITES[+b.dataset.i];
+    if (allNames().includes(n)) { removed.add(n); renderLaunch(); }
+    else addTo(targetOf(), T(n, l, c, u));
+    renderSugg(); qmCount();
   });
   $("qmName").addEventListener("input", qmPreview);
   $("qmColors").addEventListener("click", (e) => { const b = e.target.closest("button"); if (b) { qmColor = b.dataset.c; qmPreview(); } });
@@ -1500,26 +1682,30 @@ td.them { color: var(--ink-2); }
     if (qmTab === "sugg") { closeQ(); return; }
     const n = $("qmName").value.trim(), u = $("qmUrl").value.trim();
     if (!n || !/\.[a-z]{2,}/i.test(u)) { $("qmWarn").textContent = "نام و یک آدرس درست (مثل example.ir) بنویس."; return; }
-    if (quick.length >= MAXQ) { qmCount(); return; }
-    quick.push({ n, l: [...n][0], c: qmColor, u }); $("qmName").value = ""; $("qmUrl").value = "";
-    renderQuick(); closeQ();
+    if (addTo(targetOf(), T(n, [...n][0], qmColor, u))) { $("qmName").value = ""; $("qmUrl").value = ""; closeQ(); }
   });
   $("qmClose").addEventListener("click", closeQ);
   $("qmCancel").addEventListener("click", closeQ);
   $("qmodal").addEventListener("click", (e) => { if (e.target === $("qmodal")) closeQ(); });
 
+  /* ---------- «دسته‌ها»: in Noghte the task lists ARE the notes' folders — one collection, synced as entity `list` ---------- */
+  const LISTS = [
+    { id: "personal", n: "شخصی", c: "#8C9EFF" }, { id: "work", n: "کار", c: "#5AB0FF" }, { id: "campaign", n: "کمپین پاییز", c: "#F2A65A" },
+    { id: "books", n: "کتاب‌ها", c: "#CDB7FF" }, { id: "shop", n: "خرید", c: "#35D07F", shop: true },
+  ];
+  const LST = Object.fromEntries(LISTS.map((l) => [l.id, l]));
   /* ---------- tasks ---------- */
   let tasks = [
-    { t: "تمدید بیمه‌ی ماشین", m: "۱۰:۰۰", done: true },
-    { t: "جلسه با تیم طراحی", m: "۱۴:۳۰" },
-    { t: "پرداخت قبض برق", m: "تا یکشنبه" },
-    { t: "خرید هدیه‌ی تولد سارا", m: "" },
+    { t: "تمدید بیمه‌ی ماشین", m: "۱۰:۰۰", done: true, l: "personal" },
+    { t: "جلسه با تیم طراحی", m: "۱۴:۳۰", l: "campaign" },
+    { t: "پرداخت قبض برق", m: "تا یکشنبه", l: "personal" },
+    { t: "خرید هدیه‌ی تولد سارا", m: "", l: "shop" },
   ];
   const check = '<svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
   function renderTasks() {
     $("tasks").innerHTML = tasks.map((k, i) => `<li class="task${k.done ? " done" : ""}${k.isNew ? " new" : ""}">
       <button class="cb" data-i="${i}" aria-label="انجام شد">${check}</button>
-      <span class="t">${k.t}</span>${k.from ? `<span class="from">${k.from}</span>` : `<span class="m">${k.m}</span>`}</li>`).join("");
+      <span class="ld" style="background:${LST[k.l || "personal"].c}" title="${LST[k.l || "personal"].n}"></span><span class="t">${k.t}</span>${k.from ? `<span class="from">${k.from}</span>` : `<span class="m">${k.m}</span>`}</li>`).join("");
   }
   renderTasks();
   $("tasks").addEventListener("click", (e) => {
@@ -1619,14 +1805,21 @@ td.them { color: var(--ink-2); }
 
   /* ---------- the entry: colour comes up, the pen draws the dot, the search box rises, the corners wink ---------- */
   let entryT = [];
+  function drawDot(delay = 0) {
+    if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    dotPath.getAnimations().forEach((a) => a.cancel());
+    dotPath.animate([{ strokeDashoffset: SCRIBBLE.len }, { strokeDashoffset: 0 }], { duration: 1900, delay, easing: "cubic-bezier(.4,0,.6,1)", fill: "both" });
+  }
+  if (matchMedia("(prefers-reduced-motion: reduce)").matches) $("shineAnim").remove();
+  $("dotLogo").addEventListener("click", () => drawDot());
+  $("dotLogo").addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); drawDot(); } });
   function playEntry() {
     entryT.forEach(clearTimeout); entryT = [];
     const s1 = $("s1"), nt = $("nt");
     if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     s1.classList.remove("enter", "hinting"); nt.classList.remove("enter-bg"); void s1.offsetWidth;
     nt.classList.add("enter-bg"); s1.classList.add("enter");
-    dotPath.getAnimations().forEach((a) => a.cancel());
-    dotPath.animate([{ strokeDashoffset: SCRIBBLE.len }, { strokeDashoffset: 0 }], { duration: 1900, delay: 250, easing: "cubic-bezier(.4,0,.6,1)", fill: "both" });
+    drawDot(250);
     entryT.push(setTimeout(() => { s1.classList.add("hinting"); $("coach").hidden = false; }, 2300));
     entryT.push(setTimeout(() => { s1.classList.remove("hinting"); $("coach").hidden = true; }, 6800));
   }
@@ -1658,14 +1851,8 @@ td.them { color: var(--ink-2); }
     b.addEventListener("click", () => { pills.querySelectorAll(".chip").forEach((x) => x.setAttribute("aria-pressed", String(x === b))); shelf(k); });
     pills.appendChild(b);
   });
-  function shelf(k) {
-    const v = P[k];
-    $("shelf").innerHTML = `<div class="who">${userIcon}میز ${v.n}</div>`
-      + v.bm.map(([n, l, c]) => `<div class="bm"><span class="f" style="background:${c}">${l}</span>${n}</div>`).join("")
-      + `<div class="bm" data-slot="۲"><span class="f" style="background:${v.ad[1]}">★</span>${v.ad[0]}<span class="tag">معرفی‌شده</span></div>`;
-  }
   shelf("designer");
-  $("personaTable").innerHTML = Object.values(P).map((v) => `<tr><td>${v.n}</td><td>${v.bm.map((b) => b[0]).join("، ")}</td><td>${v.w}</td></tr>`).join("");
+  $("personaTable").innerHTML = Object.entries(P).map(([k, v]) => `<tr><td>${v.n}</td><td>${LAUNCH[k].map((x) => (x.folder ? `پوشه‌ی «${x.n}»: ${x.items.map((y) => y.n).join("، ")}` : x.n)).join(" · ")}</td><td>${v.w}</td></tr>`).join("");
 
   /* ================= slides + rail ================= */
   const scroller = $("scroller");
@@ -1675,6 +1862,7 @@ td.them { color: var(--ink-2); }
   railBtns.forEach((b) => b.addEventListener("click", () => go(b.dataset.s)));
   document.querySelectorAll("[data-go]").forEach((b) => b.addEventListener("click", () => go(b.dataset.go)));
   function syncRail() {
+    let rn = 0; railBtns.forEach((b) => { if (!b.hidden) { rn++; b.querySelector(".tip").innerHTML = `<b>${fa(rn)}</b>${b.getAttribute("aria-label")}`; } });
     const st = scroller.scrollTop, vs = visSlides(); let cur = vs[0];
     for (const s of vs) if (s.offsetTop <= st + 450) cur = s;
     railBtns.forEach((b) => b.setAttribute("aria-current", String(b.dataset.s === cur.id)));
@@ -1711,9 +1899,9 @@ td.them { color: var(--ink-2); }
     [22, "09:00", "09:30", "استندآپ تیم", "gw"], [22, "16:00", "17:00", "دندان‌پزشکی", "n", true],
     [23, "12:00", "14:00", "ناهار خانوادگی", "gp"],
     [24, "10:00", "10:30", "تمدید بیمه‌ی ماشین", "n", true], [24, "14:30", "15:30", "جلسه با تیم طراحی", "gw"], [24, "18:00", "19:00", "باشگاه", "n"],
-    [25, "09:00", "09:30", "استندآپ تیم", "gw"], [26, "10:00", "11:00", "جلسه‌ی هفتگی", "gw"], [27, "11:00", "12:00", "تحویل طرح اولیه‌ی کمپین", "n"],
+    [25, "09:00", "09:30", "استندآپ تیم", "gw"], [26, "10:00", "11:00", "جلسه‌ی هفتگی", "gw"], [27, "11:00", "12:00", "تحویل طرح اولیه‌ی کمپین", "n", false, "campaign"],
     [11, "09:00", "09:30", "استندآپ تیم", "gw"], [13, "17:00", "18:00", "دورهمی دوستان", "gp"],
-  ].map(([d, s, e, t, c, done]) => ({ d, s, e, t, c, done: !!done }));
+  ].map(([d, s, e, t, c, done, l]) => ({ d, s, e, t, c, done: !!done, l: l || "personal" }));
   const ALLDAY = { 24: [["خرید هدیه‌ی تولد سارا", "n"]], 26: [["قبض برق · ۳۱۲٬۰۰۰", "p"]], 30: [["تولد سارا", "n"]], 31: [["اجاره · ۱۸٬۰۰۰٬۰۰۰", "p"]] };
   const WD = ["شنبه", "یکشنبه", "دوشنبه", "سه‌شنبه", "چهارشنبه", "پنجشنبه", "جمعه"];
   const OFFSET = 4, HOUR = 52, TODAY = 24;
@@ -1742,7 +1930,10 @@ td.them { color: var(--ink-2); }
   }
   const tick2 = '<svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
   function renderCals() {
-    $("cals").innerHTML = Object.entries(CALS).map(([k, c]) => `<button data-k="${k}" aria-pressed="${!off.has(k)}"><span class="bx" style="border-color:${c.color};background:${c.color}">${tick2}</span>${c.name}<span class="src2">${c.src}</span></button>`).join("");
+    const row = (k, name, color, src) => `<button data-k="${k}" aria-pressed="${!off.has(k)}"><span class="bx" style="border-color:${color};background:${color}">${tick2}</span>${name}<span class="src2">${src}</span></button>`;
+    $("cals").innerHTML = `<span class="cgrp">دسته‌های نقطه · همان دسته‌های اپ</span>` + LISTS.filter((l) => !l.shop).map((l) => row("l:" + l.id, l.n, l.c, "")).join("")
+      + `<span class="cgrp">تقویم گوگل</span>` + ["gw", "gp"].map((k) => row(k, CALS[k].name, CALS[k].color, "")).join("")
+      + `<span class="cgrp">دیگر</span>` + ["occ", "p", "pr"].map((k) => row(k, CALS[k].name, CALS[k].color, CALS[k].src)).join("");
   }
   function renderWeek() {
     const days = [...Array(7)].map((_, i) => ws + i);
@@ -1757,10 +1948,10 @@ td.them { color: var(--ink-2); }
       g += `<div class="pcol${d === TODAY ? " tdy" : ""}" data-d="${d}" style="height:${24 * HOUR}px">`;
       if (!off.has("pr")) for (const [n, m] of PRAY) g += `<div class="prl" style="top:${(m / 60) * HOUR}px">${d === ws ? `<span>${n} ${hhmm(m)}</span>` : ""}</div>`;
       EVENTS.forEach((e, i) => {
-        if (e.d !== d || off.has(e.c)) return;
-        const a = toMin(e.s), b = toMin(e.e), col = CALS[e.c].color;
-        g += `<div class="ev${e.done ? " done" : ""}" data-i="${i}" style="top:${(a / 60) * HOUR + 1}px;height:${((b - a) / 60) * HOUR - 2}px;background:${alpha(col, 0.2)};border-color:${col}">
-          ${e.editing ? `<input data-i="${i}" placeholder="برنامه‌ی جدید" maxlength="60">` : `<b>${e.t}</b>`}${b - a >= 45 ? `<small>${hhmm(a)} تا ${hhmm(b)}</small>` : ""}</div>`;
+        if (e.d !== d || off.has(e.c) || (e.c === "n" && off.has("l:" + e.l))) return;
+        const a = toMin(e.s), b = toMin(e.e), col = e.c === "n" ? LST[e.l].c : CALS[e.c].color;
+        g += `<div class="ev${e.done ? " done" : ""}${e.editing ? " editing" : ""}" data-i="${i}" style="top:${(a / 60) * HOUR + 1}px;height:${((b - a) / 60) * HOUR - 2}px;background:${alpha(col, 0.2)};border-color:${col}">
+          ${e.editing ? `<input data-i="${i}" placeholder="برنامه‌ی جدید" maxlength="60">` : `<b>${e.t}</b>`}${b - a >= 45 ? `<small>${ICO["time-circle"]}<bdi>${hhmm(a)}</bdi> تا <bdi>${hhmm(b)}</bdi></small>` : ""}</div>`;
       });
       if (d === TODAY) { const n = new Date(), m = n.getHours() * 60 + n.getMinutes(); g += `<div class="nowl" style="top:${(m / 60) * HOUR}px"></div>`; }
       g += `</div>`;
@@ -1801,7 +1992,7 @@ td.them { color: var(--ink-2); }
     if (!drag) return; const m = minAt(drag.col, e.clientY);
     drag.b = Math.max(drag.a + 15, m + 15); const a = Math.min(drag.a, m);
     drag.ghost.style.top = (a / 60) * HOUR + "px"; drag.ghost.style.height = ((drag.b - a) / 60) * HOUR + "px";
-    drag.ghost.innerHTML = `<small>${hhmm(a)} تا ${hhmm(drag.b)}</small>`; drag.start = a;
+    drag.ghost.innerHTML = `<small>${ICO["time-circle"]}<bdi>${hhmm(a)}</bdi> تا <bdi>${hhmm(drag.b)}</bdi></small>`; drag.start = a;
   });
   pg.addEventListener("pointerup", () => {
     if (!drag) return; const { col, b } = drag; const a = drag.start ?? drag.a; drag = null;
@@ -1846,9 +2037,9 @@ td.them { color: var(--ink-2); }
   });
 
   /* ================= slide 4: notes ================= */
-  const FOLDERS = [["all", "همه‌ی یادداشت‌ها"], ["personal", "شخصی"], ["work", "کار"], ["ideas", "ایده‌ها"], ["lists", "لیست‌ها"]];
+  const FOLDERS = [["all", "همه‌ی یادداشت‌ها"], ...LISTS.map((l) => [l.id, l.n])];
   const NOTES = [
-    { f: "work", pinned: true, title: "ایده‌های کمپین پاییز", when: "۱۰ دقیقه پیش · روی گوشی", day: "۲۴ مهر", task: "جلسه با تیم طراحی", blocks: [
+    { f: "campaign", pinned: true, title: "ایده‌های کمپین پاییز", when: "۱۰ دقیقه پیش · روی گوشی", day: "۲۴ مهر", task: "جلسه با تیم طراحی", blocks: [
       { k: "p", t: "کمپین از اول آبان شروع می‌شود و تا یلدا ادامه دارد. تمرکز روی دانش‌آموزها و خانواده‌هاست." },
       { k: "h", t: "کارهای مانده" },
       { k: "c", t: "بنر «بازگشت به مدرسه»", done: true }, { k: "c", t: "هماهنگی با تیم محتوا", done: true }, { k: "c", t: "بودجه‌ی تبلیغات اینستاگرام" },
@@ -1860,16 +2051,16 @@ td.them { color: var(--ink-2); }
       { k: "p", t: "حاضران: سارا، امیر، نسیم." },
       { k: "b", t: "نسخه‌ی اول لندینگ تا چهارشنبه" }, { k: "b", t: "تست کاربری با ۵ نفر" }, { k: "c", t: "فرستادن فایل‌ها به امیر", done: true },
     ] },
-    { f: "lists", pinned: true, title: "لیست خرید", when: "دیروز", blocks: [
+    { f: "shop", pinned: true, title: "لیست خرید", when: "دیروز", blocks: [
       { k: "c", t: "نان سنگک", done: true }, { k: "c", t: "شیر و ماست" }, { k: "c", t: "میوه برای مهمانی" }, { k: "c", t: "باتری ریموت", done: true }, { k: "c", t: "دستمال کاغذی" },
     ] },
-    { f: "personal", title: "کتاب‌های پاییز", when: "۲۰ مهر", blocks: [
+    { f: "books", title: "کتاب‌های پاییز", when: "۲۰ مهر", blocks: [
       { k: "b", t: "سووشون، سیمین دانشور" }, { k: "b", t: "کلیدر، جلد اول" }, { k: "b", t: "هنر شفاف اندیشیدن" },
     ] },
     { f: "personal", title: "دستور آش رشته‌ی مامان", when: "۱۲ مهر", blocks: [
       { k: "h", t: "مواد" }, { k: "b", t: "رشته‌ی آشی، ۲۵۰ گرم" }, { k: "b", t: "نخود، لوبیا و عدس از شب قبل خیس" }, { k: "p", t: "کشک را آخر کار اضافه کن و پیاز داغ را جدا سرخ کن." },
     ] },
-    { f: "ideas", title: "ایده‌ی اپ", when: "۲ هفته پیش", blocks: [
+    { f: "personal", title: "ایده‌ی اپ", when: "۲ هفته پیش", blocks: [
       { k: "v", dur: "۱:۰۸", peaks: [4, 7, 5, 9, 11, 6, 3, 8, 10, 12, 9, 5, 7, 4, 6, 9, 13, 8, 6, 4, 7, 10, 8, 5, 3, 5, 8, 6, 4, 3], t: "یک دستیار کوچک که آخر هر شب می‌پرسد امروز چه کار کردی و خودش یادداشت روزانه می‌سازد." },
     ] },
   ];
@@ -1885,7 +2076,7 @@ td.them { color: var(--ink-2); }
     pin: '<svg viewBox="0 0 24 24"><path d="M9 4h6l-1 6 3 3H7l3-3z"/><path d="M12 13v7"/></svg>',
   };
   function renderFolders() {
-    $("flist").innerHTML = FOLDERS.map(([k, n]) => `<button data-f="${k}" aria-pressed="${folder === k}">${k === "all" ? ICON.all : ICON.f}${n}<span>${fa(k === "all" ? NOTES.length : NOTES.filter((x) => x.f === k).length)}</span></button>`).join("")
+    $("flist").innerHTML = FOLDERS.map(([k, n]) => `<button data-f="${k}" aria-pressed="${folder === k}">${k === "all" ? ICON.all : `<span class="fdot" style="background:${LST[k].c}"></span>`}${n}<span>${fa(k === "all" ? NOTES.length : NOTES.filter((x) => x.f === k).length)}</span></button>`).join("")
       + `<div class="fsep"></div><button data-f="trash" aria-pressed="false">${ICON.trash}حذف‌شده‌ها<span>۰</span></button>`;
   }
   function renderNoteList() {
@@ -1906,7 +2097,7 @@ td.them { color: var(--ink-2); }
     $("editor").innerHTML = `<div class="ed-top"><span class="st" id="edSt"><i></i>همگام · ${n.when}</span>
       <span class="tools"><button class="rbtn sm" aria-label="چک‌لیست">${ICON.check}</button><button class="rbtn sm" aria-label="یادداشت صوتی">${ICON.mic}</button><button class="rbtn sm" aria-label="سنجاق">${ICON.pin}</button></span></div>
       <h3 class="ed-title" contenteditable="true" data-b="title">${n.title}</h3>
-      ${n.day || n.task ? `<div class="ed-links">${n.day ? `<span>${ICON.cal}${n.day}</span>` : ""}${n.task ? `<span>${ICON.check}کار: ${n.task}</span>` : ""}</div>` : ""}
+      ${`<div class="ed-links"><span style="background:${alpha(LST[n.f].c, 0.16)};color:${LST[n.f].c}">${ICO.folder}${LST[n.f].n}</span>${n.day ? `<span>${ICON.cal}${n.day}</span>` : ""}${n.task ? `<span>${ICON.check}کار: ${n.task}</span>` : ""}</div>`}
       <div class="ed-body">${n.blocks.map((b, j) => {
         if (b.k === "h") return `<div class="b-h" contenteditable="true" data-b="${j}">${b.t}</div>`;
         if (b.k === "p") return `<div class="b-p" contenteditable="true" data-b="${j}">${b.t}</div>`;
@@ -2064,7 +2255,7 @@ td.them { color: var(--ink-2); }
 
 
   /* ================= customization: blocks on/off without breaking the layout ================= */
-  const BLOCKS = [["tasks", "کارها"], ["notes", "یادداشت‌ها"], ["money", "پول"], ["today", "امروز"], ["quick", "دسترسی سریع"], ["shelf", "بوکمارک‌ها"], ["dateline", "تاریخ زیر سرچ"], ["pin", "کارت‌ها همیشه باز"]];
+  const BLOCKS = [["tasks", "کارها"], ["notes", "یادداشت‌ها"], ["money", "پول"], ["today", "امروز"], ["launcher", "ردیف دسترسی سریع"], ["bookmarks", "بوکمارک‌های کروم"], ["dateline", "تاریخ زیر سرچ"], ["pin", "کارت‌ها همیشه باز"]];
   const SLIDES = [["s2", "برنامه‌ها"], ["s3", "پول"], ["s4", "یادداشت‌ها"], ["s5", "خبر"], ["s6", "شبکه‌ها"]];
   const offB = new Set(["pin"]), offS = new Set();
   function renderToggles() {
@@ -2075,7 +2266,6 @@ td.them { color: var(--ink-2); }
   function applyLayout() {
     document.querySelectorAll("[data-blk]").forEach((el) => (el.hidden = offB.has(el.dataset.blk)));
     document.querySelectorAll(".s1 .hz").forEach((el) => el.classList.toggle("pin", !offB.has("pin")));
-    $("edge").hidden = offB.has("quick") && offB.has("shelf");
     for (const [id] of SLIDES) { $(id).hidden = offS.has(id); railBtns.find((b) => b.dataset.s === id).hidden = offS.has(id); }
     renderToggles(); syncRail();
   }
@@ -2102,14 +2292,13 @@ td.them { color: var(--ink-2); }
     finder(0, 0); finder(N - 7, 0); finder(0, N - 7);
     return `<svg viewBox="0 0 ${N} ${N}" aria-label="کد QR نمونه"><path d="${d}" fill="#0B0D12" fill-rule="evenodd" stroke="none"/></svg>`;
   }
-  $("waQr").innerHTML = qrSvg(7);
   const MODS = [
     ["tasks", "کارهای امروز", "تیک بزن، همان لحظه روی گوشی", "نقطه"], ["notes", "یادداشت‌ها", "بنویس و روی گوشی ببین", "نقطه"],
     ["plan", "برنامه‌ها", "هفته و تقویم گوگل", "نقطه"], ["occ", "مناسبت‌ها", "روزهای خاص و تعطیلی‌ها", "نقطه"],
     ["prayer", "اوقات شرعی", "روی جدول برنامه‌ها", "نقطه"], ["money", "پول من", "موجودی، خرج و قبض‌ها", "پاکت"],
     ["prices", "قیمت روز", "طلا، سکه، ارز و کریپتو", "پاکت"], ["news", "خبر", "فید خبر با موضوع‌های تو", "میز"],
-    ["social", "شبکه‌ها", "تلگرام، اینستاگرام، واتس‌اپ", "میز"], ["quick", "دسترسی سریع", "۸ سایت پرکاربرد", "میز"],
-    ["shelf", "قفسه‌ی بوکمارک", "بوکمارک‌های شغل تو", "میز"], ["today", "امروز", "تاریخ، مناسبت و اذان بعدی", "نقطه"],
+    ["social", "شبکه‌ها", "تلگرام، اینستاگرام، واتس‌اپ", "میز"], ["launcher", "دسترسی سریع", "ردیف زیر سرچ با پوشه‌های شغل تو", "میز"],
+    ["bookmarks", "بوکمارک‌های کروم", "در لبه‌ی راست صفحه", "میز"], ["today", "امروز", "تاریخ، مناسبت و اذان بعدی", "نقطه"],
   ];
   const onbSt = { step: 0, mods: new Set(MODS.map((m) => m[0])), persona: "designer", paket: false };
   const stepsOf = () => ["hello", "login", "mods", "persona", ...(onbSt.mods.has("money") ? ["paket"] : []), "wall"];
@@ -2128,7 +2317,7 @@ td.them { color: var(--ink-2); }
       <div class="way alt"><h3>یا با شماره‌ی موبایل</h3><div class="form"><label>شماره‌ی موبایل<input class="ltr" placeholder="0912 000 0000" inputmode="tel" aria-label="شماره‌ی موبایل"></label></div><button class="cta" type="button">فرستادن کد</button><p style="margin:0;font-size:14px;color:var(--ink-2)">ورود با گوگل هم هست.</p><button class="skip" data-next="1">فعلاً بدون حساب؛ همه‌چیز فقط روی همین مرورگر</button></div></div>`;
     if (s === "mods") B.innerHTML = `<h2>چی‌ها روی میزت باشد؟</h2><p class="lead">همه روشن‌اند؛ هر کدام را نمی‌خواهی بردار. بعداً از شخصی‌سازی هم عوض می‌شود.</p>
       <div class="mods">${MODS.map(([k, n, d, a]) => `<button class="mod" data-m="${k}" aria-pressed="${onbSt.mods.has(k)}"><span class="tk">${okSvg}</span><b>${n}</b><span>${d} · ${a}</span></button>`).join("")}</div>`;
-    if (s === "persona") B.innerHTML = `<h2>بیشتر وقتت پشت سیستم صرف چه کاری می‌شود؟</h2><p class="lead">قفسه‌ی بوکمارک پایین صفحه را بر همین اساس می‌چینیم.</p>
+    if (s === "persona") B.innerHTML = `<h2>بیشتر وقتت پشت سیستم صرف چه کاری می‌شود؟</h2><p class="lead">ردیف دسترسی سریع زیر سرچ و پوشه‌هایش را بر همین اساس می‌چینیم.</p>
       <div class="pers">${Object.entries(P).map(([k, v]) => `<button class="mod" data-p="${k}" aria-pressed="${onbSt.persona === k}"><span class="tk">${okSvg}</span><b>${v.n}</b><span>${PDESC[k]}</span></button>`).join("")}</div>`;
     if (s === "paket") B.innerHTML = `<h2>پاکت را جدا وصل کن</h2><p class="lead">پاکت حساب خودش را دارد. برای دیدن موجودی، خرج‌ها و قبض‌ها یک بار وصلش کن. قیمت روز و خبرها بدون ورود هم کار می‌کنند.</p>
       <div class="ways"><div class="way"><h3>با اپ پاکت اسکن کن</h3><div class="qrrow"><div class="qr">${qrSvg(11)}</div><ol class="steps"><li>پاکت را روی گوشی باز کن.</li><li>تنظیمات ← دستگاه‌ها ← «اتصال میز».</li><li>دوربین را روی این کد بگیر.</li></ol></div><p>میز فقط اجازه‌ی خواندن می‌گیرد و هر وقت بخواهی از همان‌جا قطعش می‌کنی.</p></div>
@@ -2139,7 +2328,7 @@ td.them { color: var(--ink-2); }
     const m = onbSt.mods, on = (k) => m.has(k);
     offB.clear(); offS.clear();
     if (!on("tasks")) offB.add("tasks"); if (!on("notes")) { offB.add("notes"); offS.add("s4"); }
-    offB.add("pin"); if (!on("money")) offB.add("money"); if (!on("quick")) offB.add("quick"); if (!on("shelf")) offB.add("shelf"); if (!on("today")) offB.add("today");
+    offB.add("pin"); if (!on("money")) offB.add("money"); if (!on("launcher")) offB.add("launcher"); if (!on("bookmarks")) offB.add("bookmarks"); if (!on("today")) offB.add("today");
     if (on("occ")) off.delete("occ"); else off.add("occ"); if (!on("plan")) offS.add("s2"); if (!on("money") && !on("prices")) offS.add("s3");
     if (!on("news")) offS.add("s5"); if (!on("social")) offS.add("s6");
     if (on("prayer")) off.delete("pr"); else off.add("pr");
@@ -2161,49 +2350,66 @@ td.them { color: var(--ink-2); }
     if (e.target.closest("[data-next]")) onbNext();
   });
 
-  /* ================= slide 5: news feed ================= */
+  /* ================= slide 5: news feed — the source comes first ================= */
+  const SRC5 = {
+    a: { n: "خبرگزاری رسمی", l: "ا", c: "#3B6EA8", g: "داخلی" }, b: { n: "روزنامه‌ی اقتصادی", l: "ر", c: "#8a6a12", g: "داخلی" },
+    d: { n: "سایت فناوری", l: "ف", c: "#2b3480", g: "داخلی" }, e: { n: "سایت ورزشی", l: "و", c: "#1f5e3b", g: "داخلی" },
+    f: { n: "مجله‌ی سلامت", l: "س", c: "#2f6b3a", g: "داخلی" }, h: { n: "سایت فرهنگی", l: "ه", c: "#5b3a7a", g: "داخلی" },
+    c: { n: "رسانه‌ی برون‌مرزی", l: "ب", c: "#B5302E", g: "برون‌مرزی", via: true }, p: { n: "تیم پاکت", l: "پ", c: "#3FA98A", g: "پاکت" },
+  };
+  const srcOff = new Set();
   const FCATS = [["all", "همه"], ["eco", "اقتصادی"], ["tech", "فناوری"], ["sport", "ورزشی"], ["culture", "فرهنگ و هنر"], ["society", "جامعه"], ["health", "سلامت"]];
   const FC = Object.fromEntries(FCATS);
   const gr = (a, b) => `linear-gradient(135deg, ${a}, ${b})`;
   const FEED = [
-    { c: "eco", paket: true, m: 60, t: "عرضه‌ی اولیه‌ی یکشنبه: یک شرکت پتروشیمی در فرابورس", s: "سقف خرید هر کد ۵ میلیون تومان است. درخواست را تا یکشنبه ساعت ۹ در کارگزاری ثبت کنید.", src: "تیم پاکت", bg: gr("#3FA98A", "#0D5B47") },
-    { c: "society", m: 25, t: "بارش پراکنده در استان‌های شمالی تا آخر هفته", s: "هوا از پنجشنبه خنک‌تر می‌شود و در ارتفاعات احتمال مه هست.", src: "خبرگزاری · نمونه", img: "waterfall" },
-    { c: "eco", m: 90, t: "بازار طلا در هفته‌ای که گذشت", s: "گرم طلای ۱۸ عیار بیشتر هفته در محدوده‌ی ۲۶ میلیون تومان ماند.", src: "سایت اقتصادی · نمونه", bg: gr("#8a6a12", "#3a2a06") },
-    { c: "tech", m: 140, t: "راهنمای خرید لپ‌تاپ دانشجویی در پاییز", s: "برای کار روزمره و برنامه‌نویسی سبک، حافظه‌ی ۱۶ گیگ از پردازنده مهم‌تر است.", src: "سایت فناوری · نمونه", img: "blue-waves" },
-    { c: "health", m: 200, t: "روز جهانی غذا: پنج عادت ساده برای سفره‌ی سالم‌تر", s: "کم کردن نمک و نان سفید از ساده‌ترین قدم‌هاست.", src: "مجله‌ی سلامت · نمونه", bg: gr("#2f6b3a", "#0f2614") },
-    { c: "sport", m: 260, t: "هفته‌ی نهم لیگ: سه بازی حساس جمعه‌شب", s: "صدر جدول با تفاضل گل عوض می‌شود.", src: "سایت ورزشی · نمونه", bg: gr("#1f5e3b", "#0b2216") },
-    { c: "eco", paket: true, m: 1440, t: "بازده صندوق‌های درآمد ثابت در مهر", s: "میانگین بازده سالانه حدود ۲۹٪ بود؛ مقایسه‌ی کارمزدها را در پاکت ببینید.", src: "تیم پاکت", bg: gr("#3FA98A", "#0D5B47") },
-    { c: "culture", m: 320, t: "نمایشگاه کتاب پاییزه از هفته‌ی آینده", s: "ناشرها با تخفیف ۲۰ درصدی و بخش ویژه‌ی کودک می‌آیند.", src: "سایت فرهنگی · نمونه", bg: gr("#5b3a7a", "#1f1230") },
-    { c: "culture", m: 600, t: "مستندی درباره‌ی معماری حرم رضوی روی پرده", s: "روایت کاشی‌کاری‌ها و گنبد در ۹۰ دقیقه.", src: "سایت فرهنگی · نمونه", img: "mashhad-rain" },
-    { c: "tech", m: 800, t: "به‌روزرسانی تازه‌ی اندروید و گوشی‌هایی که آن را می‌گیرند", s: "بیشتر گوشی‌های دو سال اخیر تا آخر سال به‌روز می‌شوند.", src: "سایت فناوری · نمونه", bg: gr("#2b3480", "#0c1022") },
+    { c: "eco", src: "b", m: 40, t: "دلار در کانال ۲۶۰ هزار تومان ماند", s: "بازار ارز در هفته‌ی گذشته نوسان کمی داشت و معامله‌گرها منتظر خبرهای تازه ماندند.", bg: gr("#8a6a12", "#3a2a06"),
+      alt: [["a", "ثبات نسبی بازار ارز در هفته‌ی گذشته"], ["c", "بازار ارز ایران همچنان زیر فشار تورم"]] },
+    { c: "eco", src: "p", paket: true, m: 60, t: "عرضه‌ی اولیه‌ی یکشنبه: یک شرکت پتروشیمی در فرابورس", s: "سقف خرید هر کد ۵ میلیون تومان است. درخواست را تا یکشنبه ساعت ۹ در کارگزاری ثبت کنید.", bg: gr("#3FA98A", "#0D5B47") },
+    { c: "society", src: "a", m: 25, t: "بارش پراکنده در استان‌های شمالی تا آخر هفته", s: "هوا از پنجشنبه خنک‌تر می‌شود و در ارتفاعات احتمال مه هست.", img: "waterfall" },
+    { c: "tech", src: "d", m: 140, t: "راهنمای خرید لپ‌تاپ دانشجویی در پاییز", s: "برای کار روزمره و برنامه‌نویسی سبک، حافظه‌ی ۱۶ گیگ از پردازنده مهم‌تر است.", img: "blue-waves" },
+    { c: "society", src: "c", m: 90, t: "گزارشی از وضعیت اجاره‌بها در شهرهای بزرگ", s: "در شش ماه گذشته اجاره در بیشتر محله‌ها بیشتر از تورم بالا رفته است.", bg: gr("#6b2423", "#230b0b") },
+    { c: "health", src: "f", m: 200, t: "روز جهانی غذا: پنج عادت ساده برای سفره‌ی سالم‌تر", s: "کم کردن نمک و نان سفید از ساده‌ترین قدم‌هاست.", bg: gr("#2f6b3a", "#0f2614") },
+    { c: "sport", src: "e", m: 260, t: "هفته‌ی نهم لیگ: سه بازی حساس جمعه‌شب", s: "صدر جدول با تفاضل گل عوض می‌شود.", bg: gr("#1f5e3b", "#0b2216") },
+    { c: "culture", src: "h", m: 320, t: "نمایشگاه کتاب پاییزه از هفته‌ی آینده", s: "ناشرها با تخفیف ۲۰ درصدی و بخش ویژه‌ی کودک می‌آیند.", bg: gr("#5b3a7a", "#1f1230") },
+    { c: "culture", src: "h", m: 600, t: "مستندی درباره‌ی معماری حرم رضوی روی پرده", s: "روایت کاشی‌کاری‌ها و گنبد در ۹۰ دقیقه.", img: "mashhad-rain" },
+    { c: "eco", src: "p", paket: true, m: 1440, t: "بازده صندوق‌های درآمد ثابت در مهر", s: "میانگین بازده سالانه حدود ۲۹٪ بود؛ مقایسه‌ی کارمزدها را در پاکت ببینید.", bg: gr("#3FA98A", "#0D5B47") },
   ];
   const ago = (m) => (m < 60 ? `${fa(m)} دقیقه پیش` : m < 1440 ? `${fa(Math.round(m / 60))} ساعت پیش` : "دیروز");
+  const srcb = (k) => `<span class="srcb"><i style="background:${SRC5[k].c}">${SRC5[k].l}</i>${SRC5[k].n}</span>`;
   let fcat = "all", fsort = "for";
   const fimg = (n) => (n.img ? `url(${IMG[n.img]}) center/cover` : n.bg);
-  function renderFeed() {
-    $("ncatl").innerHTML = FCATS.map(([k, n]) => `<button data-c="${k}" aria-pressed="${fcat === k}">${n}<span>${fa(k === "all" ? FEED.length : FEED.filter((x) => x.c === k).length)}</span></button>`).join("");
-    const q = $("fq").value.trim();
-    let list = FEED.map((n, i) => ({ ...n, i })).filter((n) => (fcat === "all" || n.c === fcat) && (!q || n.t.includes(q) || n.s.includes(q)));
-    list = fsort === "new" ? list.sort((a, b) => a.m - b.m) : list.sort((a, b) => (b.paket && b.c === fcat ? 1 : 0) - (a.paket && a.c === fcat ? 1 : 0));
-    const meta = (n) => `<span class="fmeta"><span class="kind ${n.paket ? "opportunity" : "announcement"}">${n.paket ? "از تیم پاکت" : FC[n.c]}</span>${n.src} · ${ago(n.m)}</span>`;
-    const rows = list.map((n, j) => j === 0
-      ? `<button class="fbig" data-i="${n.i}"><span class="img" style="background:${fimg(n)}">${n.img ? "" : `<span class="lbl">${n.paket ? "پاکت" : FC[n.c]}</span>`}</span><span class="tx">${meta(n)}<b>${n.t}</b><p>${n.s}</p></span></button>`
-      : `<button class="frow" data-i="${n.i}"><span class="img" style="background:${fimg(n)}">${n.img ? "" : `<span class="lbl" style="font-size:17px">${n.paket ? "پاکت" : FC[n.c]}</span>`}</span><span class="tx">${meta(n)}<b>${n.t}</b><p>${n.s}</p></span></button>`);
-    if (rows.length > 3) rows.splice(3, 0, `<div class="frow adr" data-slot="۱۴"><span class="img" style="background:${gr("#c27a5a", "#3d2b5e")}">کیش</span><span class="tx"><span class="fmeta"><span class="kind ad">معرفی‌شده</span>از طرف یک آژانس سفر</span><b>بلیت هواپیمای کیش برای آخر هفته</b><p>رفت‌وبرگشت با هتل؛ رزرو آنلاین.</p></span></div>`);
-    $("flistv").innerHTML = rows.join("") || `<div class="none" style="color:var(--ink-3);padding:12px">خبری پیدا نشد.</div>`;
-    $("rank").innerHTML = [1, 0, 4, 2, 5, 8].map((i, r) => `<button data-i="${i}"><em>${fa(r + 1)}</em>${FEED[i].t}</button>`).join("");
+  function renderSources() {
+    let h = "", g = "";
+    for (const [k, s] of Object.entries(SRC5)) {
+      if (s.g !== g) { g = s.g; h += `<div class="grp">${g}</div>`; }
+      h += `<div class="srow3"><span class="sl" style="background:${s.c}">${s.l}</span><span>${s.n} · نمونه${s.via ? "<small>از اتصال خود تو خوانده می‌شود</small>" : ""}</span><button class="sw2" role="switch" aria-checked="${!srcOff.has(k)}" data-src="${k}" aria-label="${s.n}"></button></div>`;
+    }
+    $("srcl").innerHTML = h;
   }
-  $("ntopics").innerHTML = ["طلا و ارز", "لپ‌تاپ", "لیگ برتر", "کتاب", "هوا"].map((t, i) => `<span style="cursor:pointer" class="${i < 2 ? "on" : ""}">${t}</span>`).join("");
-  $("ntopics").addEventListener("click", (e) => { const t = e.target.closest("span"); if (t) t.classList.toggle("on"); });
-  renderFeed();
-  $("ncatl").addEventListener("click", (e) => { const b = e.target.closest("button"); if (b) { fcat = b.dataset.c; renderFeed(); $("flistv").scrollTop = 0; } });
+  function renderFeed() {
+    $("fcats").innerHTML = FCATS.map(([k, n]) => `<button data-c="${k}" aria-pressed="${fcat === k}">${n}</button>`).join("");
+    const q = $("fq").value.trim();
+    let list = FEED.map((n, i) => ({ ...n, i })).filter((n) => !srcOff.has(n.src) && (fcat === "all" || n.c === fcat) && (!q || n.t.includes(q) || n.s.includes(q)));
+    if (fsort === "new") list.sort((a, b) => a.m - b.m);
+    const meta = (n) => `<span class="fmeta">${srcb(n.src)}<span>· ${FC[n.c]} · ${ago(n.m)}</span></span>`;
+    const alts = (n) => (n.alt ? `<span class="alts">همین خبر در ${fa(n.alt.length)} منبع دیگر:${n.alt.filter(([k]) => !srcOff.has(k)).map(([k]) => srcb(k)).join("")}</span>` : "");
+    const rows = list.map((n, j) => j === 0
+      ? `<button class="fbig" data-i="${n.i}"><span class="img" style="background:${fimg(n)}"></span><span class="tx">${meta(n)}<b>${n.t}</b><p>${n.s}</p>${alts(n)}</span></button>`
+      : `<button class="frow" data-i="${n.i}"><span class="img" style="background:${fimg(n)}"></span><span class="tx">${meta(n)}<b>${n.t}</b><p>${n.s}</p>${alts(n)}</span></button>`);
+    if (rows.length > 3) rows.splice(3, 0, `<div class="frow adr" data-slot="۱۴"><span class="img" style="background:${gr("#c27a5a", "#3d2b5e")}">کیش</span><span class="tx"><span class="fmeta"><span class="kind ad">معرفی‌شده</span>از طرف یک آژانس سفر</span><b>بلیت هواپیمای کیش برای آخر هفته</b><p>رفت‌وبرگشت با هتل؛ رزرو آنلاین.</p></span></div>`);
+    $("flistv").innerHTML = rows.join("") || `<div style="color:var(--ink-3);padding:12px">خبری نیست؛ منبع یا دسته‌ی دیگری را روشن کن.</div>`;
+    $("rank").innerHTML = [2, 1, 5, 0, 6, 8].filter((i) => !srcOff.has(FEED[i].src)).map((i, r) => `<button data-i="${i}"><em>${fa(r + 1)}</em><span>${FEED[i].t}<br><small style="color:var(--ink-3);font-size:12px">${SRC5[FEED[i].src].n}</small></span></button>`).join("");
+  }
+  renderSources(); renderFeed();
+  $("srcl").addEventListener("click", (e) => { const b = e.target.closest("[data-src]"); if (!b) return; const k = b.dataset.src; srcOff.has(k) ? srcOff.delete(k) : srcOff.add(k); renderSources(); renderFeed(); });
+  $("fcats").addEventListener("click", (e) => { const b = e.target.closest("button"); if (b) { fcat = b.dataset.c; renderFeed(); $("flistv").scrollTop = 0; } });
   $("fq").addEventListener("input", renderFeed);
   $("fsort").addEventListener("click", (e) => { const s = e.target.closest("span"); if (!s) return; fsort = s.dataset.s; $("fsort").querySelectorAll("span").forEach((x) => x.classList.toggle("on", x === s)); renderFeed(); });
   const openFeed = (i) => {
     const n = FEED[i];
-    $("fsKind").className = "kind " + (n.paket ? "opportunity" : "announcement"); $("fsKind").textContent = n.paket ? "از تیم پاکت" : FC[n.c];
-    $("fsMeta").textContent = `${n.src} · ${ago(n.m)}`; $("fsTitle").textContent = n.t;
-    $("fsBody").innerHTML = `<p>${n.s}</p><p style="color:var(--ink-2);font-size:16px">میز فقط تیتر و خلاصه را نشان می‌دهد؛ متن کامل در سایت منبع است.</p>`;
+    $("fsSrc").innerHTML = srcb(n.src); $("fsMeta").textContent = `${FC[n.c]} · ${ago(n.m)}`; $("fsTitle").textContent = n.t;
+    $("fsBody").innerHTML = `<p>${n.s}</p>` + (n.alt ? `<div class="sec" style="margin:6px 0 8px">روایت منبع‌های دیگر از همین خبر</div><div class="compare">${n.alt.map(([k, t]) => `<div>${srcb(k)}<b>${t}</b></div>`).join("")}</div>` : "")
+      + `<p style="color:var(--ink-2);font-size:15px;margin-top:12px">میز فقط تیتر و خلاصه را نشان می‌دهد؛ متن کامل در سایت منبع است.</p>`;
     $("fsheetBg").hidden = false; $("fsClose").focus();
   };
   $("flistv").addEventListener("click", (e) => { const b = e.target.closest("button[data-i]"); if (b) openFeed(+b.dataset.i); });
@@ -2211,15 +2417,29 @@ td.them { color: var(--ink-2); }
   $("fsClose").addEventListener("click", () => ($("fsheetBg").hidden = true));
   $("fsheetBg").addEventListener("click", (e) => { if (e.target === $("fsheetBg")) $("fsheetBg").hidden = true; });
 
-  /* ================= slide 6: social ================= */
+  /* ================= slide 6: social — one tablet frame, a tab per service ================= */
+  const SVC = {
+    tg: { n: "تلگرام", c: "#2AABEE", l: "T", u: "web.telegram.org", on: true },
+    ig: { n: "اینستاگرام", c: "#DD2A7B", l: "I", u: "instagram.com", on: true },
+    wa: { n: "واتس‌اپ", c: "#25D366", l: "W", u: "web.whatsapp.com", on: false },
+    x: { n: "ایکس", c: "#000000", l: "X", u: "x.com", on: false },
+  };
+  let svc = "tg", tgOpen = 3;
   const TG = [
     ["اخبار فوری · نمونه", "#E2453C", "بارش پراکنده در استان‌های شمالی تا آخر هفته", "۱۱:۰۴", 12], ["خانواده", "#8E5CF7", "مامان: شام جمعه خانه‌ی ما", "۱۰:۴۰", 3],
     ["سارا", "#35D07F", "فایل‌ها را فرستادم", "۹:۵۲", 1], ["تیم طراحی", "#4C6BFF", "امیر: ساعت ۲:۳۰ جلسه داریم", "دیروز", 0],
     ["پاکت", "#3FA98A", "گزارش هفتگی خرج‌هایت آماده است", "دیروز", 0], ["نقطه", "#8C9EFF", "نسخه‌ی تازه با ویجت‌های جدید", "۲ روز", 0],
     ["کتاب‌خوان‌ها", "#C98F00", "نسیم: سووشون را تمام کردم", "۳ روز", 0], ["علی", "#F0691F", "باشه، فردا صحبت می‌کنیم", "۳ روز", 0],
   ];
-  const chats = (list, col) => list.map(([n, c, m, t, u]) => `<div class="chat"><span class="av" style="background:${c}">${[...n][0]}</span><span class="cx"><b>${n}</b><span>${m}</span></span><span class="cm">${t}${u ? `<em style="background:${col}">${fa(u)}</em>` : ""}</span></div>`).join("");
-  $("tgList").innerHTML = chats(TG, "#2AABEE");
+  const WA = [["مامان", "#25D366", "عزیزم یادت نره نان بگیری", "۱۱:۲۰", 2], ["گروه دانشگاه", "#128C7E", "رضا: جزوه‌ی فصل ۳ را فرستادم", "۱۰:۵۵", 5], ["آقای رحیمی", "#3a3d48", "ممنون، دریافت شد", "دیروز", 0], ["همسایه‌ها", "#6B8E23", "جلسه‌ی ساختمان پنجشنبه", "دیروز", 0]];
+  const MSGS = [["امیر", "سلام، ساعت ۲:۳۰ جلسه داریم برای کمپین پاییز", "۱۰:۱۲"], ["نسیم", "فایل‌های بنر را آماده کردم", "۱۰:۱۴"], [null, "عالیه، تا ۲ می‌فرستم که قبل جلسه ببینید", "۱۰:۲۰"], ["امیر", "فقط نسخه‌ی استوری را هم بگذار", "۱۰:۲۱"]];
+  const chatRows = (list, col, active) => list.map(([n, c, m, t, u], i) => `<div class="chat${i === active ? " on" : ""}" data-ch="${i}"><span class="av" style="background:${c}">${[...n][0]}</span><span class="cx"><b>${n}</b><span>${m}</span></span><span class="cm">${t}${u ? `<em style="background:${col}">${fa(u)}</em>` : ""}</span></div>`).join("");
+  const pane = (list, col, open) => {
+    const [n, c] = list[open];
+    return `<div class="tp-list" id="tpList">${chatRows(list, col, open)}</div><div class="tp-chat"><div class="tp-h"><span class="av" style="background:${c}">${[...n][0]}</span><span><b>${n}</b><small>${open === 3 ? "۴ عضو" : "آخرین بازدید به‌تازگی"}</small></span></div>
+      <div class="tp-msgs">${MSGS.map(([w, m, t]) => `<div class="bub${w ? "" : " me"}" ${w ? "" : `style="background:${col}33"`}>${w ? `<span class="who" style="color:${col}">${w}</span><br>` : ""}${m}<small>${t}</small></div>`).join("")}</div>
+      <div class="tp-in"><input placeholder="پیام…" aria-label="پیام"><button class="ibtn go" aria-label="فرستادن"><svg viewBox="0 0 24 24"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button></div></div>`;
+  };
   const REELS = [
     { img: "mashhad-rain", u: "پیج سفر · نمونه", c: "یک صبح بارانی در صحن؛ صدای کبوترها را بشنوید.", l: "۱۲ هزار" },
     { img: "waterfall", u: "پیج طبیعت‌گردی · نمونه", c: "آبشاری که باید یک بار از نزدیک دید.", l: "۸٫۴ هزار" },
@@ -2227,20 +2447,47 @@ td.them { color: var(--ink-2); }
   ];
   let reelI = 0, reelT = null;
   const playSvg2 = '<svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>', pauseSvg2 = '<svg viewBox="0 0 24 24"><path d="M7 5h4v14H7zM13 5h4v14h-4z"/></svg>';
+  const XPOSTS = [["حساب خبری · نمونه", "#1d9bf0", "پیش‌بینی هواشناسی: از پنجشنبه هوای تهران خنک‌تر می‌شود.", "۱۲", "۳۴۰"], ["طراح · نمونه", "#8E5CF7", "یک نکته‌ی ساده: فاصله‌ها را از ۸ پیکسل بسازید؛ همه‌چیز مرتب‌تر می‌شود.", "۴۸", "۱٫۲ هزار"], ["کتاب‌خوان · نمونه", "#C98F00", "سووشون را دوباره خواندم و این بار جور دیگری دیدمش.", "۹", "۲۱۰"], ["برنامه‌نویس · نمونه", "#35D07F", "امروز یک باگ سه‌روزه با یک خط حل شد. همیشه همین‌طور است.", "۶۰", "۲ هزار"]];
+  function renderSocial() {
+    $("stabs").innerHTML = Object.entries(SVC).map(([k, s]) => `<button role="tab" aria-selected="${k === svc}" data-s6="${k}"><span class="lg" style="background:${s.c};${k === "x" ? "border:1px solid #444" : ""}">${s.l}</span>${s.n}<i class="${s.on ? "on" : ""}"></i></button>`).join("");
+    const s = SVC[svc];
+    $("tbLg").textContent = s.l; $("tbLg").style.background = s.c; $("tbName").textContent = s.n; $("tbUrl").textContent = s.u;
+    $("tbSt").innerHTML = s.on ? "<i></i>وارد شده · ذخیره در همین کروم" : "وارد نشده";
+    $("tbOut").hidden = !s.on;
+    const B = $("tbBody");
+    if (reelT) { clearInterval(reelT); reelT = null; }
+    if (svc === "tg") B.innerHTML = pane(TG, "#2AABEE", tgOpen);
+    if (svc === "wa") B.innerHTML = s.on ? pane(WA, "#25D366", 0)
+      : `<div class="loginc"><h3>واتس‌اپ را وصل کن</h3><p>یک بار اسکن کن؛ از این به بعد پیام‌هایت همین‌جاست.</p><div class="qr">${qrSvg(7)}</div><ol class="steps"><li>واتس‌اپ را روی گوشی باز کن.</li><li>برو به «دستگاه‌های متصل» و «اتصال دستگاه».</li><li>دوربین را روی این کد بگیر.</li></ol><button class="cta" data-login="wa" style="background:#25D366;color:#06210f">وصل شدم</button><span class="safe">این کد را خود واتس‌اپ می‌سازد، نه میز.</span></div>`;
+    if (svc === "x") B.innerHTML = s.on
+      ? `<div class="xfeed"><div class="xcol">${XPOSTS.map(([n, c, t, r, l]) => `<div class="xpost"><span class="av" style="background:${c}">${[...n][0]}</span><div><b>${n}</b> <small>@sample · ۲ ساعت</small><p>${t}</p><div class="acts"><span>پاسخ ${fa(r)}</span><span>بازنشر</span><span>پسند ${l}</span></div></div></div>`).join("")}</div></div>`
+      : `<div class="loginc"><div class="xb">X</div><h3>به ایکس وارد شو</h3><p>این صفحه‌ی ورود خود ایکس است؛ نام کاربری و رمزت فقط به ایکس می‌رود. یک بار وارد شوی، دفعه‌ی بعد همین‌جا باز است.</p><button class="cta wide" data-login="x">ورود با گوگل</button><button class="ghost wide" data-login="x">ورود با نام کاربری</button><span class="safe">میز هیچ رمزی ذخیره نمی‌کند؛ نشست ورود در خود کروم می‌ماند.</span></div>`;
+    if (svc === "ig") {
+      B.innerHTML = `<div class="ig"><div class="reel" id="reel"><div class="rtabs"><span class="on">ریلز</span><span>دنبال‌شده‌ها</span></div>
+        <button class="play" id="reelPlay" aria-label="پخش">${playSvg2}</button>
+        <div class="ract"><div><svg viewBox="0 0 24 24"><path d="M12 21s-7-4.5-9.5-9A5.5 5.5 0 0 1 12 6a5.5 5.5 0 0 1 9.5 6c-2.5 4.5-9.5 9-9.5 9z"/></svg><span id="rLikes"></span></div><div><svg viewBox="0 0 24 24"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/></svg><span>۳۴۰</span></div><div><svg viewBox="0 0 24 24"><path d="M22 3 11 14M22 3l-7 18-4-7-7-4z"/></svg><span>اشتراک</span></div></div>
+        <div class="rcap"><b><i></i><span id="rUser"></span></b><span id="rCap"></span></div><button class="nextr" id="reelNext">ریل بعدی ↓</button><div class="prog"><b id="rProg"></b></div></div>
+        <div class="side"><b>پیشنهاد برای دنبال کردن</b>${["پیج عکاسی · نمونه", "پیج آشپزی · نمونه", "پیج سفر · نمونه"].map((n, i) => `<span class="sugg-u"><i style="background:${["#F58529", "#DD2A7B", "#8134AF"][i]}"></i>${n}</span>`).join("")}</div></div>`;
+      showReel();
+    }
+  }
   function showReel() {
     const r = REELS[reelI]; $("reel").style.backgroundImage = `url(${IMG[r.img]})`;
     $("rUser").textContent = r.u; $("rCap").textContent = r.c; $("rLikes").textContent = r.l; $("rProg").style.width = "0%";
   }
-  showReel();
-  $("reelNext").addEventListener("click", () => { reelI = (reelI + 1) % REELS.length; showReel(); });
-  $("reelPlay").addEventListener("click", () => {
-    if (reelT) { clearInterval(reelT); reelT = null; $("reelPlay").innerHTML = playSvg2; return; }
-    $("reelPlay").innerHTML = pauseSvg2; let p = parseFloat($("rProg").style.width) || 0;
-    reelT = setInterval(() => { p += 2; $("rProg").style.width = p + "%"; if (p >= 100) { reelI = (reelI + 1) % REELS.length; showReel(); p = 0; } }, 120);
-  });
-  $("waLink").addEventListener("click", () => {
-    $("waBody").innerHTML = chats([["مامان", "#25D366", "عزیزم یادت نره نان بگیری", "۱۱:۲۰", 2], ["گروه دانشگاه", "#128C7E", "رضا: جزوه‌ی فصل ۳ را فرستادم", "۱۰:۵۵", 5], ["آقای رحیمی", "#3a3d48", "ممنون، دریافت شد", "دیروز", 0], ["همسایه‌ها", "#6B8E23", "جلسه‌ی ساختمان پنجشنبه", "دیروز", 0]], "#25D366");
-    $("waSub").textContent = "۷ نخوانده"; $("waAcct").innerHTML = '<i style="background:#25D366"></i>واتس‌اپ · وصل';
+  renderSocial();
+  $("stabs").addEventListener("click", (e) => { const b = e.target.closest("[data-s6]"); if (b) { svc = b.dataset.s6; renderSocial(); } });
+  $("tbOut").addEventListener("click", () => { SVC[svc].on = false; renderSocial(); });
+  $("tbBody").addEventListener("click", (e) => {
+    const lg = e.target.closest("[data-login]"); if (lg) { SVC[lg.dataset.login].on = true; renderSocial(); return; }
+    const ch = e.target.closest("[data-ch]"); if (ch && svc === "tg") { tgOpen = +ch.dataset.ch; renderSocial(); return; }
+    if (e.target.closest("#reelNext")) { reelI = (reelI + 1) % REELS.length; showReel(); return; }
+    if (e.target.closest("#reelPlay")) {
+      const btn = $("reelPlay");
+      if (reelT) { clearInterval(reelT); reelT = null; btn.innerHTML = playSvg2; return; }
+      btn.innerHTML = pauseSvg2; let p = parseFloat($("rProg").style.width) || 0;
+      reelT = setInterval(() => { p += 2; $("rProg").style.width = p + "%"; if (p >= 100) { reelI = (reelI + 1) % REELS.length; showReel(); p = 0; } }, 120);
+    }
   });
 })();
 </script>
