@@ -104,12 +104,12 @@ function SignInHint({
   }, []);
   return (
     <div className="signin-cta">
-      {what} از اپ نقطه این‌جا می‌آیند و هر چه این‌جا بنویسی روی گوشی هم هست.
+      <p>
+        {what} از اپ نقطه این‌جا می‌آیند و هر چه این‌جا بنویسی روی گوشی هم هست. اپ را نداری؟ این کد
+        را با دوربین گوشی اسکن کن.
+      </p>
       {install !== null && (
-        <div className="getapp">
-          <Qr text={getLink("noghte", place, install)} label="کد نصب نقطه از کافه‌بازار" />
-          <span>نقطه را روی گوشی نداری؟ با دوربین گوشی اسکن کن تا در کافه‌بازار باز شود.</span>
-        </div>
+        <Qr text={getLink("noghte", place, install)} label="کد نصب نقطه از کافه‌بازار" />
       )}
       <button type="button" className="cta" onClick={onSignIn}>
         ورود به نقطه

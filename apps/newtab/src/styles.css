@@ -1174,37 +1174,29 @@ svg {
   font-weight: 500;
   font-variant-numeric: tabular-nums;
 }
+/* signed out: one text, the app's install code, the sign-in button; no boxes inside the card */
 .signin-cta {
-  margin-inline: calc(-1 * var(--cx));
-  border-radius: var(--ir);
-  padding: 14px 16px;
-  background: rgba(0, 0, 0, 0.18);
-  border: 1px solid var(--stroke);
+  padding-top: 2px;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  align-items: center;
+  gap: 16px;
   font-size: 15px;
   color: var(--ink-2);
 }
-/* the app's install code, for someone who does not have نقطه on the phone yet */
-.signin-cta .getapp {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 8px;
-  border-radius: 16px;
-  background: rgba(255, 255, 255, 0.04);
-  font-size: 13.5px;
-  line-height: 1.7;
-  color: var(--ink-2);
+.signin-cta p {
+  margin: 0;
+  align-self: stretch;
 }
-.signin-cta .getapp .qr {
-  width: 72px;
-  height: 72px;
-  flex: none;
-  padding: 3px;
-  border-radius: 10px;
+.signin-cta .qr {
+  width: 156px;
+  height: 156px;
+  padding: 6px;
+  border-radius: 16px;
   background: #fff;
+}
+.signin-cta .cta {
+  align-self: stretch;
 }
 
 /* ---------- right edge: Chrome bookmarks and customisation ---------- */
