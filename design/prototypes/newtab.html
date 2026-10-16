@@ -389,7 +389,8 @@ button { font: inherit; color: inherit; }
 .flist button { font: inherit; color: var(--ink); background: none; border: 0; cursor: pointer; display: flex; align-items: center; gap: 10px; padding: 9px 14px; border-radius: 14px; font-size: 17px; text-align: start; }
 .flist button:hover { background: rgba(255,255,255,.06); }
 .flist button svg { width: 18px; height: 18px; color: var(--ink-2); flex: none; }
-.flist button span { margin-inline-start: auto; font-size: 14px; color: var(--ink-2); }
+.flist button span:last-child { margin-inline-start: auto; font-size: 14px; color: var(--ink-2); }
+.flist button .fdot { margin: 0 4px; }
 .flist button[aria-pressed="true"] { background: #fff; color: #0B0D12; font-weight: 600; }
 .flist button[aria-pressed="true"] svg, .flist button[aria-pressed="true"] span { color: #3a3d48; }
 .flist .fsep { height: 1px; background: var(--stroke); margin: 6px 8px; }
