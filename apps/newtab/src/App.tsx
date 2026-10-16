@@ -11,6 +11,7 @@ import { PlansSlide } from "./home/PlansSlide";
 import { Rail, type SlideInfo } from "./home/Rail";
 import { SearchBox } from "./home/SearchBox";
 import { SignIn } from "./home/SignIn";
+import { SocialSlide } from "./home/SocialSlide";
 import { TaskEditorHost } from "./home/TaskEditor";
 import { useSession, useSettings } from "./hooks";
 import { onArrival } from "./noghte/sync";
@@ -114,6 +115,7 @@ export function App() {
   // the slides in the person's order; each one that is switched on and built gets a screen
   const SLIDE_UI: Partial<Record<SlideId, { icon: IconName; node: React.ReactNode }>> = {
     "s-plans": { icon: "calendar-face", node: <PlansSlide /> },
+    "s-social": { icon: "chat", node: <SocialSlide /> },
     "s-notes": {
       icon: "sticker-note",
       node: <NotesSlide signedIn={signedIn} onSignIn={openSignIn} />,

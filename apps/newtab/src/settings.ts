@@ -53,6 +53,8 @@ export type Settings = {
   hiddenCals: string[];
   /** The slides' order under the home (ids missing here follow in the design's order). */
   slideOrder: SlideId[];
+  /** The social networks slide: which services have a tab, in what order, and which were introduced. */
+  social: { order: string[]; shown: string[]; seen: string[] };
 };
 
 export const DEFAULT_SITES: readonly QuickSite[] = [
@@ -71,6 +73,11 @@ export const DEFAULTS: Settings = {
   welcomed: false,
   hiddenCals: [],
   slideOrder: SLIDES.map(([id]) => id),
+  social: {
+    order: ["tg", "ig", "wa", "x", "bale", "rubika", "eitaa"],
+    shown: ["tg", "ig", "wa", "bale", "rubika"],
+    seen: [],
+  },
 };
 
 const KEY = "settings.v1";

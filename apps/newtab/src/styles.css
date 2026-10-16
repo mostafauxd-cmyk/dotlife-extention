@@ -4422,3 +4422,249 @@ a.ts-link {
 .ico.down {
   transform: rotate(180deg);
 }
+
+/* ---------- the social networks slide: tabs, a tablet frame with the service's own page ---------- */
+.social-s {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 14px;
+  padding-top: 26px;
+  padding-bottom: 22px;
+}
+.soc-top {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+.soc-top h2 {
+  margin: 0;
+  font-size: 30px;
+  font-weight: 600;
+}
+.stabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 5px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid var(--stroke);
+}
+.stabs button {
+  font: inherit;
+  font-size: 16px;
+  color: rgba(255, 255, 255, 0.8);
+  background: none;
+  border: 0;
+  border-radius: 999px;
+  padding: 6px 14px 6px 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.stabs button:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+.stabs button[aria-selected="true"] {
+  background: #fff;
+  color: #0b0d12;
+  font-weight: 600;
+}
+.lg {
+  flex: none;
+  width: 26px;
+  height: 26px;
+  border-radius: 8px;
+  display: grid;
+  place-items: center;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 700;
+}
+.lg.dark {
+  border: 1px solid #444;
+}
+.tablet {
+  flex: 1;
+  min-height: 0;
+  border-radius: 36px;
+  border: 11px solid #0c0d10;
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.12),
+    0 40px 100px rgba(0, 0, 0, 0.55);
+  background: #0f1116;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.tb-bar {
+  flex: none;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 16px;
+  border-bottom: 1px solid var(--stroke);
+  font-size: 15px;
+}
+.tb-bar .lg {
+  width: 28px;
+  height: 28px;
+  border-radius: 9px;
+}
+.tb-bar .url {
+  direction: ltr;
+  font-size: 13px;
+  color: var(--ink-3);
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 999px;
+  padding: 3px 12px;
+}
+.tb-bar .grow {
+  flex: 1;
+}
+.tb-bar a.rbtn {
+  text-decoration: none;
+}
+.ico.out {
+  transform: rotate(-45deg);
+}
+.tb-body {
+  flex: 1;
+  min-height: 0;
+  position: relative;
+  display: flex;
+}
+.tb-frame {
+  flex: 1;
+  width: 100%;
+  border: 0;
+  background: #fff;
+}
+.tb-frame[hidden] {
+  display: none;
+}
+.tb-empty {
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  color: var(--ink-2);
+}
+.tb-empty p {
+  margin: 0;
+}
+.soc-note {
+  font-size: 14px;
+  color: var(--ink-2);
+}
+.sonb {
+  margin: auto;
+  width: 520px;
+  max-width: calc(100% - 40px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 14px;
+  animation: rise 0.5s var(--ease) both;
+}
+.sonb-art {
+  position: relative;
+  width: 220px;
+  height: 130px;
+  margin-bottom: 6px;
+}
+.sonb-art span {
+  position: absolute;
+  border-radius: 18px;
+}
+.sonb-art .b1 {
+  inset-inline-start: 0;
+  top: 18px;
+  width: 120px;
+  height: 34px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 18px 18px 18px 6px;
+}
+.sonb-art .b2 {
+  inset-inline-end: 0;
+  top: 62px;
+  width: 104px;
+  height: 34px;
+  background: color-mix(in srgb, var(--sc) 30%, transparent);
+  border-radius: 18px 18px 6px 18px;
+}
+.sonb-art .b3 {
+  inset-inline-start: 26px;
+  top: 104px;
+  width: 70px;
+  height: 22px;
+  background: rgba(255, 255, 255, 0.05);
+}
+.sonb-art .slg {
+  left: 50%;
+  top: 22px;
+  translate: -50% 0;
+  width: 76px;
+  height: 76px;
+  border-radius: 24px;
+  display: grid;
+  place-items: center;
+  color: #fff;
+  font-size: 34px;
+  font-weight: 700;
+  box-shadow:
+    0 0 0 8px #0f1116,
+    0 20px 50px color-mix(in srgb, var(--sc) 40%, transparent);
+}
+.sonb-art .slg.dark {
+  border: 1px solid #444;
+}
+.sonb h3 {
+  margin: 0;
+  font-size: 28px;
+  font-weight: 700;
+}
+.sonb p {
+  margin: 0;
+  font-size: 16px;
+  color: var(--ink-2);
+  line-height: 1.9;
+  max-width: 44ch;
+}
+.sonb ul {
+  list-style: none;
+  margin: 4px 0 6px;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  text-align: start;
+}
+.sonb li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 15px;
+  color: rgba(255, 255, 255, 0.85);
+}
+.sonb li .ico {
+  width: 18px;
+  height: 18px;
+  color: var(--sc);
+}
+.sonb .cta {
+  min-width: 240px;
+  height: 50px;
+  font-size: 17px;
+}
+.srow3 .trow .lg {
+  width: 24px;
+  height: 24px;
+}
