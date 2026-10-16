@@ -1519,12 +1519,13 @@ svg {
 
 /* ---------- modals: add a site, sign in ---------- */
 .modal-bg {
-  position: absolute;
+  position: fixed;
   inset: 0;
   z-index: 25;
   display: grid;
   place-items: center;
-  background: rgba(4, 6, 12, 0.55);
+  background: rgba(4, 6, 12, 0.62);
+  backdrop-filter: blur(8px);
   animation: fade 0.2s ease both;
 }
 .modal {
@@ -1584,9 +1585,43 @@ svg {
   letter-spacing: 0.04em;
 }
 .form2 {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+/* add a site: one narrow column, fields under each other, one full-width button */
+.modal.addsite {
+  width: min(440px, calc((100vw / var(--z)) - 32px));
+  padding: 22px 24px 24px;
+  border-radius: 28px;
+  gap: 18px;
+}
+.modal.addsite .card-h h2 {
+  font-size: 20px;
+}
+.modal.addsite .rbtn {
+  width: 36px;
+  height: 36px;
+  background: rgba(255, 255, 255, 0.06);
+  border-color: var(--stroke);
+}
+.modal.addsite .field input {
+  height: 48px;
+  border-radius: 14px;
+  font-size: 16px;
+}
+.modal.addsite .sugg {
+  grid-template-columns: repeat(auto-fill, minmax(84px, 1fr));
+  max-height: 220px;
+}
+.cta.block:disabled {
+  opacity: 0.3;
+}
+.cta.block {
+  width: 100%;
+  height: 48px;
+  padding: 0;
+  margin-top: 2px;
 }
 .mfoot {
   display: flex;

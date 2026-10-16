@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 
 import { useSettings } from "../hooks";
 import { faviconUrl, siteName, topSites, type Site } from "../platform";
@@ -173,6 +174,15 @@ function AddSite({ have, onClose }: { have: readonly QuickSite[]; onClose: () =>
       setTop(sites.slice(0, 12));
     });
   }, []);
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent): void => {
+      if (e.key === "Escape") onClose();
+    };
+    addEventListener("keydown", onKey);
+    return () => {
+      removeEventListener("keydown", onKey);
+    };
+  }, [onClose]);
   const has = (u: string): boolean => have.some((h) => h.url === u);
 
   const toggle = (site: Site): void => {
@@ -204,14 +214,15 @@ function AddSite({ have, onClose }: { have: readonly QuickSite[]; onClose: () =>
     onClose();
   };
 
-  return (
+  // over the whole page: inside the quick-access row it would be clipped to the row and moved by its entry animation
+  return createPortal(
     <div
       className="modal-bg"
       onMouseDown={(e) => {
         if (e.target === e.currentTarget) onClose();
       }}
     >
-      <div className="modal wide" role="dialog" aria-modal="true" aria-labelledby="addTitle">
+      <div className="modal addsite" role="dialog" aria-modal="true" aria-labelledby="addTitle">
         <div className="card-h">
           <h2 id="addTitle">افزودن به دسترسی سریع</h2>
           <button type="button" className="rbtn" aria-label="بستن" onClick={onClose}>
@@ -270,16 +281,12 @@ function AddSite({ have, onClose }: { have: readonly QuickSite[]; onClose: () =>
           </label>
           <button type="submit" hidden />
         </form>
-        <div className="mfoot">
-          {err !== "" && <span className="err">{err}</span>}
-          <button type="button" className="ghost" onClick={onClose}>
-            تمام
-          </button>
-          <button type="button" className="cta" disabled={url.trim() === ""} onClick={addTyped}>
-            افزودن
-          </button>
-        </div>
+        {err !== "" && <span className="err">{err}</span>}
+        <button type="button" className="cta block" disabled={url.trim() === ""} onClick={addTyped}>
+          افزودن
+        </button>
       </div>
-    </div>
+    </div>,
+    document.querySelector(".nt") ?? document.body,
   );
 }
