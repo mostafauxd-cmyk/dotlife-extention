@@ -94,14 +94,18 @@ async function setSession(s: Session | null): Promise<void> {
 // ---- signing in ----
 
 type Tokens = { accessToken: string; refreshToken: string; expiresIn: number };
-type SignedIn = Tokens & { account: { id: string } };
+/** `created`: the phone had no account, so the server made one (sign-up and sign-in are one step). */
+type SignedIn = Tokens & { account: { id: string }; created?: boolean };
 
 /** Asks for a code by SMS. Resolves with how long until another may be asked for (seconds). */
 export async function requestCode(phone: string): Promise<{ retryAfter: number }> {
   return call("/auth/code/request", { body: { kind: "phone", target: phone } });
 }
 
-export async function verifyCode(phone: string, code: string): Promise<Session> {
+export async function verifyCode(
+  phone: string,
+  code: string,
+): Promise<{ session: Session; created: boolean }> {
   const r = await call<SignedIn>("/auth/code/verify", {
     body: { kind: "phone", target: phone, code, device: DEVICE },
   });
@@ -113,7 +117,7 @@ export async function verifyCode(phone: string, code: string): Promise<Session> 
     expiresAt: Date.now() + r.expiresIn * 1000,
   };
   await setSession(s);
-  return s;
+  return { session: s, created: r.created === true };
 }
 
 export async function signOut(): Promise<void> {

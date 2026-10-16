@@ -172,8 +172,14 @@ export function App() {
       )}
       {signIn && (
         <SignIn
-          onClose={() => {
+          onClose={(created) => {
             setSignIn(false);
+            if (created) {
+              setToast("حساب نقطه‌ات ساخته شد · همین حساب در پاکت هم کار می‌کند");
+              setTimeout(() => {
+                setToast(null);
+              }, 3200);
+            }
           }}
         />
       )}

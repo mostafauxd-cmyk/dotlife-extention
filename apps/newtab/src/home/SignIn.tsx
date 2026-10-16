@@ -1,12 +1,17 @@
 import { useEffect, useRef, useState } from "react";
 
+import { getLink, installId } from "../install";
+
 import { ApiError, requestCode, verifyCode } from "../noghte/api";
 import { fa, latin } from "../ui/fa";
+import { Qr } from "../ui/Qr";
 import { Painting } from "./Painting";
 
 /**
- * Signing in to نقطه with the phone number the app uses: a code by SMS, then the code — the same
- * `/auth/code/*` as the phone, so it is the same account and its tasks and notes come straight in.
+ * Signing in to نقطه, or signing up: a phone number, then the code sent to it by SMS — the same
+ * `/auth/code/*` as the phone app. A number with no account gets one there and then, so most people
+ * coming from Chrome never see a separate sign-up. The same account is the one Paket uses.
+ * Beside the form, a QR code for getting the app on the phone (counted, see `install.ts`).
  */
 
 const REASONS: Record<string, string> = {
@@ -27,7 +32,7 @@ const reason = (e: unknown): string =>
     ? (REASONS[e.code] ?? "مشکلی پیش آمد؛ دوباره امتحان کن.")
     : "مشکلی پیش آمد.";
 
-export function SignIn({ onClose }: { onClose: () => void }) {
+export function SignIn({ onClose }: { onClose: (created: boolean) => void }) {
   const [step, setStep] = useState<"phone" | "code">("phone");
   const [phone, setPhone] = useState("");
   const [code, setCode] = useState("");
@@ -35,6 +40,11 @@ export function SignIn({ onClose }: { onClose: () => void }) {
   const [err, setErr] = useState("");
   const [wait, setWait] = useState(0);
   const codeInput = useRef<HTMLInputElement>(null);
+  const [install, setInstall] = useState<string | null>(null);
+
+  useEffect(() => {
+    void installId().then(setInstall);
+  }, []);
 
   useEffect(() => {
     if (wait <= 0) return;
@@ -67,8 +77,8 @@ export function SignIn({ onClose }: { onClose: () => void }) {
     setBusy(true);
     setErr("");
     try {
-      await verifyCode(latin(phone).replace(/\s/g, ""), latin(code).trim());
-      onClose();
+      const r = await verifyCode(latin(phone).replace(/\s/g, ""), latin(code).trim());
+      onClose(r.created);
     } catch (e) {
       setErr(reason(e));
     } finally {
@@ -85,7 +95,7 @@ export function SignIn({ onClose }: { onClose: () => void }) {
     <div
       className="modal-bg dia-bg"
       onMouseDown={(e) => {
-        if (e.target === e.currentTarget) onClose();
+        if (e.target === e.currentTarget) onClose(false);
       }}
     >
       <div className="dia" role="dialog" aria-modal="true" aria-labelledby="signTitle">
@@ -100,17 +110,22 @@ export function SignIn({ onClose }: { onClose: () => void }) {
             <span className="prog">
               <b style={{ width: step === "phone" ? "50%" : "100%" }} />
             </span>
-            <button type="button" onClick={onClose}>
+            <button
+              type="button"
+              onClick={() => {
+                onClose(false);
+              }}
+            >
               بعداً
             </button>
           </div>
           <div className="dia-body">
             {step === "phone" ? (
               <>
-                <h2 id="signTitle">شماره‌ات در نقطه چیست؟</h2>
+                <h2 id="signTitle">با شماره‌ات وارد شو</h2>
                 <p className="lead">
-                  با همان شماره‌ای که در اپ نقطه داری. کارها، یادداشت‌ها و دسته‌هایت این‌جا می‌آیند
-                  و هر چه این‌جا بنویسی روی گوشی هم دیده می‌شود.
+                  حساب نداری؟ با همین شماره ساخته می‌شود؛ یک حساب برای نقطه و پاکت. هر چه این‌جا
+                  بنویسی روی گوشی هم دیده می‌شود.
                 </p>
                 <label className="fl">
                   شماره‌ی موبایل
@@ -125,6 +140,21 @@ export function SignIn({ onClose }: { onClose: () => void }) {
                     }}
                   />
                 </label>
+                {install !== null && (
+                  <div className="inst">
+                    <Qr
+                      text={getLink("noghte", "signin", install)}
+                      label="کد نصب نقطه از کافه‌بازار"
+                    />
+                    <div>
+                      <b>نقطه را روی گوشی هم داشته باش</b>
+                      <span>
+                        با دوربین گوشی اسکن کن تا نقطه در کافه‌بازار باز شود. با همین شماره وارد شو؛
+                        کارها و یادداشت‌ها همگام می‌شوند.
+                      </span>
+                    </div>
+                  </div>
+                )}
               </>
             ) : (
               <>
