@@ -1201,6 +1201,8 @@ td.them { color: var(--ink-2); }
 /* a box that opens a card (no title above it) sits --cp from the top too */
 .slide .card > .nsearch:first-child, .slide .card > .feed-top:first-child { margin-top: calc(var(--cp) - var(--cy)); }
 .wxc, .nextp, .spcard, .spev, .prow, .ncard, .flist button, .tpl, .newf, .nitem, .addsrc, .fbig, .frow, .saved, .occl button, .side2 .bm, .mtabs { border-radius: var(--ir); }
+/* a one-line row is too short for the card's corner (it would turn into a pill): its highlight is a soft square */
+.prow, .flist button, .occl button, .side2 .bm, .nextp, .spcard, .newf, .addsrc { border-radius: 14px; }
 .prow, .flist button, .nitem, .occl button, .side2 .bm { padding-inline: var(--cx); }
 .mtabs { padding: 3px; }
 .s5 .s-pad { grid-template-columns: 300px minmax(0, 1fr) 280px; }
