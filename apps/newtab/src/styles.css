@@ -4245,7 +4245,16 @@ label.ts-line {
   background: none;
   color: var(--ink-2);
 }
-/* a task's title opens the form */
+/* a task's row opens the form: the whole row is its touch area, with a soft white hover and focus */
+.task,
+.td-row {
+  position: relative;
+  transition: background 0.15s;
+}
+.td-row {
+  border-radius: var(--row-r);
+  border-bottom-color: transparent;
+}
 .task .t,
 .td-row .t {
   padding: 0;
@@ -4255,12 +4264,28 @@ label.ts-line {
   font: inherit;
   text-align: start;
   cursor: pointer;
+  outline: none;
 }
-.task .t:hover,
-.td-row .t:hover {
-  text-decoration: underline;
-  text-decoration-color: rgba(255, 255, 255, 0.3);
-  text-underline-offset: 4px;
+.task .t::after,
+.td-row .t::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+}
+/* the check box stays above the row's touch area */
+.task .cb,
+.td-row .cb {
+  position: relative;
+  z-index: 1;
+}
+.task:hover,
+.td-row:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+.task:has(.t:focus-visible),
+.td-row:has(.t:focus-visible) {
+  background: rgba(255, 255, 255, 0.12);
 }
 
 /* Google: the connect button on the plans slide, the Meet line in the form */
