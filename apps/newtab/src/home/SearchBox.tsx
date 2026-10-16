@@ -65,7 +65,7 @@ function traceBox(box: HTMLElement): void {
   const w = box.offsetWidth + 3;
   const h = box.offsetHeight + 3;
   const e = 0.8;
-  const R = 27.5 - e;
+  const R = 23.5 - e;
   const m = w / 2;
   const half = (dir: -1 | 1): string => {
     const x0 = dir < 0 ? e : w - e;
