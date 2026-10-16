@@ -1149,29 +1149,33 @@ svg {
   font-weight: 500;
   font-variant-numeric: tabular-nums;
 }
-/* signed out: one text, the app's install code, the sign-in button; no boxes inside the card */
+/* signed out: the text with the sign-in button under it, and the app's install code in its own
+   column on the left; no boxes inside the card */
 .signin-cta {
   padding-top: 2px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 16px;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-template-rows: 1fr auto;
+  column-gap: 18px;
+  row-gap: 14px;
   font-size: 15px;
   color: var(--ink-2);
 }
 .signin-cta p {
   margin: 0;
-  align-self: stretch;
 }
 .signin-cta .qr {
-  width: 156px;
-  height: 156px;
-  padding: 6px;
-  border-radius: 16px;
+  grid-column: 2;
+  grid-row: 1 / 3;
+  align-self: center;
+  width: 118px;
+  height: 118px;
+  padding: 5px;
+  border-radius: 14px;
   background: #fff;
 }
 .signin-cta .cta {
-  align-self: stretch;
+  grid-column: 1;
 }
 
 /* ---------- right edge: Chrome bookmarks and customisation ---------- */
