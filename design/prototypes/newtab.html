@@ -1264,6 +1264,21 @@ td.them { color: var(--ink-2); }
 .sbox .ibtn.mic:hover { background: rgba(255,255,255,.14); }
 .sbox .ibtn.mic.on { background: var(--tint); border-color: transparent; color: #0B0D12; animation: micring 1.4s ease-out infinite; }
 @keyframes micring { 0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--tint) 55%, transparent); } 100% { box-shadow: 0 0 0 12px transparent; } }
+
+/* ---------- v19: «به کارها» / «به یادداشت‌ها» are modes of the box ---------- */
+.act[aria-pressed="true"] { color: var(--ink); background: color-mix(in srgb, var(--tint) 20%, transparent); border-color: color-mix(in srgb, var(--tint) 55%, transparent); }
+.sbox[data-mode="task"], .sbox[data-mode="note"] { border-color: color-mix(in srgb, var(--tint) 38%, transparent); }
+.sbox .gmark { transition: color .2s; }
+.sbox[data-mode="task"] .gmark, .sbox[data-mode="note"] .gmark { color: var(--tint); }
+.sbox .gmark.swap { animation: gswap .32s cubic-bezier(.3,.7,.2,1); }
+@keyframes gswap { 0% { opacity: 0; transform: scale(.6) rotate(-20deg); } 100% { opacity: 1; transform: none; } }
+.sbox .gmark span[data-ico] svg { width: 24px; height: 24px; display: block; }
+.srow textarea.swap::placeholder { animation: phin .3s ease; }
+@keyframes phin { from { opacity: 0; } }
+/* a corner that opens by itself (news from the phone, or saved from search) stays compact so it never
+   reaches the search box: only the newest rows, no add field or footer until the mouse goes to it */
+.hz.livep:not(:hover):not(:focus-within) .ccard .add, .hz.livep:not(:hover):not(:focus-within) .ccard > .more { display: none; }
+.hz.livep:not(:hover):not(:focus-within) .ccard .tasks > li:nth-child(n+4) { display: none; }
 </style>
 </head>
 <body>
@@ -1302,8 +1317,8 @@ td.them { color: var(--ink-2); }
                     <textarea id="q" rows="1" placeholder="در گوگل جستجو کن یا آدرس بنویس…" autocomplete="off" aria-label="جستجو در گوگل"></textarea>
                   </div>
                   <div class="srow2">
-                    <button type="button" class="act" id="toTask" title="متن را به‌جای جستجو، به کارهای امروز اضافه کن"><span data-ico="tick-square"></span>به کارها</button>
-                    <button type="button" class="act" id="toNote" title="متن را به‌عنوان یادداشت تازه ذخیره کن"><span data-ico="sticker-note"></span>به یادداشت‌ها</button>
+                    <button type="button" class="act" id="toTask" aria-pressed="false" title="نوشتن کار تازه به‌جای جستجو"><span data-ico="tick-square"></span>به کارها</button>
+                    <button type="button" class="act" id="toNote" aria-pressed="false" title="نوشتن یادداشت تازه به‌جای جستجو"><span data-ico="sticker-note"></span>به یادداشت‌ها</button>
                     <span class="grow"></span>
                     <span class="hintk" id="hintk">Enter جستجو · Shift+Enter خط تازه</span>
                     <button type="button" class="ibtn mic" aria-label="جستجوی صوتی" aria-pressed="false"><span data-ico="voice"></span></button>
@@ -1715,7 +1730,7 @@ td.them { color: var(--ink-2); }
         <li>همه‌ی این انتخاب‌ها در شخصی‌سازی نقطه (بخش تازه‌ی <code>newtab</code>) سینک می‌شود.</li>
       </ul>
       <h3>سرچ گوگل</h3>
-      <p>سرچ بزرگ‌ترین چیز صفحه است: یک کادر دوخطی مثل Dia. خط اول متن است (نشانه‌ی ساده‌ی G، هم‌رنگ متن)، و با متن طولانی تا چند خط بزرگ می‌شود، چون گوگل هم تا ۲۰۴۸ نویسه می‌پذیرد. Enter جستجو می‌کند و Shift+Enter خط تازه می‌زند. خط دوم کاربردی است: «به کارها» و «به یادداشت‌ها» همان متن را به‌جای جستجو در نقطه ذخیره می‌کنند (و گوشه‌ی مربوط باز می‌شود و نشانش می‌دهد)، و کنارشان میکروفون و فلش جستجو.</p>
+      <p>سرچ بزرگ‌ترین چیز صفحه است: یک کادر دوخطی مثل Dia. خط اول متن است (نشانه‌ی ساده‌ی G، هم‌رنگ متن)، و با متن طولانی تا چند خط بزرگ می‌شود، چون گوگل هم تا ۲۰۴۸ نویسه می‌پذیرد. Enter جستجو می‌کند و Shift+Enter خط تازه می‌زند. خط دوم کاربردی است: «به کارها» و «به یادداشت‌ها» دو حالت کادرند و قبل یا بعد از نوشتن انتخاب می‌شوند. با انتخاب هر کدام، نشانه‌ی G جایش را به آیکون همان (تیک یا یادداشت) به رنگ تم می‌دهد، متن راهنما عوض می‌شود («کار تازه برای امروز…» یا «یادداشت تازه… خط اول عنوانش می‌شود»)، دور کادر کمی رنگ تم می‌گیرد و فهرست پیشنهادهای گوگل بسته می‌ماند. Enter به‌جای جستجو در نقطه ذخیره می‌کند و گوشه‌ی مربوط، فشرده و بدون پوشاندن سرچ، باز می‌شود و نشانش می‌دهد. کلیک دوباره روی همان دکمه یا Esc کادر را به جستجوی گوگل برمی‌گرداند. کنارشان میکروفون و فلش جستجو است.</p>
       <p><b>کارها و یادداشت‌های خود کاربر در همان سرچ:</b> وقتی کاربر تایپ می‌کند، فهرست پیشنهادها دو بخش دارد. بالا «گوگل» (جستجو در گوگل و پیشنهادهای آن) و پایین «در نقطه‌ی تو»، یعنی کارها و یادداشت‌هایی که آن کلمه را دارند. این بخش دوم روی خود دستگاه گشته می‌شود: کارها و یادداشت‌ها از قبل با سینک در IndexedDB افزونه هستند و افزونه همان‌جا در آن‌ها می‌گردد، پس چیزی از این جستجو به سرور ما یا به گوگل نمی‌رود. با کلیک روی یک کار یا یادداشت، همان در اسلاید خودش باز می‌شود. اگر چیزی پیدا نشود، این بخش اصلاً نشان داده نمی‌شود؛ کلید جدایی لازم نیست و در شخصی‌سازی می‌شود کلاً خاموشش کرد.</p>
       <p><b>سرچ صوتی:</b> دکمه‌ی میکروفون از تشخیص گفتار خود کروم (<code>SpeechRecognition</code> با زبان <code>fa-IR</code>) استفاده می‌کند. رایگان است، کلید و سرور ما را لازم ندارد، فارسی و انگلیسی را می‌فهمد و متن را هم‌زمان با حرف زدن در کادر می‌نویسد. صدا را خود کروم برای گوگل می‌فرستد، همان‌جایی که جستجو هم می‌رود. بار اول کروم اجازه‌ی میکروفون را برای صفحه‌ی افزونه می‌پرسد. اگر سرویس گفتار گوگل از ایران جواب ندهد (قبل از انتشار باید آزمایش شود)، میز صدا را با <code>MediaRecorder</code> ضبط می‌کند و به همان سرویس تبدیل صدا به متن سرور نقطه می‌فرستد که اپ برای «نوشتن متنِ صدا» در نظر گرفته است (<code>transcribe.ts</code>، مثلاً Whisper روی سرور خودمان). یادداشت صوتی از نیوتب هم از همین سرویس سرور متن می‌گیرد، تا با اپ یکی باشد.</p>
       <p>ارسال با <code>chrome.search.query</code> انجام می‌شود که موتور پیش‌فرض کروم را صدا می‌زند (برای بیشتر کاربران گوگل)؛ اگر موتور پیش‌فرض کسی گوگل نباشد، نشانه و متن راهنما اسم همان موتور را نشان می‌دهند تا قول نادرستی نداده باشیم و سیاست استور هم رعایت شود.</p>
@@ -2270,7 +2285,7 @@ td.them { color: var(--ink-2); }
   // search: Google, plus the user's own tasks and notes
   $("sform").addEventListener("submit", (e) => { e.preventDefault(); });
   // the box grows with long text (Google takes up to 2,048 characters); Enter searches, Shift+Enter breaks the line
-  const grow = () => { q.style.height = "auto"; q.style.height = Math.min(q.scrollHeight, 150) + "px"; const has = !!q.value.trim(); $("toTask").disabled = $("toNote").disabled = !has; };
+  const grow = () => { q.style.height = "auto"; q.style.height = Math.min(q.scrollHeight, 150) + "px"; };
   q.addEventListener("input", grow); grow();
   q.addEventListener("keydown", (e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); $("sform").requestSubmit(); } });
   const saveAs = (kind) => {
@@ -2301,8 +2316,30 @@ td.them { color: var(--ink-2); }
       r.start();
     } catch { setTimeout(fake, 600); }
   });
-  $("toTask").addEventListener("click", () => saveAs("task"));
-  $("toNote").addEventListener("click", () => saveAs("note"));
+  // «به کارها» / «به یادداشت‌ها»: pick one before or after writing; the box turns into that, icon and words too
+  const gm = document.querySelector(".sbox .gmark"), gHTML = () => gm.dataset.g ??= gm.innerHTML;
+  const MODES = {
+    google: { ph: "در گوگل جستجو کن یا آدرس بنویس…", hint: "Enter جستجو · Shift+Enter خط تازه", label: "جستجو در گوگل", go: "جستجو در گوگل", title: "جستجو در گوگل" },
+    task: { ph: "کار تازه برای امروز…", hint: "Enter افزودن به کارها · Esc برگشت به جستجو", label: "کار تازه", go: "افزودن به کارها", title: "به کارهای امروز اضافه می‌شود", ico: "tick-square" },
+    note: { ph: "یادداشت تازه… خط اول عنوانش می‌شود", hint: "Enter ذخیره · Shift+Enter خط تازه · Esc برگشت", label: "یادداشت تازه", go: "ذخیره در یادداشت‌ها", title: "در یادداشت‌ها ذخیره می‌شود", ico: "sticker-note" },
+  };
+  let mode = "google";
+  const setMode = (m) => {
+    if (m === mode) return; gHTML(); mode = m; const M = MODES[m], box = $("sform");
+    box.dataset.mode = m;
+    $("toTask").setAttribute("aria-pressed", String(m === "task")); $("toNote").setAttribute("aria-pressed", String(m === "note"));
+    gm.innerHTML = M.ico ? `<span data-ico="${M.ico}">${ICO[M.ico]}</span>` : gm.dataset.g; gm.title = M.title;
+    gm.classList.remove("swap"); void gm.offsetWidth; gm.classList.add("swap");
+    q.placeholder = M.ph; q.setAttribute("aria-label", M.label); q.classList.remove("swap"); void q.offsetWidth; q.classList.add("swap");
+    $("hintk").textContent = M.hint; box.querySelector(".ibtn.go").setAttribute("aria-label", M.go);
+    drop.hidden = m !== "google" || document.activeElement !== q;
+    q.focus();
+  };
+  $("toTask").addEventListener("click", () => setMode(mode === "task" ? "google" : "task"));
+  $("toNote").addEventListener("click", () => setMode(mode === "note" ? "google" : "note"));
+  q.addEventListener("focus", () => { if (mode !== "google") drop.hidden = true; });
+  q.addEventListener("keydown", (e) => { if (e.key === "Escape" && mode !== "google") { e.preventDefault(); setMode("google"); } });
+  $("sform").addEventListener("submit", () => { if (mode !== "google") saveAs(mode); });
   // Google's G as a plain outline glyph in the text colour (no badge, no brand colours)
   document.querySelectorAll("[data-brand=google]").forEach((el) => { el.innerHTML = `<svg class="gline" viewBox="0 0 24 24" aria-hidden="true"><path d="M19.5 12a7.5 7.5 0 1 1-2.2-5.3"/><path d="M19.5 12H12.5"/></svg>`; });
 
