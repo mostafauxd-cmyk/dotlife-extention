@@ -283,7 +283,7 @@ export function PlansSlide() {
                   setSpan(1);
                 }}
               >
-                {WEEKDAY_NAMES_FA[weekdayOf(d)]}
+                <span className="wn">{WEEKDAY_NAMES_FA[weekdayOf(d)]}</span>
                 <b>{fa(String(solarOf(d).day))}</b>
               </button>
             ))}

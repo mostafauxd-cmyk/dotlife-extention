@@ -3133,11 +3133,21 @@ svg {
 .ad-row {
   display: grid;
   grid-template-columns: 64px repeat(var(--days), minmax(0, 1fr));
+  /* the hours below keep 8px on the left for their scrollbar; these line up with them */
   padding-inline: 14px 10px;
 }
 .ph-row {
   padding-top: 14px;
   padding-bottom: 8px;
+}
+/* the day's name gives way to its number when the columns get narrow */
+.planner {
+  container-type: inline-size;
+}
+@container (max-width: 820px) {
+  .dcell .wn {
+    display: none;
+  }
 }
 .dcell {
   font: inherit;
@@ -3219,13 +3229,30 @@ svg {
   flex: 1;
   min-height: 0;
   overflow-y: auto;
-  scrollbar-width: thin;
-  scrollbar-color: rgba(255, 255, 255, 0.15) transparent;
+}
+/* a fine scrollbar in the card's own margin: a 4px thumb, no track, a little in from the corners */
+.pbody::-webkit-scrollbar {
+  width: 8px;
+}
+.pbody::-webkit-scrollbar-track {
+  background: transparent;
+  margin: 6px 0 22px;
+}
+.pbody::-webkit-scrollbar-thumb {
+  border: 2px solid transparent;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.14) padding-box;
+}
+.pbody::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(255, 255, 255, 0.28);
+}
+.pbody::-webkit-scrollbar-button {
+  display: none;
 }
 .pgrid {
   display: grid;
   grid-template-columns: 64px repeat(var(--days), minmax(0, 1fr));
-  padding-inline: 14px 10px;
+  padding-inline: 14px 2px;
   background-image: linear-gradient(rgba(255, 255, 255, 0.06) 1px, transparent 1px);
   background-size: 100% 52px;
   background-origin: content-box;
@@ -3745,4 +3772,10 @@ svg {
   margin: 0;
   padding: 12px;
   color: var(--ink-3);
+}
+.seg button,
+.ptitle b,
+.ptitle span,
+.ptabs button {
+  white-space: nowrap;
 }
