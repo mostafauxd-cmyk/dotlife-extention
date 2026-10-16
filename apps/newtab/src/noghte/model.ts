@@ -152,6 +152,32 @@ export function addTask(
   return task;
 }
 
+/** A task drawn on the planner: from one time to another on a day, as the app's planner makes it. */
+export function addTimedTask(title: string, day: LocalDate, start: string, end: string): Task {
+  const lists = liveLists();
+  const tasks = records.all<Task>("task");
+  const last = tasks.reduce<string | undefined>(
+    (max, t) => (max === undefined || t.order > max ? t.order : max),
+    undefined,
+  );
+  const now = nowIso();
+  const task: Task = {
+    id: newId(),
+    listId: (defaultList(lists) ?? ensureDefaultList()).id,
+    title: title.trim(),
+    status: "todo",
+    priority: "none",
+    schedule: { kind: "range", start: { date: day, time: start }, end: { date: day, time: end } },
+    timeZone: TIME_ZONE,
+    reminders: [],
+    order: last === undefined ? FIRST_ORDER : orderBetween(last, undefined),
+    createdAt: now,
+    updatedAt: now,
+  };
+  records.write("task", task.id, task);
+  return task;
+}
+
 /** Ticks a task (or one occurrence of a repeating one) on or off. */
 export function toggleTask(row: TodayRow): void {
   const now = nowIso();

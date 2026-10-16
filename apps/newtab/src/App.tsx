@@ -7,6 +7,7 @@ import { Dot } from "./home/Dot";
 import { Edge } from "./home/Edge";
 import { Launcher } from "./home/Launcher";
 import { NotesSlide } from "./home/NotesSlide";
+import { PlansSlide } from "./home/PlansSlide";
 import { Rail, type SlideInfo } from "./home/Rail";
 import { SearchBox } from "./home/SearchBox";
 import { SignIn } from "./home/SignIn";
@@ -110,6 +111,9 @@ export function App() {
   const scroller = useRef<HTMLDivElement>(null);
   const slides: SlideInfo[] = [
     { id: "s-home", icon: "home", name: "خانه" },
+    ...(isOn(s, "s-plans")
+      ? [{ id: "s-plans", icon: "calendar-face", name: "برنامه‌ها" } as const]
+      : []),
     ...(isOn(s, "s-notes")
       ? [{ id: "s-notes", icon: "sticker-note", name: "یادداشت‌ها" } as const]
       : []),
@@ -196,6 +200,12 @@ export function App() {
             <Icon name="setting" />
           </button>
         </section>
+
+        {isOn(s, "s-plans") && (
+          <section className="slide" id="s-plans" aria-label="برنامه‌ها">
+            <PlansSlide />
+          </section>
+        )}
 
         {isOn(s, "s-notes") && (
           <section className="slide" id="s-notes" aria-label="یادداشت‌ها">

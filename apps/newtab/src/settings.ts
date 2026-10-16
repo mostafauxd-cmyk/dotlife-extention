@@ -28,6 +28,7 @@ export const BLOCKS = [
   ["pin", "کارت‌ها همیشه باز"],
   ["peek", "باز شدن گوشه با تغییر تازه"],
   ["entry", "افکت ورود"],
+  ["s-plans", "اسلاید برنامه‌ها"],
   ["s-notes", "اسلاید یادداشت‌ها"],
 ] as const;
 export type BlockId = (typeof BLOCKS)[number][0];
@@ -41,6 +42,8 @@ export type Settings = {
   sites: QuickSite[];
   /** The welcome (what an account gives, then sign-in) has been shown once, on the first new tab. */
   welcomed: boolean;
+  /** Calendars hidden on the plans slide: list ids, «occ» (occasions), «pr» (prayer times). */
+  hiddenCals: string[];
 };
 
 export const DEFAULT_SITES: readonly QuickSite[] = [
@@ -57,6 +60,7 @@ export const DEFAULTS: Settings = {
   off: ["pin"],
   sites: [...DEFAULT_SITES],
   welcomed: false,
+  hiddenCals: [],
 };
 
 const KEY = "settings.v1";
