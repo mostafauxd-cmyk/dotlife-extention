@@ -31,6 +31,7 @@
   --ease: cubic-bezier(.22,1,.36,1);
 }
 * { box-sizing: border-box; }
+[hidden] { display: none !important; }
 html { background: var(--bg); }
 body {
   margin: 0; background: var(--bg); color: var(--ink); font-family: var(--font);
@@ -287,8 +288,8 @@ button { font: inherit; color: inherit; }
 .chart .tipbox { position: absolute; pointer-events: none; padding: 6px 12px; border-radius: 12px; background: rgba(12,13,18,.92); border: 1px solid var(--stroke-hi); font-size: 14px; white-space: nowrap; transform: translate(-50%, -125%); }
 .legend { display: flex; gap: 18px; font-size: 14px; color: var(--ink-2); flex-wrap: wrap; }
 .legend i { display: inline-block; width: 18px; height: 0; border-top: 2px solid; vertical-align: middle; margin-inline-end: 6px; }
-.cats { display: flex; flex-direction: column; gap: 8px; }
-.cat { display: grid; grid-template-columns: 110px 1fr 76px; align-items: center; gap: 10px; font-size: 16px; }
+.cats { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 22px; }
+.cat { display: grid; grid-template-columns: 86px 1fr 54px; align-items: center; gap: 10px; font-size: 16px; }
 .cat .tr { height: 10px; border-radius: 99px; background: rgba(255,255,255,.08); overflow: hidden; }
 .cat .tr b { display: block; height: 100%; border-radius: 99px; background: var(--paket); }
 .cat .v { text-align: start; color: var(--ink-2); font-size: 15px; font-variant-numeric: tabular-nums; }
@@ -313,6 +314,38 @@ button { font: inherit; color: inherit; }
 .chips2 button { font: inherit; font-size: 14px; padding: 2px 12px; border-radius: 999px; border: 1px solid var(--stroke); background: none; color: rgba(255,255,255,.75); cursor: pointer; }
 .chips2 button[aria-pressed="true"] { background: #fff; color: #0B0D12; border-color: #fff; }
 .sample { font-size: 13px; color: var(--ink-3); }
+
+/* ---------- slide 3: news row ---------- */
+.s3 .s-pad { grid-template-rows: minmax(0,1fr) 258px; padding-block: 28px; gap: 18px; }
+.s3 .card { gap: 10px; padding: 20px 24px; }
+.s3 .kpi .tot { font-size: 38px; }
+.s3 .px { padding: 3px 10px; }
+.news { grid-column: 1 / -1; }
+.pxh { display: flex; flex-direction: column; gap: 0; }
+.pxh .l1 { display: flex; justify-content: space-between; align-items: center; }
+.pxh .px-head b { font-size: 28px; line-height: 1.4; }
+.ncards { flex: 1; min-height: 0; display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+.ncard { font: inherit; color: var(--ink); text-align: start; cursor: pointer; border-radius: 20px; padding: 14px 16px; background: rgba(0,0,0,.22); border: 1px solid var(--stroke); display: flex; flex-direction: column; gap: 6px; min-width: 0; overflow: hidden; transition: background .2s; }
+.ncard:hover { background: rgba(255,255,255,.07); }
+.ncard .kh { display: flex; align-items: center; gap: 8px; }
+.ncard .kh svg { width: 16px; height: 16px; color: var(--ink-2); margin-inline-start: auto; }
+.kind { font-size: 13px; padding: 1px 10px; border-radius: 999px; white-space: nowrap; }
+.kind.ipo { background: rgba(242,201,76,.16); color: #F2C94C; }
+.kind.opportunity { background: rgba(138,221,136,.16); color: #8ADD88; }
+.kind.announcement { background: rgba(140,158,255,.18); color: #A9B6FF; }
+.kind.offer { background: rgba(205,183,255,.16); color: #CDB7FF; }
+.ncard .kh, .ncard b, .ncard p { flex-shrink: 0; }
+.ncard b { font-size: 17px; font-weight: 600; line-height: 1.6; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.ncard p { margin: 0; font-size: 15px; color: var(--ink-2); line-height: 1.7; display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; }
+.ncard .ft { margin-top: auto; display: flex; justify-content: space-between; font-size: 13px; color: var(--ink-3); }
+.ncard .ft span:last-child { color: var(--ink-2); }
+.sheet-bg { position: absolute; inset: 0; z-index: 6; display: grid; place-items: center; background: rgba(4,6,12,.55); }
+.sheet { width: 660px; max-height: 660px; overflow: auto; border-radius: 28px; padding: 26px 30px; display: flex; flex-direction: column; gap: 14px; background: rgba(18,18,22,.9); }
+.sheet h3 { margin: 0; font-size: 27px; font-weight: 600; line-height: 1.5; }
+#shBody p { margin: 0 0 10px; font-size: 18px; line-height: 1.95; color: rgba(245,246,248,.9); }
+.sh-foot { display: flex; align-items: center; gap: 14px; }
+.cta { border: 0; border-radius: 999px; padding: 10px 24px; background: #fff; color: #0B0D12; font-size: 17px; font-weight: 600; cursor: pointer; }
+.rail .bdg { position: absolute; top: 11px; inset-inline-start: 11px; width: 8px; height: 8px; border-radius: 50%; background: var(--coral); }
 
 /* ad-slot overlay */
 [data-slot] { position: relative; }
@@ -383,7 +416,7 @@ td.them { color: var(--ink-2); }
           <nav class="rail" aria-label="اسلایدها">
             <button aria-current="true" aria-label="خانه"><svg viewBox="0 0 24 24"><path d="M3 11.5 12 4l9 7.5"/><path d="M5 10v10h14V10"/></svg><span class="tip">خانه</span></button>
             <button aria-current="false" aria-label="تقویم"><svg viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15" rx="3"/><path d="M8 3v4M16 3v4M3.5 10h17"/></svg><span class="tip">تقویم</span></button>
-            <button aria-current="false" aria-label="پول"><svg viewBox="0 0 24 24"><path d="M4 7.5A2.5 2.5 0 0 1 6.5 5H18v4"/><rect x="4" y="7.5" width="16" height="11.5" rx="2.5"/><circle cx="16" cy="13.2" r="1.3"/></svg><span class="tip">پول</span></button>
+            <button aria-current="false" aria-label="پول"><svg viewBox="0 0 24 24"><path d="M4 7.5A2.5 2.5 0 0 1 6.5 5H18v4"/><rect x="4" y="7.5" width="16" height="11.5" rx="2.5"/><circle cx="16" cy="13.2" r="1.3"/></svg><span class="tip">پول</span><span class="bdg" aria-label="خبر تازه"></span></button>
           </nav>
           <div class="scroller" id="scroller">
           <section class="slide s1" aria-label="خانه">
@@ -517,30 +550,17 @@ td.them { color: var(--ink-2); }
                 <div class="mlist">
                   <div>قبض برق <span class="d">۲ روز دیگر</span><span class="v amt">۳۱۲٬۰۰۰</span></div>
                   <div>اجاره <span class="d">۱ آبان</span><span class="v amt">۱۸٬۰۰۰٬۰۰۰</span></div>
-                  <div>قسط وام <span class="d mut">۵ آبان</span><span class="v amt">۴٬۲۰۰٬۰۰۰</span></div>
-                </div>
-                <div class="hr"></div>
-                <div class="sec">بدهی و طلب</div>
-                <div class="mlist">
-                  <div>طلب از علی <span class="v amt up">۲٬۵۰۰٬۰۰۰</span></div>
-                  <div>بدهی به مریم <span class="v amt dn">۸۰۰٬۰۰۰</span></div>
-                </div>
-                <div class="hr"></div>
-                <div class="sec">تراکنش‌های امروز</div>
-                <div class="mlist">
-                  <div>سوپرمارکت <span class="d mut">ملت</span><span class="v amt">۳۰۰٬۰۰۰</span></div>
-                  <div>اسنپ <span class="d mut">سامان</span><span class="v amt">۱۸۵٬۰۰۰</span></div>
+                  <div>طلب از علی <span class="d mut">بدهی و طلب</span><span class="v amt up">۲٬۵۰۰٬۰۰۰</span></div>
                 </div>
                 <div class="pend" style="margin-top:auto"><b>۳</b> پیامک بانکی منتظر تأیید در پاکت</div>
               </div>
 
               <!-- spending chart -->
               <div class="card g">
-                <div class="card-h"><h2>خرج مهر</h2><span class="sub">تا امروز، ۲۴ مهر</span></div>
-                <div class="kpi"><div class="tot"><span class="amt">۸٬۴۲۰٬۰۰۰</span></div><div class="of">از بودجه‌ی <span class="amt">۱۲٬۰۰۰٬۰۰۰</span> تومان</div><span class="ok-pill">روزانه تا <span class="amt">۵۹۶</span> هزار تومان جا دارید</span></div>
+                <div class="card-h"><h2>خرج مهر</h2><span class="sub">تا امروز، ۲۴ مهر</span><span class="ok-pill" style="margin-inline-start:auto">روزانه تا <span class="amt">۵۹۶</span> هزار تومان جا دارید</span></div>
+                <div class="kpi"><div class="tot"><span class="amt">۸٬۴۲۰٬۰۰۰</span></div><div class="of">از بودجه‌ی <span class="amt">۱۲٬۰۰۰٬۰۰۰</span> تومان</div></div>
                 <div class="legend"><span><i style="border-color:var(--paket)"></i>خرج تجمعی</span><span><i style="border-color:var(--paket);border-top-style:dashed"></i>پیش‌بینی پاکت</span><span><i style="border-color:rgba(255,255,255,.45);border-top-style:dotted"></i>مسیر بودجه</span></div>
                 <div class="chart" id="spendChart"></div>
-                <div class="sec">بر اساس دسته</div>
                 <div class="cats" id="cats"></div>
               </div>
 
@@ -548,13 +568,26 @@ td.them { color: var(--ink-2); }
               <div class="card g">
                 <div class="card-h"><h2>قیمت روز</h2><span class="sample">نمونه</span>
                   <div class="chips2" id="period"><button aria-pressed="false" data-p="7">هفته</button><button aria-pressed="true" data-p="30">ماه</button><button aria-pressed="false" data-p="365">سال</button></div></div>
-                <div class="px-head"><span id="pxName" class="sec">طلای ۱۸ عیار · گرم</span></div>
-                <div class="px-head"><b id="pxVal">۲۶٬۲۲۷٬۰۰۰</b><span id="pxUnit" class="sec">تومان</span><span id="pxChg" class="chg dn">−۰٫۴۱٪</span></div>
+                <div class="pxh"><div class="l1"><span id="pxName" class="sec">طلای ۱۸ عیار · گرم</span><span id="pxChg" class="chg dn">−۰٫۴۱٪</span></div><div class="px-head"><b id="pxVal">۲۶٬۲۲۷٬۰۰۰</b><span id="pxUnit" class="sec">تومان</span></div></div>
                 <div class="chart" id="pxChart"></div>
                 <div class="prices" id="prices"></div>
-                <div class="mine" style="margin-top:auto"><span>دارایی‌های من<br><span style="font-size:13px">۱۲ گرم طلا · ۲ سکه · ۵۰۰ دلار</span></span><span style="margin-inline-start:auto;text-align:left"><b class="amt">۹۹۳٫۶ میلیون</b><br><span class="up">+۰٫۳۵٪ امروز</span></span></div>
+                <div class="mine" style="margin-top:auto" title="۱۲ گرم طلا، ۲ سکه، ۵۰۰ دلار"><span>دارایی‌های من</span><span style="margin-inline-start:auto;white-space:nowrap"><b class="amt">۹۹۳٫۶ میلیون</b> <span class="up" style="font-size:14px">+۰٫۳۵٪</span></span></div>
                 <div class="partner" data-slot="۶"><b>خرید طلای آب‌شده</b> از ۱۰۰ هزار تومان<span class="tag">معرفی‌شده</span></div>
               </div>
+
+              <!-- news -->
+              <div class="card g news">
+                <div class="card-h"><h2>خبر و پیشنهاد</h2><span class="sub">از تیم پاکت · همان خبرهای صفحه‌ی خانه‌ی اپ</span><button class="more">همه‌ی خبرها</button></div>
+                <div class="ncards" id="ncards"></div>
+              </div>
+            </div>
+            <div class="sheet-bg" id="sheetBg" hidden>
+              <article class="sheet g" id="sheet" role="dialog" aria-modal="true" aria-labelledby="shTitle">
+                <div class="card-h"><span class="kind" id="shKind"></span><span class="sub" id="shTime"></span><button class="rbtn sm" id="shClose" aria-label="بستن" style="margin-inline-start:auto"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
+                <h3 id="shTitle"></h3>
+                <div id="shBody"></div>
+                <div class="sh-foot"><button class="cta" id="shCta"></button><span class="sample">در اپ پاکت هم همین خبر دیده می‌شود</span></div>
+              </article>
             </div>
           </section>
         </div>
@@ -598,7 +631,7 @@ td.them { color: var(--ink-2); }
         <tbody>
           <tr><td>۱ · خانه</td><td>سلام و وضعیت سینک، ساعت و تاریخ سه‌گانه و مناسبت، سرچ، ۸ کاشی دسترسی سریع، کارهای امروز، یادداشت‌ها، خلاصه‌ی پول، قفسه‌ی بوکمارک پرسونا</td><td>نقطه، پاکت، <code>chrome.topSites</code></td></tr>
           <tr><td>۲ · تقویم</td><td>ماه کامل با تاریخ میلادی و مناسبت داخل هر خانه، جمعه و تعطیلی قرمز، نقطه‌ی کار و قبض روی هر روز. کنارش پنل روز انتخاب‌شده: مناسبت‌ها، اوقات شرعی (اگر روشن باشد)، برنامه‌ی روز با کارهای نقطه و جلسه‌های تقویم گوگل و قبض‌های پاکت، و مناسبت‌های پیش رو</td><td><code>calendar-core</code>، <code>event-data</code>، <code>prayer-times</code>، <code>tasks</code>، گوگل از طریق relay، قبض‌های پاکت</td></tr>
-          <tr><td>۳ · پول</td><td>موجودی حساب‌ها، خرج‌های پیش رو، بدهی و طلب، نمودار خرج تجمعی ماه با مسیر بودجه و پیش‌بینی پاکت، خرج بر اساس دسته، قیمت روز طلا و سکه و ارز و کریپتو با نمودار، و ارزش دارایی‌های خود کاربر</td><td>پاکت (حساب‌ها، <code>category_period_aggregates</code>، <code>expense_predictions</code>، <code>upcoming_expenses</code>، <code>investments.positions</code>) و منبع قیمت</td></tr>
+          <tr><td>۳ · پول</td><td>موجودی حساب‌ها، خرج‌های پیش رو، نمودار خرج تجمعی ماه با مسیر بودجه و پیش‌بینی پاکت، خرج بر اساس دسته، قیمت روز طلا و سکه و ارز و کریپتو با نمودار، ارزش دارایی‌های خود کاربر، و ردیف «خبر و پیشنهاد» با همان خبرهایی که تیم در اپ پاکت می‌گذارد</td><td>پاکت (حساب‌ها، <code>category_period_aggregates</code>، <code>expense_predictions</code>، <code>upcoming_expenses</code>، <code>investments.positions</code>، <code>/v1/news</code>) و منبع قیمت</td></tr>
         </tbody>
       </table></div>
       <p>اتصال دو اپ در اسلاید تقویم دیده می‌شود: قبض «برق» که در پاکت ثبت شده، در تقویم نقطه روی یکشنبه با نقطه‌ی سبز می‌نشیند. یعنی کاربر برنامه‌ی کاری و برنامه‌ی پولی‌اش را یک‌جا می‌بیند.</p>
@@ -613,7 +646,7 @@ td.them { color: var(--ink-2); }
           <tr><td>کوچک‌ترین متن</td><td class="them">حدود ۱۱ پیکسل</td><td>۱۳ برای برچسب فرعی؛ متن اصلی ۱۷ و ۱۸</td></tr>
           <tr><td>تسک و یادداشت</td><td class="them">محلی و خالی («هنوز تسکی ثبت نکردی»)</td><td>همان کارها و یادداشت‌های گوشی، دوطرفه و زنده</td></tr>
           <tr><td>تقویم</td><td class="them">تقویم کوچک کنار صفحه</td><td>ماه کامل با مناسبت‌ها، برنامه‌ی روز و قبض‌ها</td></tr>
-          <tr><td>مالی</td><td class="them">قیمت طلا و ارز</td><td>قیمت روز به‌اضافه‌ی حساب‌ها، بودجه، پیش‌بینی و ارزش دارایی‌های خود کاربر</td></tr>
+          <tr><td>مالی</td><td class="them">قیمت طلا و ارز</td><td>قیمت روز و خبرهای اقتصادی پاکت، به‌اضافه‌ی حساب‌ها، بودجه، پیش‌بینی و ارزش دارایی‌های خود کاربر</td></tr>
           <tr><td>تبلیغ</td><td class="them">بنر استخدام، پاپ‌آپ تخفیف با شمارش معکوس</td><td>کاشی، بوکمارک، والپیپر، پیشنهاد سرچ، خط مناسبت، دکمه‌ی همکار در قیمت روز</td></tr>
         </tbody>
       </table></div>
@@ -645,6 +678,7 @@ td.them { color: var(--ink-2); }
       <h3>قانون‌ها</h3>
       <ul>
         <li>هیچ تبلیغی کنار موجودی، خرج، بدهی یا دارایی کاربر و کنار کارها و یادداشت‌ها نمی‌آید. جایگاه ۶ فقط در بخش قیمت‌های عمومی بازار است.</li>
+        <li>ردیف خبرها محتوای تحریریه‌ی تیم پاکت است، نه تبلیغ: نه آگهی‌دهنده دارد، نه هدف‌گیری، نه سنجش (همان قاعده‌ی قرارداد <code>news</code> در پاکت). خبر پولی هرگز در این ردیف نمی‌آید.</li>
         <li>هدف‌گیری هرگز از روی متن یادداشت، کار، تراکنش یا دارایی انجام نمی‌شود. فقط پرسونا، شهر، مناسبت و کلمه‌ی سرچ.</li>
         <li>زیرساخت را از ماژول <code>advertising</code> پاکت برمی‌داریم: باندل امضاشده‌ی کمپین (ed25519)، رضایت کاربر (<code>/ads/consent</code>)، دکمه‌ی «چرا این را می‌بینم» (<code>/ads/why</code>) و ثبت رویداد بدون شناسه‌ی شخصی. انتخاب تبلیغ روی دستگاه انجام می‌شود.</li>
         <li>بدون پاپ‌آپ، بدون شمارش معکوس، بدون بنر وسط صفحه. مشترک پاکت پلاس جایگاه‌های ۱ تا ۳ را نمی‌بیند.</li>
@@ -668,6 +702,7 @@ td.them { color: var(--ink-2); }
         <li><b>نوشتن از نیوتب:</b> همان outbox گوشی و همان قانون ادغام از <code>@dotlife/sync</code>. مدل یادداشت از اپ موبایل به پکیج <code>packages/notes</code> منتقل می‌شود و موجودیت <code>folder</code> به سینک اضافه می‌شود.</li>
         <li><b>پاکت فقط خواندنی است.</b> چون صفحه‌ی خانه‌ی پاکت روی گوشی ساخته می‌شود، یک مسیر تازه لازم است: <code>GET /v1/home/summary</code> با موجودی حساب‌ها، خرج روزانه‌ی ماه، جمع هر دسته (از <code>category_period_aggregates</code>)، پیش‌بینی پایان ماه (از <code>expense_predictions</code>)، خرج‌های پیش رو، بدهی و طلب و تعداد پیامک‌های منتظر. هر ۶۰ ثانیه و هر بار که تب فوکوس می‌گیرد. بودجه‌ها هنوز به سرور نمی‌روند؛ تا وقتی آپلود نشوند، نوار و مسیر بودجه نمایش داده نمی‌شود.</li>
         <li><b>قیمت روز:</b> پاکت امروز منبع قیمت ندارد. ماژول <code>investments</code> دارایی‌ها را با کد و مقدار نگه می‌دارد ولی قیمت ندارد. پیشنهاد: worker پاکت هر ۵ دقیقه از یک منبع قیمت (طلا، سکه، ارز، کریپتو) می‌خواند و در <code>GET /v1/market/prices</code> با تاریخچه برای نمودار می‌گذارد. همین مسیر به اپ پاکت هم ارزش دارایی‌ها را می‌دهد.</li>
+        <li><b>خبرها:</b> پاکت همین حالا مسیر عمومی <code>GET /v1/news</code> را دارد (بدون ورود، با ETag و کش ۶۰ ثانیه) که همان کارت‌های «خبر و پیشنهاد» صفحه‌ی خانه‌ی اپ را می‌دهد: عرضه‌ی اولیه، فرصت سرمایه‌گذاری، اطلاعیه و پیشنهاد، با عنوان، خلاصه، متن کامل، تصویر، دکمه، سنجاق و تاریخ انقضا. نیوتب همین را با <code>If-None-Match</code> می‌خواند، پس کار سمت سرور لازم نیست و هر خبری که تیم از پنل ادمین منتشر کند هم‌زمان در اپ و نیوتب دیده می‌شود. خبر تازه با یک نقطه روی آیکون «پول» در نوار کنار صفحه علامت می‌خورد.</li>
         <li><b>حریم خصوصی:</b> مبالغ با یک کلیک روی آیکون چشم در هر دو اسلاید پنهان می‌شوند و این انتخاب می‌ماند، برای وقتی که صفحه در جلسه به اشتراک گذاشته می‌شود.</li>
       </ul>
     </section>
@@ -695,7 +730,7 @@ td.them { color: var(--ink-2); }
       <div class="phases">
         <div class="ph"><b>فاز ۰ · طراحی<small>۱ هفته</small></b><span>نهایی کردن این ماک‌آپ در فیگما، لیست پرسوناها و قفسه‌ها، انتخاب منبع قیمت، تست سینک نقطه روی گوشی واقعی (هنوز انجام نشده و پیش‌نیاز همه‌چیز است).</span></div>
         <div class="ph"><b>فاز ۱ · خانه و تقویم<small>۳ هفته</small></b><span>اسلاید ۱ و ۲: ساعت و تاریخ، سرچ، دسترسی سریع، قفسه‌ی پرسونا، کارها و یادداشت‌های دوطرفه با pull هر ۱۵ ثانیه، ماه کامل با مناسبت و اوقات شرعی، اتصال QR.</span></div>
-        <div class="ph"><b>فاز ۲ · پول<small>۲ تا ۳ هفته</small></b><span>اسلاید ۳: <code>/v1/home/summary</code> و <code>/v1/market/prices</code>، نمودار خرج و قیمت، ارزش دارایی‌ها، قبض‌های پاکت داخل تقویم.</span></div>
+        <div class="ph"><b>فاز ۲ · پول<small>۲ تا ۳ هفته</small></b><span>اسلاید ۳: <code>/v1/home/summary</code> و <code>/v1/market/prices</code>، نمودار خرج و قیمت، ارزش دارایی‌ها، ردیف خبرها از <code>/v1/news</code> موجود، قبض‌های پاکت داخل تقویم.</span></div>
         <div class="ph"><b>فاز ۳ · زنده و تبلیغ<small>۲ هفته</small></b><span><code>/sync/wait</code>، ارسال فوری از گوشی، شش جایگاه تبلیغ با رضایت کاربر و گزارش در پنل ادمین.</span></div>
         <div class="ph"><b>فاز ۴ · بعدی‌ها</b><span>Edge و Firefox، چیدمان قابل‌تنظیم، ثبت خرج از نیوتب، هشدار قیمت.</span></div>
       </div>
@@ -950,7 +985,7 @@ td.them { color: var(--ink-2); }
   const cum = DAILY.reduce((a, v) => (a.push((a.at(-1) || 0) + v), a), []);
   const BUDGET = 12000, FORECAST = 10500;
   (function spendChart() {
-    const W = 430, H = 210, L = 38, R = 12, T = 14, B = 30;
+    const W = 430, H = 168, L = 38, R = 12, T = 14, B = 30;
     const x = (d) => L + ((d - 1) / 29) * (W - L - R);
     const y = (v) => T + (1 - v / 13000) * (H - T - B);
     const s = svgEl("svg", { viewBox: `0 0 ${W} ${H}`, role: "img", "aria-label": "نمودار خرج تجمعی مهر" });
@@ -995,7 +1030,7 @@ td.them { color: var(--ink-2); }
   const ASSETS = [
     ["طلای ۱۸ عیار", "گرم", 26227000, -0.41, "تومان"], ["سکه امامی", "", 274500000, 0.8, "تومان"],
     ["دلار", "آزاد", 259800, 0.3, "تومان"], ["یورو", "آزاد", 302400, 0.12, "تومان"], ["تتر", "USDT", 261600, 0.05, "تومان"],
-    ["نقره", "گرم", 488900, -0.46, "تومان"], ["بیت‌کوین", "BTC", 82007, -1.2, "دلار"], ["اتریوم", "ETH", 2452, -0.85, "دلار"],
+    ["بیت‌کوین", "BTC", 82007, -1.2, "دلار"],
   ];
   function series(seed, n, end, drift) {
     let r = seed * 9301 + 49297; const rnd = () => ((r = (r * 9301 + 49297) % 233280) / 233280);
@@ -1017,7 +1052,7 @@ td.them { color: var(--ink-2); }
     const [n, u, v, c, cur] = ASSETS[selA];
     $("pxName").textContent = u ? `${n} · ${u}` : n;
     $("pxVal").textContent = (cur === "دلار" ? "$" : "") + fmt(v); $("pxUnit").textContent = cur === "دلار" ? "" : "تومان";
-    const W = 400, H = 110, vals = series(selA + 11 + period, period === 365 ? 52 : period, v, period === 365 ? 0.9 : period === 30 ? 0.08 : 0.02);
+    const W = 400, H = 66, vals = series(selA + 11 + period, period === 365 ? 52 : period, v, period === 365 ? 0.9 : period === 30 ? 0.08 : 0.02);
     const pc = (vals.at(-1) / vals[0] - 1) * 100;
     $("pxChg").textContent = pct(pc) + (period === 7 ? " هفته" : period === 30 ? " ماه" : " سال"); $("pxChg").className = "chg " + (pc >= 0 ? "up" : "dn");
     const pts = sparkPath(vals, W, H, 4), col = pc >= 0 ? "#8ADD88" : "#F0817A";
@@ -1032,6 +1067,31 @@ td.them { color: var(--ink-2); }
   });
   buildPrices();
   $("eye2").addEventListener("click", () => $("eye").click());
+  /* ================= slide 3: news (same feed as the app: GET /v1/news) ================= */
+  const NEWS = [
+    { kind: "ipo", pinned: true, t: "۱ ساعت پیش", title: "عرضه‌ی اولیه‌ی یکشنبه: یک شرکت پتروشیمی در فرابورس", summary: "سقف خرید هر کد ۵ میلیون تومان است. درخواست خرید را از امروز تا یکشنبه ساعت ۹ در کارگزاری ثبت کنید.", body: ["یکشنبه ۲۶ مهر، سهام یک شرکت پتروشیمی به روش ثبت سفارش در فرابورس عرضه می‌شود.", "سقف خرید هر کد بورسی ۵ میلیون تومان است و مبلغ باید از قبل در حساب کارگزاری باشد. سهامی که به شما می‌رسد معمولاً کمتر از مبلغ درخواست است و باقی پول به حساب برمی‌گردد.", "در پاکت می‌توانید این خرید را به‌عنوان «خرج پیش رو» ثبت کنید تا در بودجه‌ی ماه دیده شود."], cta: "راهنمای ثبت سفارش" },
+    { kind: "announcement", t: "امروز ۹:۳۰", title: "قطعی برنامه‌ریزی‌شده‌ی پرداخت کارتی، جمعه‌شب", summary: "از ساعت ۱ تا ۴ بامداد شنبه پرداخت کارتی در برخی بانک‌ها ممکن است کار نکند. خریدهای ضروری را زودتر انجام دهید.", body: ["به‌خاطر به‌روزرسانی سامانه‌ها، از ساعت ۱ تا ۴ بامداد شنبه پرداخت کارتی و کارت‌به‌کارت در برخی بانک‌ها ممکن است قطع شود.", "پیامک‌های بانکی این ساعت‌ها ممکن است با تأخیر برسند؛ پاکت آن‌ها را بعداً در صف تأیید می‌گذارد."], cta: "بانک‌های درگیر" },
+    { kind: "opportunity", t: "دیروز", title: "بازده صندوق‌های درآمد ثابت در مهر", summary: "میانگین بازده سالانه‌ی صندوق‌های درآمد ثابت حدود ۲۹٪ بود. مقایسه‌ی صندوق‌ها و کارمزدشان را در پاکت ببینید.", body: ["میانگین بازده سالانه‌شده‌ی صندوق‌های درآمد ثابت در مهر حدود ۲۹٪ بوده است.", "این بازده تضمین‌شده نیست. پیش از خرید، کارمزد و اندازه‌ی صندوق را مقایسه کنید."], cta: "مقایسه‌ی صندوق‌ها" },
+    { kind: "offer", t: "۲ روز پیش", title: "۳ ماه پاکت پلاس با ۴۰٪ تخفیف", summary: "تا آخر مهر: گزارش‌های پیشرفته، پیش‌بینی خرج و نیوتب بدون تبلیغ.", body: ["تا آخر مهر اشتراک سه‌ماهه‌ی پاکت پلاس با ۴۰٪ تخفیف است.", "پلاس گزارش‌های پیشرفته و پیش‌بینی خرج را باز می‌کند و جایگاه‌های تبلیغ نیوتب را حذف می‌کند."], cta: "دیدن پلاس" },
+  ];
+  const KIND = { ipo: "عرضه‌ی اولیه", opportunity: "فرصت سرمایه‌گذاری", announcement: "اطلاعیه", offer: "پیشنهاد" };
+  const pin = '<svg viewBox="0 0 24 24" aria-label="سنجاق‌شده"><path d="M9 4h6l-1 6 3 3H7l3-3z"/><path d="M12 13v7"/></svg>';
+  $("ncards").innerHTML = NEWS.map((n, i) => `<button class="ncard" data-i="${i}"><span class="kh"><span class="kind ${n.kind}">${KIND[n.kind]}</span>${n.pinned ? pin : ""}</span>
+    <b>${n.title}</b><p>${n.summary}</p><span class="ft"><span>${n.t}</span><span>${n.cta} ←</span></span></button>`).join("");
+  let lastFocus = null;
+  function openNews(i) {
+    const n = NEWS[i]; lastFocus = document.activeElement;
+    $("shKind").className = "kind " + n.kind; $("shKind").textContent = KIND[n.kind]; $("shTime").textContent = n.t;
+    $("shTitle").textContent = n.title; $("shBody").innerHTML = n.body.map((p) => `<p>${p}</p>`).join(""); $("shCta").textContent = n.cta;
+    $("sheetBg").hidden = false; $("shClose").focus();
+    document.querySelector(".rail .bdg")?.remove();
+  }
+  const closeNews = () => { $("sheetBg").hidden = true; lastFocus?.focus?.(); };
+  $("ncards").addEventListener("click", (e) => { const b = e.target.closest(".ncard"); if (b) openNews(+b.dataset.i); });
+  $("shClose").addEventListener("click", closeNews);
+  $("sheetBg").addEventListener("click", (e) => { if (e.target === $("sheetBg")) closeNews(); });
+  document.addEventListener("keydown", (e) => { if (e.key === "Escape" && !$("sheetBg").hidden) closeNews(); });
+
 })();
 </script>
 </body>
