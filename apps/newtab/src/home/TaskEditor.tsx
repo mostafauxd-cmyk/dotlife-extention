@@ -11,6 +11,7 @@ import {
   addDays,
   dateToJdn,
   jdnToDate,
+  localNow,
   minutesToTime,
   softDelete,
   timeToMinutes,
@@ -31,6 +32,7 @@ import {
   newNote,
   putTasks,
   taskById,
+  TIME_ZONE,
   today,
 } from "../noghte/model";
 import { notePreview, noteTitle } from "../noghte/notes";
@@ -41,6 +43,21 @@ import {
   type Scope,
 } from "../noghte/planner/edits";
 import { matchPreset, repeatPresets } from "../noghte/planner/repeat";
+import {
+  connectGoogle,
+  createMeetLink,
+  deleteEvent,
+  googleChanged,
+  insertEvent,
+  meetIn,
+  patchEvent,
+  useGoogle,
+  useGoogleCalendars,
+  withMeet,
+  withoutMeet,
+  type EventFields,
+  type GEvent,
+} from "../google";
 import { fa } from "../ui/fa";
 import { Icon } from "../ui/Icon";
 
@@ -55,7 +72,9 @@ import { Icon } from "../ui/Icon";
 
 export type EditorInput =
   | { mode: "new"; listId?: string | null; date?: LocalDate; start?: number; end?: number }
-  | { mode: "edit"; task: Task; occurrence: Occurrence | null };
+  | { mode: "edit"; task: Task; occurrence: Occurrence | null }
+  /** One of the person's Google Calendar events, edited in place. */
+  | { mode: "event"; event: GEvent };
 
 // ---- one editor for the whole page: any part of it can open the form ----
 
@@ -85,7 +104,9 @@ export function TaskEditorHost() {
   const key =
     current.mode === "edit"
       ? `${current.task.id}-${current.occurrence?.originalDate ?? ""}`
-      : `new-${current.date ?? ""}-${String(current.start ?? "")}`;
+      : current.mode === "event"
+        ? `event-${current.event.key}`
+        : `new-${current.date ?? ""}-${String(current.start ?? "")}`;
   return <Sheet key={key} input={current} onClose={closeEditor} />;
 }
 
@@ -120,6 +141,10 @@ type Fields = {
   end: number;
   repeatId: string;
   reminderId: string;
+  /** Set when the item is (or will be) an event in one of the person's Google calendars. */
+  calendarId: string | null;
+  /** A Google Meet link for the meeting, or "" (kept in the notes as Google's conferencing block). */
+  meet: string;
 };
 
 const clock = (m: number): string => fa(minutesToTime(Math.min(Math.max(m, 0), 1439)));
@@ -148,7 +173,70 @@ function remindersOf(f: Fields, previous: readonly TaskReminder[]): TaskReminder
   return [{ anchor: f.kind === "due" ? "due" : "start", offsetMinutes: preset.offset }];
 }
 
+/** A Google event's span on Tehran's clock. */
+function spanOfEvent(e: GEvent): Pick<Fields, "date" | "endOffset" | "allDay" | "start" | "end"> {
+  if (e.allDay) {
+    const last = addDays(e.end, -1);
+    return {
+      date: e.start,
+      endOffset: Math.max(0, dateToJdn(last) - dateToJdn(e.start)),
+      allDay: true,
+      start: 9 * 60,
+      end: 10 * 60,
+    };
+  }
+  const a = localNowAt(e.start);
+  const b = localNowAt(e.end);
+  return {
+    date: a.date,
+    endOffset: Math.max(0, dateToJdn(b.date) - dateToJdn(a.date)),
+    allDay: false,
+    start: timeToMinutes(a.time),
+    end: timeToMinutes(b.time),
+  };
+}
+const localNowAt = (iso: string) => localNow(TIME_ZONE, new Date(iso));
+
+/** The form's span as Google wants it: instants on Tehran's clock, or whole days (end exclusive). */
+function eventFieldsOf(f: Fields, description: string): EventFields {
+  const endDate = addDays(f.date, f.endOffset);
+  if (f.allDay)
+    return {
+      title: f.title.trim(),
+      description,
+      start: f.date,
+      end: addDays(endDate, 1),
+      allDay: true,
+      timeZone: TIME_ZONE,
+    };
+  const at = (d: LocalDate, m: number): string =>
+    `${d}T${minutesToTime(Math.min(m, 1439))}:00+03:30`;
+  return {
+    title: f.title.trim(),
+    description,
+    start: at(f.date, f.start),
+    end: at(endDate, f.end),
+    allDay: false,
+    timeZone: TIME_ZONE,
+  };
+}
+
 function initial(input: EditorInput, todayD: LocalDate): Fields {
+  if (input.mode === "event") {
+    const e = input.event;
+    return {
+      title: e.title === "(بدون عنوان)" ? "" : e.title,
+      // Google's conferencing block is not the person's text: it stays out of the box
+      notes: withoutMeet(e.description),
+      listId: null,
+      kind: "range",
+      ...spanOfEvent(e),
+      repeatId: "none",
+      reminderId: "none",
+      calendarId: e.calendarId,
+      meet: e.meet,
+    };
+  }
   if (input.mode === "new") {
     const timed = input.start !== undefined;
     return {
@@ -163,6 +251,8 @@ function initial(input: EditorInput, todayD: LocalDate): Fields {
       end: input.end ?? (input.start ?? 9 * 60) + 60,
       repeatId: "none",
       reminderId: "none",
+      calendarId: null,
+      meet: "",
     };
   }
   const { task, occurrence } = input;
@@ -174,7 +264,7 @@ function initial(input: EditorInput, todayD: LocalDate): Fields {
   const end = endPoint?.time === undefined ? start + 60 : timeToMinutes(endPoint.time);
   return {
     title: occurrence?.title ?? task.title,
-    notes: task.notes ?? "",
+    notes: withoutMeet(task.notes ?? ""),
     listId: task.listId,
     kind: s.kind,
     date,
@@ -184,6 +274,8 @@ function initial(input: EditorInput, todayD: LocalDate): Fields {
     end,
     repeatId: s.kind === "none" ? "none" : matchPreset(date, task.recurrence).id,
     reminderId: reminderIdOf(task.reminders),
+    calendarId: null,
+    meet: meetIn(task.notes ?? ""),
   };
 }
 
@@ -229,9 +321,24 @@ function Sheet({ input, onClose }: { input: EditorInput; onClose: () => void }) 
     ...lists.filter((l) => l.kind !== "shopping"),
   ];
   const defaultListId = shownLists.find((l) => l.isDefault)?.id ?? shownLists[0]?.id;
-  const inShopping = lists.find((l) => l.id === (f.listId ?? defaultListId))?.kind === "shopping";
   const original = input.mode === "edit" ? input.task : undefined;
   const occurrence = input.mode === "edit" ? input.occurrence : null;
+  const event = input.mode === "event" ? input.event : undefined;
+  const isEvent = f.calendarId !== null;
+  const google = useGoogle();
+  const gcals = useGoogleCalendars();
+  // a new item may go into a list or a Google calendar; an existing one stays what it is
+  const destCalendars =
+    event !== undefined
+      ? gcals.filter((c) => c.id === event.calendarId)
+      : input.mode === "new"
+        ? gcals.filter((c) => c.writable)
+        : [];
+  const [meetBusy, setMeetBusy] = useState(false);
+  const [gError, setGError] = useState("");
+  const inShopping =
+    !isEvent && lists.find((l) => l.id === (f.listId ?? defaultListId))?.kind === "shopping";
+
   const titled = f.title.trim().length > 0;
   const linked = original === undefined ? [] : liveNotes().filter((n) => n.taskId === original.id);
 
@@ -261,9 +368,23 @@ function Sheet({ input, onClose }: { input: EditorInput; onClose: () => void }) 
   /** Stores the form, as the app's `saveOnce`; false when the scope question was backed out of. */
   const save = async (): Promise<boolean> => {
     if (!titled || saved.current) return true;
+    if (f.calendarId !== null) {
+      const fields = eventFieldsOf(f, withMeet(f.notes, f.meet));
+      saved.current = true;
+      try {
+        if (event === undefined) await insertEvent(f.calendarId, fields, false);
+        else await patchEvent(event, fields, null);
+        googleChanged();
+      } catch {
+        saved.current = false;
+        setGError("در تقویم گوگل ذخیره نشد. اتصال را بررسی کن و دوباره امتحان کن.");
+        return false;
+      }
+      return true;
+    }
     const title = f.title.trim();
-    const notes = f.notes.trim();
-    const notesChanged = notes !== start0.notes.trim();
+    const notes = withMeet(f.notes, f.meet).trim();
+    const notesChanged = f.notes.trim() !== start0.notes.trim() || f.meet !== start0.meet;
     const schedule = scheduleOf(f);
     const recurrence =
       schedule.kind === "none"
@@ -348,6 +469,17 @@ function Sheet({ input, onClose }: { input: EditorInput; onClose: () => void }) 
     });
   };
   const remove = async (): Promise<void> => {
+    if (event !== undefined) {
+      try {
+        await deleteEvent(event);
+        googleChanged();
+        saved.current = true;
+        onClose();
+      } catch {
+        setGError("از تقویم گوگل حذف نشد. دوباره امتحان کن.");
+      }
+      return;
+    }
     if (original === undefined) return;
     const fresh = taskById(original.id) ?? original;
     const now = new Date().toISOString();
@@ -401,8 +533,31 @@ function Sheet({ input, onClose }: { input: EditorInput; onClose: () => void }) 
     setPanel(panel === p ? null : p);
   };
 
+  const addMeet = async (): Promise<void> => {
+    setGError("");
+    if (google.status !== "on" && !(await connectGoogle())) return;
+    setMeetBusy(true);
+    try {
+      update({ meet: await createMeetLink() });
+    } catch {
+      setGError("لینک گوگل میت ساخته نشد. دوباره امتحان کن.");
+    } finally {
+      setMeetBusy(false);
+    }
+  };
+
   const label =
-    original === undefined ? "کار جدید" : original.recurrence === undefined ? "کار" : "کار تکراری";
+    event !== undefined
+      ? event.recurring
+        ? "رویداد تکراری"
+        : "رویداد"
+      : isEvent
+        ? "رویداد جدید"
+        : original === undefined
+          ? "کار جدید"
+          : original.recurrence === undefined
+            ? "کار"
+            : "کار تکراری";
 
   return (
     <div
@@ -431,7 +586,7 @@ function Sheet({ input, onClose }: { input: EditorInput; onClose: () => void }) 
             className="ts-title"
             rows={1}
             value={f.title}
-            placeholder="عنوان کار"
+            placeholder={isEvent ? "عنوان رویداد" : "عنوان کار"}
             onChange={(e) => {
               update({ title: e.target.value.replace(/\n/g, " ") });
             }}
@@ -444,8 +599,8 @@ function Sheet({ input, onClose }: { input: EditorInput; onClose: () => void }) 
           />
 
           <div className="ts-chips">
-            {shownLists.map((l) => {
-              const on = (f.listId ?? defaultListId) === l.id;
+            {(event === undefined ? shownLists : []).map((l) => {
+              const on = !isEvent && (f.listId ?? defaultListId) === l.id;
               return (
                 <button
                   key={l.id}
@@ -454,7 +609,7 @@ function Sheet({ input, onClose }: { input: EditorInput; onClose: () => void }) 
                   onClick={() => {
                     // no ranges on «خرید»: one becomes a time on its start
                     const toDue = l.kind === "shopping" && f.kind === "range";
-                    update({ listId: l.id, ...(toDue ? { kind: "due" } : {}) });
+                    update({ listId: l.id, calendarId: null, ...(toDue ? { kind: "due" } : {}) });
                     if (toDue && panel === "endDate") setPanel(null);
                   }}
                 >
@@ -463,7 +618,7 @@ function Sheet({ input, onClose }: { input: EditorInput; onClose: () => void }) 
                 </button>
               );
             })}
-            {naming ? (
+            {event === undefined && naming ? (
               <input
                 className="ts-newlist"
                 autoFocus
@@ -483,7 +638,7 @@ function Sheet({ input, onClose }: { input: EditorInput; onClose: () => void }) 
                   setNaming(false);
                 }}
               />
-            ) : (
+            ) : event === undefined ? (
               <button
                 type="button"
                 className="add"
@@ -494,11 +649,43 @@ function Sheet({ input, onClose }: { input: EditorInput; onClose: () => void }) 
                 <Icon name="plus" />
                 لیست
               </button>
+            ) : null}
+            {/* the person's Google calendars: a new item can go there as an event */}
+            {destCalendars.map((c) => {
+              const on = f.calendarId === c.id;
+              return (
+                <button
+                  key={`cal-${c.id}`}
+                  type="button"
+                  aria-pressed={on}
+                  title={c.name}
+                  onClick={() => {
+                    if (event !== undefined) return;
+                    update({ calendarId: c.id, kind: "range" });
+                    if (panel === "repeat" || panel === "reminder") setPanel(null);
+                  }}
+                >
+                  <Icon name="calendar-face" />
+                  {c.name}
+                </button>
+              );
+            })}
+            {input.mode === "new" && google.status !== "on" && google.status !== "unavailable" && (
+              <button
+                type="button"
+                className="add"
+                onClick={() => {
+                  void connectGoogle();
+                }}
+              >
+                <Icon name="calendar-face" />
+                تقویم گوگل
+              </button>
             )}
           </div>
           <div className="ts-div" />
 
-          <div className="ts-seg" role="radiogroup" aria-label="زمان">
+          <div className="ts-seg" role="radiogroup" aria-label="زمان" hidden={isEvent}>
             {(inShopping ? KINDS.filter((k) => k.kind !== "range") : KINDS).map((k) => (
               <button
                 key={k.kind}
@@ -581,36 +768,72 @@ function Sheet({ input, onClose }: { input: EditorInput; onClose: () => void }) 
                   )}
                 </div>
               )}
-              <button
-                type="button"
-                className={[
-                  "ts-line",
-                  panel === "repeat" ? "on" : "",
-                  f.repeatId === "none" ? "dim" : "",
-                ].join(" ")}
-                onClick={() => {
-                  choose("repeat");
-                }}
-              >
-                <Icon name="refresh" />
-                <span>{repeatLabel}</span>
-              </button>
-              <button
-                type="button"
-                className={[
-                  "ts-line",
-                  panel === "reminder" ? "on" : "",
-                  f.reminderId === "none" ? "dim" : "",
-                ].join(" ")}
-                onClick={() => {
-                  choose("reminder");
-                }}
-              >
-                <Icon name="notification" />
-                <span>{reminderLabel}</span>
-              </button>
+              {!isEvent && (
+                <>
+                  <button
+                    type="button"
+                    className={[
+                      "ts-line",
+                      panel === "repeat" ? "on" : "",
+                      f.repeatId === "none" ? "dim" : "",
+                    ].join(" ")}
+                    onClick={() => {
+                      choose("repeat");
+                    }}
+                  >
+                    <Icon name="refresh" />
+                    <span>{repeatLabel}</span>
+                  </button>
+                  <button
+                    type="button"
+                    className={[
+                      "ts-line",
+                      panel === "reminder" ? "on" : "",
+                      f.reminderId === "none" ? "dim" : "",
+                    ].join(" ")}
+                    onClick={() => {
+                      choose("reminder");
+                    }}
+                  >
+                    <Icon name="notification" />
+                    <span>{reminderLabel}</span>
+                  </button>
+                </>
+              )}
             </>
           )}
+          {f.kind !== "none" && google.status !== "unavailable" && (
+            <div className="ts-line meet">
+              <Icon name="video" />
+              {f.meet === "" ? (
+                <button
+                  type="button"
+                  className="ts-link dim"
+                  disabled={meetBusy}
+                  onClick={() => void addMeet()}
+                >
+                  {meetBusy ? "در حال ساختن لینک گوگل میت…" : "افزودن گوگل میت"}
+                </button>
+              ) : (
+                <>
+                  <a className="ts-link" href={f.meet} target="_blank" rel="noreferrer">
+                    گوگل میت · {f.meet.replace(/^https?:\/\//, "")}
+                  </a>
+                  <button
+                    type="button"
+                    className="ts-x"
+                    aria-label="برداشتن گوگل میت"
+                    onClick={() => {
+                      update({ meet: "" });
+                    }}
+                  >
+                    <Icon name="close" />
+                  </button>
+                </>
+              )}
+            </div>
+          )}
+          {gError !== "" && <p className="ts-err">{gError}</p>}
           <div className="ts-div" />
 
           <div className="ts-line top">
@@ -618,13 +841,22 @@ function Sheet({ input, onClose }: { input: EditorInput; onClose: () => void }) 
             <textarea
               className="ts-notes"
               value={f.notes}
-              placeholder="یادداشت"
+              placeholder={isEvent ? "توضیحات" : "یادداشت"}
               onChange={(e) => {
                 update({ notes: e.target.value });
               }}
             />
           </div>
 
+          {event !== undefined && (
+            <>
+              <div className="ts-div" />
+              <button type="button" className="ts-line danger" onClick={() => void remove()}>
+                <Icon name="delete" />
+                <span>{event.recurring ? "حذف رویداد تکراری" : "حذف رویداد"}</span>
+              </button>
+            </>
+          )}
           {original !== undefined && (
             <>
               {linked.map((n) => (

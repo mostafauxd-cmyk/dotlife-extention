@@ -34,6 +34,13 @@ import { occasionsOn } from "../today";
 import { fa } from "../ui/fa";
 import { Icon } from "../ui/Icon";
 import { openEditor } from "./TaskEditor";
+import {
+  connectGoogle,
+  useGoogle,
+  useGoogleCalendars,
+  useGoogleEvents,
+  type GEvent,
+} from "../google";
 
 /**
  * The plans slide, as the app's «برنامه‌ها». Two tabs:
@@ -52,11 +59,15 @@ const OCC = "#F2C94C";
 
 type Span = 1 | 3 | 7;
 type View = "cal" | "todo";
+/** One block on a day's hours: a نقطه task's occurrence or a Google event. */
 type Timed = {
-  o: Occurrence;
+  key: string;
+  title: string;
+  done: boolean;
   start: number;
   end: number;
   color: string;
+  open: () => void;
   lane: number;
   lanes: number;
 };
@@ -84,6 +95,19 @@ function placeOf(o: Occurrence, day: LocalDate): { start: number; end: number } 
   if (s.start.date !== s.end.date || s.start.date !== day) return null;
   const start = timeToMinutes(s.start.time);
   return { start, end: Math.max(start + 15, timeToMinutes(s.end.time)) };
+}
+
+/** Where a Google event sits on a day: minutes, «all day» (true), or not on it (null). */
+function gPlaceOf(e: GEvent, day: LocalDate): { start: number; end: number } | true | null {
+  if (e.allDay) return e.start <= day && day < e.end ? true : null;
+  const a = localNow(TIME_ZONE, new Date(e.start));
+  const b = localNow(TIME_ZONE, new Date(e.end));
+  if (a.date === day && b.date === day) {
+    const start = timeToMinutes(a.time);
+    return { start, end: Math.max(start + 15, timeToMinutes(b.time)) };
+  }
+  // a timed event over several days sits in the whole-day row of each
+  return a.date <= day && day <= b.date && !(b.date === day && b.time === "00:00") ? true : null;
 }
 
 /** Side by side when they overlap, as Google Calendar does. */
@@ -130,6 +154,14 @@ export function PlansSlide() {
   const allTasks = liveTasks();
   const tasks = allTasks.filter((t) => !hidden.has(t.listId));
   const taskOf = new Map(allTasks.map((t) => [t.id, t]));
+  const google = useGoogle();
+  const gcals = useGoogleCalendars();
+  const gColor = new Map(gcals.map((c) => [c.id, c.color]));
+  const gEvents = useGoogleEvents(
+    first,
+    addDays(first, span - 1),
+    gcals.filter((c) => !hidden.has(`g:${c.id}`)).map((c) => c.id),
+  );
   const openCount = allTasks.filter((t) => t.status !== "done").length;
   const nowMin = timeToMinutes(local.time);
 
@@ -184,6 +216,23 @@ export function PlansSlide() {
           </button>
         </div>
         <PlanSearch tasks={allTasks} onDay={goTo} />
+        {google.status !== "unavailable" && (
+          <button
+            type="button"
+            className={google.status === "on" ? "gsync on" : "gsync"}
+            title={google.status === "on" ? (google.email ?? "") : "تقویم گوگل و گوگل میت"}
+            onClick={() => {
+              if (google.status !== "on") void connectGoogle();
+            }}
+          >
+            <b>G</b>
+            {google.status === "on"
+              ? "همگام با تقویم گوگل"
+              : google.status === "expired"
+                ? "دوباره به گوگل وصل شو"
+                : "اتصال تقویم گوگل"}
+          </button>
+        )}
         {view === "cal" && (
           <div className="ptools">
             <div className="seg" role="radiogroup" aria-label="چند روز">
@@ -252,6 +301,22 @@ export function PlansSlide() {
           {lists.map((l) => (
             <CalSwitch key={l.id} id={l.id} name={l.name} color={l.color} hidden={hidden} />
           ))}
+          {gcals.length > 0 && (
+            <>
+              <span className="cgrp">
+                تقویم گوگل{google.status === "on" && google.email ? ` · ${google.email}` : ""}
+              </span>
+              {gcals.map((c) => (
+                <CalSwitch
+                  key={c.id}
+                  id={`g:${c.id}`}
+                  name={c.name}
+                  color={c.color}
+                  hidden={hidden}
+                />
+              ))}
+            </>
+          )}
           <span className="cgrp">دیگر</span>
           <CalSwitch id="occ" name="مناسبت‌ها" color={OCC} hidden={hidden} />
         </div>
@@ -316,6 +381,25 @@ export function PlansSlide() {
                       </button>
                     );
                   })}
+                {gEvents
+                  .filter((e) => gPlaceOf(e, d) === true)
+                  .map((e) => {
+                    const c = gColor.get(e.calendarId) ?? "#5AB0FF";
+                    return (
+                      <button
+                        key={e.key}
+                        type="button"
+                        className="chipd task g"
+                        title={e.title}
+                        style={{ background: `${c}29`, color: c }}
+                        onClick={() => {
+                          openEditor({ mode: "event", event: e });
+                        }}
+                      >
+                        {e.title}
+                      </button>
+                    );
+                  })}
               </div>
             ))}
           </div>
@@ -338,18 +422,41 @@ export function PlansSlide() {
                   key={d}
                   day={d}
                   isToday={d === todayD}
-                  timed={lanes(
-                    tasksOnDay(tasks, d).flatMap((o) => {
+                  timed={lanes([
+                    ...tasksOnDay(tasks, d).flatMap((o) => {
                       const p = placeOf(o, d);
-                      if (p === null) return [];
-                      const c = colorOf.get(taskOf.get(o.taskId)?.listId ?? "") ?? "#8C9EFF";
-                      return [{ o, ...p, color: c }];
+                      const t = taskOf.get(o.taskId);
+                      if (p === null || t === undefined) return [];
+                      return [
+                        {
+                          key: `${o.taskId}@${o.originalDate}`,
+                          title: o.title,
+                          done: o.status === "done",
+                          ...p,
+                          color: colorOf.get(t.listId) ?? "#8C9EFF",
+                          open: () => {
+                            openEditor({ mode: "edit", task: t, occurrence: o });
+                          },
+                        },
+                      ];
                     }),
-                  )}
-                  onEdit={(o) => {
-                    const t = taskOf.get(o.taskId);
-                    if (t !== undefined) openEditor({ mode: "edit", task: t, occurrence: o });
-                  }}
+                    ...gEvents.flatMap((e) => {
+                      const p = gPlaceOf(e, d);
+                      if (p === null || p === true) return [];
+                      return [
+                        {
+                          key: e.key,
+                          title: e.title,
+                          done: false,
+                          ...p,
+                          color: gColor.get(e.calendarId) ?? "#5AB0FF",
+                          open: () => {
+                            openEditor({ mode: "event", event: e });
+                          },
+                        },
+                      ];
+                    }),
+                  ])}
                   onNew={(d2) => {
                     openEditor({ mode: "new", date: d2.day, start: d2.start, end: d2.end });
                   }}
@@ -371,13 +478,11 @@ function DayColumn({
   day,
   isToday,
   timed,
-  onEdit,
   onNew,
 }: {
   day: LocalDate;
   isToday: boolean;
   timed: Timed[];
-  onEdit: (o: Occurrence) => void;
   onNew: (d: Draft) => void;
 }) {
   const col = useRef<HTMLDivElement>(null);
@@ -436,12 +541,11 @@ function DayColumn({
       }}
     >
       {timed.map((t) => {
-        const key = `${t.o.taskId}@${t.o.originalDate}`;
         const h = Math.max(22, y(t.end - t.start) - 2);
         return (
           <div
-            key={key}
-            className={t.o.status === "done" ? "ev done" : "ev"}
+            key={t.key}
+            className={t.done ? "ev done" : "ev"}
             style={{
               top: y(t.start) + 1,
               height: h,
@@ -451,10 +555,10 @@ function DayColumn({
               borderColor: t.color,
             }}
             onClick={() => {
-              onEdit(t.o);
+              t.open();
             }}
           >
-            <b>{t.o.title}</b>
+            <b>{t.title}</b>
             {t.end - t.start >= 45 && (
               <small>
                 <Icon name="time-circle" />

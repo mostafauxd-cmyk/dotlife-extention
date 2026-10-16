@@ -4262,3 +4262,92 @@ label.ts-line {
   text-decoration-color: rgba(255, 255, 255, 0.3);
   text-underline-offset: 4px;
 }
+
+/* Google: the connect button on the plans slide, the Meet line in the form */
+.gsync {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px 6px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--stroke-hi);
+  background: none;
+  color: var(--ink);
+  font: inherit;
+  font-size: 15px;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.gsync b {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #fff;
+  color: #0b0d12;
+  display: grid;
+  place-items: center;
+  font-size: 14px;
+  font-weight: 700;
+}
+.gsync:not(.on):hover {
+  background: rgba(255, 255, 255, 0.07);
+}
+.gsync.on {
+  cursor: default;
+}
+.ts-link {
+  flex: 1;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--ink);
+  font: inherit;
+  font-size: 15px;
+  text-align: start;
+  text-decoration: none;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  cursor: pointer;
+}
+a.ts-link {
+  direction: rtl;
+  color: #8ab4f8;
+}
+.ts-link.dim {
+  color: var(--ink-3);
+}
+.ts-link:disabled {
+  cursor: default;
+}
+.ts-x {
+  flex: none;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 0;
+  border-radius: 8px;
+  background: none;
+  color: var(--ink-3);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+}
+.ts-x:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--ink);
+}
+.ts-x .ico {
+  width: 15px;
+  height: 15px;
+}
+.ts-err {
+  margin: 4px 0 0;
+  font-size: 13.5px;
+  color: var(--amber);
+}
+.ts-seg[hidden] {
+  display: none;
+}
