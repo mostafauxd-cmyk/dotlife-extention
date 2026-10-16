@@ -466,11 +466,6 @@ button { font: inherit; color: inherit; }
 .tpl + .newf { margin-top: 8px; }
 tr.grp td { background: rgba(255,255,255,.04); font-weight: 600; color: var(--ink); }
 
-/* ---------- slide 1: self-arranging stack ---------- */
-.stack { margin-block: auto; width: 100%; display: flex; flex-direction: column; align-items: center; }
-.widgets { --n: 3; margin-top: 22px; display: grid; grid-template-columns: repeat(var(--n), minmax(0, 1fr)); gap: 20px; width: min(100%, calc(var(--n) * 410px + (var(--n) - 1) * 20px)); height: 318px; }
-.airy .time .clock { font-size: 150px; }
-.airy .time .date { font-size: 30px; }
 .q .x { position: absolute; top: -6px; inset-inline-start: 4px; width: 24px; height: 24px; border-radius: 50%; border: 0; background: rgba(16,18,26,.9); color: var(--ink); display: none; place-items: center; cursor: pointer; padding: 0; z-index: 2; }
 .q .x svg { width: 12px; height: 12px; stroke-width: 2.4; }
 .q:hover .x { display: grid; }
@@ -657,6 +652,106 @@ tr.grp td { background: rgba(255,255,255,.04); font-weight: 600; color: var(--in
 .wlog .cta { background: #25D366; color: #06210f; }
 .wlog .safe { font-size: 13px; color: var(--ink-3); }
 
+/* ================= v7: minimal home — dot, Google search, corners, edge ================= */
+.nt { --bgc: #14161d; --tint: #9AA6DC; }
+.nt .wall { background: radial-gradient(900px 620px at 50% 40%, color-mix(in srgb, var(--tint) 12%, transparent), transparent 70%), radial-gradient(1400px 900px at 50% 125%, color-mix(in srgb, var(--tint) 9%, transparent), transparent 70%), var(--bgc); }
+.nt .wall::after { background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>"); opacity: .06; mix-blend-mode: overlay; }
+.s1 { overflow: hidden; }
+.hero { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 22px; padding-bottom: 70px; }
+.dotlogo { width: 108px; height: 108px; }
+.dotlogo svg { width: 100%; height: 100%; overflow: visible; animation: spin 200s linear infinite; }
+.dotlogo path { stroke: var(--tint); }
+.dotlogo { opacity: .9; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.search2 { position: relative; width: 780px; z-index: 7; }
+.sbox { margin: 0; border-radius: 26px; padding: 12px 16px 12px 14px; display: flex; flex-direction: column; gap: 8px; background: color-mix(in srgb, var(--tint) 6%, rgba(255,255,255,.05)); border: 1px solid rgba(255,255,255,.10); box-shadow: 0 24px 70px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.06); transition: border-color .2s; }
+.sbox:focus-within { border-color: rgba(255,255,255,.24); }
+.srow { display: flex; align-items: center; gap: 12px; height: 46px; padding-inline: 6px; }
+.srow > svg { width: 22px; height: 22px; color: var(--ink-2); flex: none; }
+.srow input { flex: 1; min-width: 0; background: none; border: 0; outline: 0; color: var(--ink); font: inherit; font-size: 22px; }
+.srow input::placeholder { color: rgba(255,255,255,.5); }
+.srow2 { display: flex; align-items: center; gap: 8px; }
+.gchip { display: inline-flex; align-items: center; gap: 8px; height: 34px; padding-inline: 6px 14px; border-radius: 999px; border: 1px solid rgba(255,255,255,.12); font-size: 15px; white-space: nowrap; }
+.gchip b, .gmini { width: 24px; height: 24px; border-radius: 50%; background: #fff; color: #4285F4; font: 700 14px/1 Arial, Helvetica, sans-serif; display: grid; place-items: center; flex: none; }
+.gmini { width: 22px; height: 22px; font-size: 13px; }
+.scope { font: inherit; font-size: 15px; height: 34px; padding: 0 14px; border-radius: 999px; border: 1px dashed rgba(255,255,255,.18); background: none; color: var(--ink-2); cursor: pointer; white-space: nowrap; }
+.scope[aria-pressed="true"] { color: var(--ink); border-style: solid; background: rgba(255,255,255,.06); }
+.grow { flex: 1; }
+.ibtn { width: 38px; height: 38px; border-radius: 50%; border: 0; background: none; color: var(--ink-2); display: grid; place-items: center; cursor: pointer; flex: none; }
+.ibtn svg { width: 20px; height: 20px; }
+.ibtn.go { background: rgba(255,255,255,.12); color: var(--ink); }
+.ibtn.go:hover { background: #fff; color: #0B0D12; }
+.search2 .drop { top: calc(100% + 10px); }
+.dateline { display: flex; align-items: center; gap: 12px; font-size: 17px; color: var(--ink-2); }
+.dateline #clock { color: var(--ink); font-variant-numeric: tabular-nums; }
+.dateline i { width: 4px; height: 4px; border-radius: 50%; background: currentColor; opacity: .5; }
+
+/* corners: a faint mark; the card slides in from its own corner */
+.hz { position: absolute; width: 150px; height: 150px; z-index: 5; outline: none; }
+.c-tr { top: 0; right: 0; } .c-tl { top: 0; left: 0; } .c-br { bottom: 0; right: 0; } .c-bl { bottom: 0; left: 0; }
+.cm { position: absolute; width: 18px; height: 18px; border: 0 solid rgba(255,255,255,.30); transition: opacity .3s; }
+.c-tr .cm { top: 22px; right: 22px; border-top-width: 2px; border-right-width: 2px; border-top-right-radius: 8px; }
+.c-tl .cm { top: 22px; left: 22px; border-top-width: 2px; border-left-width: 2px; border-top-left-radius: 8px; }
+.c-br .cm { bottom: 22px; right: 22px; border-bottom-width: 2px; border-right-width: 2px; border-bottom-right-radius: 8px; }
+.c-bl .cm { bottom: 22px; left: 22px; border-bottom-width: 2px; border-left-width: 2px; border-bottom-left-radius: 8px; }
+.cl { position: absolute; font-size: 14px; color: var(--ink-2); opacity: 0; transition: opacity .4s; white-space: nowrap; }
+.c-tr .cl { top: 20px; right: 50px; } .c-tl .cl { top: 20px; left: 50px; } .c-br .cl { bottom: 20px; right: 50px; } .c-bl .cl { bottom: 20px; left: 50px; }
+.ccard { position: absolute; width: 380px; border-radius: 26px; padding: 18px 20px; display: flex; flex-direction: column; gap: 12px; opacity: 0; pointer-events: none; transition: opacity .22s ease .22s, transform .45s var(--ease) .22s; }
+.c-tr .ccard { top: 18px; right: 18px; transform-origin: top right; transform: translate(36px, -36px) scale(.9); }
+.c-tl .ccard { top: 18px; left: 18px; transform-origin: top left; transform: translate(-36px, -36px) scale(.9); }
+.c-br .ccard { bottom: 18px; right: 18px; transform-origin: bottom right; transform: translate(36px, 36px) scale(.9); }
+.c-bl .ccard { bottom: 18px; left: 18px; transform-origin: bottom left; transform: translate(-36px, 36px) scale(.9); }
+.hz:hover .ccard, .hz:focus-within .ccard, .hz.pin .ccard { opacity: 1; transform: none; pointer-events: auto; transition-delay: 0s; }
+.hz:hover .cm, .hz:focus-within .cm, .hz.pin .cm { opacity: 0; }
+.ccard h3 { margin: 0; display: flex; align-items: center; gap: 10px; font-size: 19px; font-weight: 600; }
+.ccard .sync { height: auto; padding: 0; border-radius: 0; font-size: 13px; color: var(--ink-2); margin-inline-start: auto; gap: 6px; background: none; border: 0; box-shadow: none; }
+.ccard .sync i { width: 7px; height: 7px; }
+.ccard > .more { align-self: flex-start; }
+.ccard h3 .more { margin-inline-start: auto; }
+.ccard .add { margin-top: 0; }
+.tday b { display: block; font-size: 26px; font-weight: 600; line-height: 1.4; }
+.tday span { font-size: 14px; color: var(--ink-2); }
+.occsp2 { font-size: 14px; color: var(--ink-2); display: flex; gap: 8px; align-items: center; }
+.nextp { display: flex; justify-content: space-between; padding: 8px 14px; border-radius: 14px; background: rgba(0,0,0,.22); font-size: 16px; }
+.nextp b { font-weight: 500; font-variant-numeric: tabular-nums; }
+.s1.hinting .cl { opacity: .9; }
+.s1.hinting .cm { animation: cpulse 1.1s ease 3; }
+@keyframes cpulse { 50% { border-color: rgba(255,255,255,.85); } }
+.coach { position: absolute; bottom: 140px; left: 50%; transform: translateX(-50%); padding: 8px 20px; border-radius: 999px; background: rgba(255,255,255,.08); border: 1px solid var(--stroke); font-size: 15px; color: var(--ink-2); white-space: nowrap; animation: fade .5s ease both; z-index: 4; }
+
+/* right edge: quick access + bookmarks, like Dia's sidebar */
+.edge { position: absolute; right: 0; top: 170px; bottom: 170px; width: 28px; z-index: 6; outline: none; }
+.em { position: absolute; right: 10px; top: 50%; width: 4px; height: 56px; margin-top: -28px; border-radius: 4px; background: rgba(255,255,255,.22); transition: opacity .3s; }
+.side2 { position: absolute; right: 14px; top: 50%; width: 330px; max-height: 660px; overflow-y: auto; scrollbar-width: none; border-radius: 26px; padding: 18px; display: flex; flex-direction: column; gap: 14px; opacity: 0; pointer-events: none; transform: translate(110%, -50%); transition: transform .45s var(--ease) .22s, opacity .25s ease .22s; }
+.edge:hover .side2, .edge:focus-within .side2, .edge.pin .side2 { opacity: 1; pointer-events: auto; transform: translate(0, -50%); transition-delay: 0s; }
+.edge:hover .em, .edge:focus-within .em, .edge.pin .em { opacity: 0; }
+.side2 .quick { margin-top: 10px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px 4px; }
+.side2 .q { width: auto; font-size: 13px; }
+.side2 .q .ic { width: 52px; height: 52px; border-radius: 17px; font-size: 20px; }
+.side2 .shelf { flex-direction: column; align-items: stretch; gap: 2px; padding: 0; margin: 0; border-radius: 0; background: none; border: 0; box-shadow: none; backdrop-filter: none; -webkit-backdrop-filter: none; }
+.side2 .shelf .who { background: none; color: var(--ink-2); font-weight: 500; font-size: 14px; padding: 2px 6px; }
+.side2 .bm { padding: 7px 8px; border-radius: 12px; font-size: 15px; }
+.spcard { border-radius: 16px; padding: 10px 12px; background: rgba(242,201,76,.08); border: 1px solid rgba(242,201,76,.22); font-size: 14px; display: flex; gap: 8px; align-items: center; justify-content: space-between; }
+.spcard b { font-weight: 500; }
+.side2 #custBtn { align-self: flex-start; }
+
+/* slide rail: dots until hovered */
+.rail::before { content: ""; position: absolute; inset: -60px -18px; }
+.rail button { transition: width .25s var(--ease), height .25s var(--ease), background .25s; }
+.rail:not(:hover):not(:focus-within) { background: transparent; border-color: transparent; box-shadow: none; backdrop-filter: none; -webkit-backdrop-filter: none; }
+.rail:not(:hover):not(:focus-within) button { width: 8px; height: 8px; margin: 3px auto; background: rgba(255,255,255,.3); }
+.rail:not(:hover):not(:focus-within) button[aria-current="true"] { height: 24px; background: #fff; }
+.rail:not(:hover):not(:focus-within) button svg, .rail:not(:hover):not(:focus-within) button .bdg { display: none; }
+
+/* entry */
+@keyframes fade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes rise { from { opacity: 0; transform: translateY(18px) scale(.985); } to { opacity: 1; transform: none; } }
+.nt.enter-bg .wall { animation: fade 1s ease both; }
+.s1.enter .sbox { animation: rise .9s var(--ease) .7s both; }
+.s1.enter .dateline { animation: fade .8s ease 1.2s both; }
+.s1.enter .cm, .s1.enter .em { animation: fade .6s ease 1.8s both; }
+.th i { position: relative; }
+
 /* ad-slot overlay */
 [data-slot] { position: relative; }
 .show-ads [data-slot] { outline: 2px dashed var(--ad); outline-offset: 5px; border-radius: 16px; }
@@ -714,7 +809,7 @@ td.them { color: var(--ink-2); }
       <div class="eyebrow">پیش‌نویس پلن · نیوتب کروم · ۲۴ مهر ۱۴۰۵</div>
       <h1><b>میز</b> نقطه و پاکت</h1>
     </div>
-    <p>صفحه‌ی نیوتب کروم که کارها و یادداشت‌های نقطه، پول پاکت، خبر و شبکه‌ها را کنار سرچ می‌آورد. هر چیزی که کاربر روی گوشی بنویسد، چند ثانیه بعد همین‌جاست. ماک‌آپ زیر کار می‌کند: «دیدن آنبوردینگ» را بزنید، با چرخ‌دنده‌ی بالای صفحه بلوک‌ها را خاموش و روشن کنید و پس‌زمینه را عوض کنید، روی «افزودن» در دسترسی سریع بزنید، و از نوار کنار صفحه به شش اسلاید بروید.</p>
+    <p>صفحه‌ی نیوتب کروم که در نگاه اول فقط نقطه و یک سرچ گوگل است. کارها، یادداشت‌ها، پول و برنامه‌ی امروز در چهار گوشه منتظرند و با رفتن موس به هر گوشه می‌آیند؛ دسترسی سریع و بوکمارک‌ها از لبه‌ی راست. با اسکرول، برنامه‌ها، پول، یادداشت‌ها، خبر و شبکه‌ها. ماک‌آپ زیر کار می‌کند: «دیدن افکت ورود» را بزنید، موس را به گوشه‌ها و لبه‌ی راست ببرید، و از «شخصی‌سازی» رنگ و بلوک‌ها را عوض کنید.</p>
   </header>
 
   <div class="stage" id="stage">
@@ -733,90 +828,89 @@ td.them { color: var(--ink-2); }
           </nav>
           <div class="scroller" id="scroller">
           <section class="slide s1" id="s1" aria-label="خانه">
-          <div class="in">
-            <div class="top">
-              <div class="hello"><div class="avatar">ن</div><span id="greet">عصر بخیر، نسیم</span></div>
-              <div class="end">
-                <a class="toppill g" data-slot="۶"><svg viewBox="0 0 24 24"><path d="M12 3l2.6 5.6 6 .7-4.5 4.1 1.2 6L12 16.4 6.7 19.4l1.2-6-4.5-4.1 6-.7z"/></svg>بلیت قطار مشهد از ۴۵۰ هزار تومان<span class="tag">معرفی‌شده</span></a>
-                <div class="sync g" id="sync"><i></i><span id="syncTxt">همگام با گوشی · زنده</span></div>
-                <button class="rbtn" id="custBtn" aria-label="شخصی‌سازی"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button>
-              </div>
-            </div>
-
-            <div class="stack">
-            <div class="time" data-blk="clock">
-              <div class="clock" id="clock">۱۴:۲۱</div>
-              <div class="date">جمعه ۲۴ مهر ۱۴۰۵</div>
-              <div class="sub" data-blk="dates">
-                <span>۱۶ اکتبر ۲۰۲۶</span><span>·</span><span>۴ جمادی‌الاول ۱۴۴۸</span>
-                <span class="pill occ" data-slot="۵">روز جهانی غذا <small>شام امشب با ۲۰٪ تخفیف · معرفی‌شده</small></span>
-              </div>
-            </div>
-
-            <div class="search" id="search" data-blk="search">
-              <div class="bar g">
-                <svg viewBox="0 0 24 24" style="width:24px;height:24px;color:rgba(255,255,255,.7)"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
-                <input id="q" placeholder="جستجو در وب، کارها و یادداشت‌ها…" autocomplete="off">
-                <div class="eng" title="موتور جستجوی پیش‌فرض کروم"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg></div>
-              </div>
-              <div class="drop g" id="drop" hidden>
-                <div class="row"><svg viewBox="0 0 24 24"><path d="M9 11l3 3 8-8"/><path d="M20 12v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h9"/></svg><span id="dq1">کار: تمدید بیمه‌ی ماشین</span><span class="k">نقطه</span></div>
-                <div class="row"><svg viewBox="0 0 24 24"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6M8 13h8M8 17h5"/></svg><span>یادداشت: ایده‌های کمپین پاییز</span><span class="k">نقطه</span></div>
-                <div class="sep"></div>
-                <div class="row"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><span>قیمت دلار امروز</span></div>
-                <div class="row"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><span>سامانه‌ی مودیان</span></div>
-                <div class="row" data-slot="۴"><svg viewBox="0 0 24 24"><path d="M12 3l2.6 5.6 6 .7-4.5 4.1 1.2 6L12 16.4 6.7 19.4l1.2-6-4.5-4.1 6-.7z"/></svg><span>بیمه‌ی بدنه‌ی آنلاین، استعلام در ۲ دقیقه</span><span class="k"><span class="tag">معرفی‌شده</span></span></div>
-              </div>
-            </div>
-
-            <div class="quick" id="quick" data-blk="quick"></div>
-
-            <div class="widgets">
-              <!-- نقطه: کارها -->
-              <div class="w g" data-blk="tasks">
-                <h3>کارهای امروز <span class="app n"><i></i>نقطه</span><button class="more" data-go="s2" style="margin-inline-start:14px">برنامه‌ها ↓</button></h3>
-                <ul class="tasks" id="tasks"></ul>
-                <form class="add" id="addForm">
-                  <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
-                  <input id="addInput" placeholder="کار جدید…" autocomplete="off">
+            <div class="hero" id="hero">
+              <div class="dotlogo" id="dotLogo" aria-label="نقطه"><svg viewBox="-2 -2 104 104" aria-hidden="true"><path id="dotPath" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              <div class="search2" id="search">
+                <form class="sbox" id="sform">
+                  <div class="srow">
+                    <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+                    <input id="q" placeholder="در گوگل جستجو کن یا آدرس بنویس…" autocomplete="off" aria-label="جستجو در گوگل">
+                  </div>
+                  <div class="srow2">
+                    <span class="gchip" title="جستجو با موتور پیش‌فرض کروم: گوگل"><b>G</b>جستجو در گوگل</span>
+                    <button type="button" class="scope" id="scope" aria-pressed="true">+ کارها و یادداشت‌های من</button>
+                    <span class="grow"></span>
+                    <button type="button" class="ibtn" aria-label="جستجوی صوتی"><svg viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></button>
+                    <button type="submit" class="ibtn go" aria-label="جستجو"><svg viewBox="0 0 24 24"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button>
+                  </div>
                 </form>
+                <div class="drop g" id="drop" hidden>
+                  <div class="row"><b class="gmini">G</b><span id="dq0">جستجو در گوگل</span><span class="k">Enter</span></div>
+                  <div class="row"><svg viewBox="0 0 24 24"><path d="M9 11l3 3 8-8"/><path d="M20 12v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h9"/></svg><span id="dq1">کار: تمدید بیمه‌ی ماشین</span><span class="k">نقطه</span></div>
+                  <div class="row"><svg viewBox="0 0 24 24"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6M8 13h8M8 17h5"/></svg><span>یادداشت: ایده‌های کمپین پاییز</span><span class="k">نقطه</span></div>
+                  <div class="sep"></div>
+                  <div class="row"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><span>قیمت دلار امروز</span></div>
+                  <div class="row" data-slot="۴"><svg viewBox="0 0 24 24"><path d="M12 3l2.6 5.6 6 .7-4.5 4.1 1.2 6L12 16.4 6.7 19.4l1.2-6-4.5-4.1 6-.7z"/></svg><span>بیمه‌ی بدنه‌ی آنلاین، استعلام در ۲ دقیقه</span><span class="k"><span class="tag">معرفی‌شده</span></span></div>
+                </div>
               </div>
-              <!-- نقطه: یادداشت -->
-              <div class="w g" data-blk="notes">
-                <h3>یادداشت‌ها <span class="app n"><i></i>نقطه</span><button class="more" data-go="s4" style="margin-inline-start:14px">همه ↓</button></h3>
-                <div class="note">
-                  <div class="nt-title">ایده‌های کمپین پاییز</div>
-                  <ul>
-                    <li class="ok"><i></i>بنر «بازگشت به مدرسه»</li>
-                    <li class="ok"><i></i>هماهنگی با تیم محتوا</li>
-                  </ul>
-                  <div class="meta">سنجاق‌شده · ویرایش روی گوشی، ۱۰ دقیقه پیش</div>
-                </div>
-                <div class="notes-more"><span>لیست خرید</span><span>صورت‌جلسه‌ی شنبه</span><span>کتاب‌ها</span></div>
-                <div class="add" style="margin-top:auto"><svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg><input placeholder="یادداشت سریع…" aria-label="یادداشت سریع"></div>
+              <div class="dateline" data-blk="dateline"><span id="clock">۱۵:۳۰</span><i></i>جمعه ۲۴ مهر ۱۴۰۵<i></i>روز جهانی غذا</div>
+            </div>
+            <div class="coach" id="coach" hidden>موس را به گوشه‌ها و لبه‌ی راست ببر؛ کارها، یادداشت‌ها، پول و دسترسی سریع آن‌جاست.</div>
+
+            <!-- corner: tasks (top-right) -->
+            <div class="hz c-tr" data-blk="tasks" tabindex="0" aria-label="کارهای امروز">
+              <span class="cm"></span><span class="cl">کارها</span>
+              <div class="ccard g">
+                <h3>کارهای امروز <span class="sync" id="sync"><i></i><span id="syncTxt">همگام با گوشی</span></span></h3>
+                <ul class="tasks" id="tasks"></ul>
+                <form class="add" id="addForm"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg><input id="addInput" placeholder="کار جدید…" autocomplete="off" aria-label="کار جدید"></form>
+                <button class="more" data-go="s2">همه‌ی برنامه‌ها ↓</button>
               </div>
-              <!-- پاکت -->
-              <div class="w g money" id="money" data-blk="money">
-                <h3><button id="eye" aria-label="پنهان کردن مبالغ"><svg viewBox="0 0 24 24"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></button>پول من <span class="app p"><i></i>پاکت</span></h3>
-                <div>
-                  <div class="lbl">خرج امروز</div>
-                  <div class="big"><span class="amt">۴۸۵٬۰۰۰</span><small>تومان</small></div>
-                </div>
-                <div class="bud">
-                  <div class="track"><b></b></div>
-                  <div class="row"><span>بودجه‌ی مهر</span><span class="amt">۸٫۴ از ۱۲ میلیون</span></div>
-                </div>
-                <div class="bills">
-                  <div class="bill"><span>قبض برق <span class="d">۲ روز دیگر</span></span><span class="amt">۳۱۲٬۰۰۰</span></div>
-                  <div class="bill"><span>قسط وام <span class="d" style="color:var(--ink-2)">۵ آبان</span></span><span class="amt">۴٬۲۰۰٬۰۰۰</span></div>
-                </div>
-                <div class="pend"><b>۳</b> پیامک منتظر تأیید<button class="more" data-go="s3">نمودارها و قیمت روز ↓</button></div>
+            </div>
+            <!-- corner: notes (top-left) -->
+            <div class="hz c-tl" data-blk="notes" tabindex="0" aria-label="یادداشت‌ها">
+              <span class="cm"></span><span class="cl">یادداشت‌ها</span>
+              <div class="ccard g">
+                <h3>یادداشت‌ها</h3>
+                <div class="note"><div class="nt-title">ایده‌های کمپین پاییز</div><ul><li class="ok"><i></i>بنر «بازگشت به مدرسه»</li><li><i></i>بودجه‌ی تبلیغات</li></ul></div>
+                <div class="add"><svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg><input placeholder="یادداشت سریع…" aria-label="یادداشت سریع"></div>
+                <button class="more" data-go="s4">همه‌ی یادداشت‌ها ↓</button>
+              </div>
+            </div>
+            <!-- corner: money (bottom-right) -->
+            <div class="hz c-br" data-blk="money" tabindex="0" aria-label="پول من">
+              <span class="cm"></span><span class="cl">پول</span>
+              <div class="ccard g money" id="money">
+                <h3>پول من <button id="eye" class="more" aria-label="پنهان کردن مبالغ"><svg viewBox="0 0 24 24"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></button></h3>
+                <div><div class="lbl">خرج امروز</div><div class="big"><span class="amt">۴۸۵٬۰۰۰</span><small>تومان</small></div></div>
+                <div class="bud"><div class="track"><b></b></div><div class="row"><span>بودجه‌ی مهر</span><span class="amt">۸٫۴ از ۱۲ میلیون</span></div></div>
+                <div class="bill"><span>قبض برق <span class="d">۲ روز دیگر</span></span><span class="amt">۳۱۲٬۰۰۰</span></div>
+                <button class="more" data-go="s3">نمودارها و قیمت روز ↓</button>
+              </div>
+            </div>
+            <!-- corner: today (bottom-left) -->
+            <div class="hz c-bl" data-blk="today" tabindex="0" aria-label="امروز">
+              <span class="cm"></span><span class="cl">امروز</span>
+              <div class="ccard g">
+                <h3 id="greet">عصر بخیر، نسیم</h3>
+                <div class="tday"><b>جمعه ۲۴ مهر</b><span>۱۶ اکتبر ۲۰۲۶ · ۴ جمادی‌الاول ۱۴۴۸</span></div>
+                <div class="occs"><span>روز جهانی غذا</span></div>
+                <div class="occsp2" data-slot="۵">شام امشب با ۲۰٪ تخفیف<span class="tag">معرفی‌شده</span></div>
+                <div class="nextp"><span>اذان مغرب</span><b>۱۷:۴۵</b></div>
+                <button class="more" data-go="s2">برنامه‌های امروز ↓</button>
               </div>
             </div>
 
+            <!-- right edge: quick access + bookmarks (like Dia's sidebar) -->
+            <div class="edge" id="edge" tabindex="0" aria-label="دسترسی سریع و بوکمارک‌ها">
+              <span class="em"></span>
+              <aside class="side2 g">
+                <div data-blk="quick"><div class="sec">دسترسی سریع</div><div class="quick" id="quick"></div></div>
+                <div data-blk="shelf" class="shelfwrap"><div class="shelf" id="shelf"></div></div>
+                <div class="spcard" data-slot="۶"><b>بلیت قطار مشهد از ۴۵۰ هزار تومان</b><span class="tag">معرفی‌شده</span></div>
+                <button class="ghost" id="custBtn">شخصی‌سازی</button>
+              </aside>
             </div>
-            <div class="shelf g" id="shelf" data-blk="shelf"></div>
-          </div>
           </section>
 
           <!-- ============ SLIDE 2 · PLANNER ============ -->
@@ -1030,13 +1124,12 @@ td.them { color: var(--ink-2); }
           <aside class="cust" id="cust" hidden aria-label="شخصی‌سازی">
             <div class="cust-h"><h2>شخصی‌سازی</h2><button class="rbtn sm" id="custClose" aria-label="بستن"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
             <h3>صفحه‌ی اول</h3>
-            <div class="chint">هر چیزی را خاموش کنی، بقیه خودشان جا باز می‌کنند.</div>
+            <div class="chint">صفحه‌ی اول فقط نقطه و سرچ است؛ بقیه در گوشه‌ها و لبه منتظرند.</div>
             <div class="tgrid" id="tBlocks"></div>
             <h3>اسلایدها</h3>
             <div class="tgrid" id="tSlides"></div>
-            <h3>پس‌زمینه</h3>
+            <h3>رنگ پس‌زمینه</h3>
             <div class="wps" id="wpGrid"></div>
-            <div class="livechips" id="liveChips"></div>
             <div style="display:flex;gap:10px;margin-top:4px"><button class="ghost" id="custReset">چیدمان پیش‌فرض</button><button class="ghost" id="custOnb">آنبوردینگ دوباره</button></div>
           </aside>
 
@@ -1072,7 +1165,7 @@ td.them { color: var(--ink-2); }
               <div class="onb-foot"><button class="ghost" id="onbBack">قبلی</button><button class="cta" id="onbNext">ادامه</button></div>
             </div>
           </div>
-          <div class="credit" id="credit" hidden data-slot="۳">والپیپر امروز: کمپین «پاییز» · معرفی‌شده</div>
+          <div class="credit" id="credit" hidden data-slot="۳">تم امروز: کمپین «پاییز» · معرفی‌شده</div>
         </div>
       </div>
     </div>
@@ -1080,7 +1173,7 @@ td.them { color: var(--ink-2); }
 
   <div class="controls">
     <div class="ctl" id="personas"><span>پرسونا:</span></div>
-    <div class="ctl"><button class="chip" id="ctlCust" aria-pressed="false">شخصی‌سازی و پس‌زمینه</button><button class="chip" id="ctlOnb" aria-pressed="false">دیدن آنبوردینگ</button></div>
+    <div class="ctl"><button class="chip" id="ctlCust" aria-pressed="false">شخصی‌سازی و پس‌زمینه</button><button class="chip" id="ctlOnb" aria-pressed="false">دیدن آنبوردینگ</button><button class="chip" id="ctlEnter" aria-pressed="false">دیدن افکت ورود</button></div>
     <div class="ctl">
       <button class="chip ad" id="adsBtn" aria-pressed="false">نمایش جایگاه‌های تبلیغ</button>
       <button class="chip" id="phoneBtn" aria-pressed="false">ثبت یک کار از گوشی</button>
@@ -1093,7 +1186,7 @@ td.them { color: var(--ink-2); }
     <section>
       <h2>اصول<small>چیزهایی که در هر تصمیم طراحی و فنی رعایت می‌شود</small></h2>
       <div class="principles">
-        <div><b>فولد اول خلوت، عمق با اسکرول</b><span>صفحه‌ی اول بدون اسکرول همه‌چیز را خلاصه نشان می‌دهد. تقویم کامل و پول کامل با یک اسکرول یا یک کلیک روی نوار کنار صفحه می‌آیند.</span></div>
+        <div><b>اول فقط نقطه و سرچ</b><span>صفحه‌ی اول یک کار دارد: جستجو در گوگل. بقیه در گوشه‌ها و لبه پنهان‌اند و با موس می‌آیند؛ هیچ کارتی در نمای اول نیست.</span></div>
         <div><b>فونت درشت</b><span>کوچک‌ترین متن ۱۳ پیکسل و فقط برای برچسب‌های فرعی است، متن اصلی ۱۷ و ۱۸ و ساعت ۱۰۸ با وزن نازک یکان بخ، مثل هیروی تقویم نقطه.</span></div>
         <div><b>داده‌ی خود کاربر</b><span>کارها، یادداشت‌ها، برنامه‌ی روز، حساب‌ها و دارایی‌های خود آدم. قیمت روز هم هست، ولی کنار ارزش طلا و سکه‌ای که خودش دارد.</span></div>
         <div><b>تبلیغی که بنر نیست</b><span>۱۵ جایگاه بومی در شش اسلاید، همه در حاشیه‌ها و بیرون از محتوای کاربر، با برچسب «معرفی‌شده» و حداکثر ۳ جایگاه هم‌زمان در هر اسلاید.</span></div>
@@ -1106,7 +1199,7 @@ td.them { color: var(--ink-2); }
       <div class="tbl"><table>
         <thead><tr><th>اسلاید</th><th>چه چیزی</th><th>داده از</th></tr></thead>
         <tbody>
-          <tr><td>۱ · خانه</td><td>سلام و وضعیت سینک، ساعت و تاریخ سه‌گانه و مناسبت، سرچ، ۸ کاشی دسترسی سریع، کارهای امروز، یادداشت‌ها، خلاصه‌ی پول، قفسه‌ی بوکمارک پرسونا</td><td>نقطه، پاکت، <code>chrome.topSites</code></td></tr>
+          <tr><td>۱ · خانه</td><td>نقطه‌ی نقطه (به رنگ پس‌زمینه) بالای یک سرچ بزرگ گوگل و یک خط آرام تاریخ. چهار گوشه: کارهای امروز (بالا راست)، یادداشت‌ها (بالا چپ)، پول من (پایین راست)، امروز با تاریخ‌ها و مناسبت و اذان بعدی (پایین چپ). لبه‌ی راست: دسترسی سریع و بوکمارک‌های پرسونا، مثل نوار کناری Dia</td><td>نقطه، پاکت، <code>chrome.topSites</code>، <code>chrome.search</code></td></tr>
           <tr><td>۲ · برنامه‌ها</td><td>نمای هفته به سبک تقویم گوگل، مثل بخش «برنامه‌ها»ی اپ: ستون هر روز با ساعت‌ها، ردیف «تمام‌روز» با مناسبت‌ها و قبض‌ها و کارهای بی‌ساعت، خط اذان صبح و ظهر و مغرب، خط «الان». با کشیدن روی ساعت‌ها برنامه ساخته می‌شود و در تقویم گوگل هم می‌نشیند. کنارش تقویم ماه کوچک با نقطه‌ی مناسبت، فهرست مناسبت‌های پیش رو و کلید روشن/خاموش هر تقویم. بالای صفحه سرچ که برنامه‌ها، مناسبت‌ها و یادداشت‌ها را با هم می‌گردد</td><td><code>calendar-core</code>، <code>event-data</code>، <code>prayer-times</code>، <code>tasks</code>، Google Calendar API از راه relay، قبض‌های پاکت</td></tr>
           <tr><td>۳ · پول</td><td>موجودی حساب‌ها، خرج‌های پیش رو، نمودار خرج تجمعی ماه با مسیر بودجه و پیش‌بینی پاکت، خرج بر اساس دسته، قیمت روز طلا و سکه و ارز و کریپتو با نمودار، ارزش دارایی‌های خود کاربر، و ردیف «خبر و پیشنهاد» با همان خبرهایی که تیم در اپ پاکت می‌گذارد</td><td>پاکت (حساب‌ها، <code>category_period_aggregates</code>، <code>expense_predictions</code>، <code>upcoming_expenses</code>، <code>investments.positions</code>، <code>/v1/news</code>) و منبع قیمت</td></tr>
           <tr><td>۴ · یادداشت‌ها</td><td>مثل یادداشت‌های اپ: پوشه‌ها، فهرست با سنجاق‌شده‌ها و سرچ، و ویرایشگر کامل با تیتر، متن، چک‌لیست، فهرست و یادداشت صوتی (موج صدا و متن آن). یادداشتی که به یک روز یا یک کار وصل است، برچسبش را نشان می‌دهد. هر تغییر چند ثانیه بعد روی گوشی است</td><td><code>packages/notes</code> (تازه)، <code>@dotlife/sync</code></td></tr>
@@ -1122,7 +1215,7 @@ td.them { color: var(--ink-2); }
       <div class="tbl"><table>
         <thead><tr><th></th><th>دستیار (اسکرین‌شات‌ها)</th><th>میز</th></tr></thead>
         <tbody>
-          <tr><td>ساختار</td><td class="them">۱۲+ ویجت در تب‌های دسته‌بندی، اسکرول آزاد</td><td>چهار اسلاید با جای مشخص، فولد اول کامل</td></tr>
+          <tr><td>ساختار</td><td class="them">۱۲+ ویجت در تب‌های دسته‌بندی، اسکرول آزاد</td><td>نمای اول فقط نقطه و سرچ؛ کارت‌ها در گوشه‌ها، اسلایدها با اسکرول</td></tr>
           <tr><td>کوچک‌ترین متن</td><td class="them">حدود ۱۱ پیکسل</td><td>۱۳ برای برچسب فرعی؛ متن اصلی ۱۷ و ۱۸</td></tr>
           <tr><td>تسک و یادداشت</td><td class="them">محلی و خالی («هنوز تسکی ثبت نکردی»)</td><td>همان کارها و یادداشت‌های گوشی، دوطرفه و زنده</td></tr>
           <tr><td>تقویم</td><td class="them">تقویم کوچک کنار صفحه</td><td>نمای هفته‌ی گوگل‌کلندری با ساختن برنامه با کشیدن، به‌اضافه‌ی ماه کوچک، مناسبت‌ها، اوقات شرعی و قبض‌ها</td></tr>
@@ -1133,27 +1226,29 @@ td.them { color: var(--ink-2); }
     </section>
 
     <section>
-      <h2>شخصی‌سازی بدون به‌هم‌ریختن چیدمان<small>با چرخ‌دنده‌ی بالای صفحه‌ی اول، یا «شخصی‌سازی و پس‌زمینه» زیر ماک‌آپ</small></h2>
-      <p>چیدمان صفحه‌ی اول از چند منطقه‌ی ثابت ساخته می‌شود که هر کدام می‌تواند نباشد، بدون اینکه بقیه جابه‌جا شوند:</p>
+      <h2>گوشه‌ها، لبه و شخصی‌سازی<small>موس را به گوشه‌ها ببرید؛ «شخصی‌سازی» در نوار لبه‌ی راست است</small></h2>
+      <p>نمای اول خالی است تا کاربر شلوغی نبیند. هر چیز دیگری جای ثابت خودش را دارد و فقط وقتی موس به آن‌جا برسد می‌آید:</p>
       <ul>
-        <li><b>نوار بالا و قفسه‌ی پایین</b> همیشه به لبه‌ها چسبیده‌اند. هر چه بینشان است در یک ستون وسط صفحه می‌نشیند و وقتی بلوکی خاموش شود، ستون خودش وسط می‌ماند؛ هیچ جای خالی‌ای باقی نمی‌ماند.</li>
-        <li><b>ردیف ویجت‌ها</b> به تعداد ویجت‌های روشن ستون دارد: ۳ ویجت ۳ ستون، ۲ ویجت ۲ ستون پهن‌تر، ۱ ویجت یک کارت وسط. عرض هر ستون سقف دارد (۴۱۰ پیکسل)، پس یک ویجت تنها هیچ‌وقت کل صفحه را نمی‌گیرد. ارتفاع ردیف ثابت است و محتوای بیشتر داخل خود کارت اسکرول می‌شود.</li>
-        <li><b>اگر هیچ ویجتی روشن نباشد</b> صفحه به حالت «خلوت» می‌رود: ساعت و تاریخ بزرگ‌تر می‌شوند و سرچ وسط صفحه می‌نشیند.</li>
-        <li><b>اسلایدها</b> هم جدا روشن و خاموش می‌شوند و آیکونشان از نوار کنار صفحه برداشته می‌شود.</li>
-        <li>هر انتخاب در شخصی‌سازی نقطه (یک بخش تازه‌ی <code>newtab</code> کنار <code>dashboard</code>) ذخیره و سینک می‌شود، پس روی کروم دیگر هم همین چیدمان می‌آید. «چیدمان پیش‌فرض» همه‌چیز را برمی‌گرداند.</li>
+        <li><b>چهار گوشه:</b> در هر گوشه فقط یک نشانه‌ی کوچک L شکل است. موس که به گوشه برسد، کارت همان گوشه از بیرون صفحه به داخل می‌لغزد و تا وقتی موس روی آن است می‌ماند؛ با رفتن موس، بعد از یک مکث کوتاه برمی‌گردد. با کیبورد هم با Tab می‌شود به هر گوشه رسید.</li>
+        <li><b>لبه‌ی راست:</b> یک خط کوچک کنار صفحه؛ موس که برسد، نوار دسترسی سریع و بوکمارک‌ها مثل نوار کناری Dia باز می‌شود.</li>
+        <li><b>نوار اسلایدها</b> در لبه‌ی چپ فقط چند نقطه است و با رفتن موس به آیکون‌ها باز می‌شود.</li>
+        <li><b>بار اول</b> بعد از افکت ورود، نشانه‌های گوشه چند بار چشمک می‌زنند و یک خط راهنما می‌گوید کارت‌ها کجا هستند.</li>
+        <li><b>شخصی‌سازی:</b> هر گوشه، هر بخش لبه، خط تاریخ و هر اسلاید یک کلید دارد. کسی که کارت‌ها را همیشه جلوی چشم می‌خواهد، «کارت‌ها همیشه باز» را روشن می‌کند. چون هر کارت جای ثابت خودش را در گوشه دارد، خاموش و روشن کردن هیچ‌چیز بقیه را جابه‌جا نمی‌کند.</li>
+        <li>همه‌ی این انتخاب‌ها در شخصی‌سازی نقطه (بخش تازه‌ی <code>newtab</code>) سینک می‌شود.</li>
       </ul>
+      <h3>سرچ گوگل</h3>
+      <p>سرچ بزرگ‌ترین چیز صفحه است و جای شکی نمی‌گذارد که در گوگل جستجو می‌شود: متن راهنما «در گوگل جستجو کن»، نشانه‌ی G و کپسول «جستجو در گوگل» کنار آن، و اولین پیشنهاد هم «جستجو در گوگل: …». کپسول «کارها و یادداشت‌های من» نتیجه‌های نقطه را هم کنارش می‌آورد و می‌شود خاموشش کرد. ارسال با <code>chrome.search.query</code> انجام می‌شود که موتور پیش‌فرض کروم را صدا می‌زند (برای بیشتر کاربران گوگل)؛ اگر موتور پیش‌فرض کسی گوگل نباشد، کپسول اسم همان موتور را نشان می‌دهد تا قول نادرستی نداده باشیم و سیاست استور هم رعایت شود.</p>
       <h3>دسترسی سریع</h3>
       <p>کاشی «افزودن» یک پنجره باز می‌کند با دو بخش: «پیشنهادها» (سایت‌هایی که کاربر زیاد باز می‌کند از <code>chrome.topSites</code>، به‌اضافه‌ی فهرست ما) که با یک کلیک اضافه یا برداشته می‌شوند، و «آدرس دلخواه» با نام، آدرس و رنگ کاشی و پیش‌نمایش زنده. با رفتن موس روی هر کاشی دکمه‌ی برداشتن می‌آید. سقف ۸ کاشی است (یکی اسپانسری)؛ وقتی پر شد، پنجره همین را می‌گوید و کاشی «افزودن» پنهان می‌شود. ترتیب با کشیدن عوض می‌شود.</p>
     </section>
 
     <section>
-      <h2>پس‌زمینه‌ها، مثل اپ نقطه</h2>
-      <p>پیش‌فرض همان <b>درخت زنده</b>ی اپ است: یک درخت که با ماه سال رنگ عوض می‌کند و با ساعت روز از سحر به روز، غروب و شب می‌رود (۱۲ ماه × ۴ حالت در <code>assets/wallpapers/live</code>). نیوتب ساعت را خودش می‌خواند و سر هر حالت تصویر را آرام عوض می‌کند. کنارش ردیف‌های عکس اپ (رنگ‌ها، حرم‌ها، طبیعت، حیوانات)، رنگ‌های ساده (ماه، شفق) و «عکس خودت».</p>
+      <h2>رنگ‌ها و افکت ورود</h2>
+      <p>نسخه‌ی پیش‌فرض عکس ندارد؛ فقط چند رنگ تیره و آرام: نقطه، گرافیت، آسمان، کهربا، جنگل، شب بنفش و رز، به‌اضافه‌ی «تم روز» اسپانسری (جایگاه ۳). هر رنگ دو مقدار دارد: زمینه و یک رنگ روشن‌تر هم‌خانواده. زمینه یک هاله‌ی محو از همان رنگ روشن و کمی دانه (grain) دارد تا تخت و مرده دیده نشود.</p>
       <ul>
-        <li>عکس‌های اپ عمودی‌اند؛ برای نیوتب نسخه‌ی افقی ۲۵۶۰×۱۴۴۰ با همان اسکریپت‌های <code>scripts/live_wallpaper.py</code> و <code>photo_wallpapers.py</code> ساخته می‌شود. ماک‌آپ فعلاً برش افقی همان تصویرهای اپ را نشان می‌دهد.</li>
-        <li>روی عکس‌ها یک پرده‌ی تیره‌ی ملایم می‌افتد تا ساعت و کارت‌های شیشه‌ای همیشه خوانا بمانند.</li>
-        <li>تصویر حالت بعدی درخت از قبل در کش افزونه گرفته می‌شود؛ ردیف‌های عکس از سرور نقطه با کش می‌آیند.</li>
-        <li>والپیپر اسپانسری (جایگاه ۳) فقط یکی از گزینه‌هاست و کاربر می‌تواند خاموشش کند.</li>
+        <li><b>نقطه‌ی بالای سرچ</b> همان خط‌خطی نقطه‌ی اپ است (همان مولد seed‌دار <code>BrandMark.tsx</code>) و با رنگ روشن همان تم کشیده می‌شود، پس با هر زمینه یکی می‌شود؛ مثل لوگوی Dia که با رنگ پنجره عوض می‌شود. بعد از کشیده شدن، خیلی آرام (هر ۲۰۰ ثانیه یک دور) می‌چرخد.</li>
+        <li><b>افکت ورود</b> (هر بار که تب باز می‌شود، کوتاه): رنگ زمینه از سیاه بالا می‌آید، نقطه مثل اپ با قلم کشیده می‌شود (۱٫۹ ثانیه)، سرچ از کمی پایین‌تر بالا می‌آید و خط تاریخ ظاهر می‌شود. برای کسی که «کاهش حرکت» را در سیستم روشن کرده، همه‌چیز بی‌حرکت می‌آید.</li>
+        <li>عکس‌ها و درخت زنده‌ی اپ بعداً به‌عنوان گزینه‌ی اختیاری می‌آیند، نه پیش‌فرض.</li>
       </ul>
     </section>
 
@@ -1174,12 +1269,12 @@ td.them { color: var(--ink-2); }
         <thead><tr><th></th><th>جایگاه</th><th>شکل</th><th>سقف</th><th>هدف‌گیری</th><th>مدل فروش</th></tr></thead>
         <tbody>
           <tr class="grp"><td colspan="6">اسلاید ۱ · خانه</td></tr>
-          <tr><td class="n"><span class="num">۱</span></td><td>کاشی دسترسی سریع</td><td>یک کاشی هم‌شکل بقیه با نقطه‌ی کهربایی</td><td>۱ از ۸</td><td>پرسونا، شهر</td><td>هر کلیک</td></tr>
-          <tr><td class="n"><span class="num">۲</span></td><td>بوکمارک قفسه</td><td>یک کپسول در قفسه‌ی پرسونا</td><td>۱ در هر قفسه</td><td>پرسونا</td><td>هر کلیک</td></tr>
-          <tr><td class="n"><span class="num">۳</span></td><td>والپیپر روز</td><td>تصویر پس‌زمینه‌ی برند با یک خط کردیت</td><td>۱ روز در هفته؛ قابل خاموش کردن</td><td>همه</td><td>اسپانسر روزانه</td></tr>
+          <tr><td class="n"><span class="num">۱</span></td><td>کاشی دسترسی سریع</td><td>یک کاشی هم‌شکل بقیه در نوار لبه، با نقطه‌ی کهربایی</td><td>۱ از ۸</td><td>پرسونا، شهر</td><td>هر کلیک</td></tr>
+          <tr><td class="n"><span class="num">۲</span></td><td>بوکمارک پرسونا</td><td>یک ردیف در فهرست بوکمارک‌های نوار لبه</td><td>۱ در هر فهرست</td><td>پرسونا</td><td>هر کلیک</td></tr>
+          <tr><td class="n"><span class="num">۳</span></td><td>تم روز</td><td>رنگ زمینه و نقطه به رنگ برند، با یک خط کردیت پایین صفحه</td><td>۱ روز در هفته؛ قابل خاموش کردن</td><td>همه</td><td>اسپانسر روزانه</td></tr>
           <tr><td class="n"><span class="num">۴</span></td><td>پیشنهاد سرچ</td><td>یک ردیف بین پیشنهادهای سرچ</td><td>۱ در هر جستجو</td><td>کلمه‌ی تایپ‌شده</td><td>هر کلیک</td></tr>
-          <tr><td class="n"><span class="num">۵</span></td><td>خط مناسبت</td><td>یک جمله کنار مناسبت امروز</td><td>روزهای دارای مناسبت</td><td>مناسبت، شهر</td><td>اسپانسر روزانه</td></tr>
-          <tr><td class="n"><span class="num">۶</span></td><td>کپسول نوار بالا</td><td>یک کپسول شیشه‌ای کنار وضعیت سینک («بلیت قطار مشهد از ۴۵۰ هزار تومان»)</td><td>۱؛ چرخش روزانه</td><td>شهر، پرسونا، فصل</td><td>هر هزار نمایش</td></tr>
+          <tr><td class="n"><span class="num">۵</span></td><td>زیر مناسبت امروز</td><td>یک خط در کارت گوشه‌ی «امروز»</td><td>روزهای دارای مناسبت</td><td>مناسبت، شهر</td><td>اسپانسر روزانه</td></tr>
+          <tr><td class="n"><span class="num">۶</span></td><td>کارت پیشنهاد در لبه</td><td>یک کارت کوچک پایین نوار لبه‌ی راست</td><td>۱؛ چرخش روزانه</td><td>شهر، پرسونا، فصل</td><td>هر هزار نمایش</td></tr>
           <tr class="grp"><td colspan="6">اسلاید ۲ · برنامه‌ها</td></tr>
           <tr><td class="n"><span class="num">۷</span></td><td>رویداد شهر</td><td>کارت کوچک کنسرت، نمایش یا نمایشگاه با دکمه‌ی «+ برنامه» که آن را به تقویم اضافه می‌کند</td><td>۱</td><td>شهر، آخر هفته</td><td>هر خرید بلیت</td></tr>
           <tr><td class="n"><span class="num">۸</span></td><td>پیشنهاد زیر مناسبت</td><td>یک خط کوچک زیر مناسبت مرتبط در فهرست مناسبت‌ها («روز ورزش ← کفش ورزشی»)</td><td>۱ در فهرست</td><td>مناسبت</td><td>اسپانسر مناسبت</td></tr>
@@ -1198,6 +1293,7 @@ td.them { color: var(--ink-2); }
       </table></div>
       <h3>قانون‌ها</h3>
       <ul>
+        <li><b>نمای اول بی‌تبلیغ:</b> در نمای اول (نقطه و سرچ) هیچ تبلیغی دیده نمی‌شود؛ فقط ردیف معرفی‌شده‌ی پیشنهادهای سرچ وقتی کاربر تایپ می‌کند، و تم روز اگر روشن باشد.</li>
         <li><b>بیرون از محتوای کاربر:</b> هیچ تبلیغی داخل قاب تلگرام، اینستاگرام و واتس‌اپ، بین کارها، داخل جدول ساعت‌های برنامه‌ها، داخل فهرست یا ویرایشگر یادداشت، و کنار موجودی، خرج، بدهی یا دارایی کاربر نمی‌آید. جایگاه‌ها فقط در حاشیه‌اند: نوار بالا، ستون‌های کناری، سرچ و ردیف‌های عمومی مثل قیمت روز و خبر.</li>
         <li><b>سقف هم‌زمان:</b> در هر اسلاید حداکثر ۳ جایگاه با هم پر می‌شوند. جایگاه فروخته‌نشده خالی می‌ماند یا با معرفی خود نقطه و پاکت پر می‌شود، هیچ‌وقت با تبلیغ پرکننده‌ی شبکه‌ای.</li>
         <li><b>هدف‌گیری:</b> هرگز از روی متن یادداشت، کار، برنامه، تراکنش یا دارایی. فقط پرسونا، شهر، فصل، مناسبت و کلمه‌ی سرچ.</li>
@@ -1239,7 +1335,7 @@ td.them { color: var(--ink-2); }
         <li><b>چی‌ها باشد:</b> ۱۲ کارت که همه روشن شروع می‌شوند، مثل «چی‌ها رو می‌خوای؟» در آنبوردینگ اپ. هر کارت خاموش، بلوک یا اسلاید مربوطش را برمی‌دارد.</li>
         <li><b>پرسونا:</b> شش نقش؛ قفسه‌ی بوکمارک از روی آن چیده می‌شود.</li>
         <li><b>پاکت، جدا:</b> فقط اگر «پول من» روشن مانده باشد. اسکن QR با اپ پاکت (تنظیمات ← دستگاه‌ها ← «اتصال میز») یا نام کاربری و رمز پاکت، یا «بعداً». قیمت روز و خبرها بدون ورود هم کار می‌کنند.</li>
-        <li><b>پس‌زمینه:</b> درخت زنده یا یکی از عکس‌ها.</li>
+        <li><b>رنگ:</b> یکی از رنگ‌ها؛ نقطه‌ی بالای سرچ همان رنگ را می‌گیرد.</li>
       </ol>
       <p>اتصال با QR: نیوتب یک کد یک‌بارمصرف نشان می‌دهد، اپی که کاربر در آن وارد شده آن را تأیید می‌کند و سرور برای نیوتب یک دستگاه تازه با توکن خودش می‌سازد. پاکت توکن‌ها را به دستگاه گره می‌زند، پس می‌شود به این دستگاه فقط دسترسی خواندن داد و هر وقت از اپ قطعش کرد. هر دو سرور مسیر <code>/auth/pair</code> می‌گیرند. افزونه برای دامنه‌ی API هر دو اپ <code>host_permissions</code> می‌گیرد، پس CORS سرورها لازم نیست.</p>
     </section>
@@ -1280,11 +1376,11 @@ td.them { color: var(--ink-2); }
       <h2>فازها<small>مدت‌ها تخمین اولیه‌اند</small></h2>
       <div class="phases">
         <div class="ph"><b>فاز ۰ · طراحی<small>۱ هفته</small></b><span>نهایی کردن این ماک‌آپ در فیگما، لیست پرسوناها و قفسه‌ها، انتخاب منبع قیمت، تست سینک نقطه روی گوشی واقعی (هنوز انجام نشده و پیش‌نیاز همه‌چیز است).</span></div>
-        <div class="ph"><b>فاز ۱ · خانه، برنامه‌ها و یادداشت‌ها<small>۵ هفته</small></b><span>آنبوردینگ و ورود QR به نقطه، شخصی‌سازی و چیدمان خودچین، درخت زنده و عکس‌ها، دسترسی سریع با پنجره‌ی افزودن، قفسه‌ی پرسونا، کارها و یادداشت‌های دوطرفه با pull هر ۱۵ ثانیه، نمای هفته با مناسبت و اوقات شرعی، تقویم گوگل.</span></div>
+        <div class="ph"><b>فاز ۱ · خانه، برنامه‌ها و یادداشت‌ها<small>۵ هفته</small></b><span>آنبوردینگ و ورود QR به نقطه، صفحه‌ی اول مینیمال با سرچ گوگل، گوشه‌ها و لبه، افکت ورود و نقطه‌ی هم‌رنگ، رنگ‌ها، شخصی‌سازی، دسترسی سریع با پنجره‌ی افزودن، قفسه‌ی پرسونا، کارها و یادداشت‌های دوطرفه با pull هر ۱۵ ثانیه، نمای هفته با مناسبت و اوقات شرعی، تقویم گوگل.</span></div>
         <div class="ph"><b>فاز ۲ · پول<small>۲ تا ۳ هفته</small></b><span>اتصال جدای پاکت، <code>/v1/home/summary</code> و <code>/v1/market/prices</code>، نمودار خرج و قیمت، ارزش دارایی‌ها، ردیف خبرهای پاکت، قبض‌ها داخل برنامه‌ها.</span></div>
         <div class="ph"><b>فاز ۳ · زنده، خبر و تبلیغ<small>۳ هفته</small></b><span><code>/sync/wait</code> و ارسال فوری از گوشی، خبرخوان سرور و اسلاید خبر، ۱۵ جایگاه تبلیغ با رضایت کاربر و گزارش در پنل ادمین.</span></div>
         <div class="ph"><b>فاز ۴ · شبکه‌ها<small>۲ هفته، پس از آزمایش</small></b><span>نسخه‌ی آزمایشی قاب‌ها با چند کاربر، بررسی سیاست استور، بعد انتشار؛ پنجره‌ی جدا به‌عنوان راه جایگزین.</span></div>
-        <div class="ph"><b>فاز ۵ · بعدی‌ها</b><span>Edge و Firefox، ثبت خرج از نیوتب، هشدار قیمت، نسخه‌ی افقی همه‌ی والپیپرها.</span></div>
+        <div class="ph"><b>فاز ۵ · بعدی‌ها</b><span>Edge و Firefox، ثبت خرج از نیوتب، هشدار قیمت، عکس‌ها و درخت زنده‌ی اپ به‌عنوان پس‌زمینه‌ی اختیاری.</span></div>
       </div>
     </section>
 
@@ -1462,7 +1558,7 @@ td.them { color: var(--ink-2); }
   const q = $("q"), drop = $("drop");
   q.addEventListener("focus", () => (drop.hidden = false));
   q.addEventListener("blur", () => setTimeout(() => (drop.hidden = true), 150));
-  q.addEventListener("input", () => { $("dq1").textContent = q.value ? `در کارها و یادداشت‌ها: «${q.value}»` : "کار: تمدید بیمه‌ی ماشین"; });
+  q.addEventListener("input", () => { $("dq0").textContent = q.value ? `جستجو در گوگل: «${q.value}»` : "جستجو در گوگل"; $("dq1").textContent = q.value ? `در کارها و یادداشت‌ها: «${q.value}»` : "کار: تمدید بیمه‌ی ماشین"; });
   q.addEventListener("keydown", (e) => { if (e.key === "Enter") e.preventDefault(); });
 
   /* ---------- money eye ---------- */
@@ -1477,41 +1573,73 @@ td.them { color: var(--ink-2); }
     $("adsBtn").setAttribute("aria-pressed", String(on));
   });
 
-  /* ---------- wallpapers: the app's live tree, photos and colours ---------- */
-  const IMG = {
-    "live-dawn": "newtab-wallpapers/live-dawn.jpg", "live-noon": "newtab-wallpapers/live-noon.jpg", "live-dusk": "newtab-wallpapers/live-dusk.jpg", "live-night": "newtab-wallpapers/live-night.jpg",
-    "mashhad-rain": "newtab-wallpapers/mashhad-rain.jpg", waterfall: "newtab-wallpapers/waterfall.jpg", "blue-waves": "newtab-wallpapers/blue-waves.jpg", cat: "newtab-wallpapers/cat.jpg",
-  };
-  const WALLS = [
-    { id: "live", n: "درخت زنده", live: true },
-    { id: "mashhad-rain", n: "صحن باران‌خورده", img: "mashhad-rain" },
-    { id: "waterfall", n: "آبشار", img: "waterfall" },
-    { id: "blue-waves", n: "موج آبی", img: "blue-waves" },
-    { id: "cat", n: "گربه", img: "cat" },
-    { id: "moon", n: "ماه", css: "radial-gradient(420px 420px at 74% 20%, rgba(255,255,255,.20), transparent 60%), radial-gradient(1200px 800px at 50% 120%, #1b2a6b, transparent 70%), #0b1030" },
-    { id: "aurora", n: "شفق", css: "radial-gradient(900px 500px at 30% 28%, rgba(53,208,127,.38), transparent 60%), radial-gradient(800px 600px at 80% 18%, rgba(76,107,255,.36), transparent 60%), #071318" },
-    { id: "promo", n: "پاییز · اسپانسری", css: "radial-gradient(1000px 640px at 70% 0%, #c27a5a 0%, transparent 55%), radial-gradient(900px 600px at 10% 100%, #3d2b5e 0%, transparent 60%), #1e1830", promo: true },
+  /* ---------- the dot: the app's own pen scribble (apps/mobile/src/ui/BrandMark.tsx), tinted by the theme ---------- */
+  const SCRIBBLE = (() => {
+    const loops = 46, per = 40, n = loops * per;
+    let seed = 7;
+    const rnd = () => { seed = (seed + 0x6d2b79f5) | 0; let t = Math.imul(seed ^ (seed >>> 15), seed | 1); t ^= t + Math.imul(t ^ (t >>> 7), t | 61); return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
+    const knots = 2 * loops + 3, table = () => Array.from({ length: knots }, () => rnd() * 2 - 1);
+    const ch = { r: table(), e: table(), rot: table(), cx: table(), cy: table(), sp: table() };
+    const noise = (k, x) => { const i = Math.floor(x), f0 = x - i, f = f0 * f0 * (3 - 2 * f0), a = k[i] ?? 0; return a + ((k[i + 1] ?? a) - a) * f; };
+    let ang = 0, d = "", len = 0, px = 0, py = 0;
+    for (let i = 0; i <= n; i++) {
+      const u = i / n, k = u * loops;
+      ang += ((2 * Math.PI) / per) * (1 + 0.18 * noise(ch.sp, k));
+      const env = 0.02 + 0.98 * Math.pow(u, 0.7), r = 48 * env * (0.72 + 0.28 * noise(ch.r, k * 1.7));
+      const ecc = 0.08 * noise(ch.e, k * 0.7), rot = 1.1 * noise(ch.rot, k * 0.5);
+      const cx = 50 + 2.4 * env * noise(ch.cx, k * 0.6), cy = 50 + 2.4 * env * noise(ch.cy, k * 0.6);
+      const ex = r * (1 + ecc) * Math.cos(-ang), ey = r * (1 - ecc) * Math.sin(-ang), tr = 0.25 * Math.sin(ang * 6.7 + 1.1);
+      const x = cx + ex * Math.cos(rot) - ey * Math.sin(rot) + tr, y = cy + ex * Math.sin(rot) + ey * Math.cos(rot) + tr * 0.7;
+      if (i) len += Math.hypot(x - px, y - py);
+      d += `${i ? "L" : "M"}${x.toFixed(2)} ${y.toFixed(2)}`; px = x; py = y;
+    }
+    return { d, len };
+  })();
+  const dotPath = $("dotPath");
+  dotPath.setAttribute("d", SCRIBBLE.d);
+  dotPath.style.strokeDasharray = `${SCRIBBLE.len + 1} ${SCRIBBLE.len + 1}`;
+
+  /* ---------- background colours (no photo in the default set) ---------- */
+  const IMG = { "mashhad-rain": "newtab-wallpapers/mashhad-rain.jpg", waterfall: "newtab-wallpapers/waterfall.jpg", "blue-waves": "newtab-wallpapers/blue-waves.jpg", cat: "newtab-wallpapers/cat.jpg" };
+  const THEMES = [
+    { id: "noghte", n: "نقطه", bg: "#14161d", tint: "#9AA6DC" }, { id: "graphite", n: "گرافیت", bg: "#1a1a1b", tint: "#a7a7ab" },
+    { id: "sky", n: "آسمان", bg: "#16202b", tint: "#93B4D8" }, { id: "amber", n: "کهربا", bg: "#221c13", tint: "#E0A21B" },
+    { id: "forest", n: "جنگل", bg: "#132019", tint: "#7FC4A0" }, { id: "plum", n: "شب بنفش", bg: "#1d1727", tint: "#B79CF0" },
+    { id: "rose", n: "رز", bg: "#24171b", tint: "#E59AAA" }, { id: "promo", n: "تم روز · اسپانسری", bg: "#10221f", tint: "#4FD1B5", promo: true },
   ];
-  const PHASES = [["dawn", "سحر"], ["noon", "روز"], ["dusk", "غروب"], ["night", "شب"]];
-  const phaseNow = () => { const h = new Date().getHours(); return h >= 5 && h < 8 ? "dawn" : h >= 8 && h < 16 ? "noon" : h >= 16 && h < 19 ? "dusk" : "night"; };
-  let wall = "live", livePhase = null;
-  const bgOf = (w, ph) => (w.live ? `url(${IMG["live-" + (ph || livePhase || phaseNow())]}) center/cover` : w.img ? `url(${IMG[w.img]}) center/cover` : w.css);
-  const wallTiles = (big) => WALLS.map((w) => `<button class="wp" data-w="${w.id}" aria-pressed="${w.id === wall}"><i style="background:${bgOf(w)}"></i>${w.n}</button>`).join("")
-    + (big ? "" : `<button class="wp up" data-w="upload" aria-pressed="false"><i>+</i>عکس خودت</button>`);
-  function renderWallUI() {
-    $("wpGrid").innerHTML = wallTiles(false);
-    $("liveChips").innerHTML = wall === "live"
-      ? `درخت با ماه و ساعت عوض می‌شود:<button data-ph="" aria-pressed="${!livePhase}">خودکار</button>` + PHASES.map(([k, n]) => `<button data-ph="${k}" aria-pressed="${livePhase === k}">${n}</button>`).join("")
-      : "";
+  let theme = "noghte";
+  const themeTiles = () => THEMES.map((t) => `<button class="wp th" data-t="${t.id}" aria-pressed="${t.id === theme}"><i style="background:radial-gradient(circle at 50% 50%, ${t.tint} 0 16%, transparent 17%), radial-gradient(circle at 50% 45%, ${t.tint}33, transparent 70%), ${t.bg}"></i>${t.n}</button>`).join("");
+  function renderWallUI() { $("wpGrid").innerHTML = themeTiles(); }
+  function applyTheme() {
+    const t = THEMES.find((x) => x.id === theme), nt = $("nt");
+    nt.style.setProperty("--bgc", t.bg); nt.style.setProperty("--tint", t.tint);
+    $("credit").hidden = !t.promo; renderWallUI();
   }
-  function applyWall() {
-    const w = WALLS.find((x) => x.id === wall);
-    $("nt").querySelector(".wall").style.background = bgOf(w);
-    $("nt").dataset.photo = w.live || w.img ? "1" : "0";
-    $("credit").hidden = !w.promo;
-    renderWallUI();
+  applyTheme();
+
+  /* ---------- the entry: colour comes up, the pen draws the dot, the search box rises, the corners wink ---------- */
+  let entryT = [];
+  function playEntry() {
+    entryT.forEach(clearTimeout); entryT = [];
+    const s1 = $("s1"), nt = $("nt");
+    if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    s1.classList.remove("enter", "hinting"); nt.classList.remove("enter-bg"); void s1.offsetWidth;
+    nt.classList.add("enter-bg"); s1.classList.add("enter");
+    dotPath.getAnimations().forEach((a) => a.cancel());
+    dotPath.animate([{ strokeDashoffset: SCRIBBLE.len }, { strokeDashoffset: 0 }], { duration: 1900, delay: 250, easing: "cubic-bezier(.4,0,.6,1)", fill: "both" });
+    entryT.push(setTimeout(() => { s1.classList.add("hinting"); $("coach").hidden = false; }, 2300));
+    entryT.push(setTimeout(() => { s1.classList.remove("hinting"); $("coach").hidden = true; }, 6800));
   }
-  applyWall();
+  playEntry();
+  $("ctlEnter").addEventListener("click", () => { go("s1"); playEntry(); });
+
+  // search: Google, plus the user's own tasks and notes
+  $("sform").addEventListener("submit", (e) => { e.preventDefault(); });
+  $("scope").addEventListener("click", () => {
+    const on = $("scope").getAttribute("aria-pressed") !== "true";
+    $("scope").setAttribute("aria-pressed", String(on));
+    [...$("drop").querySelectorAll(".row")].slice(1, 3).forEach((r) => (r.hidden = !on));
+  });
 
   /* ---------- personas ---------- */
   const P = {
@@ -1936,9 +2064,9 @@ td.them { color: var(--ink-2); }
 
 
   /* ================= customization: blocks on/off without breaking the layout ================= */
-  const BLOCKS = [["clock", "ساعت و تاریخ"], ["dates", "تاریخ‌ها و مناسبت"], ["search", "سرچ"], ["quick", "دسترسی سریع"], ["tasks", "کارهای امروز"], ["notes", "یادداشت‌ها"], ["money", "پول من"], ["shelf", "قفسه‌ی بوکمارک"]];
+  const BLOCKS = [["tasks", "کارها"], ["notes", "یادداشت‌ها"], ["money", "پول"], ["today", "امروز"], ["quick", "دسترسی سریع"], ["shelf", "بوکمارک‌ها"], ["dateline", "تاریخ زیر سرچ"], ["pin", "کارت‌ها همیشه باز"]];
   const SLIDES = [["s2", "برنامه‌ها"], ["s3", "پول"], ["s4", "یادداشت‌ها"], ["s5", "خبر"], ["s6", "شبکه‌ها"]];
-  const offB = new Set(), offS = new Set();
+  const offB = new Set(["pin"]), offS = new Set();
   function renderToggles() {
     const row = (k, n, on, attr) => `<div class="trow">${n}<button class="sw2" role="switch" aria-checked="${on}" ${attr}="${k}" aria-label="${n}"></button></div>`;
     $("tBlocks").innerHTML = BLOCKS.map(([k, n]) => row(k, n, !offB.has(k), "data-b")).join("");
@@ -1946,9 +2074,8 @@ td.them { color: var(--ink-2); }
   }
   function applyLayout() {
     document.querySelectorAll("[data-blk]").forEach((el) => (el.hidden = offB.has(el.dataset.blk)));
-    const n = ["tasks", "notes", "money"].filter((k) => !offB.has(k)).length;
-    const w = document.querySelector(".widgets"); w.style.setProperty("--n", Math.max(n, 1)); w.hidden = n === 0;
-    document.querySelector(".s1 .in").classList.toggle("airy", n === 0);
+    document.querySelectorAll(".s1 .hz").forEach((el) => el.classList.toggle("pin", !offB.has("pin")));
+    $("edge").hidden = offB.has("quick") && offB.has("shelf");
     for (const [id] of SLIDES) { $(id).hidden = offS.has(id); railBtns.find((b) => b.dataset.s === id).hidden = offS.has(id); }
     renderToggles(); syncRail();
   }
@@ -1959,12 +2086,10 @@ td.them { color: var(--ink-2); }
   $("cust").addEventListener("click", (e) => {
     const sw = e.target.closest(".sw2");
     if (sw) { const set = sw.dataset.b ? offB : offS, k = sw.dataset.b || sw.dataset.sl; set.has(k) ? set.delete(k) : set.add(k); applyLayout(); return; }
-    const wp = e.target.closest(".wp");
-    if (wp && wp.dataset.w !== "upload") { wall = wp.dataset.w; livePhase = null; applyWall(); return; }
-    const ph = e.target.closest("[data-ph]");
-    if (ph) { livePhase = ph.dataset.ph || null; applyWall(); }
+    const th = e.target.closest(".th");
+    if (th) { theme = th.dataset.t; applyTheme(); }
   });
-  $("custReset").addEventListener("click", () => { offB.clear(); offS.clear(); wall = "live"; livePhase = null; applyLayout(); applyWall(); });
+  $("custReset").addEventListener("click", () => { offB.clear(); offB.add("pin"); offS.clear(); theme = "noghte"; applyLayout(); applyTheme(); });
   applyLayout();
 
   /* ================= onboarding ================= */
@@ -1984,7 +2109,7 @@ td.them { color: var(--ink-2); }
     ["prayer", "اوقات شرعی", "روی جدول برنامه‌ها", "نقطه"], ["money", "پول من", "موجودی، خرج و قبض‌ها", "پاکت"],
     ["prices", "قیمت روز", "طلا، سکه، ارز و کریپتو", "پاکت"], ["news", "خبر", "فید خبر با موضوع‌های تو", "میز"],
     ["social", "شبکه‌ها", "تلگرام، اینستاگرام، واتس‌اپ", "میز"], ["quick", "دسترسی سریع", "۸ سایت پرکاربرد", "میز"],
-    ["shelf", "قفسه‌ی بوکمارک", "بوکمارک‌های شغل تو", "میز"], ["search", "سرچ", "وب، کارها و یادداشت‌ها", "میز"],
+    ["shelf", "قفسه‌ی بوکمارک", "بوکمارک‌های شغل تو", "میز"], ["today", "امروز", "تاریخ، مناسبت و اذان بعدی", "نقطه"],
   ];
   const onbSt = { step: 0, mods: new Set(MODS.map((m) => m[0])), persona: "designer", paket: false };
   const stepsOf = () => ["hello", "login", "mods", "persona", ...(onbSt.mods.has("money") ? ["paket"] : []), "wall"];
@@ -1997,7 +2122,7 @@ td.them { color: var(--ink-2); }
     $("onbNext").textContent = s === "hello" ? "شروع" : last ? "ساختن میز" : "ادامه";
     const B = $("onbBody");
     if (s === "hello") B.innerHTML = `<div class="hero-onb"><div><div class="big"><b>میز</b><br>صفحه‌ی اول<br>کروم تو</div><p class="lead" style="margin-top:18px">کارها، برنامه‌ها و یادداشت‌های نقطه، پول پاکت، خبر و شبکه‌ها. هر چیزی را که نخواهی، همین اول خاموش کن.</p></div>
-      <div class="peek" style="background:${bgOf(WALLS[0])}"><div class="pt">${$("clock").textContent}</div><div class="pc"><i></i><i></i><i></i></div></div></div>`;
+      <div class="peek" style="background:radial-gradient(circle at 50% 42%, ${THEMES[0].tint}2a, transparent 60%), ${THEMES[0].bg}"><div class="pt">${$("clock").textContent}</div><div class="pc"><i></i><i></i><i></i></div></div></div>`;
     if (s === "login") B.innerHTML = `<h2>به حساب نقطه‌ات وصل شو</h2><p class="lead">کارها، یادداشت‌ها و برنامه‌هایت از گوشی می‌آیند و هر چه این‌جا بنویسی همان لحظه روی گوشی است.</p>
       <div class="ways"><div class="way"><h3>با اپ نقطه اسکن کن</h3><div class="qrrow"><div class="qr">${qrSvg(3)}</div><ol class="steps"><li>نقطه را روی گوشی باز کن.</li><li>تنظیمات ← پشتیبان و همگام‌سازی ← «اتصال میز».</li><li>دوربین را روی این کد بگیر.</li></ol></div></div>
       <div class="way alt"><h3>یا با شماره‌ی موبایل</h3><div class="form"><label>شماره‌ی موبایل<input class="ltr" placeholder="0912 000 0000" inputmode="tel" aria-label="شماره‌ی موبایل"></label></div><button class="cta" type="button">فرستادن کد</button><p style="margin:0;font-size:14px;color:var(--ink-2)">ورود با گوگل هم هست.</p><button class="skip" data-next="1">فعلاً بدون حساب؛ همه‌چیز فقط روی همین مرورگر</button></div></div>`;
@@ -2008,18 +2133,18 @@ td.them { color: var(--ink-2); }
     if (s === "paket") B.innerHTML = `<h2>پاکت را جدا وصل کن</h2><p class="lead">پاکت حساب خودش را دارد. برای دیدن موجودی، خرج‌ها و قبض‌ها یک بار وصلش کن. قیمت روز و خبرها بدون ورود هم کار می‌کنند.</p>
       <div class="ways"><div class="way"><h3>با اپ پاکت اسکن کن</h3><div class="qrrow"><div class="qr">${qrSvg(11)}</div><ol class="steps"><li>پاکت را روی گوشی باز کن.</li><li>تنظیمات ← دستگاه‌ها ← «اتصال میز».</li><li>دوربین را روی این کد بگیر.</li></ol></div><p>میز فقط اجازه‌ی خواندن می‌گیرد و هر وقت بخواهی از همان‌جا قطعش می‌کنی.</p></div>
       <div class="way alt"><h3>یا با نام کاربری پاکت</h3><div class="form"><label>نام کاربری<input class="ltr" aria-label="نام کاربری پاکت" autocomplete="off"></label><label>رمز<input class="ltr" type="password" aria-label="رمز پاکت"></label></div><button class="cta" type="button" id="pkLogin">${onbSt.paket ? "وصل شد" : "ورود به پاکت"}</button><button class="skip" data-next="1">بعداً وصل می‌کنم</button></div></div>`;
-    if (s === "wall") B.innerHTML = `<h2>پس‌زمینه‌ات را انتخاب کن</h2><p class="lead">درخت زنده‌ی نقطه با ماه و ساعت روز عوض می‌شود؛ الان ${PHASES.find((p) => p[0] === phaseNow())[1]} است.</p><div class="wpbig wps">${wallTiles(true)}</div>`;
+    if (s === "wall") B.innerHTML = `<h2>یک رنگ برای میزت انتخاب کن</h2><p class="lead">نقطه‌ی بالای سرچ هم همین رنگ را می‌گیرد. بعداً از شخصی‌سازی عوض می‌شود.</p><div class="wpbig wps">${themeTiles()}</div>`;
   }
   function finishOnb() {
     const m = onbSt.mods, on = (k) => m.has(k);
     offB.clear(); offS.clear();
     if (!on("tasks")) offB.add("tasks"); if (!on("notes")) { offB.add("notes"); offS.add("s4"); }
-    if (!on("money")) offB.add("money"); if (!on("quick")) offB.add("quick"); if (!on("shelf")) offB.add("shelf"); if (!on("search")) offB.add("search");
-    if (!on("occ")) offB.add("dates"); if (!on("plan")) offS.add("s2"); if (!on("money") && !on("prices")) offS.add("s3");
+    offB.add("pin"); if (!on("money")) offB.add("money"); if (!on("quick")) offB.add("quick"); if (!on("shelf")) offB.add("shelf"); if (!on("today")) offB.add("today");
+    if (on("occ")) off.delete("occ"); else off.add("occ"); if (!on("plan")) offS.add("s2"); if (!on("money") && !on("prices")) offS.add("s3");
     if (!on("news")) offS.add("s5"); if (!on("social")) offS.add("s6");
     if (on("prayer")) off.delete("pr"); else off.add("pr");
     pills.querySelectorAll(".chip").forEach((x) => x.setAttribute("aria-pressed", String(x.dataset.k === onbSt.persona))); shelf(onbSt.persona);
-    applyLayout(); applyWall(); renderPlanner(); $("onb").hidden = true; scroller.scrollTop = 0;
+    applyLayout(); applyTheme(); renderPlanner(); $("onb").hidden = true; scroller.scrollTop = 0; playEntry();
   }
   const openOnb = () => { onbSt.step = 0; $("cust").hidden = true; $("onb").hidden = false; renderOnb(); };
   $("ctlOnb").addEventListener("click", openOnb);
@@ -2031,7 +2156,7 @@ td.them { color: var(--ink-2); }
   $("onbBody").addEventListener("click", (e) => {
     const md = e.target.closest("[data-m]"); if (md) { const k = md.dataset.m; onbSt.mods.has(k) ? onbSt.mods.delete(k) : onbSt.mods.add(k); renderOnb(); return; }
     const p = e.target.closest("[data-p]"); if (p) { onbSt.persona = p.dataset.p; renderOnb(); return; }
-    const wp = e.target.closest(".wp"); if (wp) { wall = wp.dataset.w; livePhase = null; applyWall(); renderOnb(); return; }
+    const th = e.target.closest(".th"); if (th) { theme = th.dataset.t; applyTheme(); renderOnb(); return; }
     if (e.target.closest("#pkLogin")) { onbSt.paket = true; renderOnb(); return; }
     if (e.target.closest("[data-next]")) onbNext();
   });
