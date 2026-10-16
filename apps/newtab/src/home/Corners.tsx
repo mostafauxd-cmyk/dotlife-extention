@@ -68,20 +68,21 @@ export function Corner({
   );
 }
 
+/** One word beside the title; the full sentence is its tooltip. */
 function SyncBadge() {
   const s = useSyncState();
-  const text =
+  const [word, full] =
     s.status === "syncing"
-      ? "در حال همگام‌سازی"
+      ? ["همگام‌سازی…", "در حال همگام‌سازی با گوشی"]
       : s.status === "offline"
-        ? "آفلاین · بعداً می‌فرستم"
+        ? ["آفلاین", "آفلاین؛ وقتی وصل شدی می‌فرستم"]
         : s.status === "error"
-          ? "همگام نشد"
-          : "همگام با گوشی";
+          ? ["ناهمگام", "همگام نشد؛ دوباره امتحان می‌کنم"]
+          : ["همگام", "همگام با گوشی"];
   return (
-    <span className={`sync ${s.status}`}>
+    <span className={`sync ${s.status}`} title={full}>
       <i />
-      {text}
+      {word}
     </span>
   );
 }
