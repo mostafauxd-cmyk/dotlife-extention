@@ -65,7 +65,7 @@ export function Dot({ drawAfter }: { drawAfter: number | null }) {
     if (p === null || reduced()) return;
     for (const a of p.getAnimations()) a.cancel();
     p.animate([{ strokeDashoffset: SCRIBBLE.len }, { strokeDashoffset: 0 }], {
-      duration: 1900,
+      duration: 900,
       delay,
       easing: "cubic-bezier(.4,0,.6,1)",
       fill: "both",

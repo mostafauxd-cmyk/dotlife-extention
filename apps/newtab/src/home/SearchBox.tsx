@@ -94,7 +94,7 @@ function traceBox(box: HTMLElement): void {
   }
   box.append(svg);
   const L = parts[0]?.p.getTotalLength() ?? 0;
-  const T = 1500;
+  const T = 1000;
   const ease = (t: number): number => 1 - Math.pow(1 - Math.min(1, Math.max(0, t)), 3);
   let t0: number | null = null;
   const step = (now: number): void => {

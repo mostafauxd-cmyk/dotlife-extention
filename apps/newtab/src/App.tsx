@@ -41,7 +41,7 @@ export function App() {
   useEffect(() => {
     const a = setTimeout(() => {
       setHinting(true);
-    }, 2300);
+    }, 1000);
     const b = setTimeout(() => {
       setHinting(false);
     }, 6000);
@@ -100,10 +100,10 @@ export function App() {
       <div className="wall" />
 
       <main className="hero">
-        <Dot drawAfter={entering ? 250 : null} />
+        <Dot drawAfter={entering ? 0 : null} />
         <SearchBox
           signedIn={signedIn}
-          traceAfter={entering ? 1250 : null}
+          traceAfter={entering ? 350 : null}
           onNeedSignIn={openSignIn}
           onSaved={saved}
         />
