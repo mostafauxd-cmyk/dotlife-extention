@@ -11,7 +11,7 @@ import {
   noteTitle,
   today,
 } from "../noghte/model";
-import { search } from "../platform";
+import { search, suggest } from "../platform";
 import { addDays } from "@dotlife/tasks";
 import { ago } from "../ui/fa";
 import { GMark, Icon } from "../ui/Icon";
@@ -122,9 +122,33 @@ export function SearchBox({
   const [listId, setListId] = useState<string | null>(null);
   const [when, setWhen] = useState<When>("today");
   const [swap, setSwap] = useState(0);
+  // Google's suggestions while searching; `pick` is the row the arrow keys are on (-1: the typed text)
+  const [sugg, setSugg] = useState<string[]>([]);
+  const [pickAt, setPickAt] = useState(-1);
+  const [focused, setFocused] = useState(true);
   const box = useRef<HTMLFormElement>(null);
   const input = useRef<HTMLTextAreaElement>(null);
   const descRef = useRef<HTMLTextAreaElement>(null);
+
+  useEffect(() => {
+    setPickAt(-1);
+    if (mode !== "google" || text.trim() === "") {
+      setSugg([]);
+      return;
+    }
+    let live = true;
+    // a short pause, so a fast typist does not ask for every letter
+    const t = setTimeout(() => {
+      void suggest(text).then((list) => {
+        if (live) setSugg(list.filter((x) => x !== text.trim()).slice(0, 6));
+      });
+    }, 120);
+    return () => {
+      live = false;
+      clearTimeout(t);
+    };
+  }, [text, mode]);
+  const showSugg = mode === "google" && focused && sugg.length > 0 && text.trim() !== "";
 
   // the box grows with long text (Google takes up to 2,048 characters)
   useLayoutEffect(() => {
@@ -234,10 +258,27 @@ export function SearchBox({
             onChange={(e) => {
               setText(e.target.value);
             }}
+            onFocus={() => {
+              setFocused(true);
+            }}
+            onBlur={() => {
+              setFocused(false);
+            }}
             onKeyDown={(e) => {
-              if (e.key === "Enter" && !e.shiftKey) {
+              if (showSugg && (e.key === "ArrowDown" || e.key === "ArrowUp")) {
                 e.preventDefault();
-                submit();
+                const n = sugg.length;
+                setPickAt((i) =>
+                  e.key === "ArrowDown" ? ((i + 2) % (n + 1)) - 1 : ((i + n + 1) % (n + 1)) - 1,
+                );
+              } else if (e.key === "Enter" && !e.shiftKey) {
+                e.preventDefault();
+                const chosen = showSugg ? sugg[pickAt] : undefined;
+                if (chosen !== undefined) search(chosen);
+                else submit();
+              } else if (e.key === "Escape" && showSugg) {
+                e.preventDefault();
+                setSugg([]);
               } else if (e.key === "Escape" && mode !== "google") {
                 e.preventDefault();
                 setMode("google");
@@ -285,6 +326,46 @@ export function SearchBox({
           </button>
         </div>
       </form>
+
+      {showSugg && (
+        <ul
+          className="sugg-list"
+          role="listbox"
+          aria-label="پیشنهادهای گوگل"
+          onMouseDown={(e) => {
+            // a click keeps the caret in the box until the search goes
+            e.preventDefault();
+          }}
+        >
+          {sugg.map((q, i) => {
+            const typed = text.trim();
+            const rest = q.startsWith(typed) ? q.slice(typed.length) : null;
+            return (
+              <li
+                key={q}
+                role="option"
+                aria-selected={i === pickAt}
+                onMouseEnter={() => {
+                  setPickAt(i);
+                }}
+                onClick={() => {
+                  search(q);
+                }}
+              >
+                <Icon name="search" />
+                {rest === null ? (
+                  <span>{q}</span>
+                ) : (
+                  <span>
+                    {typed}
+                    <b>{rest}</b>
+                  </span>
+                )}
+              </li>
+            );
+          })}
+        </ul>
+      )}
 
       {mode !== "google" && (
         <div

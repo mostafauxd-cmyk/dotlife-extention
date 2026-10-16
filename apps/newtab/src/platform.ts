@@ -59,6 +59,49 @@ export function search(text: string): void {
   location.href = `https://www.google.com/search?q=${encodeURIComponent(t)}`;
 }
 
+const SUGGEST =
+  "https://suggestqueries.google.com/complete/search?client=chrome&hl=fa&ie=utf-8&oe=utf-8";
+const suggested = new Map<string, string[]>();
+let jsonp = 0;
+
+/**
+ * Google's suggestions for what is typed, the same list Chrome's address bar shows (permission
+ * `suggestqueries.google.com`). The dev page has no such permission, so it asks through a script tag.
+ */
+export async function suggest(text: string): Promise<string[]> {
+  const q = text.trim();
+  if (q === "") return [];
+  const kept = suggested.get(q);
+  if (kept !== undefined) return kept;
+  const url = `${SUGGEST}&q=${encodeURIComponent(q)}`;
+  let list: string[] = [];
+  try {
+    const data: unknown = inExtension
+      ? await fetch(url).then((r) => r.json())
+      : await new Promise((done) => {
+          const name = `__suggest${String(++jsonp)}`;
+          const tag = document.createElement("script");
+          const end = (v: unknown): void => {
+            Reflect.deleteProperty(window, name);
+            tag.remove();
+            done(v);
+          };
+          (window as unknown as Record<string, unknown>)[name] = end;
+          tag.src = `${url}&callback=${name}`;
+          tag.onerror = () => {
+            end(null);
+          };
+          document.head.append(tag);
+        });
+    if (Array.isArray(data) && Array.isArray(data[1]))
+      list = (data[1] as unknown[]).filter((x): x is string => typeof x === "string");
+  } catch {
+    return [];
+  }
+  suggested.set(q, list);
+  return list;
+}
+
 // ---- sites ----
 
 /** The site's own icon, as Chrome already has it (permission `favicon`): nothing is fetched. */

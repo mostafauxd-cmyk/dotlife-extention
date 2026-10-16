@@ -343,6 +343,49 @@ svg {
   border: 1px solid var(--stroke);
   box-shadow: 0 24px 70px rgba(0, 0, 0, 0.4);
 }
+/* Google's suggestions under the box: the typed part plain, the rest of each suggestion bold */
+.sugg-list {
+  position: absolute;
+  top: calc(100% + 10px);
+  inset-inline: 0;
+  z-index: 8;
+  margin: 0;
+  padding: 8px;
+  list-style: none;
+  border-radius: 22px;
+  background: color-mix(in srgb, var(--bgc) 86%, #fff);
+  border: 1px solid var(--stroke);
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.4);
+}
+.sugg-list li {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  height: 46px;
+  padding: 0 14px;
+  border-radius: var(--row-r);
+  font-size: 17px;
+  color: var(--ink-2);
+  cursor: pointer;
+}
+.sugg-list li[aria-selected="true"] {
+  background: rgba(255, 255, 255, 0.07);
+  color: var(--ink);
+}
+.sugg-list .ico {
+  width: 18px;
+  height: 18px;
+  color: var(--ink-3);
+}
+.sugg-list span {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.sugg-list b {
+  font-weight: 600;
+  color: var(--ink);
+}
 .qpanel textarea {
   font: inherit;
   font-size: 16px;
