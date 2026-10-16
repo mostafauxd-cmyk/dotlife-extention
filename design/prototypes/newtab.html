@@ -433,15 +433,19 @@ button { font: inherit; color: inherit; }
 .b-c.done .tx { color: var(--ink-3); text-decoration: line-through; }
 .b-c .tx, .b-b .tx { outline: none; flex: 1; }
 .b-b::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: rgba(255,255,255,.6); flex: none; margin-inline: 8px 4px; }
-.b-v { display: flex; flex-direction: column; gap: 6px; border-radius: 20px; padding: 12px 16px; background: rgba(0,0,0,.25); border: 1px solid var(--stroke); }
-.b-v .row { display: flex; align-items: center; gap: 14px; }
-.b-v .play { width: 42px; height: 42px; border-radius: 50%; background: #fff; color: #0B0D12; border: 0; display: grid; place-items: center; cursor: pointer; flex: none; }
-.b-v .play svg { width: 18px; height: 18px; fill: currentColor; stroke: none; }
-.b-v .wave { flex: 1; height: 36px; display: flex; align-items: center; gap: 3px; }
-.b-v .wave i { flex: 1; border-radius: 3px; background: rgba(255,255,255,.35); min-height: 4px; }
-.b-v .wave i.p { background: var(--noghte); }
-.b-v .dur { font-size: 14px; color: var(--ink-2); font-variant-numeric: tabular-nums; }
-.b-v .tr { font-size: 16px; color: var(--ink-2); line-height: 1.9; }
+.b-v { border-radius: 22px; padding: 10px; background: rgba(255,255,255,.10); }
+.b-v .row { display: flex; align-items: center; gap: 10px; direction: ltr; }
+.b-v .play { width: 44px; height: 44px; border-radius: 22px; background: #fff; border: 0; display: grid; place-items: center; cursor: pointer; flex: none; padding: 0; }
+.b-v .play:active, .b-v .spd:active, .b-v .more:active { opacity: .7; }
+.b-v .play svg { width: 18px; height: 18px; stroke: none; }
+.b-v .wave { flex: 1; min-width: 0; height: 34px; display: flex; align-items: center; cursor: pointer; touch-action: pan-y; }
+.b-v .wave svg { display: block; overflow: visible; }
+.b-v .side { display: flex; flex-direction: column; align-items: center; gap: 4px; min-width: 38px; }
+.b-v .time { font-size: 13px; color: #A7A7A7; font-variant-numeric: tabular-nums; direction: ltr; }
+.b-v .spd { height: 20px; padding: 0 7px; border-radius: 10px; border: 0; background: rgba(6,8,8,.8); color: var(--ink); font-family: inherit; font-weight: 600; font-size: 11px; line-height: 14px; direction: ltr; cursor: pointer; }
+.b-v .more { width: 24px; height: 36px; display: grid; place-items: center; border: 0; background: none; color: #A7A7A7; cursor: pointer; padding: 0; }
+.b-v .more svg { width: 18px; height: 18px; fill: currentColor; stroke: none; }
+.b-v .tr { margin-top: 8px; padding-inline: 4px; font-size: 15px; line-height: 25px; color: #A7A7A7; }
 
 /* ---------- extra ad slots ---------- */
 .toppill { height: 48px; display: flex; align-items: center; gap: 10px; padding: 0 18px; border-radius: 999px; font-size: 16px; white-space: nowrap; }
@@ -1113,6 +1117,101 @@ td.them { color: var(--ink-2); }
   .plan h2 { font-size: 25px; }
 }
 @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+
+/* ---------- slide 3 v15: price ticker + roomier market card ---------- */
+.s3 .s-pad { grid-template-columns: 1fr 1.08fr 1.32fr; grid-template-rows: 40px minmax(0,1fr) 232px; padding-block: 18px 22px; gap: 14px; }
+.ticker { grid-column: 1 / -1; display: flex; align-items: center; gap: 14px; min-width: 0; padding-inline: 16px 14px; border-radius: 14px; background: rgba(255,255,255,.045); border: 1px solid var(--stroke); font-size: 14px; }
+.tk-h { display: flex; align-items: center; gap: 8px; flex: none; color: var(--ink-2); font-size: 13px; }
+.tk-h i, .mh .live i { width: 7px; height: 7px; border-radius: 50%; background: #8ADD88; animation: lv 2.4s ease-out infinite; }
+@keyframes lv { 0% { box-shadow: 0 0 0 0 rgba(138,221,136,.55); } 70%, 100% { box-shadow: 0 0 0 6px rgba(138,221,136,0); } }
+.tk-vp { flex: 1; min-width: 0; height: 100%; display: flex; align-items: center; overflow: hidden; -webkit-mask-image: linear-gradient(to left, transparent, #000 48px, #000 calc(100% - 48px), transparent); mask-image: linear-gradient(to left, transparent, #000 48px, #000 calc(100% - 48px), transparent); }
+.tk-track { display: flex; align-items: center; flex: none; width: max-content; animation: tk 80s linear infinite; }
+.ticker:hover .tk-track, .ticker:focus-within .tk-track { animation-play-state: paused; }
+@keyframes tk { to { transform: translateX(50%); } }
+.tk-i { display: inline-flex; align-items: center; gap: 7px; padding-inline: 14px; white-space: nowrap; position: relative; }
+.tk-i + .tk-i::after { content: ""; position: absolute; inset-inline-start: 0; top: 50%; width: 3px; height: 3px; border-radius: 50%; background: var(--ink-3); transform: translate(50%, -50%); }
+.tk-i .g { width: 20px; height: 20px; border-radius: 50%; display: grid; place-items: center; font-size: 10.5px; font-weight: 700; font-style: normal; color: #fff; flex: none; }
+.tk-i .n { color: var(--ink-2); }
+.tk-i .v { font-variant-numeric: tabular-nums; transition: color .6s; }
+.tk-i .v small { font-size: 11.5px; color: var(--ink-3); margin-inline-start: 3px; }
+.tk-i .c { font-size: 12.5px; font-variant-numeric: tabular-nums; }
+.tk-i.fu .v { color: #8ADD88; transition: none; }
+.tk-i.fd .v { color: #F0817A; transition: none; }
+.tk-i.ad { color: #F2C94C; cursor: pointer; }
+.tk-i.ad b { font-weight: 600; }
+.tk-i.ad .tag { font-size: 11px; line-height: 18px; padding: 0 7px; color: rgba(242,201,76,.8); border-color: rgba(242,201,76,.35); }
+.show-ads .tk-i[data-slot]::before { top: 50%; transform: translateY(-50%); inset-inline-start: -6px; width: 20px; height: 20px; font-size: 12px; }
+.tk-src { flex: none; font-size: 12px; color: var(--ink-3); }
+@media (prefers-reduced-motion: reduce) { .tk-track { animation: none; } .tk-vp { overflow-x: auto; scrollbar-width: none; } }
+
+.mkt { gap: 8px !important; }
+.mh .live { display: flex; align-items: center; gap: 7px; font-size: 12.5px; color: var(--ink-3); }
+.mh .live i { width: 6px; height: 6px; }
+.ai { width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; font-size: 13px; font-weight: 700; font-style: normal; color: #fff; flex: none; box-shadow: inset 0 0 0 1px rgba(255,255,255,.12); }
+.nm2 { min-width: 0; display: flex; flex-direction: column; line-height: 1.4; }
+.nm2 b { font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.nm2 small { font-size: 12px; color: var(--ink-3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.pxtop { display: grid; grid-template-columns: 34px minmax(0,1fr) auto; align-items: center; gap: 10px; }
+.pxtop .nm2 b { font-size: 16px; font-weight: 600; }
+.pxtop .seg2 { justify-content: flex-end; }
+.pxv { display: flex; align-items: center; gap: 8px; }
+.pxv .hn { font-size: 32px; }
+.pxv > small { font-size: 14px; color: var(--ink-2); }
+.pxv .pill { margin-inline-start: auto; }
+.mkt .chart svg { cursor: crosshair; }
+.mtabs { display: flex; gap: 2px; padding: 3px; border-radius: 12px; background: rgba(0,0,0,.22); border: 1px solid var(--stroke); }
+.mtabs button { flex: 1; font: inherit; font-size: 14px; color: var(--ink-2); background: none; border: 0; border-radius: 9px; padding: 1px 0; cursor: pointer; }
+.mtabs button[aria-selected="true"] { background: rgba(255,255,255,.10); color: var(--ink); font-weight: 600; }
+.plist { display: flex; flex-direction: column; }
+.prow { font: inherit; color: inherit; background: none; border: 0; text-align: start; cursor: pointer; width: 100%; display: grid; grid-template-columns: 30px minmax(0,1fr) 60px 128px; align-items: center; gap: 10px; padding: 3px 8px; min-height: 42px; border-radius: 12px; }
+.prow:hover { background: rgba(255,255,255,.05); }
+.prow.on { background: rgba(255,255,255,.08); }
+.prow .ai { width: 30px; height: 30px; font-size: 12px; }
+.prow .nm2 b { font-size: 15px; }
+.prow svg { width: 60px; height: 22px; display: block; }
+.prow .pv { display: flex; flex-direction: column; align-items: flex-end; line-height: 1.4; }
+.prow .pv b { font-size: 15.5px; font-weight: 500; font-variant-numeric: tabular-nums; }
+.prow .pv small { font-size: 12.5px; font-variant-numeric: tabular-nums; }
+.prow.spx { cursor: default; }
+.prow.spx .tag { font-size: 11px; line-height: 18px; padding: 0 7px; margin-inline-start: 6px; }
+.msum { display: flex; align-items: center; gap: 10px; padding: 8px 8px 10px; margin-bottom: 4px; border-bottom: 1px solid var(--stroke); }
+.msum span { display: flex; flex-direction: column; font-size: 14px; color: var(--ink-2); }
+.msum span small { font-size: 12px; color: var(--ink-3); }
+.msum b { margin-inline-start: auto; font-size: 22px; font-weight: 500; font-variant-numeric: tabular-nums; }
+.wx svg path { fill: currentColor; }
+.wx svg { opacity: .9; }
+.s3 .ncard p { display: none; }
+
+/* ---------- v16: concentric cards ----------
+   Every box inside a card sits --cp from the card's edge on all sides, and its corner is the card's
+   corner minus that gap (--cr − --cp), so the two curves run parallel. Titles and plain text keep
+   their old, deeper inset (--cp + --cx). */
+:root { --cr: 32px; --cp: 16px; --cx: 8px; --ir: calc(var(--cr) - var(--cp)); }
+.card, .ccard, .side2 { border-radius: var(--cr); }
+.slide .card, .s3 .card, .ccard, .side2 { padding: var(--cp) calc(var(--cp) + var(--cx)); }
+.slide .card.planner { padding: 0; }
+.slide .card.editor { padding: 26px 40px 30px; }
+.slide .card.feed, .slide .card.todo { padding-bottom: 0; }
+.wxc, .nextp, .spcard, .spev, .mtabs, #spx, .plist, .ncards, .flist, .tpl, .newf, .nlist .nsearch, .nitems, .newn, .addsrc, .saved,
+.feed-top, .flistv, .occl, .side2 .shelf, .td-top, .td-list { margin-inline: calc(-1 * var(--cx)); }
+.wxc, .nextp, .spcard, .spev, .prow, .ncard, .flist button, .tpl, .newf, .nitem, .addsrc, .fbig, .frow, .saved, .occl button, .side2 .bm, .mtabs { border-radius: var(--ir); }
+.prow, .flist button, .nitem, .occl button, .side2 .bm { padding-inline: var(--cx); }
+.mtabs { padding: 3px; }
+.s5 .s-pad { grid-template-columns: 300px minmax(0, 1fr) 280px; }
+.frow .img { border-radius: calc(var(--ir) - 10px); }
+
+/* ---------- v16: morphing tabs ----------
+   One pill slides under the chosen tab; on the way it stretches over both, then settles. */
+.morph { position: relative; isolation: isolate; }
+.morph > .mpill { position: absolute; z-index: 0; border-radius: 999px; background: #fff; pointer-events: none; box-shadow: 0 2px 12px rgba(0,0,0,.22); }
+.morph > :not(.mpill) { position: relative; z-index: 1; transition: color .3s ease; }
+.morph > [aria-selected="true"], .morph > [aria-pressed="true"], .morph > .on { background: transparent !important; }
+.mtabs.morph > .mpill { background: rgba(255,255,255,.12); border-radius: calc(var(--ir) - 3px); box-shadow: none; }
+.seg2.morph > .mpill { background: rgba(255,255,255,.09); border-radius: 8px; box-shadow: none; }
+.ptabs { height: 52px; padding: 5px; gap: 0; border-radius: 999px; background: none; align-items: stretch; }
+.ptabs button { padding: 0 22px; font-size: 16px; color: rgba(255,255,255,.72); }
+.ptabs button[aria-selected="true"] { color: #0B0D12; }
+.ptabs button span { transition: background .3s; }
 </style>
 </head>
 <body>
@@ -1170,7 +1269,7 @@ td.them { color: var(--ink-2); }
 </div>
               </div>
               <div class="launch" id="launch" data-blk="launcher"></div>
-              <div class="dateline" data-blk="dateline"><span id="clock">۱۵:۳۰</span><i></i>جمعه ۲۴ مهر ۱۴۰۵<i></i><span class="wx" title="تهران · نیمه‌ابری"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"> <path fill-rule="evenodd" clip-rule="evenodd" d="M12.0176 4.5275C12.4876 4.5275 12.8676 4.1465 12.8676 3.6775V3.6475C12.8676 3.1785 12.4876 2.8125 12.0176 2.8125C11.5476 2.8125 11.1676 3.2085 11.1676 3.6775C11.1676 4.1465 11.5476 4.5275 12.0176 4.5275Z" fill="#F5F6F8"/> <path fill-rule="evenodd" clip-rule="evenodd" d="M3.05962 13.4977C3.52962 13.4977 3.88462 13.1167 3.88462 12.6477C3.88462 12.1787 3.48062 11.7977 3.01062 11.7977C2.54062 11.7977 2.16162 12.1787 2.16162 12.6477C2.16162 13.1167 2.54062 13.4977 3.01062 13.4977H3.05962Z" fill="#F5F6F8"/> <path fill-rule="evenodd" clip-rule="evenodd" d="M5.69243 7.15779C5.89943 7.15779 6.10643 7.08279 6.27043 6.93079C6.61443 6.61179 6.63443 6.07479 6.31543 5.72979L6.29643 5.70979C5.97743 5.36579 5.44843 5.35479 5.10543 5.67479C4.76043 5.99279 4.75043 6.54079 5.06943 6.88579C5.23643 7.06579 5.46343 7.15779 5.69243 7.15779Z" fill="#F5F6F8"/> <path fill-rule="evenodd" clip-rule="evenodd" d="M18.9766 18.401C18.6646 18.052 18.1496 18.047 17.7986 18.359C17.4496 18.672 17.4416 19.234 17.7536 19.584C17.9216 19.772 18.1546 19.868 18.3876 19.868C18.5896 19.868 18.7916 19.797 18.9546 19.651C19.3036 19.339 19.3336 18.801 19.0216 18.451L18.9766 18.401Z" fill="#F5F6F8"/> <path fill-rule="evenodd" clip-rule="evenodd" d="M20.9678 11.7975C20.4978 11.7975 20.1178 12.1785 20.1178 12.6475C20.1178 13.1165 20.4978 13.4975 20.9678 13.4975H21.0108C21.4808 13.4975 21.8388 13.1165 21.8388 12.6475C21.8388 12.1785 21.4378 11.7975 20.9678 11.7975Z" fill="#F5F6F8"/> <path fill-rule="evenodd" clip-rule="evenodd" d="M17.7539 5.69103L17.7089 5.74103C17.3969 6.09103 17.4489 6.60403 17.7989 6.91703C17.9549 7.05503 18.1509 7.12203 18.3499 7.12203C18.5979 7.12203 18.8479 7.01803 19.0219 6.82403C19.3339 6.47403 19.3039 5.93603 18.9539 5.62403C18.6059 5.31103 18.0669 5.34003 17.7539 5.69103Z" fill="#F5F6F8"/> <path fill-rule="evenodd" clip-rule="evenodd" d="M10.8496 7.32922C8.74588 7.7963 7.19956 9.43488 6.73598 11.4052C6.68512 11.6214 6.8941 11.7996 7.11097 11.7519C7.44355 11.6787 7.7983 11.6372 8.17861 11.6372C10.5132 11.6372 11.9609 13.0896 12.6019 14.6259C12.6346 14.7041 12.697 14.766 12.7751 14.7987C13.7077 15.1898 14.4373 15.8898 14.8771 16.7901C14.9617 16.9633 15.1803 17.0325 15.3322 16.9138C16.9293 15.6658 17.7692 13.5743 17.3086 11.4712C16.6696 8.55022 13.7786 6.69022 10.8496 7.32922Z" fill="#F5F6F8"/> <path fill-rule="evenodd" clip-rule="evenodd" d="M11.287 16.4653C11.1233 16.4468 10.9907 16.3143 10.9686 16.151C10.835 15.1631 10.0539 13.6376 8.1788 13.6376C6.30284 13.6376 5.52166 15.1631 5.38801 16.151C5.36592 16.3143 5.23332 16.4468 5.06959 16.4654C3.90735 16.5972 3.0108 17.4527 3.0108 18.8276C3.0108 19.7876 3.5848 20.6176 4.4098 20.9976C4.7568 21.1376 5.1028 21.1876 5.3648 21.1876H10.9878C11.2508 21.1876 11.5968 21.1376 11.9488 20.9976C12.7738 20.6176 13.3448 19.7876 13.3448 18.8276C13.3448 17.4526 12.4499 16.5971 11.287 16.4653Z" fill="#F5F6F8"/> </svg>نیمه‌ابری <b>۲۱°</b></span><i></i>روز جهانی غذا</div>
+              <div class="dateline" data-blk="dateline"><span id="clock">۱۵:۳۰</span><i></i><span class="wx" title="تهران · نیمه‌ابری"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"> <path fill-rule="evenodd" clip-rule="evenodd" d="M12.0176 4.5275C12.4876 4.5275 12.8676 4.1465 12.8676 3.6775V3.6475C12.8676 3.1785 12.4876 2.8125 12.0176 2.8125C11.5476 2.8125 11.1676 3.2085 11.1676 3.6775C11.1676 4.1465 11.5476 4.5275 12.0176 4.5275Z" fill="#F5F6F8"/> <path fill-rule="evenodd" clip-rule="evenodd" d="M3.05962 13.4977C3.52962 13.4977 3.88462 13.1167 3.88462 12.6477C3.88462 12.1787 3.48062 11.7977 3.01062 11.7977C2.54062 11.7977 2.16162 12.1787 2.16162 12.6477C2.16162 13.1167 2.54062 13.4977 3.01062 13.4977H3.05962Z" fill="#F5F6F8"/> <path fill-rule="evenodd" clip-rule="evenodd" d="M5.69243 7.15779C5.89943 7.15779 6.10643 7.08279 6.27043 6.93079C6.61443 6.61179 6.63443 6.07479 6.31543 5.72979L6.29643 5.70979C5.97743 5.36579 5.44843 5.35479 5.10543 5.67479C4.76043 5.99279 4.75043 6.54079 5.06943 6.88579C5.23643 7.06579 5.46343 7.15779 5.69243 7.15779Z" fill="#F5F6F8"/> <path fill-rule="evenodd" clip-rule="evenodd" d="M18.9766 18.401C18.6646 18.052 18.1496 18.047 17.7986 18.359C17.4496 18.672 17.4416 19.234 17.7536 19.584C17.9216 19.772 18.1546 19.868 18.3876 19.868C18.5896 19.868 18.7916 19.797 18.9546 19.651C19.3036 19.339 19.3336 18.801 19.0216 18.451L18.9766 18.401Z" fill="#F5F6F8"/> <path fill-rule="evenodd" clip-rule="evenodd" d="M20.9678 11.7975C20.4978 11.7975 20.1178 12.1785 20.1178 12.6475C20.1178 13.1165 20.4978 13.4975 20.9678 13.4975H21.0108C21.4808 13.4975 21.8388 13.1165 21.8388 12.6475C21.8388 12.1785 21.4378 11.7975 20.9678 11.7975Z" fill="#F5F6F8"/> <path fill-rule="evenodd" clip-rule="evenodd" d="M17.7539 5.69103L17.7089 5.74103C17.3969 6.09103 17.4489 6.60403 17.7989 6.91703C17.9549 7.05503 18.1509 7.12203 18.3499 7.12203C18.5979 7.12203 18.8479 7.01803 19.0219 6.82403C19.3339 6.47403 19.3039 5.93603 18.9539 5.62403C18.6059 5.31103 18.0669 5.34003 17.7539 5.69103Z" fill="#F5F6F8"/> <path fill-rule="evenodd" clip-rule="evenodd" d="M10.8496 7.32922C8.74588 7.7963 7.19956 9.43488 6.73598 11.4052C6.68512 11.6214 6.8941 11.7996 7.11097 11.7519C7.44355 11.6787 7.7983 11.6372 8.17861 11.6372C10.5132 11.6372 11.9609 13.0896 12.6019 14.6259C12.6346 14.7041 12.697 14.766 12.7751 14.7987C13.7077 15.1898 14.4373 15.8898 14.8771 16.7901C14.9617 16.9633 15.1803 17.0325 15.3322 16.9138C16.9293 15.6658 17.7692 13.5743 17.3086 11.4712C16.6696 8.55022 13.7786 6.69022 10.8496 7.32922Z" fill="#F5F6F8"/> <path fill-rule="evenodd" clip-rule="evenodd" d="M11.287 16.4653C11.1233 16.4468 10.9907 16.3143 10.9686 16.151C10.835 15.1631 10.0539 13.6376 8.1788 13.6376C6.30284 13.6376 5.52166 15.1631 5.38801 16.151C5.36592 16.3143 5.23332 16.4468 5.06959 16.4654C3.90735 16.5972 3.0108 17.4527 3.0108 18.8276C3.0108 19.7876 3.5848 20.6176 4.4098 20.9976C4.7568 21.1376 5.1028 21.1876 5.3648 21.1876H10.9878C11.2508 21.1876 11.5968 21.1376 11.9488 20.9976C12.7738 20.6176 13.3448 19.7876 13.3448 18.8276C13.3448 17.4526 12.4499 16.5971 11.287 16.4653Z" fill="#F5F6F8"/> </svg>نیمه‌ابری <b>۲۱°</b></span><i></i>جمعه ۲۴ مهر ۱۴۰۵<i></i>روز جهانی غذا</div>
             </div>
             <div class="coach" id="coach" hidden>موس را به گوشه‌ها و لبه‌ی راست ببر؛ کارها، یادداشت‌ها، پول و دسترسی سریع آن‌جاست.</div>
 
@@ -1236,7 +1335,7 @@ td.them { color: var(--ink-2); }
             <div class="s-pad">
               <div class="pbar">
                 <div class="ptitle"><b id="wkTitle">مهر ۱۴۰۵</b><span id="wkSub">هفته‌ی ۱۸ تا ۲۴</span></div>
-                <div class="ptabs" id="ptabs" role="tablist"><button role="tab" aria-selected="true" data-v="cal">تقویم</button><button role="tab" aria-selected="false" data-v="todo">کارها <span id="todoN"></span></button></div>
+                <div class="ptabs g" id="ptabs" role="tablist" aria-label="نما"><button role="tab" aria-selected="true" data-v="cal">تقویم</button><button role="tab" aria-selected="false" data-v="todo">کارها <span id="todoN"></span></button></div>
                 <div class="psearch g" id="psearch">
                   <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
                   <input id="pq" placeholder="جستجو در برنامه‌ها، مناسبت‌ها و یادداشت‌ها…" autocomplete="off" aria-label="جستجو در برنامه‌ها">
@@ -1287,6 +1386,7 @@ td.them { color: var(--ink-2); }
           <!-- ============ SLIDE 3 · MONEY ============ -->
           <section class="slide s3" id="s3" aria-label="پول">
             <div class="s-pad" id="moneyPad">
+              <div class="ticker" aria-label="قیمت جهانی و رمزارز"><span class="tk-h"><i></i>جهانی و رمزارز</span><div class="tk-vp"><div class="tk-track" id="tkTrack"></div></div><span class="tk-src">نمونه · gold-api، نوبیتکس</span></div>
               <!-- balances (Copilot-style: one header, stats, aligned rows) -->
               <div class="card g mc">
                 <div class="mh"><h2>موجودی</h2><button class="more" id="eye2" aria-label="پنهان کردن مبالغ"><span data-ico="activity" hidden></span>پنهان کردن</button><a class="ml">حساب‌ها ←</a></div>
@@ -1317,16 +1417,16 @@ td.them { color: var(--ink-2); }
                 <div class="rows" id="cats"></div>
               </div>
 
-              <!-- market -->
-              <div class="card g mc">
-                <div class="mh"><h2>قیمت روز</h2><span class="sample">نمونه · ۱۲:۳۰</span><a class="ml">دارایی‌ها ←</a></div>
-                <div class="hero2 l"><span class="sl2" id="pxName">طلای ۱۸ عیار · گرم</span><b class="hn amt"><span id="pxVal">۲۶٬۲۲۷٬۰۰۰</span><small id="pxUnit">تومان</small></b><span class="pill" id="pxChg">−۰٫۴۱٪</span></div>
+              <!-- market: Iranian market in the card, global + crypto in the ticker above -->
+              <div class="card g mc mkt">
+                <div class="mh"><h2>قیمت روز</h2><span class="live"><i></i>نمونه · ۱۲:۳۰</span><a class="ml">دارایی‌ها ←</a></div>
+                <div class="pxtop"><span id="pxIco"></span><span class="nm2"><b id="pxName"></b><small id="pxSub"></small></span>
+                  <div class="seg2" id="period"><button aria-pressed="false" data-p="7">هفته</button><button aria-pressed="true" data-p="30">ماه</button><button aria-pressed="false" data-p="365">سال</button></div></div>
+                <div class="pxv"><b class="hn" id="pxVal"></b><small>تومان</small><span class="pill" id="pxChg"></span></div>
                 <div class="chart" id="pxChart"></div>
-                <div class="seg2" id="period"><button aria-pressed="false" data-p="7">هفته</button><button aria-pressed="true" data-p="30">ماه</button><button aria-pressed="false" data-p="365">سال</button></div>
-                <div class="rows" id="prices"></div>
-                <div class="rw spx" data-slot="۱۱"><span class="nm">صندوق طلا <span class="tag">معرفی‌شده</span></span><span></span><span class="am">۴۸٬۲۰۰</span><span class="pill up">+۰٫۹۰٪</span></div>
-                <div class="mine2" style="margin-top:auto"><span>دارایی‌های من<small>۱۲ گرم طلا · ۲ سکه · ۵۰۰ دلار</small></span><b class="amt">۹۹۳٫۶ م</b><span class="pill up">+۰٫۳۵٪</span></div>
-                <div class="partner" data-slot="۱۰" style="padding:6px 14px"><b>خرید طلای آب‌شده</b> از ۱۰۰ هزار تومان<span class="tag">معرفی‌شده</span></div>
+                <div class="mtabs" id="mtabs" role="tablist" aria-label="گروه قیمت"><button role="tab" aria-selected="true" data-g="gold">طلا و سکه</button><button role="tab" aria-selected="false" data-g="fx">ارز</button><button role="tab" aria-selected="false" data-g="mine">دارایی‌های من</button></div>
+                <div class="plist" id="prices"></div>
+                <div class="prow spx" id="spx" data-slot="۱۱"><i class="ai" style="background:linear-gradient(135deg,#F6D98A,#B8862B);color:#3a2a05">ص</i><span class="nm2"><b>صندوق طلای عیار<span class="tag">معرفی‌شده</span></b><small>واحد صندوق · بورس کالا</small></span><span></span><span class="pv"><b>۴۸٬۲۰۰</b><small class="up">▲ ۰٫۹۰٪</small></span></div>
               </div>
 
               <!-- news -->
@@ -1526,7 +1626,7 @@ td.them { color: var(--ink-2); }
         <tbody>
           <tr><td>۱ · خانه</td><td>نقطه‌ی نقطه (به رنگ پس‌زمینه) بالای یک سرچ بزرگ گوگل، زیرش یک ردیف دسترسی سریع (سایت‌های مشترک، پوشه‌ها و سایت‌های شغل کاربر) و یک خط آرام ساعت، تاریخ، هوا (آیکون و وضعیت و دما، با همان آیکون‌ها و داده‌ی بخش هوای اپ نقطه) و مناسبت. چهار گوشه با آیکون: کارها، یادداشت‌ها، پول، امروز. لبه‌ی راست: بوکمارک‌های خود کروم و شخصی‌سازی</td><td>نقطه، پاکت، <code>chrome.topSites</code>، <code>chrome.bookmarks</code>، <code>chrome.search</code></td></tr>
           <tr><td>۲ · برنامه‌ها</td><td>نمای هفته به سبک تقویم گوگل، مثل بخش «برنامه‌ها»ی اپ: ستون هر روز با ساعت‌ها، ردیف «تمام‌روز» با مناسبت‌ها و قبض‌ها و کارهای بی‌ساعت، خط اذان صبح و ظهر و مغرب، خط «الان». با کشیدن روی ساعت‌ها برنامه ساخته می‌شود و در تقویم گوگل هم می‌نشیند. کنارش تقویم ماه کوچک با نقطه‌ی مناسبت، فهرست مناسبت‌های پیش رو و کلید روشن/خاموش هر تقویم. بالای صفحه سرچ که برنامه‌ها، مناسبت‌ها و یادداشت‌ها را با هم می‌گردد</td><td><code>calendar-core</code>، <code>event-data</code>، <code>prayer-times</code>، <code>tasks</code>، Google Calendar API از راه relay، قبض‌های پاکت</td></tr>
-          <tr><td>۳ · پول</td><td>موجودی حساب‌ها، خرج‌های پیش رو، نمودار خرج تجمعی ماه با مسیر بودجه و پیش‌بینی پاکت، خرج بر اساس دسته، قیمت روز طلا و سکه و ارز و کریپتو با نمودار، ارزش دارایی‌های خود کاربر، و ردیف «خبر و پیشنهاد» با همان خبرهایی که تیم در اپ پاکت می‌گذارد</td><td>پاکت (حساب‌ها، <code>category_period_aggregates</code>، <code>expense_predictions</code>، <code>upcoming_expenses</code>، <code>investments.positions</code>، <code>/v1/news</code>) و منبع قیمت</td></tr>
+          <tr><td>۳ · پول</td><td>موجودی حساب‌ها، خرج‌های پیش رو، نمودار خرج تجمعی ماه با مسیر بودجه و پیش‌بینی پاکت، خرج بر اساس دسته، نوار متحرک قیمت جهانی و رمزارز بالای اسلاید، کارت قیمت روز طلا و سکه و ارز با نمودار و تب «دارایی‌های من»، و ردیف «خبر و پیشنهاد» با همان خبرهایی که تیم در اپ پاکت می‌گذارد</td><td>پاکت (حساب‌ها، <code>category_period_aggregates</code>، <code>expense_predictions</code>، <code>upcoming_expenses</code>، <code>investments.positions</code>، <code>/v1/news</code>) و منبع قیمت</td></tr>
           <tr><td>۴ · یادداشت‌ها</td><td>مثل یادداشت‌های اپ: پوشه‌ها، فهرست با سنجاق‌شده‌ها و سرچ، و ویرایشگر کامل با تیتر، متن، چک‌لیست، فهرست و یادداشت صوتی (موج صدا و متن آن). یادداشتی که به یک روز یا یک کار وصل است، برچسبش را نشان می‌دهد. هر تغییر چند ثانیه بعد روی گوشی است</td><td><code>packages/notes</code> (تازه)، <code>@dotlife/sync</code></td></tr>
           <tr><td>۵ · خبر</td><td>فید خبر با منبع در صدر: کاربر منبع‌هایش را انتخاب می‌کند، هر کارت اول اسم و نشان منبع را نشان می‌دهد، و خبری که چند رسانه پوشش داده‌اند «روایت منبع‌های دیگر» را کنار هم نشان می‌دهد. دسته‌ها، سرچ، «برای تو / تازه‌ترین»، پربازدید امروز، ذخیره برای بعد</td><td>خبرخوان سرور نقطه (RSS)، منبع‌های دلخواه کاربر، <code>/v1/news</code> پاکت</td></tr>
           <tr><td>۶ · شبکه‌ها</td><td>یک قاب تبلتی بزرگ با زبانه‌های تلگرام، اینستاگرام، واتس‌اپ و ایکس؛ هر زبانه نسخه‌ی وب همان سرویس را در قاب نشان می‌دهد و وضعیت ورودش را دارد</td><td>صفحه‌های وب خود سرویس‌ها</td></tr>
@@ -1583,6 +1683,9 @@ td.them { color: var(--ink-2); }
         <li><b>نقطه‌ی بالای سرچ</b> همان خط‌خطی نقطه‌ی اپ است (همان مولد seed‌دار <code>BrandMark.tsx</code>) و با رنگ روشن همان تم کشیده می‌شود، پس با هر زمینه یکی می‌شود؛ مثل لوگوی Dia که با رنگ پنجره عوض می‌شود. بعد از کشیده شدن ثابت می‌ماند و با کلیک روی نقطه دوباره با قلم کشیده می‌شود.</li>
         <li><b>افکت ورود</b> (هر بار که تب باز می‌شود، کمتر از ۳ ثانیه)، مثل ورود Dia: رنگ زمینه یک‌باره و روشن‌تر از حالت عادی می‌آید و در یک و نیم ثانیه آرام می‌نشیند؛ هم‌زمان نقطه با قلم کشیده می‌شود، سرچ از کمی پایین‌تر بالا می‌آید، و بعد یک خط نازک نور از وسط لبه‌ی پایین کادر سرچ از دو طرف دورش می‌چرخد؛ سر خط سفید است و دنباله‌اش با رنگ تم کم‌کم محو می‌شود، و دو خط بالای کادر به هم می‌رسند و ناپدید می‌شوند. برای کسی که «کاهش حرکت» را در سیستم روشن کرده، همه‌چیز بی‌حرکت می‌آید.</li>
         <li>عکس‌ها و درخت زنده‌ی اپ بعداً به‌عنوان گزینه‌ی اختیاری می‌آیند، نه پیش‌فرض.</li>
+        <li><b>کارت‌های هم‌مرکز:</b> مثل کارت تقویم اپ نقطه، هر جعبه‌ای که داخل کارت است (ردیف انتخاب‌شده، سرچ، کارت خبر، ویجت هوا، تب‌ها) از هر چهار طرف به یک اندازه (۱۶ پیکسل) با لبه‌ی کارت فاصله دارد و گوشه‌اش برابر گوشه‌ی کارت منهای همان فاصله است (۳۲ − ۱۶ = ۱۶)، پس دو منحنی موازی می‌مانند. تیتر سکشن‌ها و متن ساده استثنا هستند و ۸ پیکسل جلوتر از جعبه‌ها شروع می‌شوند.</li>
+        <li><b>تب‌ها:</b> یک پیل زیر تب انتخاب‌شده است که با کلیک تا تب تازه کش می‌آید، لحظه‌ای روی هر دو می‌ماند و بعد در جای تازه جمع می‌شود (حدود نیم ثانیه، با «کاهش حرکت» بی‌انیمیشن). تب بالای صفحه‌ی برنامه هم‌قد و هم‌شکل کادر سرچ کنارش است.</li>
+        <li><b>یادداشت صوتی</b> همان کارت اپ است: دکمه‌ی پخش گرد سفید در چپ، موج صدا (بخش پخش‌شده روشن و باقی کم‌رنگ؛ با کلیک یا کشیدن روی موج جای پخش عوض می‌شود)، زمانی که مانده و چیپ سرعت ۱× / ۱٫۵× / ۲× که بعد از شروع پخش پیدا می‌شود. هر بار فقط یک صدا پخش می‌شود و متن صدا زیرش می‌آید.</li>
       </ul>
     </section>
 
@@ -1614,7 +1717,7 @@ td.them { color: var(--ink-2); }
           <tr><td class="n"><span class="num">۸</span></td><td>پیشنهاد زیر مناسبت</td><td>یک خط کوچک زیر مناسبت مرتبط در فهرست مناسبت‌ها («روز ورزش ← کفش ورزشی»)</td><td>۱ در فهرست</td><td>مناسبت</td><td>اسپانسر مناسبت</td></tr>
           <tr><td class="n"><span class="num">۹</span></td><td>ردیف سرچ برنامه‌ها</td><td>یک ردیف آخر نتایج سرچ برنامه‌ها</td><td>۱ در هر جستجو</td><td>کلمه‌ی تایپ‌شده</td><td>هر کلیک</td></tr>
           <tr class="grp"><td colspan="6">اسلاید ۳ · پول</td></tr>
-          <tr><td class="n"><span class="num">۱۰</span></td><td>دکمه‌ی همکار</td><td>دکمه‌ی کم‌رنگ زیر قیمت‌ها («خرید طلای آب‌شده از ۱۰۰ هزار تومان»)</td><td>۱ همکار</td><td>همه</td><td>کارمزد هر خرید</td></tr>
+          <tr><td class="n"><span class="num">۱۰</span></td><td>آیتم همکار در نوار قیمت</td><td>یک آیتم زرد با برچسب «معرفی‌شده» بین نمادهای نوار متحرک («خرید طلای آب‌شده از ۱۰۰ هزار تومان»)</td><td>۱ همکار</td><td>همه</td><td>کارمزد هر خرید</td></tr>
           <tr><td class="n"><span class="num">۱۱</span></td><td>نماد معرفی‌شده</td><td>یک ردیف در فهرست قیمت روز، مثل صندوق طلا یا صندوق درآمد ثابت</td><td>۱</td><td>همه</td><td>اسپانسر ماهانه</td></tr>
           <tr><td class="n"><span class="num">۱۲</span></td><td>کارت آخر ردیف خبر</td><td>یک کارت جدا با حاشیه‌ی خط‌چین در انتهای ردیف خبرها، نه در میان آن‌ها</td><td>۱</td><td>همه</td><td>هر هزار نمایش</td></tr>
           <tr class="grp"><td colspan="6">اسلاید ۴ · یادداشت‌ها</td></tr>
@@ -1656,7 +1759,17 @@ td.them { color: var(--ink-2); }
         <li><b>نوشتن از نیوتب:</b> همان outbox گوشی و همان قانون ادغام از <code>@dotlife/sync</code>. مدل یادداشت از اپ موبایل به پکیج <code>packages/notes</code> منتقل می‌شود. پوشه‌های یادداشت جدا سینک نمی‌شوند، چون در نقطه پوشه‌ها همان لیست‌های کارند (بخش «یک منبع برای دسته‌ها»). یادداشت صوتی امروز فقط روی همان گوشی فایل دارد و با سینک فقط موج صدا و متنش می‌آید؛ برای پخش در نیوتب، فایل صدا باید به سرور برود. تا آن موقع نیوتب موج و متن را نشان می‌دهد.</li>
         <li><b>تقویم گوگل:</b> اپ نقطه رویدادهای گوگل را از تقویم خود اندروید می‌خواند و طبق قاعده‌ی PLAN §۱۳ آن‌ها را هرگز به سرور ما نمی‌فرستد. نیوتب همین قاعده را نگه می‌دارد: با <code>chrome.identity</code> و حساب گوگلِ خود کروم اجازه‌ی تقویم می‌گیرد و Calendar API را مستقیم صدا می‌زند، از راه همان relay آروان (<code>www.googleapis.com</code> از قبل در فهرستش هست) چون گوگل آی‌پی ایران را می‌بندد. برنامه‌ای که با کشیدن ساخته می‌شود مستقیم در تقویم گوگل نوشته می‌شود و گوشی آن را از همان راه همیشگی اندروید می‌بیند. رویدادها فقط در کش خود مرورگر می‌مانند.</li>
         <li><b>پاکت فقط خواندنی است.</b> چون صفحه‌ی خانه‌ی پاکت روی گوشی ساخته می‌شود، یک مسیر تازه لازم است: <code>GET /v1/home/summary</code> با موجودی حساب‌ها، خرج روزانه‌ی ماه، جمع هر دسته (از <code>category_period_aggregates</code>)، پیش‌بینی پایان ماه (از <code>expense_predictions</code>)، خرج‌های پیش رو، بدهی و طلب و تعداد پیامک‌های منتظر. هر ۶۰ ثانیه و هر بار که تب فوکوس می‌گیرد. بودجه‌ها هنوز به سرور نمی‌روند؛ تا وقتی آپلود نشوند، نوار و مسیر بودجه نمایش داده نمی‌شود.</li>
-        <li><b>قیمت روز:</b> پاکت امروز منبع قیمت ندارد. ماژول <code>investments</code> دارایی‌ها را با کد و مقدار نگه می‌دارد ولی قیمت ندارد. پیشنهاد: worker پاکت هر ۵ دقیقه از یک منبع قیمت (طلا، سکه، ارز، کریپتو) می‌خواند و در <code>GET /v1/market/prices</code> با تاریخچه برای نمودار می‌گذارد. همین مسیر به اپ پاکت هم ارزش دارایی‌ها را می‌دهد.</li>
+        <li><b>قیمت روز و نوار قیمت:</b> پاکت امروز منبع قیمت ندارد. ماژول <code>investments</code> دارایی‌ها را با کد و مقدار نگه می‌دارد ولی قیمت ندارد. پیشنهاد: worker پاکت قیمت‌ها را از چند منبع رایگان می‌خواند، یکی می‌کند و در دو مسیر می‌گذارد: <code>GET /v1/market/prices</code> برای کارت (با تاریخچه برای نمودار و ارزش دارایی‌های خود کاربر، که اپ پاکت هم از همین می‌خواند) و <code>GET /v1/market/ticker</code> برای نوار. نیوتب هیچ‌وقت مستقیم سراغ منبع‌ها نمی‌رود: کلید و سقف درخواست فقط سمت سرور است، IP کاربر به سرویس بیرونی نمی‌رسد و اگر یک منبع بخوابد منبع بعدی جایش را می‌گیرد.
+          <table>
+            <tr><th>داده</th><th>منبع رایگان برای شروع</th><th>توضیح</th></tr>
+            <tr><td>طلا، سکه، ارز بازار آزاد</td><td>iran-market (فایل‌های JSON روی GitHub)؛ BRSAPI به‌عنوان منبع دوم</td><td>بدون کلید. iran-market داده را از TGJU می‌گیرد و هر ۳۰ دقیقه به‌روز می‌کند. برای نسخه‌ی تجاری و به‌روزرسانی دقیقه‌ای، پلن پولی TGJU یا نِت‌ارز.</td></tr>
+            <tr><td>رمزارز و تتر به تومان</td><td>API عمومی نوبیتکس (<code>/market/stats</code>)</td><td>بدون کلید و از داخل ایران در دسترس.</td></tr>
+            <tr><td>انس طلا، نقره، پلاتین و بیت‌کوین به دلار</td><td>gold-api.com</td><td>رایگان و بدون کلید برای قیمت لحظه‌ای؛ تاریخچه سقف درخواست دارد.</td></tr>
+            <tr><td>کنار گذاشته</td><td>Binance و CoinGecko</td><td>Binance کاربران ایران را نمی‌پذیرد و درخواست بعضی سرورهای ابری را هم با خطای ۴۵۱ رد می‌کند. پلن رایگان CoinGecko کلید و ذکر نام می‌خواهد و مجوز تجاری ندارد.</td></tr>
+          </table>
+          worker رمزارز را هر ۶۰ ثانیه و طلا و ارز را هر ۵ دقیقه می‌خواند؛ نیوتب فقط وقتی اسلاید پول دیده می‌شود هر ۶۰ ثانیه می‌پرسد. کنار هر کارت ساعت آخرین قیمت هست؛ اگر قیمتی بیشتر از ۱۵ دقیقه کهنه باشد، نقطه‌ی سبز «زنده» خاکستری می‌شود. پیش از انتخاب نهایی، دسترسی هر منبع از سرور لیارا و شرایط استفاده‌ی تجاری‌اش بررسی شود.</li>
+        <li><b>نوار متحرک:</b> انس طلا و نقره، پلاتین و رمزارزها آرام از چپ به راست می‌گذرند، با رنگ تغییر روز و چشمک کوتاه وقتی قیمتی عوض می‌شود. موس که روی نوار برود می‌ایستد. با «کاهش حرکت» سیستم، نوار ثابت می‌ماند و با اسکرول افقی خوانده می‌شود. کاربر در شخصی‌سازی نمادها را انتخاب و مرتب می‌کند یا کل نوار را خاموش می‌کند. یک آیتم همکار (جایگاه ۱۰) با رنگ و برچسب جدا بین نمادها می‌نشیند.</li>
+        <li><b>کارت قیمت روز:</b> فقط بازار ایران با دو تب «طلا و سکه» و «ارز»، و تب سوم «دارایی‌های من» که ارزش طلا و سکه و ارز خود کاربر و تغییر امروزش را به تومان می‌دهد. هر ردیف دو خط دارد (اسم کامل و توضیح، قیمت کامل و تغییر) تا هیچ اسم یا عددی بریده نشود. با کلیک روی هر ردیف، نمودار بالا همان را نشان می‌دهد و با موس روی نمودار قیمت هر روز دیده می‌شود.</li>
         <li><b>خبرها:</b> پاکت همین حالا مسیر عمومی <code>GET /v1/news</code> را دارد (بدون ورود، با ETag و کش ۶۰ ثانیه) که همان کارت‌های «خبر و پیشنهاد» صفحه‌ی خانه‌ی اپ را می‌دهد: عرضه‌ی اولیه، فرصت سرمایه‌گذاری، اطلاعیه و پیشنهاد، با عنوان، خلاصه، متن کامل، تصویر، دکمه، سنجاق و تاریخ انقضا. نیوتب همین را با <code>If-None-Match</code> می‌خواند، پس کار سمت سرور لازم نیست و هر خبری که تیم از پنل ادمین منتشر کند هم‌زمان در اپ و نیوتب دیده می‌شود. خبر تازه با یک نقطه روی آیکون «پول» در نوار کنار صفحه علامت می‌خورد.</li>
         <li><b>حریم خصوصی:</b> مبالغ با یک کلیک روی آیکون چشم در هر دو اسلاید پنهان می‌شوند و این انتخاب می‌ماند، برای وقتی که صفحه در جلسه به اشتراک گذاشته می‌شود.</li>
       </ul>
@@ -1725,7 +1838,7 @@ td.them { color: var(--ink-2); }
       <ul>
         <li>اپ تازه‌ی <code>apps/newtab</code> در مونوریپوی نقطه: Chrome Manifest V3، Vite و React 19 مثل <code>apps/web</code>، TypeScript سخت‌گیر.</li>
         <li>استفاده‌ی مستقیم از <code>@dotlife/tasks</code>، <code>@dotlife/sync</code>، <code>@dotlife/calendar-core</code>، <code>event-data</code>، <code>prayer-times</code> و <code>personalization</code>. همه‌ی محاسبه‌ی تقویم و اوقات شرعی روی دستگاه، بدون سرور.</li>
-        <li>یک کلاینت کوچک برای پاکت که فقط <code>/v1/auth/*</code>، <code>/v1/home/summary</code> و <code>/v1/market/prices</code> را صدا می‌زند.</li>
+        <li>یک کلاینت کوچک برای پاکت که فقط <code>/v1/auth/*</code>، <code>/v1/home/summary</code>، <code>/v1/market/prices</code> و <code>/v1/market/ticker</code> را صدا می‌زند.</li>
         <li>نمودارها SVG دست‌ساز، بدون کتابخانه‌ی سنگین؛ هر نمودار با hover و tooltip.</li>
         <li>فونت یکان بخ داخل افزونه. بدون کد از راه دور (قانون MV3): باندل تبلیغ و محتوای قفسه‌ها فقط داده‌ی JSON امضاشده‌اند.</li>
         <li>متن کارها، یادداشت‌ها و مبالغ هرگز به لاگ یا آنالیتیکس نمی‌رود؛ همان قانون فعلی نقطه.</li>
@@ -1737,7 +1850,7 @@ td.them { color: var(--ink-2); }
       <div class="phases">
         <div class="ph"><b>فاز ۰ · طراحی<small>۱ هفته</small></b><span>نهایی کردن این ماک‌آپ در فیگما، لیست پرسوناها و قفسه‌ها، انتخاب منبع قیمت، تست سینک نقطه روی گوشی واقعی (هنوز انجام نشده و پیش‌نیاز همه‌چیز است).</span></div>
         <div class="ph"><b>فاز ۱ · خانه، برنامه‌ها و یادداشت‌ها<small>۵ هفته</small></b><span>آنبوردینگ و ورود QR به نقطه، صفحه‌ی اول مینیمال با سرچ گوگل، گوشه‌ها و لبه، افکت ورود و نقطه‌ی هم‌رنگ، رنگ‌ها، شخصی‌سازی، دسترسی سریع با پنجره‌ی افزودن، قفسه‌ی پرسونا، کارها و یادداشت‌های دوطرفه با pull هر ۱۵ ثانیه، نمای هفته با مناسبت و اوقات شرعی، تقویم گوگل.</span></div>
-        <div class="ph"><b>فاز ۲ · پول<small>۲ تا ۳ هفته</small></b><span>اتصال جدای پاکت، <code>/v1/home/summary</code> و <code>/v1/market/prices</code>، نمودار خرج و قیمت، ارزش دارایی‌ها، ردیف خبرهای پاکت، قبض‌ها داخل برنامه‌ها.</span></div>
+        <div class="ph"><b>فاز ۲ · پول<small>۲ تا ۳ هفته</small></b><span>اتصال جدای پاکت، <code>/v1/home/summary</code>، <code>/v1/market/prices</code> و <code>/v1/market/ticker</code>، نمودار خرج و قیمت، نوار قیمت، ارزش دارایی‌ها، ردیف خبرهای پاکت، قبض‌ها داخل برنامه‌ها.</span></div>
         <div class="ph"><b>فاز ۳ · زنده، خبر و تبلیغ<small>۳ هفته</small></b><span><code>/sync/wait</code> و ارسال فوری از گوشی، خبرخوان سرور و اسلاید خبر، ۱۵ جایگاه تبلیغ با رضایت کاربر و گزارش در پنل ادمین.</span></div>
         <div class="ph"><b>فاز ۴ · شبکه‌ها<small>۲ هفته، پس از آزمایش</small></b><span>نسخه‌ی آزمایشی قاب‌ها با چند کاربر، بررسی سیاست استور، بعد انتشار؛ پنجره‌ی جدا به‌عنوان راه جایگزین.</span></div>
         <div class="ph"><b>فاز ۵ · بعدی‌ها</b><span>Edge و Firefox، ثبت خرج از نیوتب، هشدار قیمت، عکس‌ها و درخت زنده‌ی اپ به‌عنوان پس‌زمینه‌ی اختیاری.</span></div>
@@ -2373,6 +2486,15 @@ td.them { color: var(--ink-2); }
     $("nitems").innerHTML = !vis.length ? `<div class="none">یادداشتی پیدا نشد.</div>`
       : (pinned.length ? `<div class="glbl">سنجاق‌شده</div>${pinned.map(row).join("")}` : "") + (rest.length ? `<div class="glbl">یادداشت‌ها</div>${rest.map(row).join("")}` : "");
   }
+  // voice block, same as the app: play · wave (played bright, rest faint; tap or drag to jump) · time left · 1× / 1.5× / 2×
+  const vPlay = '<svg viewBox="0 0 18 18"><path d="M5.5 3.6 L14.2 8.3 a0.8 0.8 0 0 1 0 1.4 L5.5 14.4 a0.8 0.8 0 0 1 -1.2 -0.7 V4.3 a0.8 0.8 0 0 1 1.2 -0.7 Z" fill="#0B0D12"/></svg>';
+  const vPause = '<svg viewBox="0 0 18 18"><path d="M5.8 5.3V12.7M12.2 5.3V12.7" stroke="#0B0D12" stroke-width="3.6" stroke-linecap="round" fill="none"/></svg>';
+  const vMore = '<svg viewBox="0 0 24 24"><circle cx="12" cy="5.5" r="1.7"/><circle cx="12" cy="12" r="1.7"/><circle cx="12" cy="18.5" r="1.7"/></svg>';
+  const VB = { bar: 2.5, gap: 2, h: 34 }, SPEEDS = [1, 1.5, 2], vState = new Map();
+  const vMs = (d) => { const [m, x] = d.replace(/[۰-۹]/g, (c) => "۰۱۲۳۴۵۶۷۸۹".indexOf(c)).split(":").map(Number); return (m * 60 + x) * 1000; };
+  const vClock = (ms) => { const x = Math.max(0, Math.round(ms / 1000)); return fa(`${Math.floor(x / 60)}:${String(x % 60).padStart(2, "0")}`); };
+  const vResample = (p, n) => n <= 0 ? [] : Array.from({ length: n }, (_, i) => { const f = Math.floor((i * p.length) / n), t = Math.max(f + 1, Math.floor(((i + 1) * p.length) / n)); let m = 0; for (let k = f; k < t && k < p.length; k++) m = Math.max(m, p[k]); return m; });
+  const vBars = (lv, x0) => lv.map((p, i) => { const half = Math.max(0.01, (Math.min(1, p) * (VB.h - VB.bar)) / 2), x = x0 + i * (VB.bar + VB.gap) + VB.bar / 2; return `M${x.toFixed(2)} ${(VB.h / 2 - half).toFixed(2)}V${(VB.h / 2 + half).toFixed(2)}`; }).join("");
   const playSvg = '<svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>', pauseSvg = '<svg viewBox="0 0 24 24"><path d="M7 5h4v14H7zM13 5h4v14h-4z"/></svg>';
   function renderEditor() {
     const n = NOTES[curNote];
@@ -2385,9 +2507,10 @@ td.them { color: var(--ink-2); }
         if (b.k === "p") return `<div class="b-p" contenteditable="true" data-b="${j}">${b.t}</div>`;
         if (b.k === "b") return `<div class="b-b"><span class="tx" contenteditable="true" data-b="${j}">${b.t}</span></div>`;
         if (b.k === "c") return `<div class="b-c${b.done ? " done" : ""}"><button data-c="${j}" aria-label="انجام شد">${tick2}</button><span class="tx" contenteditable="true" data-b="${j}">${b.t}</span></div>`;
-        if (b.k === "v") return `<div class="b-v"><div class="row"><button class="play" data-v="${j}" aria-label="پخش">${playSvg}</button><span class="wave">${b.peaks.map((p) => `<i style="height:${p * 2.6}px"></i>`).join("")}</span><span class="dur">${b.dur}</span></div><div class="tr">${b.t}</div></div>`;
+        if (b.k === "v") return `<div class="b-v" data-vb="${j}"><div class="row"><button class="play" data-v="${j}" aria-label="پخش صدا">${vPlay}</button><span class="wave" role="slider" aria-label="جای پخش" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" tabindex="0"></span><span class="side"><span class="time">${b.dur}</span><button class="spd" hidden aria-label="سرعت پخش ۱ برابر">1×</button></span><button class="more" aria-label="گزینه‌های صدا">${vMore}</button></div><div class="tr">${b.t}</div></div>`;
         return "";
       }).join("")}</div>`;
+    drawVoices();
   }
   function selectNote(i) { curNote = i; if (folder !== "all" && NOTES[i].f !== folder) folder = "all"; renderFolders(); renderNoteList(); renderEditor(); }
   renderFolders(); renderNoteList(); renderEditor();
@@ -2428,15 +2551,52 @@ td.them { color: var(--ink-2); }
     $("edSt").innerHTML = "<i style=\"background:var(--amber)\"></i>در حال ذخیره…"; clearTimeout(saveT);
     saveT = setTimeout(() => ($("edSt").innerHTML = "<i></i>ذخیره شد · روی گوشی هم هست"), 900);
   });
-  let playing = null;
+  function vDraw(el) {
+    const st = vState.get(el), w = st.wave.clientWidth, n = Math.max(0, Math.floor((w + VB.gap) / (VB.bar + VB.gap)));
+    const mx = Math.max(...st.peaks), bars = vResample(st.peaks.map((p) => p / mx), n), played = Math.round(st.at * n);
+    st.wave.innerHTML = `<svg width="${w}" height="${VB.h}"><path d="${vBars(bars.slice(played), played * (VB.bar + VB.gap))}" stroke="#6D6D6D" stroke-width="${VB.bar}" stroke-linecap="round" fill="none"/><path d="${vBars(bars.slice(0, played), 0)}" stroke="#F5F6F8" stroke-width="${VB.bar}" stroke-linecap="round" fill="none"/></svg>`;
+    st.wave.setAttribute("aria-valuenow", Math.round(st.at * 100));
+    st.time.textContent = vClock(st.playing || st.at > 0 ? st.total * (1 - st.at) : st.total);
+    st.spd.hidden = !(st.started || st.playing); st.spd.textContent = `${st.speed}×`; st.spd.setAttribute("aria-label", `سرعت پخش ${fa(st.speed)} برابر`);
+    st.play.innerHTML = st.playing ? vPause : vPlay; st.play.setAttribute("aria-label", st.playing ? "مکث" : "پخش صدا");
+  }
+  function drawVoices() {
+    $("editor").querySelectorAll(".b-v").forEach((el) => {
+      const b = NOTES[curNote].blocks[+el.dataset.vb];
+      vState.set(el, { peaks: b.peaks, total: vMs(b.dur), at: 0, speed: 1, playing: false, started: false, wave: el.querySelector(".wave"), time: el.querySelector(".time"), spd: el.querySelector(".spd"), play: el.querySelector(".play") });
+      vDraw(el);
+    });
+  }
+  let vNow = null; // one recording plays at a time
+  function vStop(el) { const st = vState.get(el); if (!st) return; st.playing = false; cancelAnimationFrame(st.raf); vDraw(el); if (vNow === el) vNow = null; }
+  function vStart(el) {
+    if (vNow && vNow !== el) vStop(vNow);
+    const st = vState.get(el); st.playing = st.started = true; vNow = el; let last = performance.now();
+    const tick = (t) => {
+      st.at = Math.min(1, st.at + ((t - last) * st.speed) / st.total); last = t;
+      if (st.at >= 1) { st.at = 0; st.started = false; vStop(el); return; } // at the end it goes back to the start
+      vDraw(el); st.raf = requestAnimationFrame(tick);
+    };
+    vDraw(el); st.raf = requestAnimationFrame(tick);
+  }
+  const vSeek = (el, e) => { const st = vState.get(el), r = st.wave.getBoundingClientRect(); st.at = Math.max(0, Math.min(1, (e.clientX - r.left) / r.width)); st.started = true; vDraw(el); };
+  $("editor").addEventListener("pointerdown", (e) => {
+    const w = e.target.closest(".b-v .wave"); if (!w) return;
+    const el = w.closest(".b-v"); vSeek(el, e); w.setPointerCapture(e.pointerId);
+    const mv = (ev) => vSeek(el, ev), up = () => { w.removeEventListener("pointermove", mv); w.removeEventListener("pointerup", up); };
+    w.addEventListener("pointermove", mv); w.addEventListener("pointerup", up);
+  });
+  $("editor").addEventListener("keydown", (e) => {
+    const w = e.target.closest(".b-v .wave"); if (!w || !["ArrowLeft", "ArrowRight"].includes(e.key)) return;
+    const el = w.closest(".b-v"), st = vState.get(el); st.at = Math.max(0, Math.min(1, st.at + (e.key === "ArrowRight" ? 0.05 : -0.05))); st.started = true; vDraw(el); e.preventDefault();
+  });
   $("editor").addEventListener("click", (e) => {
     const c = e.target.closest("[data-c]");
     if (c) { const b = NOTES[curNote].blocks[+c.dataset.c]; b.done = !b.done; c.parentElement.classList.toggle("done", b.done); renderNoteList(); return; }
+    const sp = e.target.closest(".b-v .spd");
+    if (sp) { const st = vState.get(sp.closest(".b-v")); st.speed = SPEEDS[(SPEEDS.indexOf(st.speed) + 1) % SPEEDS.length]; vDraw(sp.closest(".b-v")); return; }
     const v = e.target.closest("[data-v]"); if (!v) return;
-    const bars = [...v.parentElement.querySelectorAll(".wave i")];
-    if (playing) { clearInterval(playing.t); playing.btn.innerHTML = playSvg; const same = playing.btn === v; playing = null; if (same) return; }
-    let k = 0; v.innerHTML = pauseSvg;
-    playing = { btn: v, t: setInterval(() => { bars.forEach((b, j) => b.classList.toggle("p", j <= k)); if (++k > bars.length) { clearInterval(playing.t); v.innerHTML = playSvg; bars.forEach((b) => b.classList.remove("p")); playing = null; } }, 160) };
+    const el = v.closest(".b-v"); vState.get(el).playing ? vStop(el) : vStart(el);
   });
   $("newNote").addEventListener("click", () => {
     NOTES.unshift({ f: folder === "all" ? "personal" : folder, title: "", when: "همین حالا", blocks: [{ k: "p", t: "" }] });
@@ -2504,44 +2664,105 @@ td.them { color: var(--ink-2); }
   $("cats").innerHTML = CATS.map(([n, c, v, b]) => `<div class="rw cat2"><i class="cd" style="background:${c}"></i><span class="nm">${n}</span>
     <span class="am amt">${mil(v)}</span><span class="bar"><b style="width:${Math.min(100, (v / b) * 100)}%;background:${v > b ? "#F0817A" : "#8ADD88"}"></b></span><span class="bd amt">${mil(b)}</span></div>`).join("");
 
-  // market prices (sample values)
-  const ASSETS = [
-    ["طلای ۱۸ عیار", "گرم", 26227000, -0.41, "تومان"], ["سکه امامی", "", 274500000, 0.8, "تومان"],
-    ["دلار", "آزاد", 259800, 0.3, "تومان"], ["تتر", "USDT", 261600, 0.05, "تومان"],
-    ["بیت‌کوین", "BTC", 82007, -1.2, "دلار"],
-  ];
+  // market prices (sample values; the real card reads GET /v1/market/prices)
+  const GOLDC = "linear-gradient(135deg,#F6D98A,#B8862B)";
+  const MK = {
+    gold: [["طلای ۱۸ عیار", "هر گرم", 26227000, -0.41, "۱۸", GOLDC], ["طلای ۲۴ عیار", "هر گرم", 34969000, -0.38, "۲۴", GOLDC], ["مثقال طلا", "آب‌شده", 113610000, -0.44, "م", GOLDC],
+      ["سکه امامی", "طرح جدید", 274500000, 0.8, "س", GOLDC], ["نیم سکه", "بهار آزادی", 152000000, 0.62, "ن", GOLDC]],
+    fx: [["دلار آمریکا", "بازار آزاد", 259800, 0.3, "$", "#2F7D5B"], ["یورو", "بازار آزاد", 302400, 0.12, "€", "#2F5FAD"], ["پوند انگلیس", "بازار آزاد", 348900, -0.1, "£", "#6B3FA0"],
+      ["درهم امارات", "بازار آزاد", 70740, 0.28, "د", "#9A6A2E"], ["تتر", "USDT · نوبیتکس", 261600, 0.05, "₮", "#26A17B"]],
+  };
+  // what the user holds (from Paket's investments): [group, index, quantity, label]
+  const MINE = [["gold", 0, 12, "۱۲ گرم"], ["gold", 3, 2, "۲ سکه"], ["fx", 0, 500, "۵۰۰ دلار"]];
+  let grp = "gold", sel = { g: "gold", i: 0 }, period = 30;
   function series(seed, n, end, drift) {
     let r = seed * 9301 + 49297; const rnd = () => ((r = (r * 9301 + 49297) % 233280) / 233280);
     const out = [1]; for (let i = 1; i < n; i++) out.push(out[i - 1] * (1 + (rnd() - 0.5) * 0.03 + drift / n));
     const k = end / out[n - 1]; return out.map((v) => v * k);
   }
-  let selA = 0, period = 30;
   function sparkPath(vals, w, h, pad) {
     const mn = Math.min(...vals), mx = Math.max(...vals);
     return vals.map((v, i) => `${pad + (i / (vals.length - 1)) * (w - 2 * pad)},${pad + (1 - (v - mn) / (mx - mn || 1)) * (h - 2 * pad)}`).join(" ");
   }
   const UP = "#8ADD88", DN = "#F0817A";
-  function buildPrices() {
-    $("prices").innerHTML = ASSETS.map(([n, u, v, c, cur], i) => `<button class="rw px2${i === selA ? " on" : ""}" data-i="${i}"><span class="nm">${n}</span>
-      <svg viewBox="0 0 56 20" aria-hidden="true"><polyline points="${sparkPath(series(i + 3, 24, v, c / 10), 56, 20, 2)}" fill="none" stroke="${c >= 0 ? UP : DN}" stroke-width="1.5"/></svg>
-      <span class="am">${cur === "دلار" ? "$" : ""}${fmt(v)}</span><span class="pill ${c >= 0 ? "up" : "dn"}">${pct(c)}</span></button>`).join("");
-    const [n, u, v, , cur] = ASSETS[selA];
-    $("pxName").textContent = u ? `${n} · ${u}` : n;
-    $("pxVal").textContent = (cur === "دلار" ? "$" : "") + fmt(v); $("pxUnit").textContent = cur === "دلار" ? "" : "تومان";
-    const W = 440, H = 78, vals = series(selA + 11 + period, period === 365 ? 52 : period, v, period === 365 ? 0.9 : period === 30 ? 0.08 : 0.02);
+  const glyph = (g, c) => `<i class="ai" style="background:${c}${c === GOLDC ? ";color:#3a2a05" : ""}">${g}</i>`;
+  const chg = (c) => `${c >= 0 ? "▲" : "▼"} ${pct(Math.abs(c)).replace("+", "")}`;
+  const seedOf = (g, i) => (g === "gold" ? 3 : 13) + i;
+  function hero() {
+    const [n, sub, v, , g, c] = MK[sel.g][sel.i];
+    $("pxIco").innerHTML = glyph(g, c); $("pxName").textContent = n; $("pxSub").textContent = sub;
+    $("pxVal").textContent = fmt(v);
+    const W = 440, H = 62, P = 6, vals = series(seedOf(sel.g, sel.i) + 11 + period, period === 365 ? 52 : period, v, period === 365 ? 0.9 : period === 30 ? 0.08 : 0.02);
     const pc = (vals.at(-1) / vals[0] - 1) * 100, col = pc >= 0 ? UP : DN;
-    $("pxChg").textContent = `${pc >= 0 ? "↑" : "↓"} ${pct(Math.abs(pc)).replace("+", "")} ${period === 7 ? "این هفته" : period === 30 ? "این ماه" : "امسال"}`; $("pxChg").className = "pill " + (pc >= 0 ? "up" : "dn");
-    const pts = sparkPath(vals, W, H, 6), last = pts.split(" ").at(-1).split(",");
-    $("pxChart").innerHTML = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="نمودار ${n}" direction="ltr"><defs><linearGradient id="pg" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="${col}" stop-opacity=".2"/><stop offset="1" stop-color="${col}" stop-opacity="0"/></linearGradient></defs>
-      <polygon points="6,${H} ${pts} ${W - 6},${H}" fill="url(#pg)" stroke="none"/><polyline points="${pts}" fill="none" stroke="${col}" stroke-width="1.8" stroke-linejoin="round"/>
-      <circle cx="${last[0]}" cy="${last[1]}" r="4" fill="#0f1116" stroke="${col}" stroke-width="2"/></svg>`;
+    $("pxChg").textContent = `${chg(pc)} ${period === 7 ? "این هفته" : period === 30 ? "این ماه" : "امسال"}`; $("pxChg").className = "pill " + (pc >= 0 ? "up" : "dn");
+    const pts = sparkPath(vals, W, H, P).split(" ").map((p) => p.split(",").map(Number)), last = pts.at(-1);
+    const s = svgEl("svg", { viewBox: `0 0 ${W} ${H}`, role: "img", "aria-label": `نمودار ${n}`, direction: "ltr" });
+    s.innerHTML = `<defs><linearGradient id="pg" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="${col}" stop-opacity=".2"/><stop offset="1" stop-color="${col}" stop-opacity="0"/></linearGradient></defs>
+      <polygon points="${P},${H} ${pts.join(" ")} ${W - P},${H}" fill="url(#pg)" stroke="none"/><polyline points="${pts.join(" ")}" fill="none" stroke="${col}" stroke-width="1.8" stroke-linejoin="round"/>
+      <circle cx="${last[0]}" cy="${last[1]}" r="4" fill="#0f1116" stroke="${col}" stroke-width="2"/>`;
+    const cross = svgEl("line", { y1: 0, y2: H, stroke: "rgba(255,255,255,.3)", visibility: "hidden" }), dot = svgEl("circle", { r: 3.5, fill: col, visibility: "hidden" });
+    s.append(cross, dot);
+    const box = $("pxChart"); box.replaceChildren(s);
+    const tip = document.createElement("div"); tip.className = "tipbox"; tip.hidden = true; box.append(tip);
+    const ago = (k) => k === 0 ? "الان" : period === 365 ? `${fa(k)} هفته پیش` : `${fa(k)} روز پیش`;
+    s.addEventListener("mousemove", (e) => {
+      const r = s.getBoundingClientRect(), px = ((e.clientX - r.left) / r.width) * W;
+      const i = Math.max(0, Math.min(pts.length - 1, Math.round(((px - P) / (W - 2 * P)) * (pts.length - 1)))), [x, y] = pts[i];
+      cross.setAttribute("x1", x); cross.setAttribute("x2", x); cross.setAttribute("visibility", "visible");
+      dot.setAttribute("cx", x); dot.setAttribute("cy", y); dot.setAttribute("visibility", "visible");
+      tip.hidden = false; tip.innerHTML = `${fmt(vals[i])} <span style="color:var(--ink-2)">· ${ago(pts.length - 1 - i)}</span>`;
+      tip.style.left = (x / W) * box.offsetWidth + "px"; tip.style.top = (y / H) * box.offsetHeight + "px";
+    });
+    s.addEventListener("mouseleave", () => { tip.hidden = true; cross.setAttribute("visibility", "hidden"); dot.setAttribute("visibility", "hidden"); });
   }
-  $("prices").addEventListener("click", (e) => { const b = e.target.closest(".px2"); if (!b) return; selA = +b.dataset.i; buildPrices(); });
+  function rows() {
+    const L = $("prices");
+    if (grp === "mine") {
+      let tot = 0, d = 0;
+      const rs = MINE.map(([g, i, q, lab]) => {
+        const a = MK[g][i], val = a[2] * q, dv = (val * a[3]) / (100 + a[3]); tot += val; d += dv;
+        return `<button class="prow${sel.g === g && sel.i === i ? " on" : ""}" data-g="${g}" data-i="${i}">${glyph(a[4], a[5])}<span class="nm2"><b>${a[0]}</b><small>${lab}</small></span><span></span>
+          <span class="pv"><b class="amt">${fmt(val)}</b><small class="${dv >= 0 ? "up" : "dn"}">${dv >= 0 ? "+" : "−"}${fmt(Math.abs(dv) / 1000)} هزار امروز</small></span></button>`;
+      }).join("");
+      L.innerHTML = `<div class="msum"><span>ارزش دارایی‌های من<small>از دارایی‌های ثبت‌شده در پاکت</small></span><b class="amt">${fmt(tot)}</b><span class="pill ${d >= 0 ? "up" : "dn"}">${chg((d / (tot - d)) * 100)}</span></div>` + rs;
+    } else {
+      L.innerHTML = MK[grp].map((a, i) => `<button class="prow${sel.g === grp && sel.i === i ? " on" : ""}" data-g="${grp}" data-i="${i}">${glyph(a[4], a[5])}<span class="nm2"><b>${a[0]}</b><small>${a[1]}</small></span>
+        <svg viewBox="0 0 60 22" aria-hidden="true"><polyline points="${sparkPath(series(seedOf(grp, i), 24, a[2], a[3] / 10), 60, 22, 2)}" fill="none" stroke="${a[3] >= 0 ? UP : DN}" stroke-width="1.5"/></svg>
+        <span class="pv"><b>${fmt(a[2])}</b><small class="${a[3] >= 0 ? "up" : "dn"}">${chg(a[3])}</small></span></button>`).join("");
+    }
+    $("spx").hidden = grp === "mine";
+  }
+  const buildPrices = () => { hero(); rows(); };
+  $("prices").addEventListener("click", (e) => { const b = e.target.closest(".prow"); if (!b) return; sel = { g: b.dataset.g, i: +b.dataset.i }; buildPrices(); });
+  $("mtabs").addEventListener("click", (e) => {
+    const b = e.target.closest("button"); if (!b) return; grp = b.dataset.g;
+    $("mtabs").querySelectorAll("button").forEach((x) => x.setAttribute("aria-selected", String(x === b))); rows();
+  });
   $("period").addEventListener("click", (e) => {
     const b = e.target.closest("button"); if (!b) return; period = +b.dataset.p;
-    $("period").querySelectorAll("button").forEach((x) => x.setAttribute("aria-pressed", String(x === b))); buildPrices();
+    $("period").querySelectorAll("button").forEach((x) => x.setAttribute("aria-pressed", String(x === b))); hero();
   });
   buildPrices();
+
+  // ticker: world metals + crypto (sample; real: GET /v1/market/ticker, fed by gold-api.com + Nobitex)
+  const TK = [["انس طلا", "Au", GOLDC, 4212.4, 0.62, "$"], ["انس نقره", "Ag", "linear-gradient(135deg,#E3E7EC,#8D96A0)", 50.12, -0.35, "$"], ["پلاتین", "Pt", "#7C8794", 1584, 0.21, "$"],
+    ["بیت‌کوین", "₿", "#F7931A", 82007, -1.2, "$"], ["اتریوم", "Ξ", "#627EEA", 2941.3, 0.84, "$"], ["تتر", "₮", "#26A17B", 261600, 0.05, "ت"], ["سولانا", "S", "#9945FF", 142.6, 2.1, "$"],
+    ["تون‌کوین", "T", "#0098EA", 3.42, -0.6, "$"], ["بی‌ان‌بی", "B", "#E0A90E", 612.8, 0.4, "$"], ["ترون", "T", "#EB0029", 0.287, 0.9, "$"], ["دوج‌کوین", "D", "#C2A633", 0.162, 1.8, "$"]];
+  const usd = (n) => fa(n.toLocaleString("en-US", { maximumFractionDigits: n < 1 ? 3 : n < 1000 ? 2 : 1 }).replace(/,/g, "٬").replace(".", "٫"));
+  const tkv = ([, , , v, , u]) => (u === "$" ? "$" + usd(v) : `${fmt(v)}<small>تومان</small>`);
+  const tkItem = (t, k) => `<span class="tk-i" data-k="${k}"><i class="g" style="background:${t[2]}${t[2] === GOLDC ? ";color:#3a2a05" : ""}">${t[1]}</i><span class="n">${t[0]}</span><span class="v">${tkv(t)}</span><span class="c ${t[4] >= 0 ? "up" : "dn"}">${chg(t[4])}</span></span>`;
+  const tkAd = `<span class="tk-i ad" data-slot="۱۰"><b>خرید طلای آب‌شده</b>از ۱۰۰ هزار تومان<span class="tag">معرفی‌شده</span></span>`;
+  const tkRun = TK.map((t, k) => tkItem(t, k) + (k === 4 ? tkAd : "")).join("");
+  $("tkTrack").innerHTML = tkRun + tkRun.replace(/data-slot="۱۰"/, "");
+  setInterval(() => {
+    if (document.hidden) return;
+    const k = Math.floor(Math.random() * TK.length), t = TK[k], f = (Math.random() - 0.48) * 0.003;
+    t[3] *= 1 + f; t[4] += f * 100;
+    document.querySelectorAll(`.tk-i[data-k="${k}"]`).forEach((el) => {
+      el.querySelector(".v").innerHTML = tkv(t); const c = el.querySelector(".c"); c.textContent = chg(t[4]); c.className = "c " + (t[4] >= 0 ? "up" : "dn");
+      el.classList.remove("fu", "fd"); void el.offsetWidth; el.classList.add(f >= 0 ? "fu" : "fd"); setTimeout(() => el.classList.remove("fu", "fd"), 60);
+    });
+  }, 2600);
   $("eye2").addEventListener("click", () => $("eye").click());
   /* ================= slide 3: news (same feed as the app: GET /v1/news) ================= */
   const NEWS = [
@@ -2898,6 +3119,38 @@ td.them { color: var(--ink-2); }
     $("todoView").hidden = !todo; document.querySelector(".s2 .planner").hidden = todo; $("s2").classList.toggle("todo-on", todo);
     $("wkSub").textContent = todo ? `${fa([...tasks, ...LATER].filter((k) => !k.done).length)} کار باز` : `هفته‌ی ${dayName(ws)} تا ${dayName(ws + 6)}`;
     paintIcons($("todoView"));
+  });
+  /* ================= morphing tabs ================= */
+  function morph(box, isOn) {
+    const pill = document.createElement("i"); pill.className = "mpill"; pill.setAttribute("aria-hidden", "true");
+    box.prepend(pill); box.classList.add("morph");
+    let cur = null;
+    const place = (anim) => {
+      const on = [...box.children].find((c) => c !== pill && isOn(c));
+      if (!on || !on.offsetWidth) return;
+      const r = { l: on.offsetLeft, w: on.offsetWidth };
+      Object.assign(pill.style, { top: on.offsetTop + "px", height: on.offsetHeight + "px" });
+      if (anim && cur && (cur.l !== r.l || cur.w !== r.w) && !matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        const l = Math.min(cur.l, r.l), w = Math.max(cur.l + cur.w, r.l + r.w) - l;
+        pill.animate([
+          { left: cur.l + "px", width: cur.w + "px", transform: "scale(1)" },
+          { left: l + "px", width: w + "px", transform: "scale(1, .84)", offset: 0.42 },
+          { left: r.l + "px", width: r.w + "px", transform: "scale(1)" },
+        ], { duration: 480, easing: "cubic-bezier(.3,.75,.25,1)" });
+      }
+      Object.assign(pill.style, { left: r.l + "px", width: r.w + "px" });
+      cur = r;
+    };
+    new MutationObserver(() => place(true)).observe(box, { subtree: true, attributes: true, attributeFilter: ["aria-selected", "aria-pressed", "class"] });
+    new ResizeObserver(() => place(false)).observe(box);
+    place(false);
+  }
+  const selOn = (c) => c.getAttribute("aria-selected") === "true", pressOn = (c) => c.getAttribute("aria-pressed") === "true", clsOn = (c) => c.classList.contains("on");
+  morph($("ptabs"), selOn); morph($("mtabs"), selOn); morph($("period"), pressOn);
+  document.querySelectorAll(".seg").forEach((sg) => {
+    morph(sg, clsOn);
+    // segments with no handler of their own (the planner's day / 3 days / week) still switch
+    if (!sg.id) sg.addEventListener("click", (e) => { const s = e.target.closest("span"); if (!s || s.parentElement !== sg) return; sg.querySelectorAll(":scope > span").forEach((x) => x.classList.toggle("on", x === s)); });
   });
 })();
 </script>
