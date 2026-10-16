@@ -1192,7 +1192,7 @@ td.them { color: var(--ink-2); }
 .card, .ccard, .side2 { border-radius: var(--cr); }
 .slide .card, .s3 .card, .ccard, .side2 { padding: var(--cy) calc(var(--cp) + var(--cx)) var(--cp); }
 .slide .card.planner { padding: 0; }
-.slide .card.editor { padding: 26px 40px 30px; }
+.slide .card.editor { padding: 22px 30px 26px; }
 .slide .card.feed, .slide .card.todo { padding-bottom: 0; }
 .wxc, .nextp, .spcard, .spev, .mtabs, .plist, .ncards, .flist, .tpl, .newf, .nlist .nsearch, .nitems, .newn, .addsrc, .saved,
 .feed-top, .flistv, .occl, .side2 .shelf, .td-top, .td-list, .ccard .note, .ccard .add, .rank { margin-inline: calc(-1 * var(--cx)); }
@@ -1211,6 +1211,8 @@ td.them { color: var(--ink-2); }
   padding-inline: calc(var(--cx) + var(--cp) - var(--hx));
 }
 .prow { padding-block: 6px; }
+/* a line of plain text closing a card keeps the side gap from the bottom too, not the boxes' 8px */
+.pend { margin-bottom: var(--cx); }
 /* the same line for the small group labels, and for a note row whose 1px border would push it in */
 .cgrp { padding-inline: 0; }
 .nitems .glbl { padding-inline: var(--cx); }
