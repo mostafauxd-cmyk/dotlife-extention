@@ -987,8 +987,13 @@ function MiniMonth({
                 (j + 2) % 7 === 6 || occ.some((o) => o.event.holiday) ? "fri" : "",
                 d === todayD ? "tdy" : "",
                 shownHere ? "inwk" : "",
-                shownHere && !inView.has(jdnToDate(j - 1)) ? "ws" : "",
-                shownHere && !inView.has(jdnToDate(j + 1)) ? "we" : "",
+                // the band is rounded wherever it ends in this grid: the view's edge, a row's, the month's
+                shownHere && (i === 0 || (j + 2) % 7 === 0 || !inView.has(jdnToDate(j - 1)))
+                  ? "ws"
+                  : "",
+                shownHere && (i === n - 1 || (j + 2) % 7 === 6 || !inView.has(jdnToDate(j + 1)))
+                  ? "we"
+                  : "",
               ].join(" ")}
               onClick={() => {
                 onPick(d);

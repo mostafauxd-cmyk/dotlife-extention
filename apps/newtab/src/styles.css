@@ -2976,52 +2976,69 @@ svg {
   font-size: 13px;
   color: var(--ink-2);
 }
+/* each day a 36px cell: the number in a 30px round mark, the occasion dot under it */
 .mini-g {
-  row-gap: 2px;
+  row-gap: 4px;
 }
 .mini-g button {
-  height: 32px;
+  position: relative;
+  height: 36px;
   border: 0;
   padding: 0;
   background: none;
   color: var(--ink);
   font: inherit;
-  font-size: 16px;
+  font-size: 15px;
   cursor: pointer;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 1px;
-  position: relative;
+  display: grid;
+  place-items: center;
 }
 .mini-g button .nn {
-  line-height: 1.2;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  line-height: 1;
+  transition: background 0.15s;
+}
+.mini-g button:hover .nn {
+  background: rgba(255, 255, 255, 0.1);
 }
 .mini-g button i {
+  position: absolute;
+  bottom: 1px;
+  left: 50%;
   width: 4px;
   height: 4px;
+  margin-left: -2px;
   border-radius: 50%;
   background: var(--amber);
 }
 .mini-g button.fri {
   color: var(--coral);
 }
+/* the days in view: one soft band, rounded at its two ends */
 .mini-g button.inwk {
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.07);
 }
-.mini-g button.inwk + button.inwk {
-  border-radius: 0;
+.mini-g button.ws {
+  border-start-start-radius: 14px;
+  border-end-start-radius: 14px;
 }
-.mini-g button:hover {
-  background: rgba(255, 255, 255, 0.1);
+.mini-g button.we {
+  border-start-end-radius: 14px;
+  border-end-end-radius: 14px;
 }
+/* today: a white round mark, the same size as the hover */
 .mini-g button.tdy .nn {
-  min-width: 26px;
-  border-radius: 999px;
   background: #fff;
   color: #0b0d12;
   font-weight: 600;
+}
+.mini-g button.tdy i {
+  background: #0b0d12;
+  bottom: 6px;
 }
 .occl {
   display: flex;
