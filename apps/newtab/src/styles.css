@@ -4668,3 +4668,346 @@ a.ts-link {
   width: 24px;
   height: 24px;
 }
+
+/* ---------- the money slide: Paket's summary, read-only ---------- */
+.money-s {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  gap: 16px 18px;
+  padding-top: 28px;
+  padding-bottom: 32px;
+}
+.mbar {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.mbar h2 {
+  margin: 0;
+  font-size: 28px;
+  font-weight: 600;
+}
+.msrc {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: var(--ink-2);
+  margin-inline-end: auto;
+}
+.msrc i {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #8add88;
+}
+.mc {
+  gap: 10px;
+  overflow-y: auto;
+  scrollbar-width: none;
+  padding-bottom: 14px;
+}
+.mh {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-inline: 8px;
+}
+.mh h2 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+}
+.mh h3 {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--ink-2);
+}
+.mh.sub2 {
+  margin-top: 6px;
+  padding-top: 10px;
+  border-top: 1px solid var(--stroke);
+}
+.stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.stats > div,
+.hero2 {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  text-align: center;
+}
+.sl2 {
+  font-size: 14px;
+  color: var(--ink-2);
+}
+.hn {
+  font-size: 30px;
+  font-weight: 400;
+  line-height: 1.2;
+}
+.hn.sm {
+  font-size: 22px;
+}
+.hn small {
+  font-size: 15px;
+  color: var(--ink-2);
+  margin-inline-start: 5px;
+}
+.hn.big {
+  font-size: 38px;
+  font-weight: 300;
+}
+.rows {
+  display: flex;
+  flex-direction: column;
+}
+.rw {
+  display: grid;
+  grid-template-columns: 60px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+  min-height: 38px;
+  padding-inline: 8px;
+  font-size: 15px;
+  border-radius: 10px;
+}
+.rw .dt {
+  font-size: 13px;
+  color: var(--ink-3);
+}
+.rw .nm {
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.rw .nm small {
+  font-size: 12px;
+  color: var(--ink-3);
+  margin-inline-start: 6px;
+}
+.rw .am {
+  text-align: left;
+}
+.rw .am.in {
+  color: #8add88;
+}
+.rw .tg {
+  justify-self: start;
+  font-size: 12px;
+  padding: 0 8px;
+  border-radius: 7px;
+  color: #f0817a;
+  background: rgba(240, 129, 122, 0.13);
+}
+.rw .tg.in {
+  color: #8add88;
+  background: rgba(138, 221, 136, 0.13);
+}
+.mc .none,
+.news .none {
+  margin: 0;
+  padding: 6px 8px;
+  font-size: 14px;
+  color: var(--ink-3);
+}
+.bar {
+  height: 8px;
+  margin: 2px 8px 0;
+  border-radius: 99px;
+  background: rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+}
+.bar i {
+  display: block;
+  height: 100%;
+  border-radius: 99px;
+  background: #8add88;
+}
+.bar.warn i {
+  background: var(--amber);
+}
+.bar.over i {
+  background: var(--coral);
+}
+.news {
+  grid-column: 1 / -1;
+  gap: 10px;
+  padding-bottom: 14px;
+}
+.news .card-h .sub {
+  font-size: 14px;
+  color: var(--ink-3);
+  margin-inline-start: 10px;
+}
+.ncards {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+.ncard {
+  color: var(--ink);
+  text-decoration: none;
+  border-radius: 20px;
+  padding: 14px 16px;
+  background: rgba(0, 0, 0, 0.22);
+  border: 1px solid var(--stroke);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.ncard:hover {
+  background: rgba(255, 255, 255, 0.07);
+}
+.ncard b {
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.6;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.ncard span {
+  font-size: 14px;
+  color: var(--ink-2);
+  line-height: 1.7;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.ncard em {
+  margin-top: auto;
+  font-style: normal;
+  font-size: 13px;
+  color: var(--ink-2);
+}
+/* not linked yet: what it shows and how to link, the app's code beside */
+.card.g.pk-empty,
+.card.g.pk-wait {
+  grid-column: 1 / -1;
+  grid-row: 1 / -1;
+  align-self: center;
+  justify-self: center;
+  width: min(920px, 100%);
+  flex-direction: row;
+  align-items: center;
+  gap: 32px;
+  padding: 32px 36px;
+}
+.card.g.pk-wait {
+  flex-direction: column;
+  gap: 14px;
+  width: auto;
+}
+.pk-wait p {
+  margin: 0;
+  color: var(--ink-2);
+}
+.pke-copy {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+}
+.pke-lg {
+  width: 52px;
+  height: 52px;
+  border-radius: 16px;
+  display: grid;
+  place-items: center;
+  font-size: 24px;
+  font-weight: 700;
+  color: #fff;
+  background: linear-gradient(135deg, #3fa98a, #1f6f5a);
+}
+.pke-copy h2 {
+  margin: 0;
+  font-size: 30px;
+  font-weight: 700;
+}
+.pke-copy p {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.9;
+  color: var(--ink-2);
+}
+.pke-steps {
+  margin: 0;
+  padding-inline-start: 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 15px;
+  color: rgba(255, 255, 255, 0.85);
+}
+.pke-steps b {
+  font-weight: 600;
+  color: var(--ink);
+}
+.pke-form {
+  display: flex;
+  gap: 10px;
+  align-self: stretch;
+  margin-top: 4px;
+}
+.pke-form input {
+  flex: 1;
+  height: 50px;
+  border-radius: 14px;
+  border: 1px solid var(--stroke-hi);
+  background: rgba(0, 0, 0, 0.3);
+  color: var(--ink);
+  font: inherit;
+  font-size: 20px;
+  letter-spacing: 0.12em;
+  text-align: center;
+  direction: ltr;
+  outline: none;
+}
+.pke-form input:focus {
+  border-color: #3fa98a;
+}
+.pke-form .cta {
+  height: 50px;
+  min-width: 130px;
+}
+.pke-err {
+  margin: 0;
+  font-size: 14px;
+  color: var(--amber);
+}
+.pke-qr {
+  flex: none;
+  width: 200px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  text-align: center;
+}
+.pke-qr .qr {
+  width: 160px;
+  height: 160px;
+  padding: 8px;
+  border-radius: 18px;
+  background: #fff;
+}
+.pke-qr b {
+  margin-top: 6px;
+  font-size: 15px;
+}
+.pke-qr small {
+  font-size: 13px;
+  line-height: 1.7;
+  color: var(--ink-2);
+}

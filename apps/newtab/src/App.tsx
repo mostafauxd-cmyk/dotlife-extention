@@ -6,6 +6,7 @@ import { DateLine } from "./home/DateLine";
 import { Dot } from "./home/Dot";
 import { Edge } from "./home/Edge";
 import { Launcher } from "./home/Launcher";
+import { MoneySlide } from "./home/MoneySlide";
 import { NotesSlide } from "./home/NotesSlide";
 import { PlansSlide } from "./home/PlansSlide";
 import { Rail, type SlideInfo } from "./home/Rail";
@@ -115,6 +116,7 @@ export function App() {
   // the slides in the person's order; each one that is switched on and built gets a screen
   const SLIDE_UI: Partial<Record<SlideId, { icon: IconName; node: React.ReactNode }>> = {
     "s-plans": { icon: "calendar-face", node: <PlansSlide /> },
+    "s-money": { icon: "activity", node: <MoneySlide /> },
     "s-social": { icon: "chat", node: <SocialSlide /> },
     "s-notes": {
       icon: "sticker-note",

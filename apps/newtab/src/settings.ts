@@ -55,6 +55,8 @@ export type Settings = {
   slideOrder: SlideId[];
   /** The social networks slide: which services have a tab, in what order, and which were introduced. */
   social: { order: string[]; shown: string[]; seen: string[] };
+  /** Money amounts hidden on the money slide (one tap shows them). */
+  hideMoney: boolean;
 };
 
 export const DEFAULT_SITES: readonly QuickSite[] = [
@@ -78,6 +80,7 @@ export const DEFAULTS: Settings = {
     shown: ["tg", "ig", "wa", "bale", "rubika"],
     seen: [],
   },
+  hideMoney: false,
 };
 
 const KEY = "settings.v1";
