@@ -38,10 +38,12 @@
   --amber: #f2c94c;
   --font: "Yekan Bakh", "Vazirmatn", Tahoma, system-ui, sans-serif;
   --ease: cubic-bezier(0.22, 1, 0.36, 1);
-  /* concentric cards: boxes sit --cp from every edge, their corner is the card's minus that gap */
+  /* concentric cards: boxes sit --cp from every edge, their corner is the card's minus that gap;
+     titles and text keep a deeper inset (--cp + --cx from the side, --cy from the top) */
   --cr: 32px;
-  --cp: 12px;
-  --cx: 12px;
+  --cp: 8px;
+  --cx: 16px;
+  --cy: 12px;
   --ir: calc(var(--cr) - var(--cp));
 }
 * {
@@ -770,7 +772,7 @@ svg {
   overflow-y: auto;
   scrollbar-width: none;
   border-radius: var(--cr);
-  padding: var(--cp) calc(var(--cp) + var(--cx));
+  padding: var(--cy) calc(var(--cp) + var(--cx)) var(--cp);
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -1176,7 +1178,7 @@ svg {
   overflow-y: auto;
   scrollbar-width: none;
   border-radius: var(--cr);
-  padding: var(--cp) calc(var(--cp) + var(--cx));
+  padding: var(--cy) calc(var(--cp) + var(--cx)) var(--cp);
   display: flex;
   flex-direction: column;
   gap: 14px;
