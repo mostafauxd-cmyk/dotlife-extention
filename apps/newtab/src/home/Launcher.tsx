@@ -5,6 +5,7 @@ import { useSettings } from "../hooks";
 import { faviconUrl, siteName, topSites, type Site } from "../platform";
 import { updateSettings, type QuickSite } from "../settings";
 import { Icon } from "../ui/Icon";
+import { cleanIcon } from "./iconClean";
 
 /**
  * The one row under the search box: the person's sites, each in a square frame tinted with its own
@@ -88,6 +89,23 @@ function useLook(src: string | null): Look | undefined {
   return src === null ? undefined : look;
 }
 
+/** The icon to draw: without its own plate and light enough for the dark tile, once that is worked out. */
+function useClean(src: string | null): string | null {
+  const [clean, setClean] = useState<{ src: string; url: string | null } | null>(null);
+  useEffect(() => {
+    if (src === null) return;
+    let live = true;
+    void cleanIcon(src).then((url) => {
+      if (live) setClean({ src, url });
+    });
+    return () => {
+      live = false;
+    };
+  }, [src]);
+  if (src === null) return null;
+  return clean?.src === src ? (clean.url ?? src) : src;
+}
+
 /** The first letter of a name, as one grapheme (an emoji or a joined letter stays whole). */
 function firstLetter(name: string): string {
   const seg = new Intl.Segmenter("fa", { granularity: "grapheme" }).segment(name.trim());
@@ -97,6 +115,7 @@ function firstLetter(name: string): string {
 function Tile({ site, onRemove }: { site: QuickSite; onRemove: () => void }) {
   const src = faviconUrl(site.url, 64);
   const look = useLook(src);
+  const icon = useClean(src);
   return (
     <a className="lt" href={site.url} aria-label={site.title}>
       <span
@@ -110,7 +129,7 @@ function Tile({ site, onRemove }: { site: QuickSite; onRemove: () => void }) {
         {look?.letter === true ? (
           <span className="letter">{firstLetter(site.title)}</span>
         ) : (
-          <img src={src} alt="" />
+          <img src={icon ?? src} alt="" />
         )}
       </span>
       <span className="lb">{site.title}</span>
@@ -198,6 +217,7 @@ function Preview({ url, title }: { url: string; title: string }) {
   // shown once the icon has loaded; Chrome's grey globe (no icon for this site) keeps the dot
   const [loaded, setLoaded] = useState<string | null>(null);
   const real = src !== null && loaded === src && look?.letter !== true;
+  const icon = useClean(src);
   const name = title.trim() || (settled === null ? "" : siteName(settled.href));
   return (
     <div className="lt preview" aria-hidden="true">
@@ -205,7 +225,7 @@ function Preview({ url, title }: { url: string; title: string }) {
         className="ic"
         style={real && look ? ({ "--bc": look.tint } as React.CSSProperties) : undefined}
       >
-        <img key={real ? src : "dot"} src={real ? src : "./icons/dot.svg"} alt="" />
+        <img key={real ? src : "dot"} src={real ? (icon ?? src) : "./icons/dot.svg"} alt="" />
         {src !== null && !real && (
           <img
             hidden
