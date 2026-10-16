@@ -14,7 +14,8 @@
     "test": "vitest run",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "check": "pnpm format:check && pnpm lint && pnpm typecheck && pnpm test"
+    "check": "pnpm format:check && pnpm lint && pnpm typecheck && pnpm test",
+    "package": "bash scripts/package-extension.sh"
   },
   "devDependencies": {
     "@eslint/js": "^10",
