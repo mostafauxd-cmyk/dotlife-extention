@@ -153,7 +153,13 @@ export function addTask(
 }
 
 /** A task drawn on the planner: from one time to another on a day, as the app's planner makes it. */
-export function addTimedTask(title: string, day: LocalDate, start: string, end: string): Task {
+export function addTimedTask(
+  title: string,
+  day: LocalDate,
+  start: string,
+  end: string,
+  listId?: string,
+): Task {
   const lists = liveLists();
   const tasks = records.all<Task>("task");
   const last = tasks.reduce<string | undefined>(
@@ -163,7 +169,7 @@ export function addTimedTask(title: string, day: LocalDate, start: string, end: 
   const now = nowIso();
   const task: Task = {
     id: newId(),
-    listId: (defaultList(lists) ?? ensureDefaultList()).id,
+    listId: (lists.find((l) => l.id === listId) ?? defaultList(lists) ?? ensureDefaultList()).id,
     title: title.trim(),
     status: "todo",
     priority: "none",
