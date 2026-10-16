@@ -20,6 +20,10 @@ type Service = {
   name: string;
   color: string;
   letter: string;
+  /** The service's own mark (public/brands): a white glyph on its colour, or its full app icon. */
+  logo: string;
+  /** True when `logo` is the full app icon (drawn as it is), false for a glyph on the colour. */
+  icon: boolean;
   url: string;
   host: string;
   what: string;
@@ -29,6 +33,8 @@ type Service = {
 export const SERVICES: readonly Service[] = [
   {
     id: "tg",
+    logo: "./brands/telegram.svg",
+    icon: false,
     name: "تلگرام",
     color: "#2AABEE",
     letter: "T",
@@ -39,6 +45,8 @@ export const SERVICES: readonly Service[] = [
   },
   {
     id: "ig",
+    logo: "./brands/instagram.svg",
+    icon: false,
     name: "اینستاگرام",
     color: "#DD2A7B",
     letter: "I",
@@ -49,6 +57,8 @@ export const SERVICES: readonly Service[] = [
   },
   {
     id: "wa",
+    logo: "./brands/whatsapp.svg",
+    icon: false,
     name: "واتس‌اپ",
     color: "#25D366",
     letter: "W",
@@ -59,6 +69,8 @@ export const SERVICES: readonly Service[] = [
   },
   {
     id: "x",
+    logo: "./brands/x.svg",
+    icon: false,
     name: "ایکس",
     color: "#000000",
     letter: "X",
@@ -69,6 +81,8 @@ export const SERVICES: readonly Service[] = [
   },
   {
     id: "bale",
+    logo: "./brands/bale.png",
+    icon: true,
     name: "بله",
     color: "#20A776",
     letter: "ب",
@@ -79,6 +93,8 @@ export const SERVICES: readonly Service[] = [
   },
   {
     id: "rubika",
+    logo: "./brands/rubika.jpg",
+    icon: true,
     name: "روبیکا",
     color: "#7B3FE4",
     letter: "ر",
@@ -89,6 +105,8 @@ export const SERVICES: readonly Service[] = [
   },
   {
     id: "eitaa",
+    logo: "./brands/eitaa.png",
+    icon: true,
     name: "ایتا",
     color: "#F08A24",
     letter: "ا",
@@ -136,9 +154,7 @@ export function SocialSlide() {
                 setCurrent(t.id);
               }}
             >
-              <span className={t.id === "x" ? "lg dark" : "lg"} style={{ background: t.color }}>
-                {t.letter}
-              </span>
+              <Mark svc={t} className="lg" />
               {t.name}
             </button>
           ))}
@@ -173,9 +189,7 @@ export function SocialSlide() {
         ) : (
           <>
             <div className="tb-bar">
-              <span className={svc.id === "x" ? "lg dark" : "lg"} style={{ background: svc.color }}>
-                {svc.letter}
-              </span>
+              <Mark svc={svc} className="lg" />
               <b>{svc.name}</b>
               <span className="url">{svc.host}</span>
               <span className="grow" />
@@ -291,12 +305,7 @@ function Intro({ svc, onStart }: { svc: Service; onStart: () => void }) {
           <i />
           <i />
         </span>
-        <span
-          className={dark ? "sx-glyph dark" : "sx-glyph"}
-          style={{ background: dark ? "#000" : svc.color }}
-        >
-          {svc.letter}
-        </span>
+        <Mark svc={svc} className="sx-glyph" />
       </div>
     </div>
   );
@@ -349,9 +358,7 @@ function Arrange({ s, onClose }: { s: Settings; onClose: () => void }) {
                     });
                   }}
                 >
-                  <span className={id === "x" ? "lg dark" : "lg"} style={{ background: v.color }}>
-                    {v.letter}
-                  </span>
+                  <Mark svc={v} className="lg" />
                   {v.name}
                   <span className="sw" />
                 </button>
@@ -383,5 +390,21 @@ function Arrange({ s, onClose }: { s: Settings; onClose: () => void }) {
         </div>
       </div>
     </div>
+  );
+}
+
+/** A service's own mark in a rounded tile: its app icon, or its white glyph on its colour. */
+function Mark({ svc, className }: { svc: Service; className: string }) {
+  if (svc.icon)
+    return (
+      <span className={`${className} mk icon`}>
+        <img src={svc.logo} alt="" />
+      </span>
+    );
+  return (
+    <span
+      className={`${className} mk ${svc.id}`}
+      style={{ background: svc.color, "--logo": `url("${svc.logo}")` } as React.CSSProperties}
+    />
   );
 }
