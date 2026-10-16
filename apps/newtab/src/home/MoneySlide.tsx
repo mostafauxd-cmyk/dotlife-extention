@@ -1,14 +1,12 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import { fromJdn, monthName } from "@dotlife/calendar-core";
 import { dateToJdn, localNow } from "@dotlife/tasks";
 
 import { useSettings } from "../hooks";
-import { getLink, installId } from "../install";
+import { useMarket, type Period } from "../market";
 import { TIME_ZONE } from "../noghte/model";
 import {
-  linkPaket,
-  PaketError,
   shortToman,
   toman,
   unlinkPaket,
@@ -19,21 +17,16 @@ import {
 } from "../paket";
 import { updateSettings } from "../settings";
 import { fa } from "../ui/fa";
-import { Qr } from "../ui/Qr";
+import { MarketCard, TickerStrip } from "./MarketCards";
+import { PaketSync } from "./PaketSync";
 
 /**
- * «پول»: the person's money from Paket, read-only. Not linked yet: what it shows and how to link —
- * the code from the phone's «تنظیمات ← دستگاه‌ها و افزونه», typed here — and a QR to get Paket.
- * Linked: the balance with the debts and claims, the next fourteen days' bills, the month's budget
- * with the latest transactions, and Paket's news. Amounts can be hidden with one tap.
+ * «پول»: the market (today's gold, coins and currencies, the world strip) and Paket's news, which
+ * need no account, and the person's own money from Paket, read-only. Until Paket is linked, the
+ * cards that come from it give way to one that says how to link it; the rest stays as it is. Linked:
+ * the balance with accounts, debts and claims and the next fourteen days' bills, and the month's
+ * spending with its budget and categories. Amounts can be hidden with one tap.
  */
-
-const REASONS: Record<string, string> = {
-  INVALID_PAIRING_CODE: "این کد درست نیست یا وقتش گذشته؛ از گوشی کد تازه بگیر.",
-  TOO_MANY_REQUESTS: "چند بار پشت هم امتحان شد؛ یک دقیقه صبر کن.",
-  VALIDATION_ERROR: "کد هشت‌حرفی را کامل بنویس.",
-  offline: "به پاکت وصل نشد. اینترنت را بررسی کن.",
-};
 
 const solarDay = (iso: string): string => {
   const s = fromJdn(dateToJdn(iso.slice(0, 10)), "solar-hijri");
@@ -41,212 +34,60 @@ const solarDay = (iso: string): string => {
 };
 
 export function MoneySlide() {
-  const linked = usePaketLinked();
-  return <div className="s-pad money-s">{linked ? <Linked /> : <NotLinked />}</div>;
-}
-
-function NotLinked() {
-  const [code, setCode] = useState("");
-  const [busy, setBusy] = useState(false);
-  const [err, setErr] = useState("");
-  const [install, setInstall] = useState<string | null>(null);
-  useEffect(() => {
-    void installId().then(setInstall);
-  }, []);
-  const ready = code.replace(/[^0-9A-Za-z]/g, "").length >= 8;
-  const link = async (): Promise<void> => {
-    setBusy(true);
-    setErr("");
-    try {
-      await linkPaket(code);
-    } catch (e) {
-      setErr(REASONS[e instanceof PaketError ? e.code : ""] ?? "وصل نشد؛ دوباره امتحان کن.");
-    } finally {
-      setBusy(false);
-    }
-  };
-  return (
-    <div className="card g pk-empty">
-      <div className="pke-copy">
-        <span className="pke-lg">پ</span>
-        <h2>پول‌هایت را هم همین‌جا ببین</h2>
-        <p>
-          پاکت را به این صفحه وصل کن تا موجودی، بودجه‌ی ماه، آخرین خرج‌ها، قبض‌های پیش رو و بدهی و
-          طلبت روی هر تب تازه دیده شود. فقط خواندنی است؛ از این‌جا چیزی در پاکت عوض نمی‌شود.
-        </p>
-        <ol className="pke-steps">
-          <li>پاکت را روی گوشی باز کن.</li>
-          <li>
-            برو به <b>تنظیمات ← دستگاه‌ها و افزونه</b> و «اتصال افزونه» را بزن.
-          </li>
-          <li>کد هشت‌حرفی‌ای را که نشان می‌دهد این‌جا بنویس.</li>
-        </ol>
-        <form
-          className="pke-form"
-          onSubmit={(e) => {
-            e.preventDefault();
-            if (ready && !busy) void link();
-          }}
-        >
-          <input
-            className="ltr"
-            value={code}
-            placeholder="K7QM-4XDA"
-            aria-label="کد پاکت"
-            autoComplete="off"
-            maxLength={40}
-            onChange={(e) => {
-              setCode(e.target.value.toUpperCase());
-              setErr("");
-            }}
-          />
-          <button type="submit" className="cta" disabled={!ready || busy}>
-            {busy ? "در حال وصل شدن…" : "وصل شو"}
-          </button>
-        </form>
-        {err !== "" && <p className="pke-err">{err}</p>}
-      </div>
-      {install !== null && (
-        <div className="pke-qr">
-          <Qr text={getLink("paket", "money-slide", install)} label="کد نصب پاکت از کافه‌بازار" />
-          <b>پاکت را نداری؟</b>
-          <small>با دوربین گوشی اسکن کن تا از کافه‌بازار نصبش کنی.</small>
-        </div>
-      )}
-    </div>
-  );
-}
-
-function Linked() {
   const s = useSettings();
+  const linked = usePaketLinked();
   const { data, error } = useSnapshot();
+  const [period, setPeriod] = useState<Period>(30);
+  const { prices, ticker, offline } = useMarket(period);
   const news = usePaketNews();
   const hide = s.hideMoney;
-  const amt = (minor: string): string => (hide ? "••••" : toman(minor));
-
-  if (data === null) {
-    return (
-      <div className="card g pk-wait">
-        <p>
-          {error === null
-            ? "خلاصه‌ی پاکت در راه است…"
-            : "خلاصه‌ی پاکت نرسید؛ کمی بعد دوباره امتحان می‌کنم."}
-        </p>
-        <button type="button" className="ghost" onClick={() => void unlinkPaket()}>
-          قطع اتصال
-        </button>
-      </div>
-    );
-  }
-  const total = shortToman(data.balance.amountMinor);
-  const today = localNow(TIME_ZONE).date;
-  const soon = data.upcoming.filter((u) => dateToJdn(u.dueDate) - dateToJdn(today) <= 14);
   return (
-    <>
+    <div className="s-pad money-s">
       <div className="mbar">
         <h2>پول</h2>
-        <span className="msrc">
-          <i />
-          از پاکت · {fa(localNow(TIME_ZONE, new Date(data.generatedAt)).time)}
-        </span>
-        <button
-          type="button"
-          className="chip"
-          aria-pressed={hide}
-          onClick={() => {
-            updateSettings({ hideMoney: !hide });
-          }}
-        >
-          {hide ? "نمایش مبالغ" : "پنهان کردن مبالغ"}
-        </button>
-        <button type="button" className="chip" onClick={() => void unlinkPaket()}>
-          قطع اتصال
-        </button>
+        {linked && data !== null && (
+          <span className="msrc">
+            <i className={error === null ? "" : "off"} />
+            {error === null ? "از پاکت" : "آخرین خلاصه‌ی پاکت"} ·{" "}
+            {fa(localNow(TIME_ZONE, new Date(data.generatedAt)).time)}
+          </span>
+        )}
+        {linked && (
+          <>
+            <button
+              type="button"
+              className="chip"
+              aria-pressed={hide}
+              onClick={() => {
+                updateSettings({ hideMoney: !hide });
+              }}
+            >
+              {hide ? "نمایش مبالغ" : "پنهان کردن مبالغ"}
+            </button>
+            <button type="button" className="chip" onClick={() => void unlinkPaket()}>
+              قطع اتصال
+            </button>
+          </>
+        )}
       </div>
 
-      <div className="card g mc">
-        <div className="mh">
-          <h2>موجودی</h2>
-        </div>
-        <div className="stats">
-          <div>
-            <span className="sl2">جمع حساب‌ها</span>
-            <b className="hn">
-              {hide ? "••••" : total.value}
-              <small>{hide ? "" : total.unit}</small>
-            </b>
-          </div>
-          <div>
-            <span className="sl2">طلب از دیگران</span>
-            <b className="hn sm">{amt(data.obligations.owedToMe.amountMinor)}</b>
-            <span className="sl2">
-              بدهی به دیگران · {amt(data.obligations.owedByMe.amountMinor)}
-            </span>
-          </div>
-        </div>
-        <div className="mh sub2">
-          <h3>۱۴ روز آینده</h3>
-        </div>
-        <div className="rows">
-          {soon.length === 0 ? (
-            <p className="none">در دو هفته‌ی آینده قبض یا قسطی ثبت نشده.</p>
-          ) : (
-            soon.map((u) => (
-              <div key={u.id} className="rw">
-                <span className="dt">{solarDay(u.dueDate)}</span>
-                <span className="nm">{u.title}</span>
-                <span className="am">{u.amountMinor === null ? "—" : amt(u.amountMinor)}</span>
-              </div>
-            ))
-          )}
-        </div>
-      </div>
+      <TickerStrip ticker={ticker} />
 
-      <div className="card g mc">
-        <Budget data={data} hide={hide} />
-        <div className="mh sub2">
-          <h3>آخرین تراکنش‌ها</h3>
+      {!linked ? (
+        <PaketSync />
+      ) : data === null ? (
+        <div className="card g pk-wait">
+          <p>
+            {error === null
+              ? "خلاصه‌ی پاکت در راه است…"
+              : "خلاصه‌ی پاکت نرسید؛ کمی بعد دوباره امتحان می‌کنم."}
+          </p>
         </div>
-        <div className="rows tx">
-          {data.transactions.slice(0, 8).map((t) => (
-            <div key={t.id} className="rw">
-              <span className="dt">
-                {solarDay(localNow(TIME_ZONE, new Date(t.occurredAt)).date)}
-              </span>
-              <span className="nm">{t.title}</span>
-              <span className={t.direction === "credit" ? "am in" : "am"}>
-                {t.direction === "credit" ? "+" : ""}
-                {amt(t.amountMinor)}
-              </span>
-            </div>
-          ))}
-          {data.transactions.length === 0 && <p className="none">هنوز تراکنشی نیست.</p>}
-        </div>
-      </div>
+      ) : (
+        <PaketCards data={data} hide={hide} />
+      )}
 
-      <div className="card g mc">
-        <div className="mh">
-          <h2>بدهی و طلب</h2>
-        </div>
-        <div className="rows">
-          {data.obligations.items.length === 0 ? (
-            <p className="none">بدهی یا طلب بازی نیست.</p>
-          ) : (
-            data.obligations.items.map((o) => (
-              <div key={o.id} className="rw">
-                <span className={o.kind === "claim" ? "tg in" : "tg"}>
-                  {o.kind === "claim" ? "طلب" : "بدهی"}
-                </span>
-                <span className="nm">
-                  {o.title}
-                  {o.counterpartyName !== null && <small>{o.counterpartyName}</small>}
-                </span>
-                <span className="am">{amt(o.amountMinor)}</span>
-              </div>
-            ))
-          )}
-        </div>
-      </div>
+      <MarketCard prices={prices} offline={offline} period={period} setPeriod={setPeriod} />
 
       <div className="card g news">
         <div className="card-h">
@@ -273,47 +114,276 @@ function Linked() {
           )}
         </div>
       </div>
+    </div>
+  );
+}
+
+const sum = (a: string, b: string): string => (BigInt(a) - BigInt(b)).toString();
+
+function PaketCards({ data, hide }: { data: Snapshot; hide: boolean }) {
+  const amt = (minor: string): string => (hide ? "••••" : toman(minor));
+  const total = shortToman(data.balance.amountMinor);
+  const net = sum(data.obligations.owedToMe.amountMinor, data.obligations.owedByMe.amountMinor);
+  const netShort = shortToman(net.replace("-", ""));
+  const today = localNow(TIME_ZONE).date;
+  const soon = data.upcoming.filter((u) => dateToJdn(u.dueDate) - dateToJdn(today) <= 14);
+  const change = data.balance.changePercent;
+  return (
+    <>
+      <div className="card g mc">
+        <div className="mh">
+          <h2>موجودی</h2>
+        </div>
+        <div className="stats">
+          <div>
+            <span className="sl2">جمع {fa(data.balance.accountCount)} حساب</span>
+            <b className="hn">
+              {hide ? "••••" : total.value}
+              <small>{hide ? "" : total.unit}</small>
+            </b>
+            {change !== null && (
+              <span className={change >= 0 ? "pill up" : "pill dn"}>
+                {change >= 0 ? "↑" : "↓"} {fa(Math.abs(change).toFixed(1)).replace(".", "٫")}٪ این
+                ماه
+              </span>
+            )}
+          </div>
+          <div>
+            <span className="sl2">بدهی و طلب</span>
+            <b className="hn">
+              {hide ? "••••" : `${net.startsWith("-") ? "−" : "+"}${netShort.value}`}
+              <small>{hide ? "" : netShort.unit}</small>
+            </b>
+            <span className="pill mut">{fa(data.obligations.openCount)} مورد باز</span>
+          </div>
+        </div>
+        <div className="rows">
+          {data.accounts.map((a) => (
+            <div key={a.id} className="rw acc">
+              <i className="bk" style={{ background: a.color ?? "#3b3e48" }}>
+                {firstLetter(a.name)}
+              </i>
+              <span className="nm">
+                {a.name}
+                {a.maskedIdentifier !== null && <small>{a.maskedIdentifier}</small>}
+              </span>
+              <span className="am">{amt(a.balanceMinor)}</span>
+            </div>
+          ))}
+        </div>
+
+        <div className="mh sub2">
+          <h3>۱۴ روز آینده</h3>
+        </div>
+        <div className="rows">
+          {soon.length === 0 ? (
+            <p className="none">در دو هفته‌ی آینده قبض یا قسطی ثبت نشده.</p>
+          ) : (
+            soon.map((u) => (
+              <div key={u.id} className="rw up2">
+                <span className="dt">{solarDay(u.dueDate)}</span>
+                <span className="nm">{u.title}</span>
+                {u.categoryName !== null ? (
+                  <span
+                    className="tg cat"
+                    style={{ ["--c" as string]: u.categoryColor ?? "#a7a7a7" }}
+                  >
+                    {u.categoryName}
+                  </span>
+                ) : (
+                  <span />
+                )}
+                <span className="am">{u.amountMinor === null ? "—" : amt(u.amountMinor)}</span>
+              </div>
+            ))
+          )}
+        </div>
+
+        {data.obligations.items.length > 0 && (
+          <>
+            <div className="mh sub2">
+              <h3>بدهی و طلب</h3>
+            </div>
+            <div className="rows">
+              {data.obligations.items.map((o) => (
+                <div key={o.id} className="rw ob">
+                  <span className={o.kind === "claim" ? "tg in" : "tg"}>
+                    {o.kind === "claim" ? "طلب" : "بدهی"}
+                  </span>
+                  <span className="nm">
+                    {o.title}
+                    {o.counterpartyName !== null && <small>{o.counterpartyName}</small>}
+                  </span>
+                  <span className="am">{amt(o.amountMinor)}</span>
+                </div>
+              ))}
+            </div>
+          </>
+        )}
+
+        {data.pendingApprovals.count > 0 && (
+          <div className="pend">
+            <b>{fa(data.pendingApprovals.count)}</b> پیامک بانکی منتظر تأیید در پاکت
+          </div>
+        )}
+      </div>
+
+      <div className="card g mc">
+        <Spending data={data} hide={hide} />
+        <div className="mh sub2">
+          <h3>دسته‌های پرخرج</h3>
+        </div>
+        <div className="rows">
+          {data.categories.length === 0 && <p className="none">هنوز خرجی در این ماه ثبت نشده.</p>}
+          {data.categories.map((c) => {
+            const spent = Number(c.spentMinor);
+            const limit = c.limitMinor === null ? null : Number(c.limitMinor);
+            const share = limit === null || limit === 0 ? 0 : Math.min(1, spent / limit);
+            return (
+              <div key={c.id} className="rw cat2">
+                <i className="cd" style={{ background: c.color ?? "#a7a7a7" }} />
+                <span className="nm">{c.name}</span>
+                <span className="am">{amt(c.spentMinor)}</span>
+                {limit !== null && (
+                  <span className="bar">
+                    <i
+                      style={{
+                        width: `${String(share * 100)}%`,
+                        background: spent > limit ? "var(--coral)" : undefined,
+                      }}
+                    />
+                  </span>
+                )}
+              </div>
+            );
+          })}
+        </div>
+
+        <div className="mh sub2">
+          <h3>آخرین تراکنش‌ها</h3>
+        </div>
+        <div className="rows tx">
+          {data.transactions.slice(0, 6).map((t) => (
+            <div key={t.id} className="rw">
+              <span className="dt">
+                {solarDay(localNow(TIME_ZONE, new Date(t.occurredAt)).date)}
+              </span>
+              <span className="nm">{t.title}</span>
+              <span className={t.direction === "credit" ? "am in" : "am"}>
+                {t.direction === "credit" ? "+" : ""}
+                {amt(t.amountMinor)}
+              </span>
+            </div>
+          ))}
+          {data.transactions.length === 0 && <p className="none">هنوز تراکنشی نیست.</p>}
+        </div>
+      </div>
     </>
   );
 }
 
-function Budget({ data, hide }: { data: Snapshot; hide: boolean }) {
+function firstLetter(name: string): string {
+  const seg = new Intl.Segmenter("fa", { granularity: "grapheme" }).segment(name);
+  return seg[Symbol.iterator]().next().value?.segment ?? "؟";
+}
+
+/** The month's spending: the total, what is left of the budget, and the running total drawn out to the month's end. */
+function Spending({ data, hide }: { data: Snapshot; hide: boolean }) {
   const b = data.budget;
-  if (b === null) {
-    return (
-      <div className="mh">
-        <h2>بودجه‌ی ماه</h2>
-        <span className="sl2">در پاکت بودجه‌ای روی سرور نیست.</span>
-      </div>
-    );
-  }
-  const spent = Number(b.spentMinor);
-  const limit = b.limitMinor === null ? null : Number(b.limitMinor);
-  const share = limit === null || limit === 0 ? 0 : Math.min(1, spent / limit);
+  const spent = data.monthTotals.expenseMinor;
+  const title = data.month.monthName === "" ? "خرج این ماه" : `خرج ${data.month.monthName}`;
+  const limit = b?.limitMinor === undefined || b.limitMinor === null ? null : Number(b.limitMinor);
+  const left = b?.remainingPerDayMinor ?? null;
   return (
     <>
       <div className="mh">
-        <h2>{b.name}</h2>
+        <h2>{title}</h2>
       </div>
       <div className="hero2">
         <b className="hn big">
-          {hide ? "••••" : toman(b.spentMinor)}
+          {hide ? "••••" : toman(spent)}
           <small>تومان</small>
         </b>
-        {limit !== null && !hide && (
+        {b !== null && !hide && (
           <span className="sl2">
-            از سقف {toman(String(limit))} ·{" "}
-            {spent > limit
-              ? `${toman(String(spent - limit))} بیشتر از سقف`
-              : `${toman(String(limit - spent))} مانده`}
+            {limit !== null &&
+              (Number(b.spentMinor) > limit
+                ? `${toman(String(Number(b.spentMinor) - limit))} بیشتر از سقف`
+                : `${toman(String(limit - Number(b.spentMinor)))} تا سقف بودجه`)}
+            {left !== null && !left.startsWith("-") && ` · روزی ${toman(left)} جا دارید`}
           </span>
         )}
       </div>
-      {limit !== null && (
-        <div className={share >= 1 ? "bar over" : share >= 0.8 ? "bar warn" : "bar"}>
-          <i style={{ width: `${String(share * 100)}%` }} />
-        </div>
-      )}
+      <SpendChart data={data} />
     </>
+  );
+}
+
+const CW = 440;
+const CH = 110;
+const CP = 8;
+
+/** Cumulative spending, step by step (one step a day), the budget's ceiling as a dashed line and Paket's forecast to the last day. */
+function SpendChart({ data }: { data: Snapshot }) {
+  const days = Math.max(2, data.month.daysInMonth);
+  const daily = data.spend.dailyMinor.map(Number);
+  if (daily.length === 0) return null;
+  const cum: number[] = [];
+  daily.reduce((acc, v) => {
+    cum.push(acc + v);
+    return acc + v;
+  }, 0);
+  const limit =
+    data.budget?.limitMinor === undefined || data.budget.limitMinor === null
+      ? null
+      : Number(data.budget.limitMinor);
+  const forecast = data.spend.forecastMinor === null ? null : Number(data.spend.forecastMinor);
+  const top = Math.max(1, ...cum, limit ?? 0, forecast ?? 0);
+  const x = (day: number): number => CP + ((day - 1) / (days - 1)) * (CW - 2 * CP);
+  const y = (v: number): number => CH - CP - (v / top) * (CH - 2 * CP);
+  // one flat run per day, then a step up to the next
+  const path = cum
+    .map(
+      (v, i) =>
+        `${i === 0 ? "M" : "L"}${x(i + 1).toFixed(1)},${y(i === 0 ? 0 : (cum[i - 1] ?? 0)).toFixed(1)} L${x(i + 1).toFixed(1)},${y(v).toFixed(1)}`,
+    )
+    .join(" ");
+  const lastDay = cum.length;
+  const lastV = cum.at(-1) ?? 0;
+  return (
+    <div className="chart spend">
+      <svg viewBox={`0 0 ${String(CW)} ${String(CH)}`} role="img" aria-label="خرج تجمعی ماه">
+        {limit !== null && (
+          <line
+            x1={x(1)}
+            y1={y(0)}
+            x2={x(days)}
+            y2={y(limit)}
+            stroke="var(--coral)"
+            strokeDasharray="4 4"
+            strokeOpacity=".7"
+          />
+        )}
+        {forecast !== null && (
+          <line
+            x1={x(lastDay)}
+            y1={y(lastV)}
+            x2={x(days)}
+            y2={y(forecast)}
+            stroke="#a7a7a7"
+            strokeDasharray="2 4"
+          />
+        )}
+        <path d={path} fill="none" stroke="#f5f6f8" strokeWidth="1.8" strokeLinejoin="round" />
+        <circle
+          cx={x(lastDay)}
+          cy={y(lastV)}
+          r="4"
+          fill="#0f1116"
+          stroke="#f5f6f8"
+          strokeWidth="2"
+        />
+      </svg>
+    </div>
   );
 }

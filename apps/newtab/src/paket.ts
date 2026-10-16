@@ -17,6 +17,7 @@ export const PAKET_API = (
 ).replace(/\/+$/, "");
 
 const KEY = "paket.v1";
+const CACHE = "paket.snapshot.v1";
 type Stored = {
   accessToken: string;
   refreshToken: string;
@@ -24,16 +25,55 @@ type Stored = {
   installationId: string;
 };
 
+export type Money = { amountMinor: string; currencyCode: string };
+
+/** `GET /v1/extension/snapshot`: everything on the money slide except the market's prices. Amounts are digit strings in minor units (toman). */
 export type Snapshot = {
   generatedAt: string;
-  balance: { amountMinor: string; currencyCode: string };
+  /** The Jalali month the figures are for. `day` is today, counted from 1. */
+  month: {
+    year: number;
+    month: number;
+    monthName: string;
+    start: string;
+    end: string;
+    daysInMonth: number;
+    day: number;
+  };
+  balance: {
+    amountMinor: string;
+    currencyCode: string;
+    changePercent: number | null;
+    accountCount: number;
+  };
+  accounts: {
+    id: string;
+    name: string;
+    bankId: string | null;
+    color: string | null;
+    isCash: boolean;
+    maskedIdentifier: string | null;
+    balanceMinor: string;
+    includeInTotal: boolean;
+  }[];
+  monthTotals: { incomeMinor: string; expenseMinor: string; currencyCode: string };
+  /** Spending day by day from the 1st to today, and where Paket thinks the month will end. */
+  spend: { dailyMinor: string[]; forecastMinor: string | null; forecastMethod: string };
   budget: {
     name: string;
     limitMinor: string | null;
     spentMinor: string;
+    remainingPerDayMinor: string | null;
     currencyCode: string;
     periodStart: string;
   } | null;
+  categories: {
+    id: string;
+    name: string;
+    color: string | null;
+    spentMinor: string;
+    limitMinor: string | null;
+  }[];
   transactions: {
     id: string;
     direction: "debit" | "credit";
@@ -48,10 +88,13 @@ export type Snapshot = {
     dueDate: string;
     amountMinor: string | null;
     currencyCode: string | null;
+    categoryName: string | null;
+    categoryColor: string | null;
   }[];
   obligations: {
-    owedByMe: { amountMinor: string; currencyCode: string };
-    owedToMe: { amountMinor: string; currencyCode: string };
+    owedByMe: Money;
+    owedToMe: Money;
+    openCount: number;
     items: {
       id: string;
       kind: "debt" | "claim";
@@ -62,6 +105,9 @@ export type Snapshot = {
       nextDueDate: string | null;
     }[];
   };
+  /** Bank text messages waiting for the person's yes in Paket. */
+  pendingApprovals: { count: number };
+  news: { items: NewsItem[]; version: string };
 };
 
 export type NewsItem = {
@@ -69,10 +115,12 @@ export type NewsItem = {
   kind: "ipo" | "opportunity" | "announcement" | "offer";
   title: string;
   summary: string;
+  body?: string;
   thumbnailUrl: string | null;
   ctaLabel: string | null;
   ctaUrl: string | null;
   publishedAt: string;
+  pinned?: boolean;
 };
 
 export class PaketError extends Error {
@@ -154,12 +202,25 @@ export async function linkPaket(code: string): Promise<void> {
   changed();
 }
 
-/** Forgets the link here. (The session is read-only and cannot sign itself out; the phone's «قطع اتصال» ends it there.) */
+/**
+ * Ends the link: Paket is told first (so the phone's list of devices drops this one), then it is
+ * forgotten here, whether or not Paket answered.
+ */
 export async function unlinkPaket(): Promise<void> {
+  const was = stored;
   stored = null;
   linked = false;
-  await remove(KEY);
+  await Promise.all([remove(KEY), remove(CACHE)]);
   changed();
+  if (was === null) return;
+  try {
+    await call("/v1/auth/logout", {
+      method: "POST",
+      headers: { Authorization: `Bearer ${was.accessToken}` },
+    });
+  } catch {
+    // offline or already revoked: nothing more to do
+  }
 }
 
 async function refresh(): Promise<boolean> {
@@ -187,6 +248,42 @@ async function refresh(): Promise<boolean> {
   return true;
 }
 
+/** Fills what an older server leaves out, so a missing field never breaks the slide. */
+export function withDefaults(raw: Partial<Snapshot> & { generatedAt: string }): Snapshot {
+  const zero = (c: string): Money => ({ amountMinor: "0", currencyCode: c });
+  const cur = raw.balance?.currencyCode ?? "IRT";
+  const today = new Date(raw.generatedAt);
+  return {
+    month: {
+      year: 0,
+      month: 0,
+      monthName: "",
+      start: "",
+      end: "",
+      daysInMonth: 30,
+      day: Math.min(30, Math.max(1, today.getUTCDate())),
+    },
+    balance: { amountMinor: "0", currencyCode: cur, changePercent: null, accountCount: 0 },
+    accounts: [],
+    monthTotals: { incomeMinor: "0", expenseMinor: "0", currencyCode: cur },
+    spend: { dailyMinor: [], forecastMinor: null, forecastMethod: "pace" },
+    budget: null,
+    categories: [],
+    transactions: [],
+    upcoming: [],
+    pendingApprovals: { count: 0 },
+    news: { items: [], version: "" },
+    ...raw,
+    obligations: {
+      owedByMe: zero(cur),
+      owedToMe: zero(cur),
+      openCount: 0,
+      items: [],
+      ...raw.obligations,
+    },
+  };
+}
+
 export async function snapshot(): Promise<Snapshot> {
   for (let attempt = 0; attempt < 2; attempt++) {
     if (stored === null) throw new PaketError("not_linked");
@@ -196,8 +293,17 @@ export async function snapshot(): Promise<Snapshot> {
     if (now === null) throw new PaketError("not_linked");
     const r = (await call("/v1/extension/snapshot", {
       headers: { Authorization: `Bearer ${now.accessToken}` },
-    })) as Answer<Snapshot & { code?: string }>;
-    if (r.status === 200) return r.body;
+    })) as Answer<Partial<Snapshot> & { generatedAt: string; code?: string }>;
+    if (r.status === 200) {
+      const s = withDefaults(r.body);
+      // only the latest summary is kept, for the next tab to show while the new one is on its way
+      void save(CACHE, s).catch(() => undefined);
+      return s;
+    }
+    if (r.status === 401 && r.body.code === "DEVICE_REVOKED") {
+      await unlinkPaket();
+      throw new PaketError("not_linked");
+    }
     if (r.status === 401 && attempt === 0) {
       stored = { ...now, expiresAt: 0 };
       continue;
@@ -207,13 +313,22 @@ export async function snapshot(): Promise<Snapshot> {
   throw new PaketError("not_linked");
 }
 
+/** A public, token-less read (the news, the market's prices). */
+export async function paketGet<T>(path: string): Promise<T | null> {
+  const r = await call(path);
+  return r.status === 200 ? (r.body as T) : null;
+}
+
 /** Paket's public news, the same as on the app's home page (no sign-in needed). */
 export async function paketNews(): Promise<NewsItem[]> {
   const r = (await call("/v1/news")) as Answer<{ items?: NewsItem[] }>;
   return r.status === 200 ? (r.body.items ?? []) : [];
 }
 
-/** The summary, asked again every minute while the tab is in view and when it comes back. */
+/**
+ * The summary, asked again every minute while the tab is in view and when it comes back. The last one
+ * received is shown at once (and kept when Paket cannot be reached), with `error` saying why it is old.
+ */
 export function useSnapshot(): { data: Snapshot | null; error: string | null } {
   const on = usePaketLinked();
   const [data, setData] = useState<Snapshot | null>(null);
@@ -221,9 +336,13 @@ export function useSnapshot(): { data: Snapshot | null; error: string | null } {
   useEffect(() => {
     if (!on) {
       setData(null);
+      setError(null);
       return;
     }
     let live = true;
+    void load<Snapshot>(CACHE).then((c) => {
+      if (live && c !== undefined) setData((d) => d ?? withDefaults(c));
+    });
     const pull = (): void => {
       if (document.visibilityState !== "visible") return;
       void snapshot().then(
@@ -277,4 +396,25 @@ export function shortToman(minor: string): { value: string; unit: string } {
   if (abs >= 1e9) return { value: fa((n / 1e9).toFixed(1)), unit: "میلیارد" };
   if (abs >= 1e6) return { value: fa((n / 1e6).toFixed(1)), unit: "م" };
   return { value: toman(minor), unit: "تومان" };
+}
+
+// ---- the code from the phone ----
+
+/** The letters a code is made of (no 0 O 1 I L 2 Z 5 S 8 B, so none can be misread). */
+const CODE_LETTERS = "ACDEFGHJKMNPQRTUVWXY3467";
+
+/**
+ * What is typed or pasted → «K7QM-4XDA»: capitals, only the code's letters, eight at most, a dash
+ * after four. A whole `paket://pair?c=…` link pasted from the phone gives its code.
+ */
+export function formatCode(raw: string): string {
+  const fromLink = /[?&]c=([^&\s]+)/.exec(raw);
+  const letters = (fromLink?.[1] ?? raw)
+    .toUpperCase()
+    .replace(/[۰-۹]/g, (d) => String(d.charCodeAt(0) - 0x06f0))
+    .split("")
+    .filter((c) => CODE_LETTERS.includes(c))
+    .slice(0, 8)
+    .join("");
+  return letters.length > 4 ? `${letters.slice(0, 4)}-${letters.slice(4)}` : letters;
 }

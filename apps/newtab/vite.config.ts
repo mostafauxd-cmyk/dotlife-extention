@@ -4,18 +4,22 @@ import { resolve } from "node:path";
 import { defineConfig, type Plugin } from "vite";
 
 /**
- * A build against another server (`VITE_API_URL`, e.g. the local one on :3100) must be allowed to
- * reach it: its origin joins the manifest's host permissions. The store build has only noghte.life.
+ * A build against another server (`VITE_API_URL`, e.g. the local one on :3100, or Paket's
+ * `VITE_PAKET_API_URL`) must be allowed to reach it: its origin joins the manifest's host
+ * permissions. The store build has only noghte.life and Paket's own.
  */
 function apiHostPermission(): Plugin {
   return {
     name: "api-host-permission",
     closeBundle() {
-      const api = process.env.VITE_API_URL;
-      if (api === undefined || api === "") return;
+      const extra = [process.env.VITE_API_URL, process.env.VITE_PAKET_API_URL]
+        .filter((u): u is string => u !== undefined && u !== "")
+        .map((u) => `${new URL(u).origin}/*`);
+      if (extra.length === 0) return;
       const file = resolve(import.meta.dirname, "dist/manifest.json");
       const manifest = JSON.parse(readFileSync(file, "utf8")) as { host_permissions: string[] };
-      manifest.host_permissions.push(`${new URL(api).origin}/*`);
+      for (const o of extra)
+        if (!manifest.host_permissions.includes(o)) manifest.host_permissions.push(o);
       writeFileSync(file, JSON.stringify(manifest, null, 2));
     },
   };
