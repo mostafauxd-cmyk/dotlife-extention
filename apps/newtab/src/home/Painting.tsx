@@ -6,7 +6,7 @@
 
 const SKY = { top: "#2b2540", mid: "#6c5c8f", glow: "#e8b5cb", ground: "#1b1828", seed: 8 };
 
-export function Painting({ step }: { step: "phone" | "code" }) {
+export function Painting({ step }: { step: "hello" | "phone" | "code" }) {
   const { top, mid, glow, ground, seed } = SKY;
   return (
     <div className="dia-art" aria-hidden="true">
@@ -99,7 +99,7 @@ export function Painting({ step }: { step: "phone" | "code" }) {
             </div>
             <div className="mini">
               <span className="ping2">
-                {step === "phone" ? "از گوشی · همین حالا" : "در حال وصل شدن…"}
+                {step === "code" ? "در حال وصل شدن…" : "از گوشی · همین حالا"}
               </span>
               <b>کارهای امروز</b>
               <span className="r">

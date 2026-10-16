@@ -38,6 +38,8 @@ export type Settings = {
   /** Parts switched off; everything else shows. «کارت‌ها همیشه باز» starts off. */
   off: BlockId[];
   sites: QuickSite[];
+  /** The welcome (what an account gives, then sign-in) has been shown once, on the first new tab. */
+  welcomed: boolean;
 };
 
 export const DEFAULT_SITES: readonly QuickSite[] = [
@@ -49,7 +51,12 @@ export const DEFAULT_SITES: readonly QuickSite[] = [
   { title: "ویکی‌پدیا", url: "https://fa.wikipedia.org/" },
 ];
 
-export const DEFAULTS: Settings = { theme: "noghte", off: ["pin"], sites: [...DEFAULT_SITES] };
+export const DEFAULTS: Settings = {
+  theme: "noghte",
+  off: ["pin"],
+  sites: [...DEFAULT_SITES],
+  welcomed: false,
+};
 
 const KEY = "settings.v1";
 

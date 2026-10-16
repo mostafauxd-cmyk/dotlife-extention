@@ -1904,6 +1904,45 @@ svg {
   stroke-linejoin: round;
 }
 
+/* the welcome: what an account gives, one line each, an icon beside */
+.dia h2.hello {
+  font-size: 34px;
+}
+.dia .perks {
+  margin: 6px 0 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.dia .perks li {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+.dia .perks .ico {
+  width: 40px;
+  height: 40px;
+  padding: 9px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.07);
+  color: var(--amber);
+}
+.dia .perks span {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--ink-2);
+}
+.dia .perks b {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
 /* getting the app on the phone: a QR code to Cafe Bazaar, through a counted link */
 .dia .inst {
   display: flex;

@@ -4,6 +4,8 @@ import { getLink, installId } from "../install";
 
 import { ApiError, requestCode, verifyCode } from "../noghte/api";
 import { fa, latin } from "../ui/fa";
+import { Icon } from "../ui/Icon";
+import type { IconName } from "../ui/icons";
 import { Qr } from "../ui/Qr";
 import { Painting } from "./Painting";
 
@@ -12,7 +14,15 @@ import { Painting } from "./Painting";
  * `/auth/code/*` as the phone app. A number with no account gets one there and then, so most people
  * coming from Chrome never see a separate sign-up. The same account is the one Paket uses.
  * Beside the form, a QR code for getting the app on the phone (counted, see `install.ts`).
+ * On the very first new tab it starts one step earlier, with what an account gives and «شروع».
  */
+
+const PERKS: readonly [IconName, string, string][] = [
+  ["tick-square", "کارهای گوشی، روی هر تب تازه", "تیک بزنی، روی گوشی هم تیک می‌خورد."],
+  ["sticker-note", "هر چه این‌جا بنویسی، روی گوشی هم هست", "از همین سرچ، بی‌آن‌که گوشی را برداری."],
+  ["refresh", "چیزی گم نمی‌شود", "کروم پاک شود یا سیستم عوض شود، همه برمی‌گردد."],
+  ["profile", "یک حساب، بی‌رمز", "فقط شماره‌ی موبایل؛ همان حساب پاکت."],
+];
 
 const REASONS: Record<string, string> = {
   bad_target: "این شماره درست نیست.",
@@ -32,8 +42,14 @@ const reason = (e: unknown): string =>
     ? (REASONS[e.code] ?? "مشکلی پیش آمد؛ دوباره امتحان کن.")
     : "مشکلی پیش آمد.";
 
-export function SignIn({ onClose }: { onClose: (created: boolean) => void }) {
-  const [step, setStep] = useState<"phone" | "code">("phone");
+export function SignIn({
+  start = "phone",
+  onClose,
+}: {
+  start?: "hello" | "phone";
+  onClose: (created: boolean) => void;
+}) {
+  const [step, setStep] = useState<"hello" | "phone" | "code">(start);
   const [phone, setPhone] = useState("");
   const [code, setCode] = useState("");
   const [busy, setBusy] = useState(false);
@@ -87,9 +103,13 @@ export function SignIn({ onClose }: { onClose: (created: boolean) => void }) {
   };
 
   const ready =
-    step === "phone"
-      ? latin(phone).replace(/\D/g, "").length >= 10
-      : latin(code).trim().length >= 4;
+    step === "hello"
+      ? true
+      : step === "phone"
+        ? latin(phone).replace(/\D/g, "").length >= 10
+        : latin(code).trim().length >= 4;
+  const steps = start === "hello" ? ["hello", "phone", "code"] : ["phone", "code"];
+  const progress = `${String(((steps.indexOf(step) + 1) / steps.length) * 100)}%`;
 
   return (
     <div
@@ -103,12 +123,16 @@ export function SignIn({ onClose }: { onClose: (created: boolean) => void }) {
           className="dia-form"
           onSubmit={(e) => {
             e.preventDefault();
+            if (step === "hello") {
+              setStep("phone");
+              return;
+            }
             if (ready && !busy) void (step === "phone" ? ask() : verify());
           }}
         >
           <div className="dia-top">
             <span className="prog">
-              <b style={{ width: step === "phone" ? "50%" : "100%" }} />
+              <b style={{ width: progress }} />
             </span>
             <button
               type="button"
@@ -120,7 +144,27 @@ export function SignIn({ onClose }: { onClose: (created: boolean) => void }) {
             </button>
           </div>
           <div className="dia-body">
-            {step === "phone" ? (
+            {step === "hello" ? (
+              <>
+                <h2 id="signTitle" className="hello">
+                  نقطه،
+                  <br />
+                  صفحه‌ی اول کروم تو
+                </h2>
+                <p className="lead">با یک حساب نقطه، این صفحه و گوشی‌ات یکی می‌شوند.</p>
+                <ul className="perks">
+                  {PERKS.map(([icon, title, line]) => (
+                    <li key={title}>
+                      <Icon name={icon} />
+                      <span>
+                        <b>{title}</b>
+                        {line}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </>
+            ) : step === "phone" ? (
               <>
                 <h2 id="signTitle">با شماره‌ات وارد شو</h2>
                 <p className="lead">
@@ -200,9 +244,15 @@ export function SignIn({ onClose }: { onClose: (created: boolean) => void }) {
                 برگشت
               </button>
             )}
+            {step === "hello" && <p className="legal">رایگان است و کمتر از یک دقیقه طول می‌کشد.</p>}
             {step === "phone" && <p className="legal">با ادامه، حریم خصوصی نقطه را می‌پذیرم.</p>}
-            <button type="submit" className="next" disabled={busy || !ready}>
-              {step === "phone" ? "فرستادن کد" : "ورود"}{" "}
+            <button
+              type="submit"
+              className="next"
+              disabled={busy || !ready}
+              autoFocus={step === "hello"}
+            >
+              {step === "hello" ? "شروع" : step === "phone" ? "فرستادن کد" : "ورود"}{" "}
               <svg className="kbd" viewBox="0 0 24 24" aria-hidden="true">
                 <path d="M19 6v5a3 3 0 0 1-3 3H6m0 0 4-4m-4 4 4 4" />
               </svg>

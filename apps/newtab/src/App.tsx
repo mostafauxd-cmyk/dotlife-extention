@@ -10,7 +10,7 @@ import { SearchBox } from "./home/SearchBox";
 import { SignIn } from "./home/SignIn";
 import { useSession, useSettings } from "./hooks";
 import { onArrival } from "./noghte/sync";
-import { isOn, themeOf } from "./settings";
+import { isOn, themeOf, updateSettings } from "./settings";
 import { Icon } from "./ui/Icon";
 
 type Corners = "tasks" | "notes";
@@ -27,7 +27,7 @@ export function App() {
   );
   const [hinting, setHinting] = useState(false);
   const [custOpen, setCustOpen] = useState(false);
-  const [signIn, setSignIn] = useState(false);
+  const [signIn, setSignIn] = useState<"hello" | "phone" | null>(null);
   const [toast, setToast] = useState<string | null>(null);
   const [peeks, setPeeks] = useState<Record<Corners, Peek>>({ tasks: null, notes: null });
   const [dots, setDots] = useState<Record<Corners, boolean>>({ tasks: false, notes: false });
@@ -90,8 +90,20 @@ export function App() {
   const signedIn = session !== null;
   const pinned = isOn(s, "pin");
   const openSignIn = (): void => {
-    setSignIn(true);
+    setSignIn("phone");
   };
+
+  // the first new tab after installing: what an account gives, once the page has drawn itself
+  useEffect(() => {
+    if (signedIn || s.welcomed) return;
+    const t = setTimeout(() => {
+      updateSettings({ welcomed: true });
+      setSignIn("hello");
+    }, 900);
+    return () => {
+      clearTimeout(t);
+    };
+  }, []); // only on opening the tab
   const cls = ["nt", entering ? "enter" : "", hinting ? "hinting" : ""].filter(Boolean).join(" ");
   const empty = new Set<string>();
 
@@ -170,10 +182,11 @@ export function App() {
           onSignIn={openSignIn}
         />
       )}
-      {signIn && (
+      {signIn !== null && (
         <SignIn
+          start={signIn}
           onClose={(created) => {
-            setSignIn(false);
+            setSignIn(null);
             if (created) {
               setToast("حساب نقطه‌ات ساخته شد · همین حساب در پاکت هم کار می‌کند");
               setTimeout(() => {
