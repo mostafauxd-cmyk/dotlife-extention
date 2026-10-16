@@ -1599,6 +1599,13 @@ body.pk0 .s3 .pk-empty { display: grid; grid-column: 1 / 3; grid-row: 2; grid-te
 .ch-row h3 { flex: 1; min-width: 0; }
 .ch-row > .more { flex: none; font-size: 13px; color: var(--ink-3); white-space: nowrap; padding: 0; margin: 0; }
 .ch-row > .more:hover { color: var(--ink); }
+
+/* a peek: the news in the title row (in place of «see all» and the sync word), the time left as a hairline on the top edge */
+.ch-row .ping { flex: none; margin: 0; white-space: nowrap; }
+.hz.livep:not(:hover):not(:focus-within) .ccard .sync { display: none; }
+.hz.livep:is(:hover, :focus-within) .ch-row .ping { display: none; }
+.ccard > .ptimer { position: absolute; top: 0; inset-inline: 30px; width: auto; height: 2px; margin: 0; border-radius: 0 0 2px 2px; background: rgba(255,255,255,.06); color: color-mix(in srgb, var(--tint) 80%, #fff); }
+.ccard > .ptimer b { margin-inline-start: auto; }
 </style>
 </head>
 <body>
@@ -1667,7 +1674,7 @@ body.pk0 .s3 .pk-empty { display: grid; grid-column: 1 / 3; grid-row: 2; grid-te
             <div class="hz c-tr" data-blk="tasks" tabindex="0" aria-label="کارهای امروز">
               <span class="cmk" data-ico="tick-square" title="کارها"></span><span class="cl">کارها</span>
               <div class="ccard g">
-                <div class="ch-row"><h3>کارهای امروز <span class="sync" id="sync"><i></i><span id="syncTxt">همگام با گوشی</span></span></h3><button class="more" data-go="s2">همه‌ی برنامه‌ها ↓</button></div>
+                <div class="ch-row"><h3>کارهای امروز <span class="sync" id="sync"><i></i><span id="syncTxt">همگام</span></span></h3><button class="more" data-go="s2">همه‌ی برنامه‌ها ↓</button></div>
                 <ul class="tasks" id="tasks"></ul>
                 <form class="add" id="addForm"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg><input id="addInput" placeholder="کار جدید…" autocomplete="off" aria-label="کار جدید"></form>
               </div>
@@ -2515,7 +2522,7 @@ body.pk0 .s3 .pk-empty { display: grid; grid-column: 1 / 3; grid-row: 2; grid-te
   function pulse(msg) {
     const s = $("sync"); s.classList.add("flash"); $("syncTxt").textContent = msg;
     clearTimeout(pulseTimer);
-    pulseTimer = setTimeout(() => { s.classList.remove("flash"); $("syncTxt").textContent = "همگام با گوشی · زنده"; }, 2600);
+    pulseTimer = setTimeout(() => { s.classList.remove("flash"); $("syncTxt").textContent = "همگام"; }, 2600);
   }
   const incoming = ["زنگ به آقای رحیمی", "گرفتن نتیجه‌ی آزمایش", "خرید نان و شیر"];
   let inc = 0;
@@ -3707,13 +3714,15 @@ body.pk0 .s3 .pk-empty { display: grid; grid-column: 1 / 3; grid-row: 2; grid-te
       return;
     }
     const card = hz.querySelector(".ccard");
-    card.querySelector(".ping")?.remove();
-    card.insertAdjacentHTML("afterbegin", `<div class="ping"><i></i>${label}<span class="ptimer"><b></b></span></div>`);
+    card.querySelector(".ping")?.remove(); card.querySelector(".ptimer")?.remove();
+    // what arrived sits in the title row, across from the title; the time left runs along the card's top edge
+    (card.querySelector(".ch-row") || card).insertAdjacentHTML("beforeend", `<span class="ping"><i></i>${label}</span>`);
+    card.insertAdjacentHTML("afterbegin", '<span class="ptimer" aria-hidden="true"><b></b></span>');
     hz.classList.add("livep"); hz.querySelector(".cmk").classList.remove("has");
     clearTimeout(peekT[blk]);
     const close = () => {
       if (hz.matches(":hover") || hz.matches(":focus-within")) { peekT[blk] = setTimeout(close, 1200); return; }
-      hz.classList.remove("livep"); card.querySelector(".ping")?.remove(); delete hz.dataset.ping;
+      hz.classList.remove("livep"); card.querySelector(".ping")?.remove(); card.querySelector(".ptimer")?.remove(); delete hz.dataset.ping;
     };
     peekT[blk] = setTimeout(close, 5000);
   }
