@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>میز نقطه و پاکت</title>
+<title>نقطه برای کروم</title>
 <style>
 @font-face { font-family: "Yekan Bakh"; font-weight: 100; src: url("../fonts/Yekan_Bakh_Fanum_Thin.TTF") format("truetype"); }
 @font-face { font-family: "Yekan Bakh"; font-weight: 300; src: url("../fonts/Yekan_Bakh_Fanum_Light.TTF") format("truetype"); }
@@ -1307,7 +1307,7 @@ td.them { color: var(--ink-2); }
 @keyframes phin { from { opacity: 0; } }
 /* a corner that opens by itself (news from the phone, or saved from search) stays compact so it never
    reaches the search box: only the newest rows, no add field or footer until the mouse goes to it */
-.hz.livep:not(:hover):not(:focus-within) .ccard .add, .hz.livep:not(:hover):not(:focus-within) .ccard > .more { display: none; }
+.hz.livep:not(:hover):not(:focus-within) .ccard .add, .hz.livep:not(:hover):not(:focus-within) .ccard .ch-row > .more { display: none; }
 .hz.livep:not(:hover):not(:focus-within) .ccard .tasks > li:nth-child(n+4) { display: none; }
 
 /* ---------- v20 ---------- */
@@ -1505,7 +1505,7 @@ td.them { color: var(--ink-2); }
 .fblur i:nth-child(3) { backdrop-filter: blur(22px); -webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - 42px), transparent calc(100% - 20px)); mask-image: linear-gradient(to bottom, #000 calc(100% - 42px), transparent calc(100% - 20px)); }
 
 /* notes corner: mostly a place to write; the latest notes under it */
-.qnote { margin-inline: calc(-1 * var(--cx)); border-radius: var(--ir); background: rgba(0,0,0,.18); border: 1px solid var(--stroke); padding: 12px 14px 8px; display: flex; flex-direction: column; gap: 4px; transition: border-color .2s; }
+.qnote { margin: 0 calc(-1 * var(--cx)); border-radius: var(--ir); background: rgba(0,0,0,.18); border: 1px solid var(--stroke); padding: 12px 14px 8px; display: flex; flex-direction: column; gap: 4px; transition: border-color .2s; }
 .qnote:focus-within { border-color: var(--stroke-hi); }
 .qnote textarea { background: none; border: 0; outline: 0; resize: none; color: var(--ink); font: inherit; font-size: 16px; line-height: 1.8; min-height: 116px; padding: 0; scrollbar-width: none; }
 .qnote textarea::placeholder { color: var(--ink-3); }
@@ -1570,7 +1570,8 @@ td.them { color: var(--ink-2); }
 .lnk { display: block; margin-top: 6px; direction: ltr; text-align: right; font-size: 11.5px; color: var(--ink-3); font-family: ui-monospace, Menlo, monospace; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 /* Paket with nothing in it: the money corner and the money slide ask for the app instead */
 .pke-mini, .pk-empty { display: none; }
-body.pk0 .ccard.money > :not(h3):not(.pke-mini) { display: none; }
+body.pk0 .ccard.money > :not(.ch-row):not(.pke-mini) { display: none; }
+body.pk0 .ccard.money .ch-row > .more { display: none; }
 body.pk0 .ccard.money .pke-mini { display: flex; gap: 14px; align-items: center; margin-inline: calc(-1 * var(--cx)); padding: 12px; border-radius: var(--ir); background: rgba(0,0,0,.18); border: 1px solid var(--stroke); }
 .onb .or > div:last-child, .pke-mini > div { flex: 1; min-width: 0; }
 .pke-mini .qr { width: 96px; height: 96px; flex: none; padding: 6px; border-radius: 12px; background: #fff; }
@@ -1592,6 +1593,12 @@ body.pk0 .s3 .pk-empty { display: grid; grid-column: 1 / 3; grid-row: 2; grid-te
 .gear > span[data-ico] { position: absolute; inset: 0; margin: auto; width: 20px; height: 20px; line-height: 0; }
 /* corner cards open above the slide rail: the scroller makes no stacking layer of its own */
 .scroller { z-index: auto; }
+
+/* a corner card's «see all» sits across from its title, not at the bottom */
+.ch-row { display: flex; align-items: center; gap: 10px; }
+.ch-row h3 { flex: 1; min-width: 0; }
+.ch-row > .more { flex: none; font-size: 13px; color: var(--ink-3); white-space: nowrap; padding: 0; margin: 0; }
+.ch-row > .more:hover { color: var(--ink); }
 </style>
 </head>
 <body>
@@ -1599,13 +1606,13 @@ body.pk0 .s3 .pk-empty { display: grid; grid-column: 1 / 3; grid-row: 2; grid-te
   <header class="head">
     <div>
       <div class="eyebrow">پیش‌نویس پلن · نیوتب کروم · ۲۴ مهر ۱۴۰۵</div>
-      <h1><b>میز</b> نقطه و پاکت</h1>
+      <h1><b>نقطه</b> برای کروم</h1>
     </div>
     <p>صفحه‌ی نیوتب کروم که در نگاه اول فقط نقطه و یک سرچ گوگل است. کارها، یادداشت‌ها، پول و برنامه‌ی امروز در چهار گوشه منتظرند و با رفتن موس به هر گوشه می‌آیند؛ دسترسی سریع و بوکمارک‌ها از لبه‌ی راست. با اسکرول، برنامه‌ها، پول، یادداشت‌ها، خبر و شبکه‌ها. ماک‌آپ زیر کار می‌کند: «دیدن افکت ورود» را بزنید، موس را به گوشه‌ها و لبه‌ی راست ببرید، و از «شخصی‌سازی» رنگ و بلوک‌ها را عوض کنید.</p>
   </header>
 
   <div class="stage" id="stage">
-    <div class="chrome-bar"><div class="dots"><i></i><i></i><i></i></div><div class="tab"><b></b>میز</div></div>
+    <div class="chrome-bar"><div class="dots"><i></i><i></i><i></i></div><div class="tab"><b></b>نقطه</div></div>
     <div class="viewport" id="vp">
       <div class="canvas" id="canvas">
         <div class="nt" id="nt" data-wall="night">
@@ -1660,49 +1667,45 @@ body.pk0 .s3 .pk-empty { display: grid; grid-column: 1 / 3; grid-row: 2; grid-te
             <div class="hz c-tr" data-blk="tasks" tabindex="0" aria-label="کارهای امروز">
               <span class="cmk" data-ico="tick-square" title="کارها"></span><span class="cl">کارها</span>
               <div class="ccard g">
-                <h3>کارهای امروز <span class="sync" id="sync"><i></i><span id="syncTxt">همگام با گوشی</span></span></h3>
+                <div class="ch-row"><h3>کارهای امروز <span class="sync" id="sync"><i></i><span id="syncTxt">همگام با گوشی</span></span></h3><button class="more" data-go="s2">همه‌ی برنامه‌ها ↓</button></div>
                 <ul class="tasks" id="tasks"></ul>
                 <form class="add" id="addForm"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg><input id="addInput" placeholder="کار جدید…" autocomplete="off" aria-label="کار جدید"></form>
-                <button class="more" data-go="s2">همه‌ی برنامه‌ها ↓</button>
               </div>
             </div>
             <!-- corner: notes (top-left) -->
             <div class="hz c-tl" data-blk="notes" tabindex="0" aria-label="یادداشت‌ها">
               <span class="cmk" data-ico="sticker-note" title="یادداشت‌ها"></span><span class="cl">یادداشت‌ها</span>
               <div class="ccard g">
-                <h3>یادداشت‌ها</h3>
+                <div class="ch-row"><h3>یادداشت‌ها</h3><button class="more" data-go="s4">همه‌ی یادداشت‌ها ↓</button></div>
                 <form class="qnote" id="qnForm">
                   <textarea id="qnText" rows="4" placeholder="یادداشت سریع بنویس… خط اول، عنوانش می‌شود." aria-label="یادداشت سریع"></textarea>
                   <div class="qn-f"><span>در «شخصی» · روی گوشی هم</span><button type="submit" class="qn-go" id="qnGo" disabled aria-label="ذخیره‌ی یادداشت"><svg viewBox="0 0 24 24"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button></div>
                 </form>
                 <div class="rlist" id="cRecent" aria-label="یادداشت‌های اخیر"></div>
-                <button class="more" data-go="s4">همه‌ی یادداشت‌ها ↓</button>
               </div>
             </div>
             <!-- corner: money (bottom-right) -->
             <div class="hz c-br" data-blk="money" tabindex="0" aria-label="پول من">
               <span class="cmk" data-ico="activity" title="پول"></span><span class="cl">پول</span>
               <div class="ccard g money" id="money">
-                <h3>پول من <button id="eye" class="more" aria-label="پنهان کردن مبالغ"><svg viewBox="0 0 24 24"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></button></h3>
+                <div class="ch-row"><h3>پول من <button id="eye" class="more" aria-label="پنهان کردن مبالغ"><svg viewBox="0 0 24 24"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></button></h3><button class="more" data-go="s3">نمودارها و قیمت روز ↓</button></div>
                 <div class="pke-mini"><div class="qr" id="pkeQrMini"></div><div><b>پاکت هنوز چیزی ندارد</b><span>پاکت را روی گوشی نصب کن؛ خرج‌ها از پیامک بانک خودشان ثبت می‌شوند و این‌جا می‌آیند.</span><small class="lnk" id="pkeLnkMini"></small></div></div>
                 <div><div class="lbl">خرج امروز</div><div class="big"><span class="amt" id="cSpent">۴۸۵٬۰۰۰</span><small>تومان</small></div></div>
                 <div class="bud"><div class="track"><b></b></div><div class="row"><span>بودجه‌ی مهر</span><span class="amt">۸٫۴ از ۱۲ میلیون</span></div></div>
                 <div id="cTx"></div>
                 <div class="bill"><span>قبض برق <span class="d">۲ روز دیگر</span></span><span class="amt">۳۱۲٬۰۰۰</span></div>
-                <button class="more" data-go="s3">نمودارها و قیمت روز ↓</button>
               </div>
             </div>
             <!-- corner: today (bottom-left) -->
             <div class="hz c-bl" data-blk="today" tabindex="0" aria-label="امروز">
               <span class="cmk" data-ico="calendar-face" title="امروز"></span><span class="cl">امروز</span>
               <div class="ccard g">
-                <h3 id="greet">عصر بخیر، نسیم</h3>
+                <div class="ch-row"><h3 id="greet">عصر بخیر، نسیم</h3><button class="more" data-go="s2">برنامه‌های امروز ↓</button></div>
                 <div class="tday"><b>جمعه ۲۴ مهر</b><span>۱۶ اکتبر ۲۰۲۶ · ۴ جمادی‌الاول ۱۴۴۸</span></div>
                 <div class="occs"><span>روز جهانی غذا</span></div>
                 <div class="occsp2" data-slot="۵">شام امشب با ۲۰٪ تخفیف<span class="tag">معرفی‌شده</span></div>
                 <div class="wxc"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"> <path fill-rule="evenodd" clip-rule="evenodd" d="M12.0176 4.5275C12.4876 4.5275 12.8676 4.1465 12.8676 3.6775V3.6475C12.8676 3.1785 12.4876 2.8125 12.0176 2.8125C11.5476 2.8125 11.1676 3.2085 11.1676 3.6775C11.1676 4.1465 11.5476 4.5275 12.0176 4.5275Z" fill="#F5F6F8"/> <path fill-rule="evenodd" clip-rule="evenodd" d="M3.05962 13.4977C3.52962 13.4977 3.88462 13.1167 3.88462 12.6477C3.88462 12.1787 3.48062 11.7977 3.01062 11.7977C2.54062 11.7977 2.16162 12.1787 2.16162 12.6477C2.16162 13.1167 2.54062 13.4977 3.01062 13.4977H3.05962Z" fill="#F5F6F8"/> <path fill-rule="evenodd" clip-rule="evenodd" d="M5.69243 7.15779C5.89943 7.15779 6.10643 7.08279 6.27043 6.93079C6.61443 6.61179 6.63443 6.07479 6.31543 5.72979L6.29643 5.70979C5.97743 5.36579 5.44843 5.35479 5.10543 5.67479C4.76043 5.99279 4.75043 6.54079 5.06943 6.88579C5.23643 7.06579 5.46343 7.15779 5.69243 7.15779Z" fill="#F5F6F8"/> <path fill-rule="evenodd" clip-rule="evenodd" d="M18.9766 18.401C18.6646 18.052 18.1496 18.047 17.7986 18.359C17.4496 18.672 17.4416 19.234 17.7536 19.584C17.9216 19.772 18.1546 19.868 18.3876 19.868C18.5896 19.868 18.7916 19.797 18.9546 19.651C19.3036 19.339 19.3336 18.801 19.0216 18.451L18.9766 18.401Z" fill="#F5F6F8"/> <path fill-rule="evenodd" clip-rule="evenodd" d="M20.9678 11.7975C20.4978 11.7975 20.1178 12.1785 20.1178 12.6475C20.1178 13.1165 20.4978 13.4975 20.9678 13.4975H21.0108C21.4808 13.4975 21.8388 13.1165 21.8388 12.6475C21.8388 12.1785 21.4378 11.7975 20.9678 11.7975Z" fill="#F5F6F8"/> <path fill-rule="evenodd" clip-rule="evenodd" d="M17.7539 5.69103L17.7089 5.74103C17.3969 6.09103 17.4489 6.60403 17.7989 6.91703C17.9549 7.05503 18.1509 7.12203 18.3499 7.12203C18.5979 7.12203 18.8479 7.01803 19.0219 6.82403C19.3339 6.47403 19.3039 5.93603 18.9539 5.62403C18.6059 5.31103 18.0669 5.34003 17.7539 5.69103Z" fill="#F5F6F8"/> <path fill-rule="evenodd" clip-rule="evenodd" d="M10.8496 7.32922C8.74588 7.7963 7.19956 9.43488 6.73598 11.4052C6.68512 11.6214 6.8941 11.7996 7.11097 11.7519C7.44355 11.6787 7.7983 11.6372 8.17861 11.6372C10.5132 11.6372 11.9609 13.0896 12.6019 14.6259C12.6346 14.7041 12.697 14.766 12.7751 14.7987C13.7077 15.1898 14.4373 15.8898 14.8771 16.7901C14.9617 16.9633 15.1803 17.0325 15.3322 16.9138C16.9293 15.6658 17.7692 13.5743 17.3086 11.4712C16.6696 8.55022 13.7786 6.69022 10.8496 7.32922Z" fill="#F5F6F8"/> <path fill-rule="evenodd" clip-rule="evenodd" d="M11.287 16.4653C11.1233 16.4468 10.9907 16.3143 10.9686 16.151C10.835 15.1631 10.0539 13.6376 8.1788 13.6376C6.30284 13.6376 5.52166 15.1631 5.38801 16.151C5.36592 16.3143 5.23332 16.4468 5.06959 16.4654C3.90735 16.5972 3.0108 17.4527 3.0108 18.8276C3.0108 19.7876 3.5848 20.6176 4.4098 20.9976C4.7568 21.1376 5.1028 21.1876 5.3648 21.1876H10.9878C11.2508 21.1876 11.5968 21.1376 11.9488 20.9976C12.7738 20.6176 13.3448 19.7876 13.3448 18.8276C13.3448 17.4526 12.4499 16.5971 11.287 16.4653Z" fill="#F5F6F8"/> </svg><span><b>۲۱°</b><small>نیمه‌ابری · تهران</small></span><span class="hl">بیشینه ۲۴° · کمینه ۱۲°</span></div>
                 <div class="nextp"><span>اذان مغرب</span><b>۱۷:۴۵</b></div>
-                <button class="more" data-go="s2">برنامه‌های امروز ↓</button>
               </div>
             </div>
 
@@ -1778,7 +1781,7 @@ body.pk0 .s3 .pk-empty { display: grid; grid-column: 1 / 3; grid-row: 2; grid-te
               <div class="card g pk-empty">
                 <div class="pke-copy">
                   <span class="pke-lg">پ</span>
-                  <h2>پول‌هایت را هم سر میز ببین</h2>
+                  <h2>پول‌هایت را هم همین‌جا ببین</h2>
                   <p>هنوز چیزی در پاکت ثبت نشده. پاکت را روی گوشی نصب کن؛ با همین حساب وارد می‌شوی و موجودی، خرج‌ها، بودجه و قبض‌هایت همین‌جا دیده می‌شوند.</p>
                   <ul><li>خرج‌ها از پیامک بانک، خودکار ثبت می‌شوند</li><li>بودجه‌ی ماه و پیش‌بینی آخر ماه</li><li>قبض و قسط را پیش از موعد یادت می‌اندازد</li></ul>
                 </div>
@@ -1907,7 +1910,7 @@ body.pk0 .s3 .pk-empty { display: grid; grid-column: 1 / 3; grid-row: 2; grid-te
                 <div class="tb-bar"><span class="lg" id="tbLg"></span><b id="tbName"></b><span class="url" id="tbUrl"></span><span class="st" id="tbSt"></span><span class="grow"></span><button class="ghost" id="tbOut">خروج</button><button class="rbtn sm" aria-label="باز کردن در پنجره‌ی جدا"><svg viewBox="0 0 24 24"><path d="M14 4h6v6M20 4l-8 8M18 14v4a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4"/></svg></button></div>
                 <div class="tb-body" id="tbBody"></div>
               </div>
-              <div class="soc-note">ورود یک بار انجام می‌شود و تا وقتی خودت «خروج» نزنی در همین کروم می‌ماند. رمز و پیام‌هایت هیچ‌وقت به میز نمی‌رسد.</div>
+              <div class="soc-note">ورود یک بار انجام می‌شود و تا وقتی خودت «خروج» نزنی در همین کروم می‌ماند. رمز و پیام‌هایت هیچ‌وقت به نقطه نمی‌رسد.</div>
             </div>
           </section>
         </div>
@@ -1937,7 +1940,7 @@ body.pk0 .s3 .pk-empty { display: grid; grid-column: 1 / 3; grid-row: 2; grid-te
                 <div class="seg" id="qmTabs" style="margin-inline-start:auto"><span class="on" data-t="sugg">پیشنهادها</span><span data-t="custom">آدرس دلخواه</span></div>
                 <button class="rbtn sm" id="qmClose" aria-label="بستن"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
               <div id="qmSugg">
-                <div class="sec" style="margin-bottom:10px">سایت‌هایی که زیاد باز می‌کنی و پیشنهادهای میز</div>
+                <div class="sec" style="margin-bottom:10px">سایت‌هایی که زیاد باز می‌کنی و پیشنهادهای نقطه</div>
                 <div class="sugg" id="suggGrid"></div>
               </div>
               <div id="qmCustom" hidden>
@@ -1987,7 +1990,7 @@ body.pk0 .s3 .pk-empty { display: grid; grid-column: 1 / 3; grid-row: 2; grid-te
           <div class="modal-bg" id="socModal" hidden>
             <div class="modal sm" role="dialog" aria-modal="true" aria-labelledby="socTitle">
               <div class="card-h"><h2 id="socTitle">چیدمان شبکه‌ها</h2><button class="rbtn sm" id="socClose" aria-label="بستن" style="margin-inline-start:auto"><span data-ico="close"></span></button></div>
-              <p class="gp-sub">کدام‌ها روی میز باشند و به چه ترتیبی. برای جابه‌جایی بکش، یا با فلش‌ها بالا و پایین ببر.</p>
+              <p class="gp-sub">کدام‌ها این‌جا باشند و به چه ترتیبی. برای جابه‌جایی بکش، یا با فلش‌ها بالا و پایین ببر.</p>
               <div class="soc-list" id="socList"></div>
               <div class="mfoot"><span class="cnt">پنهان کردن فقط تب را برمی‌دارد؛ ورودت سر جایش می‌ماند.</span><button class="cta" id="socDone" type="button">تمام</button></div>
             </div>
@@ -2007,7 +2010,7 @@ body.pk0 .s3 .pk-empty { display: grid; grid-column: 1 / 3; grid-row: 2; grid-te
 
           <!-- onboarding -->
           <div class="onb" id="onb" hidden>
-            <div class="onb-card" role="dialog" aria-modal="true" aria-label="شروع با میز">
+            <div class="onb-card" role="dialog" aria-modal="true" aria-label="شروع با نقطه">
               <div class="onb-form">
                 <div class="onb-top"><span class="prog"><b id="onbBar"></b></span><button id="onbSkip">رد کردن</button></div>
                 <div class="onb-body" id="onbBody"></div>
@@ -2062,9 +2065,9 @@ body.pk0 .s3 .pk-empty { display: grid; grid-column: 1 / 3; grid-row: 2; grid-te
     </section>
 
     <section>
-      <h2>میز در برابر دستیار</h2>
+      <h2>نقطه در برابر دستیار</h2>
       <div class="tbl"><table>
-        <thead><tr><th></th><th>دستیار (اسکرین‌شات‌ها)</th><th>میز</th></tr></thead>
+        <thead><tr><th></th><th>دستیار (اسکرین‌شات‌ها)</th><th>نقطه</th></tr></thead>
         <tbody>
           <tr><td>ساختار</td><td class="them">۱۲+ ویجت در تب‌های دسته‌بندی، اسکرول آزاد</td><td>نمای اول فقط نقطه و سرچ؛ کارت‌ها در گوشه‌ها، اسلایدها با اسکرول</td></tr>
           <tr><td>کوچک‌ترین متن</td><td class="them">حدود ۱۱ پیکسل</td><td>۱۳ برای برچسب فرعی؛ متن اصلی ۱۷ و ۱۸</td></tr>
@@ -2091,7 +2094,7 @@ body.pk0 .s3 .pk-empty { display: grid; grid-column: 1 / 3; grid-row: 2; grid-te
       <h3>سرچ گوگل</h3>
       <p>سرچ بزرگ‌ترین چیز صفحه است: یک کادر دوخطی مثل Dia. خط اول متن است (نشانه‌ی ساده‌ی G، هم‌رنگ متن)، و با متن طولانی تا چند خط بزرگ می‌شود، چون گوگل هم تا ۲۰۴۸ نویسه می‌پذیرد. Enter جستجو می‌کند و Shift+Enter خط تازه می‌زند. خط دوم کاربردی است: «به کارها» و «به یادداشت‌ها» دو حالت کادرند و قبل یا بعد از نوشتن انتخاب می‌شوند. با انتخاب هر کدام، نشانه‌ی G جایش را به آیکون همان (تیک یا یادداشت) به رنگ تم می‌دهد، متن راهنما عوض می‌شود («کار تازه برای امروز…» یا «یادداشت تازه… خط اول عنوانش می‌شود»)، دور کادر کمی رنگ تم می‌گیرد و فهرست پیشنهادهای گوگل بسته می‌ماند. Enter به‌جای جستجو در نقطه ذخیره می‌کند و گوشه‌ی مربوط، فشرده و بدون پوشاندن سرچ، باز می‌شود و نشانش می‌دهد. کلیک دوباره روی همان دکمه یا Esc کادر را به جستجوی گوگل برمی‌گرداند. کنارشان میکروفون و فلش جستجو است.</p>
       <p><b>کارها و یادداشت‌های خود کاربر در همان سرچ:</b> وقتی کاربر تایپ می‌کند، فهرست پیشنهادها دو بخش دارد. بالا «گوگل» (جستجو در گوگل و پیشنهادهای آن) و پایین «در نقطه‌ی تو»، یعنی کارها و یادداشت‌هایی که آن کلمه را دارند. این بخش دوم روی خود دستگاه گشته می‌شود: کارها و یادداشت‌ها از قبل با سینک در IndexedDB افزونه هستند و افزونه همان‌جا در آن‌ها می‌گردد، پس چیزی از این جستجو به سرور ما یا به گوگل نمی‌رود. با کلیک روی یک کار یا یادداشت، همان در اسلاید خودش باز می‌شود. اگر چیزی پیدا نشود، این بخش اصلاً نشان داده نمی‌شود؛ کلید جدایی لازم نیست و در شخصی‌سازی می‌شود کلاً خاموشش کرد.</p>
-      <p><b>سرچ صوتی:</b> دکمه‌ی میکروفون از تشخیص گفتار خود کروم (<code>SpeechRecognition</code> با زبان <code>fa-IR</code>) استفاده می‌کند. رایگان است، کلید و سرور ما را لازم ندارد، فارسی و انگلیسی را می‌فهمد و متن را هم‌زمان با حرف زدن در کادر می‌نویسد. صدا را خود کروم برای گوگل می‌فرستد، همان‌جایی که جستجو هم می‌رود. بار اول کروم اجازه‌ی میکروفون را برای صفحه‌ی افزونه می‌پرسد. اگر سرویس گفتار گوگل از ایران جواب ندهد (قبل از انتشار باید آزمایش شود)، میز صدا را با <code>MediaRecorder</code> ضبط می‌کند و به همان سرویس تبدیل صدا به متن سرور نقطه می‌فرستد که اپ برای «نوشتن متنِ صدا» در نظر گرفته است (<code>transcribe.ts</code>، مثلاً Whisper روی سرور خودمان). یادداشت صوتی از نیوتب هم از همین سرویس سرور متن می‌گیرد، تا با اپ یکی باشد.</p>
+      <p><b>سرچ صوتی:</b> دکمه‌ی میکروفون از تشخیص گفتار خود کروم (<code>SpeechRecognition</code> با زبان <code>fa-IR</code>) استفاده می‌کند. رایگان است، کلید و سرور ما را لازم ندارد، فارسی و انگلیسی را می‌فهمد و متن را هم‌زمان با حرف زدن در کادر می‌نویسد. صدا را خود کروم برای گوگل می‌فرستد، همان‌جایی که جستجو هم می‌رود. بار اول کروم اجازه‌ی میکروفون را برای صفحه‌ی افزونه می‌پرسد. اگر سرویس گفتار گوگل از ایران جواب ندهد (قبل از انتشار باید آزمایش شود)، افزونه صدا را با <code>MediaRecorder</code> ضبط می‌کند و به همان سرویس تبدیل صدا به متن سرور نقطه می‌فرستد که اپ برای «نوشتن متنِ صدا» در نظر گرفته است (<code>transcribe.ts</code>، مثلاً Whisper روی سرور خودمان). یادداشت صوتی از نیوتب هم از همین سرویس سرور متن می‌گیرد، تا با اپ یکی باشد.</p>
       <p><b>یادداشت و کار سریع از سرچ:</b> با انتخاب «به یادداشت‌ها»، متن کادر عنوان یادداشت می‌شود و زیر کادر یک پنل باز می‌شود: بالا جای توضیح (با Tab به آن می‌رسی)، بعد انتخاب دسته، و پایینش دو یادداشت اخیر که با کلیک باز می‌شوند. «به کارها» همین پنل را با «امروز / فردا / بدون تاریخ»، دسته و دو کار اخیر دارد. فلش ارسال تا وقتی چیزی نوشته نشده کم‌رنگ است و با اولین حرف سفید و فعال می‌شود.</p>
       <p>ارسال با <code>chrome.search.query</code> انجام می‌شود که موتور پیش‌فرض کروم را صدا می‌زند (برای بیشتر کاربران گوگل)؛ اگر موتور پیش‌فرض کسی گوگل نباشد، نشانه و متن راهنما اسم همان موتور را نشان می‌دهند تا قول نادرستی نداده باشیم و سیاست استور هم رعایت شود.</p>
       <h3>ردیف دسترسی سریع</h3>
@@ -2209,14 +2212,14 @@ body.pk0 .s3 .pk-empty { display: grid; grid-column: 1 / 3; grid-row: 2; grid-te
       <p>اولین بار که تب باز می‌شود، یک پنجره‌ی چندمرحله‌ای روی خود صفحه (با همان پس‌زمینه) باز می‌شود. هر مرحله یک تصمیم است و همه را می‌شود رد کرد:</p>
       <p><b>ظاهر، به سبک آنبوردینگ Dia:</b> یک کارت سیاه بزرگ؛ یک طرف فرم و طرف دیگر یک صحنه‌ی نقاشی‌شده. فرم تیتر درشت، برچسب‌های ساده، و دکمه‌ی پهن پایین با علامت ↵ دارد که تا پر شدن فرم خاکستری است. بالای فرم یک نوار کوتاه زرد پیشرفت را نشان می‌دهد. صحنه‌ی هر مرحله آسمانی رنگ‌روغنی است با بافت بوم (فیلترهای SVG، بدون عکس) و یک پنجره‌ی کج مرورگر که همان چیزی را نشان می‌دهد که آن مرحله می‌سازد: سرچ و نقطه، کار رسیده از گوشی، کارت‌های گوشه، ردیف کاشی‌ها، نمودار پاکت، یا رنگ انتخاب‌شده. لبه‌ی صحنه با دانه‌های ریز در سیاهی کارت حل می‌شود.</p>
       <ol>
-        <li><b>سلام:</b> میز در یک جمله و پیش‌نمایش صفحه.</li>
-        <li><b>حساب نقطه:</b> اسکن QR با اپ نقطه (تنظیمات ← پشتیبان و همگام‌سازی ← «اتصال میز»)، یا شماره‌ی موبایل و کد پیامکی، یا گوگل. «فعلاً بدون حساب» هم هست؛ آن وقت همه‌چیز فقط در همین مرورگر می‌ماند.</li>
+        <li><b>سلام:</b> نقطه برای کروم در یک جمله و پیش‌نمایش صفحه.</li>
+        <li><b>ورود یا ساخت حساب:</b> شماره‌ی موبایل، بعد کد ۶ رقمی پیامکی (همان <code>/auth/code/*</code> سرور نقطه، که برای شماره‌ی بی‌حساب همان‌جا حساب می‌سازد). یک حساب برای نقطه و پاکت. کنارش یک QR برای نصب نقطه از کافه‌بازار. «رد کردن» هم هست؛ آن وقت همه‌چیز فقط در همین مرورگر می‌ماند.</li>
         <li><b>چی‌ها باشد:</b> ۱۲ کارت که همه روشن شروع می‌شوند، مثل «چی‌ها رو می‌خوای؟» در آنبوردینگ اپ. هر کارت خاموش، بلوک یا اسلاید مربوطش را برمی‌دارد.</li>
         <li><b>شغل:</b> شش نقش؛ ردیف دسترسی سریع و پوشه‌هایش از روی آن چیده می‌شود.</li>
-        <li><b>پاکت، جدا:</b> فقط اگر «پول من» روشن مانده باشد. اسکن QR با اپ پاکت (تنظیمات ← دستگاه‌ها ← «اتصال میز») یا نام کاربری و رمز پاکت، یا «بعداً». قیمت روز و خبرها بدون ورود هم کار می‌کنند.</li>
+        <li><b>پاکت:</b> فقط اگر «پول من» روشن مانده باشد. ورود دوباره نمی‌خواهد؛ همان حساب است. یک کلید برای نشان دادن پول، و یک QR برای نصب پاکت از کافه‌بازار. قیمت روز و خبرها بدون پاکت هم کار می‌کنند.</li>
         <li><b>رنگ:</b> یکی از رنگ‌ها؛ نقطه‌ی بالای سرچ همان رنگ را می‌گیرد.</li>
       </ol>
-      <p>اتصال با QR: نیوتب یک کد یک‌بارمصرف نشان می‌دهد، اپی که کاربر در آن وارد شده آن را تأیید می‌کند و سرور برای نیوتب یک دستگاه تازه با توکن خودش می‌سازد. پاکت توکن‌ها را به دستگاه گره می‌زند، پس می‌شود به این دستگاه فقط دسترسی خواندن داد و هر وقت از اپ قطعش کرد. هر دو سرور مسیر <code>/auth/pair</code> می‌گیرند. افزونه برای دامنه‌ی API هر دو اپ <code>host_permissions</code> می‌گیرد، پس CORS سرورها لازم نیست.</p>
+      <p>QRهای نصب: هر کد به <code>noghte.life/get?app=noghte|paket&amp;src=chrome&amp;c=&lt;جا&gt;&amp;r=&lt;شناسه‌ی نصب&gt;</code> می‌رود. سرور هر بازدید را می‌شمارد و به صفحه‌ی اپ در کافه‌بازار می‌فرستد، پس ورودی‌ها به تفکیک جا دیده می‌شوند: ورود (<code>signin</code>)، آنبوردینگ، اسلاید پول و گوشه‌ی پول وقتی پاکت خالی است. شناسه‌ی نصب بی‌نام است و یک بار ساخته می‌شود. پاکت باید حساب نقطه را بپذیرد و می‌شود به این دستگاه فقط دسترسی خواندن داد. افزونه برای دامنه‌ی API هر دو اپ <code>host_permissions</code> می‌گیرد، پس CORS سرورها لازم نیست.</p>
     </section>
 
     <section>
@@ -2239,7 +2242,7 @@ body.pk0 .s3 .pk-empty { display: grid; grid-column: 1 / 3; grid-row: 2; grid-te
       <h2>اسلاید خبر<small>منبع، مهم‌ترین چیز هر خبر</small></h2>
       <ul>
         <li><b>منبع در صدر:</b> هر کارت اول نشان و اسم منبع را با خط پررنگ نشان می‌دهد، بعد دسته و زمان. ستون «منبع‌های من» فهرست منبع‌ها را با یک کلید برای هر کدام دارد، گروه‌بندی‌شده (داخلی، برون‌مرزی، پاکت)، و «منبع دلخواه با آدرس RSS».</li>
-        <li><b>روایت‌ها کنار هم:</b> وقتی چند منبع یک خبر را پوشش داده‌اند (با شباهت تیتر و زمان در سرور گروه می‌شوند)، کارت می‌گوید «همین خبر در ۲ منبع دیگر» و در صفحه‌ی خبر تیتر هر منبع زیر هم می‌آید. کاربر خودش تفاوت روایت‌ها را می‌بیند؛ میز درباره‌ی هیچ منبعی قضاوت نمی‌کند.</li>
+        <li><b>روایت‌ها کنار هم:</b> وقتی چند منبع یک خبر را پوشش داده‌اند (با شباهت تیتر و زمان در سرور گروه می‌شوند)، کارت می‌گوید «همین خبر در ۲ منبع دیگر» و در صفحه‌ی خبر تیتر هر منبع زیر هم می‌آید. کاربر خودش تفاوت روایت‌ها را می‌بیند؛ نقطه درباره‌ی هیچ منبعی قضاوت نمی‌کند.</li>
         <li><b>منبع‌های داخلی:</b> سرور نقطه RSS آن‌ها را می‌خواند و فقط تیتر، خلاصه، تصویر کوچک و لینک را نگه می‌دارد؛ متن کامل همیشه در سایت منبع باز می‌شود.</li>
         <li><b>خبرهای پاکت:</b> همان <code>/v1/news</code> با منبع «تیم پاکت».</li>
         <li><b>«برای تو»</b> روی دستگاه چیده می‌شود؛ چیزی از خوانده‌های کاربر به سرور نمی‌رود. «ذخیره برای بعد» در حساب نقطه سینک می‌شود.</li>
@@ -2257,7 +2260,7 @@ body.pk0 .s3 .pk-empty { display: grid; grid-column: 1 / 3; grid-row: 2; grid-te
       <h2>اسلاید شبکه‌ها</h2>
       <p>یک قاب تبلتی بزرگ وسط صفحه و بالای آن زبانه‌های تلگرام، اینستاگرام، واتس‌اپ و ایکس. هر زبانه یک نقطه‌ی سبز دارد اگر کاربر واردش شده باشد. قاب نسخه‌ی وب همان سرویس است (<code>web.telegram.org</code>، <code>instagram.com</code>، <code>web.whatsapp.com</code>، <code>x.com</code>) در اندازه‌ی تبلت، که برای فهرست چت کنار گفت‌وگو و برای ریلز و تایم‌لاین جای کافی دارد.</p>
       <ul>
-        <li><b>ورود و ذخیره‌اش:</b> ورود در صفحه‌ی خود سرویس انجام می‌شود (QR برای تلگرام و واتس‌اپ، صفحه‌ی ورود خود اینستاگرام و ایکس) و ما فقط راهنمای ساده‌ی دورش را می‌گذاریم. «ذخیره‌ی ورود» یعنی نشست همان سرویس در کوکی‌های خود کروم می‌ماند، پس دفعه‌ی بعد که تب را باز کند وارد است. میز هیچ رمز یا توکنی را نمی‌خواند یا روی سرور نگه نمی‌دارد. دکمه‌ی «خروج» در نوار بالای قاب نشست را پاک می‌کند.</li>
+        <li><b>ورود و ذخیره‌اش:</b> ورود در صفحه‌ی خود سرویس انجام می‌شود (QR برای تلگرام و واتس‌اپ، صفحه‌ی ورود خود اینستاگرام و ایکس) و ما فقط راهنمای ساده‌ی دورش را می‌گذاریم. «ذخیره‌ی ورود» یعنی نشست همان سرویس در کوکی‌های خود کروم می‌ماند، پس دفعه‌ی بعد که تب را باز کند وارد است. افزونه هیچ رمز یا توکنی را نمی‌خواند یا روی سرور نگه نمی‌دارد. دکمه‌ی «خروج» در نوار بالای قاب نشست را پاک می‌کند.</li>
         <li><b>چطور در قاب می‌آیند:</b> این سایت‌ها اجازه‌ی نمایش در iframe نمی‌دهند. افزونه با <code>declarativeNetRequest</code> هدرهای <code>X-Frame-Options</code> و <code>frame-ancestors</code> را فقط برای قاب‌هایی که خود نیوتب باز کرده برمی‌دارد. ماندن کوکی ورود در قاب را در نسخه‌ی آزمایشی روی هر چهار سرویس امتحان می‌کنیم.</li>
         <li><b>راه جایگزین:</b> اگر سرویسی در قاب کار نکرد یا استور این روش را نپذیرفت، دکمه‌ی «باز کردن در پنجره‌ی جدا» همان سرویس را در یک پنجره‌ی هم‌اندازه‌ی تبلت باز می‌کند.</li>
         <li>این اسلاید در فاز آخر می‌آید، بعد از نسخه‌ی آزمایشی و بررسی استور.</li>
@@ -2962,7 +2965,7 @@ body.pk0 .s3 .pk-empty { display: grid; grid-column: 1 / 3; grid-row: 2; grid-te
   // the notes corner: a quick note on top, the three latest notes under it
   const snippet = (n) => (n.blocks || []).map((b) => b.t).filter(Boolean).join(" · ");
   function renderCNotes() {
-    $("cRecent").innerHTML = NOTES.slice(0, 3).map((n, i) => `<button class="rnote${n.fresh ? " fresh" : ""}" data-note="${i}"><b>${n.title}</b><small>${n.when.split(" · ")[0]}${snippet(n) ? " · " + snippet(n) : ""}</small></button>`).join("");
+    $("cRecent").innerHTML = NOTES.slice(0, 2).map((n, i) => `<button class="rnote${n.fresh ? " fresh" : ""}" data-note="${i}"><b>${n.title}</b><small>${n.when.split(" · ")[0]}${snippet(n) ? " · " + snippet(n) : ""}</small></button>`).join("");
   }
   function addNote(title, body, items, when = "همین حالا", f = "personal") {
     NOTES.forEach((x) => (x.fresh = false));
@@ -3357,9 +3360,9 @@ body.pk0 .s3 .pk-empty { display: grid; grid-column: 1 / 3; grid-row: 2; grid-te
     ["tasks", "کارهای امروز", "تیک بزن، همان لحظه روی گوشی", "نقطه"], ["notes", "یادداشت‌ها", "بنویس و روی گوشی ببین", "نقطه"],
     ["plan", "برنامه‌ها", "هفته و تقویم گوگل", "نقطه"], ["occ", "مناسبت‌ها", "روزهای خاص و تعطیلی‌ها", "نقطه"],
     ["prayer", "اوقات شرعی", "روی جدول برنامه‌ها", "نقطه"], ["money", "پول من", "موجودی، خرج و قبض‌ها", "پاکت"],
-    ["prices", "قیمت روز", "طلا، سکه، ارز و کریپتو", "پاکت"], ["news", "خبر", "فید خبر با موضوع‌های تو", "میز"],
-    ["social", "شبکه‌ها", "تلگرام، اینستاگرام، واتس‌اپ", "میز"], ["launcher", "دسترسی سریع", "ردیف زیر سرچ با پوشه‌های شغل تو", "میز"],
-    ["bookmarks", "بوکمارک‌های کروم", "در لبه‌ی راست صفحه", "میز"], ["today", "امروز", "تاریخ، مناسبت و اذان بعدی", "نقطه"],
+    ["prices", "قیمت روز", "طلا، سکه، ارز و کریپتو", "پاکت"], ["news", "خبر", "فید خبر با موضوع‌های تو", "افزونه"],
+    ["social", "شبکه‌ها", "تلگرام، اینستاگرام، واتس‌اپ", "افزونه"], ["launcher", "دسترسی سریع", "ردیف زیر سرچ با پوشه‌های شغل تو", "افزونه"],
+    ["bookmarks", "بوکمارک‌های کروم", "در لبه‌ی راست صفحه", "افزونه"], ["today", "امروز", "تاریخ، مناسبت و اذان بعدی", "نقطه"],
   ];
   const onbSt = { step: 0, mods: new Set(MODS.map((m) => m[0])), persona: "designer", paket: true };
   const stepsOf = () => ["hello", "login", "code", "mods", "persona", ...(onbSt.mods.has("money") ? ["paket"] : []), "wall"];
@@ -3406,33 +3409,33 @@ body.pk0 .s3 .pk-empty { display: grid; grid-column: 1 / 3; grid-row: 2; grid-te
   }
   const okTick = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
   let onbPhone = "", onbCode = "", onbWait = 0, onbTimer = null;
-  // every link from Miz to a phone store goes through our own address, so each entry point can be counted:
-  // app = which app, c = where in Miz it was shown, r = this install (anonymous, made once)
-  const installId = (() => { try { let v = localStorage.getItem("miz-install"); if (!v) { v = Math.random().toString(36).slice(2, 10); localStorage.setItem("miz-install", v); } return v; } catch { return "demo"; } })();
-  const getLink = (app, c) => `noghte.life/get?app=${app}&src=miz&c=${c}&r=${installId}`;
+  // every link from the extension to a phone store goes through our own address, so each entry point can be counted:
+  // app = which app, c = where in the extension it was shown, r = this install (anonymous, made once)
+  const installId = (() => { try { let v = localStorage.getItem("noghte-install"); if (!v) { v = Math.random().toString(36).slice(2, 10); localStorage.setItem("noghte-install", v); } return v; } catch { return "demo"; } })();
+  const getLink = (app, c) => `noghte.life/get?app=${app}&src=chrome&c=${c}&r=${installId}`;
   const installBox = (app, c, seed, title, body) => `<div class="or inst"><div class="qr">${qrSvg(seed)}</div><div><b>${title}</b>${body}<span class="lnk">${getLink(app, c)}</span></div></div>`;
   function renderOnb() {
     const steps = stepsOf(), s = steps[onbSt.step], last = onbSt.step === steps.length - 1;
     $("onbBar").style.width = `${((onbSt.step + 1) / steps.length) * 100}%`;
     $("onbBack").hidden = onbSt.step === 0;
     const next = $("onbNext");
-    next.innerHTML = `${s === "hello" ? "شروع" : s === "login" ? "فرستادن کد" : s === "code" ? "تأیید و ادامه" : last ? "ساختن میز" : "ادامه"} <span class="kbd">↵</span>`;
+    next.innerHTML = `${s === "hello" ? "شروع" : s === "login" ? "فرستادن کد" : s === "code" ? "تأیید و ادامه" : last ? "تمام" : "ادامه"} <span class="kbd">↵</span>`;
     next.disabled = (s === "login" && onbPhone.replace(/\D/g, "").length < 10) || (s === "code" && onbCode.length < 6);
-    $("onbLegal").innerHTML = s === "login" ? "با ادامه، <u>حریم خصوصی نقطه</u> را می‌پذیرم." : s === "paket" ? "میز فقط اجازه‌ی خواندن از پاکت می‌گیرد." : "";
+    $("onbLegal").innerHTML = s === "login" ? "با ادامه، <u>حریم خصوصی نقطه</u> را می‌پذیرم." : s === "paket" ? "نقطه فقط اجازه‌ی خواندن از پاکت می‌گیرد." : "";
     $("onbLegal").hidden = $("onbLegal").innerHTML === "";
     const B = $("onbBody");
-    if (s === "hello") B.innerHTML = `<h2>میز،<br>صفحه‌ی اول کروم تو</h2><p class="lead">کارها، برنامه‌ها و یادداشت‌های نقطه، پول پاکت، و یک سرچ گوگل بزرگ. هر چیزی را که نخواهی، همین اول خاموش کن.</p>`;
+    if (s === "hello") B.innerHTML = `<h2>نقطه،<br>صفحه‌ی اول کروم تو</h2><p class="lead">کارها، برنامه‌ها و یادداشت‌های نقطه، پول پاکت، و یک سرچ گوگل بزرگ. هر چیزی را که نخواهی، همین اول خاموش کن.</p>`;
     if (s === "login") B.innerHTML = `<h2>با شماره‌ات وارد شو</h2><p class="lead">حساب نداری؟ با همین شماره ساخته می‌شود؛ یک حساب برای نقطه و پاکت.</p><label class="fl">شماره‌ی موبایل<input class="ltr" id="onbPhone" placeholder="0912 000 0000" inputmode="tel" value="${onbPhone}"></label>
       ${installBox("noghte", "onboarding", 3, "نقطه را روی گوشی هم داشته باش", "با دوربین گوشی اسکن کن تا نقطه در کافه‌بازار باز شود. با همین شماره وارد شو؛ کارها و یادداشت‌ها همگام می‌شوند.")}`;
     if (s === "code") B.innerHTML = `<h2>کد را بنویس</h2><p class="lead">کد ۶ رقمی به <b class="ltr">${fa(onbPhone || "0912 000 0000")}</b> پیامک شد. <button class="chg" data-chg>شماره را عوض کن</button></p>
       <div class="otp" dir="ltr">${[0, 1, 2, 3, 4, 5].map((i) => `<input inputmode="numeric" maxlength="1" aria-label="رقم ${fa(i + 1)}" value="${onbCode[i] || ""}">`).join("")}</div>
       <button class="resend" data-resend ${onbWait > 0 ? "disabled" : ""}>${onbWait > 0 ? `کد تازه تا ${fa(onbWait)} ثانیه` : "کد تازه بفرست"}</button>`;
-    if (s === "mods") B.innerHTML = `<h2>چی‌ها روی میزت باشد؟</h2><div class="opts">${MODS.map(([k, n, dd, a]) => `<button class="opt" data-m="${k}" aria-pressed="${onbSt.mods.has(k)}"><i>${okTick}</i><span><b>${n}</b><small>${dd} · ${a}</small></span></button>`).join("")}</div>`;
+    if (s === "mods") B.innerHTML = `<h2>چی‌ها در صفحه‌ی اولت باشد؟</h2><div class="opts">${MODS.map(([k, n, dd, a]) => `<button class="opt" data-m="${k}" aria-pressed="${onbSt.mods.has(k)}"><i>${okTick}</i><span><b>${n}</b><small>${dd} · ${a}</small></span></button>`).join("")}</div>`;
     if (s === "persona") B.innerHTML = `<h2>کدام بیشتر شبیه توست؟</h2><p class="lead">ردیف دسترسی سریع زیر سرچ را با سایت‌های همان کار می‌چینیم. بعداً از شخصی‌سازی هم عوض می‌شود.</p><div class="opts big">${Object.entries(P).map(([k, v]) => `<button class="opt" data-p="${k}" aria-pressed="${onbSt.persona === k}"><i>${okTick}</i><span><b>${v.n}</b><small>${PDESC[k]}</small></span></button>`).join("")}</div>`;
     if (s === "paket") B.innerHTML = `<h2>پاکت هم با همین حساب</h2><p class="lead">لازم نیست دوباره ثبت‌نام کنی؛ همان شماره، همان حساب. موجودی، خرج‌ها و قبض‌هایت این‌جا هم دیده می‌شوند.</p>
-      <div class="opts one"><button class="opt" data-pk aria-pressed="${onbSt.paket !== false}"><i>${okTick}</i><span><b>پول من روی میز</b><small>موجودی، خرج‌ها و قبض‌ها از پاکت</small></span></button></div>
+      <div class="opts one"><button class="opt" data-pk aria-pressed="${onbSt.paket !== false}"><i>${okTick}</i><span><b>پول من در صفحه‌ی اول</b><small>موجودی، خرج‌ها و قبض‌ها از پاکت</small></span></button></div>
       ${installBox("paket", "onboarding", 11, "پاکت را نصب نکرده‌ای؟", "با دوربین گوشی اسکن کن تا پاکت را از کافه‌بازار نصب کنی. خرج‌هایی که آن‌جا ثبت شوند، همین‌جا هم می‌آیند.")}`;
-    if (s === "wall") B.innerHTML = `<h2>یک رنگ برای میزت</h2><p class="lead">نقطه‌ی بالای سرچ هم همین رنگ را می‌گیرد.</p><div class="wpbig wps">${themeTiles()}</div>`;
+    if (s === "wall") B.innerHTML = `<h2>یک رنگ برای صفحه‌ات</h2><p class="lead">نقطه‌ی بالای سرچ هم همین رنگ را می‌گیرد.</p><div class="wpbig wps">${themeTiles()}</div>`;
     $("onbArt").innerHTML = paint(s === "code" ? "login" : s) + scene(s === "code" ? "login" : s);
     $("onbArt").style.setProperty("--tint", THEMES.find((x) => x.id === theme).tint);
     const ph = $("onbPhone");
@@ -3545,7 +3548,7 @@ body.pk0 .s3 .pk-empty { display: grid; grid-column: 1 / 3; grid-row: 2; grid-te
     const n = FEED[i];
     $("fsSrc").innerHTML = srcb(n.src); $("fsMeta").textContent = `${FC[n.c]} · ${ago(n.m)}`; $("fsTitle").textContent = n.t;
     $("fsBody").innerHTML = `<p>${n.s}</p>` + (n.alt ? `<div class="sec" style="margin:6px 0 8px">روایت منبع‌های دیگر از همین خبر</div><div class="compare">${n.alt.map(([k, t]) => `<div>${srcb(k)}<b>${t}</b></div>`).join("")}</div>` : "")
-      + `<p style="color:var(--ink-2);font-size:15px;margin-top:12px">میز فقط تیتر و خلاصه را نشان می‌دهد؛ متن کامل در سایت منبع است.</p>`;
+      + `<p style="color:var(--ink-2);font-size:15px;margin-top:12px">نقطه فقط تیتر و خلاصه را نشان می‌دهد؛ متن کامل در سایت منبع است.</p>`;
     $("fsheetBg").hidden = false; $("fsClose").focus();
   };
   $("flistv").addEventListener("click", (e) => { const b = e.target.closest("button[data-i]"); if (b) openFeed(+b.dataset.i); });
@@ -3612,18 +3615,18 @@ body.pk0 .s3 .pk-empty { display: grid; grid-column: 1 / 3; grid-row: 2; grid-te
     return `<div class="sonb" style="--sc:${dark ? "#fff" : sv.c}">
       <div class="sonb-art" aria-hidden="true"><span class="b1"></span><span class="b2"></span><span class="b3"></span><span class="slg" style="${lgStyle(k, sv)}">${sv.l}</span></div>
       <h3>${sv.n} را همین‌جا داشته باش</h3>
-      <p>${what}، ${how}. هر وقت خواستی با یک کلیک برمی‌گردی سر میزت.</p>
-      <ul><li>${okSvg2}ورود فقط یک بار، در صفحه‌ی خود ${sv.n}</li><li>${okSvg2}رمز و پیام‌هایت هیچ‌وقت به میز نمی‌رسد</li><li>${okSvg2}هر وقت خواستی با «خروج» قطعش کن</li></ul>
+      <p>${what}، ${how}. هر وقت خواستی با یک کلیک برمی‌گردی به صفحه‌ی اول.</p>
+      <ul><li>${okSvg2}ورود فقط یک بار، در صفحه‌ی خود ${sv.n}</li><li>${okSvg2}رمز و پیام‌هایت هیچ‌وقت به نقطه نمی‌رسد</li><li>${okSvg2}هر وقت خواستی با «خروج» قطعش کن</li></ul>
       <button class="cta" data-tologin="${k}" style="background:${dark ? "#fff" : sv.c};color:${dark ? "#000" : "#fff"}">ورود به ${sv.n}</button>
     </div>`;
   }
   function loginPage(k) {
     const sv = SVC[k];
     const btn = `<button class="cta" data-login="${k}" style="background:${k === "x" ? "#fff" : sv.c};color:${k === "x" ? "#000" : "#fff"}">وصل شدم</button>`;
-    if (k === "x") return `<div class="loginc"><div class="xb">X</div><h3>به ایکس وارد شو</h3><p>این صفحه‌ی ورود خود ایکس است؛ نام کاربری و رمزت فقط به ایکس می‌رود.</p><button class="cta wide" data-login="x">ورود با گوگل</button><button class="ghost wide" data-login="x">ورود با نام کاربری</button><span class="safe">میز فقط قاب این صفحه است.</span></div>`;
-    if (k === "ig") return `<div class="loginc"><h3>ورود به اینستاگرام</h3><p>نام کاربری و رمزت را همین‌جا، در صفحه‌ی خود اینستاگرام بنویس.</p><label class="fl2">نام کاربری<input class="ltr" autocomplete="off"></label><label class="fl2">رمز<input class="ltr" type="password"></label>${btn.replace("وصل شدم", "ورود")}<span class="safe">میز فقط قاب این صفحه است.</span></div>`;
+    if (k === "x") return `<div class="loginc"><div class="xb">X</div><h3>به ایکس وارد شو</h3><p>این صفحه‌ی ورود خود ایکس است؛ نام کاربری و رمزت فقط به ایکس می‌رود.</p><button class="cta wide" data-login="x">ورود با گوگل</button><button class="ghost wide" data-login="x">ورود با نام کاربری</button><span class="safe">نقطه فقط قاب این صفحه است.</span></div>`;
+    if (k === "ig") return `<div class="loginc"><h3>ورود به اینستاگرام</h3><p>نام کاربری و رمزت را همین‌جا، در صفحه‌ی خود اینستاگرام بنویس.</p><label class="fl2">نام کاربری<input class="ltr" autocomplete="off"></label><label class="fl2">رمز<input class="ltr" type="password"></label>${btn.replace("وصل شدم", "ورود")}<span class="safe">نقطه فقط قاب این صفحه است.</span></div>`;
     const app = k === "wa" ? "«دستگاه‌های متصل» ← «اتصال دستگاه»" : "تنظیمات ← «دستگاه‌ها» ← «اسکن کد»";
-    return `<div class="loginc"><h3>ورود به ${sv.n}</h3><p>با گوشی‌ات این کد را اسکن کن؛ همان حساب گوشی این‌جا باز می‌شود.</p><div class="qr">${qrSvg(k.length * 7)}</div><ol class="steps"><li>${sv.n} را روی گوشی باز کن.</li><li>برو به ${app}.</li><li>دوربین را روی این کد بگیر.</li></ol>${btn}${k === "wa" ? "" : `<button class="ghost wide" data-login="${k}">ورود با شماره‌ی موبایل</button>`}<span class="safe">این کد را خود ${sv.n} می‌سازد، نه میز.</span></div>`;
+    return `<div class="loginc"><h3>ورود به ${sv.n}</h3><p>با گوشی‌ات این کد را اسکن کن؛ همان حساب گوشی این‌جا باز می‌شود.</p><div class="qr">${qrSvg(k.length * 7)}</div><ol class="steps"><li>${sv.n} را روی گوشی باز کن.</li><li>برو به ${app}.</li><li>دوربین را روی این کد بگیر.</li></ol>${btn}${k === "wa" ? "" : `<button class="ghost wide" data-login="${k}">ورود با شماره‌ی موبایل</button>`}<span class="safe">این کد را خود ${sv.n} می‌سازد، نه نقطه.</span></div>`;
   }
   function renderSocial() {
     if (!SHOWN.has(svc)) svc = tabs()[0] || "tg";
@@ -3657,7 +3660,7 @@ body.pk0 .s3 .pk-empty { display: grid; grid-column: 1 / 3; grid-row: 2; grid-te
   const gripSvg = '<svg viewBox="0 0 24 24"><circle cx="9" cy="6" r="1.4"/><circle cx="15" cy="6" r="1.4"/><circle cx="9" cy="12" r="1.4"/><circle cx="15" cy="12" r="1.4"/><circle cx="9" cy="18" r="1.4"/><circle cx="15" cy="18" r="1.4"/></svg>';
   const upSvg = '<svg viewBox="0 0 24 24"><path d="m6 14 6-6 6 6"/></svg>', downSvg = '<svg viewBox="0 0 24 24"><path d="m6 10 6 6 6-6"/></svg>';
   function renderSocList() {
-    $("socList").innerHTML = ORDER.map((k, i) => { const sv = SVC[k]; return `<div class="socrow${SHOWN.has(k) ? "" : " off"}" draggable="true" data-k="${k}"><span class="grip" aria-hidden="true">${gripSvg}</span><span class="lg" style="${lgStyle(k, sv)}">${sv.l}</span><span class="nm"><b>${sv.n}${sv.ir ? '<em class="tag-ir">ایرانی</em>' : ""}</b><small>${sv.on ? "وارد شده" : sv.u}</small></span><span class="mv"><button data-up="${k}" aria-label="بالاتر" ${i ? "" : "disabled"}>${upSvg}</button><button data-down="${k}" aria-label="پایین‌تر" ${i < ORDER.length - 1 ? "" : "disabled"}>${downSvg}</button></span><button class="sw2" role="switch" aria-checked="${SHOWN.has(k)}" aria-label="${sv.n} روی میز" data-sw="${k}"></button></div>`; }).join("");
+    $("socList").innerHTML = ORDER.map((k, i) => { const sv = SVC[k]; return `<div class="socrow${SHOWN.has(k) ? "" : " off"}" draggable="true" data-k="${k}"><span class="grip" aria-hidden="true">${gripSvg}</span><span class="lg" style="${lgStyle(k, sv)}">${sv.l}</span><span class="nm"><b>${sv.n}${sv.ir ? '<em class="tag-ir">ایرانی</em>' : ""}</b><small>${sv.on ? "وارد شده" : sv.u}</small></span><span class="mv"><button data-up="${k}" aria-label="بالاتر" ${i ? "" : "disabled"}>${upSvg}</button><button data-down="${k}" aria-label="پایین‌تر" ${i < ORDER.length - 1 ? "" : "disabled"}>${downSvg}</button></span><button class="sw2" role="switch" aria-checked="${SHOWN.has(k)}" aria-label="${sv.n} در نقطه" data-sw="${k}"></button></div>`; }).join("");
   }
   const openSoc = () => { renderSocList(); $("socModal").hidden = false; paintIcons($("socModal")); };
   const closeSoc = () => { $("socModal").hidden = true; };
@@ -3665,7 +3668,7 @@ body.pk0 .s3 .pk-empty { display: grid; grid-column: 1 / 3; grid-row: 2; grid-te
   $("socModal").addEventListener("mousedown", (e) => { if (e.target === e.currentTarget) closeSoc(); });
   $("socList").addEventListener("click", (e) => {
     const sw = e.target.closest("[data-sw]"), up = e.target.closest("[data-up]"), dn = e.target.closest("[data-down]");
-    if (sw) { const k = sw.dataset.sw; if (SHOWN.has(k)) { if (SHOWN.size > 1) SHOWN.delete(k); else return pulse("دست‌کم یک شبکه روی میز بماند"); } else SHOWN.add(k); }
+    if (sw) { const k = sw.dataset.sw; if (SHOWN.has(k)) { if (SHOWN.size > 1) SHOWN.delete(k); else return pulse("دست‌کم یک شبکه روشن بماند"); } else SHOWN.add(k); }
     else if (up || dn) { const k = (up || dn).dataset.up || (up || dn).dataset.down, i = ORDER.indexOf(k), j = i + (up ? -1 : 1); [ORDER[i], ORDER[j]] = [ORDER[j], ORDER[i]]; }
     else return;
     renderSocList(); renderSocial();
