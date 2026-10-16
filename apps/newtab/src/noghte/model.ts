@@ -192,6 +192,84 @@ export function addNote(title: string, body: string, listId?: string): Note {
   return note;
 }
 
+/** Every note, the trashed ones too («حذف‌شده‌ها»). */
+export const allNotes = (): Note[] => records.all<Note>("note");
+
+/** A note changed in the notes slide, written whole with a fresh `updatedAt`. */
+export function saveNote(note: Note): Note {
+  const next = { ...note, updatedAt: nowIso() };
+  records.write("note", next.id, next);
+  return next;
+}
+
+/** An empty note in a folder (or the default one): a blank title, as the app's «یادداشت تازه». */
+export function newNote(folderId?: string): Note {
+  const lists = liveLists();
+  const now = nowIso();
+  const list = lists.find((l) => l.id === folderId) ?? defaultList(lists) ?? ensureDefaultList();
+  const note: Note = {
+    id: newId(),
+    folderId: list.id,
+    blocks: [{ id: newId(), kind: "title", text: "" }],
+    pinned: false,
+    createdAt: now,
+    updatedAt: now,
+  };
+  records.write("note", note.id, note);
+  return note;
+}
+
+/** To «حذف‌شده‌ها», or back from it; the app empties it after 30 days. */
+export const trashNote = (note: Note, trashed: boolean): Note =>
+  saveNote(
+    trashed ? { ...note, deletedAt: nowIso() } : (({ deletedAt: _gone, ...rest }) => rest)(note),
+  );
+
+/** A new folder: notes folders are task lists, so it is a list, last in order. */
+export function addFolder(name: string, color: string): TaskList {
+  const lists = liveLists();
+  const now = nowIso();
+  const last = lists.at(-1)?.order;
+  const list: TaskList = {
+    id: newId(),
+    name: name.trim(),
+    color,
+    order: last === undefined ? FIRST_ORDER : orderBetween(last, undefined),
+    isDefault: lists.length === 0,
+    createdAt: now,
+    updatedAt: now,
+  };
+  records.write("list", list.id, list);
+  return list;
+}
+
+/**
+ * After signing in, lists written here while signed out sit beside the account's own. One the
+ * account already has — its default «شخصی», or one of the same name — is folded into it: its tasks
+ * and notes move over and it goes away, so the person never sees two of the same.
+ */
+export function foldTakenLists(taken: readonly string[]): void {
+  if (taken.length === 0) return;
+  const lists = liveLists();
+  const now = nowIso();
+  const same = (a: string, b: string): boolean => a.trim() === b.trim();
+  for (const id of taken) {
+    const mine = lists.find((l) => l.id === id);
+    if (mine === undefined) continue;
+    const theirs = lists.find(
+      (l) => !taken.includes(l.id) && ((mine.isDefault && l.isDefault) || same(l.name, mine.name)),
+    );
+    if (theirs === undefined) continue;
+    for (const t of records.all<Task>("task"))
+      if (t.listId === mine.id)
+        records.write("task", t.id, { ...t, listId: theirs.id, updatedAt: now });
+    for (const n of records.all<Note>("note"))
+      if (n.folderId === mine.id)
+        records.write("note", n.id, { ...n, folderId: theirs.id, updatedAt: now });
+    records.write("list", mine.id, { ...mine, deletedAt: now, updatedAt: now });
+  }
+}
+
 /**
  * An account with no lists yet (never opened the app): the same «شخصی» default list the app makes
  * first, so a task or note written here has a home.

@@ -4,7 +4,7 @@
   "short_name": "نقطه",
   "description": "نیوتب نقطه: سرچ گوگل، کارها و یادداشت‌های نقطه، و امروز، روی هر تب تازه.",
   "version": "0.1.0",
-  "minimum_chrome_version": "120",
+  "minimum_chrome_version": "123",
   "chrome_url_overrides": { "newtab": "index.html" },
   "permissions": ["storage", "unlimitedStorage", "search", "favicon", "bookmarks", "topSites"],
   "host_permissions": ["https://noghte.life/*", "https://suggestqueries.google.com/*"],

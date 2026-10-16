@@ -105,14 +105,10 @@ function traceBox(box: HTMLElement): void {
 }
 
 export function SearchBox({
-  signedIn,
   traceAfter,
-  onNeedSignIn,
   onSaved,
 }: {
-  signedIn: boolean;
   traceAfter: number | null;
-  onNeedSignIn: () => void;
   onSaved: (kind: "task" | "note") => void;
 }) {
   useRecordsVersion();
@@ -178,10 +174,6 @@ export function SearchBox({
 
   const pick = (m: Mode): void => {
     const next = mode === m ? "google" : m;
-    if (next !== "google" && !signedIn) {
-      onNeedSignIn();
-      return;
-    }
     setMode(next);
     setSwap((x) => x + 1);
     input.current?.focus();

@@ -34,6 +34,10 @@ export const ICONS = {
   tick: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"> <polyline points="5 12.6 9.6 17 19 7.4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/> </svg>',
   refresh:
     '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"> <path d="M4.309 14.2922C3.492 13.3172 3 12.0612 3 10.6892C3 7.58822 5.514 5.07422 8.615 5.07422H15.386C18.487 5.07422 21 7.58822 21 10.6892C21 13.7902 18.487 16.3032 15.386 16.3032H8.615" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/> <path d="M11.2363 13.6797L8.61328 16.3027L11.2363 18.9267" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/> </svg>',
+  pin: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"> <path d="M14.5 3.5l6 6-3 1.2-3.3 3.3.4 4.5-1.6 1.5-3.8-3.8L4.5 21 3 19.5l4.8-4.7L4 11l1.5-1.6 4.5.4 3.3-3.3z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/> </svg>',
+  "voice-play":
+    '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"> <path d="M8 5.5v13l11-6.5z" fill="currentColor"/> </svg>',
+  home: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"> <path d="M9.2 20.5v-3.1c0-.8.6-1.4 1.4-1.4h2.8c.8 0 1.4.6 1.4 1.4v3.1M3.5 10.6 12 3.5l8.5 7.1V18c0 1.4-1.1 2.5-2.5 2.5H6c-1.4 0-2.5-1.1-2.5-2.5z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/> </svg>',
 } as const;
 
 export type IconName = keyof typeof ICONS;

@@ -7,9 +7,14 @@ import type { Local } from "../sync/engine";
  * This browser's copy of the account's records — lists, tasks, notes — as the server sends them,
  * plus the outbox: records changed here and not yet pushed. One object in the extension's storage,
  * written a moment after each change. Records of another account are dropped on sign-in.
+ *
+ * Signed out, the same store keeps what is written here for this browser alone (`LOCAL`). Signing
+ * in then takes it along: everything written here goes into the outbox of the account.
  */
 
 const KEY = "noghte.records.v1";
+/** The owner of records written while signed out. */
+export const LOCAL = "local";
 
 type Stored = { account: string; cursor: number; items: Held[] };
 
@@ -21,14 +26,24 @@ export class Records {
   private readonly listeners = new Set<(entities: ReadonlySet<string>) => void>();
   /** Records the server sent that are new to this browser — not its own changes coming back. */
   private arrived: Change[] = [];
+  /** Lists written here while signed out and just taken into an account (see `takenLists`). */
+  private taken: string[] = [];
 
-  /** Reads the stored copy; a copy of another account (or none) starts empty. */
+  /**
+   * Reads the stored copy. A copy of another account starts empty; what was written here while
+   * signed out goes into the account being opened, all of it unsent.
+   */
   async open(account: string): Promise<void> {
     const s = await load<Stored>(KEY);
     this.account = account;
     if (s?.account === account) {
       this.map = new Map(s.items.map((h) => [keyOf(h.change), h]));
       this.rev = s.cursor;
+    } else if (s?.account === LOCAL && account !== LOCAL) {
+      this.map = new Map(s.items.map((h) => [keyOf(h.change), { change: h.change, dirty: true }]));
+      this.rev = 0;
+      this.taken = s.items.filter((h) => h.change.entity === "list").map((h) => h.change.id);
+      this.persistSoon();
     } else {
       this.map = new Map();
       this.rev = 0;
@@ -36,12 +51,24 @@ export class Records {
     this.emit(new Set(["list", "task", "note"]));
   }
 
-  /** Forgets everything (signed out). */
+  /** The owner of these records: an account id, `LOCAL`, or "" before the first `open`. */
+  owner(): string {
+    return this.account;
+  }
+
+  /** The ids of lists that came from this browser into the account, once (then forgotten). */
+  takenLists(): string[] {
+    const t = this.taken;
+    this.taken = [];
+    return t;
+  }
+
+  /** Signed out: the account's copy is forgotten and this browser starts a fresh copy of its own. */
   async clear(): Promise<void> {
     this.map = new Map();
     this.rev = 0;
-    this.account = "";
-    await save(KEY, { account: "", cursor: 0, items: [] } satisfies Stored);
+    this.account = LOCAL;
+    await save(KEY, { account: LOCAL, cursor: 0, items: [] } satisfies Stored);
     this.emit(new Set(["list", "task", "note"]));
   }
 
@@ -145,7 +172,7 @@ export class Records {
   }
 
   async persist(): Promise<void> {
-    if (this.account === "") return;
+    if (this.account === "") return; // not opened yet
     await save(KEY, {
       account: this.account,
       cursor: this.rev,

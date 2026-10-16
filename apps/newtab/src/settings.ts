@@ -28,6 +28,7 @@ export const BLOCKS = [
   ["pin", "کارت‌ها همیشه باز"],
   ["peek", "باز شدن گوشه با تغییر تازه"],
   ["entry", "افکت ورود"],
+  ["s-notes", "اسلاید یادداشت‌ها"],
 ] as const;
 export type BlockId = (typeof BLOCKS)[number][0];
 

@@ -2,7 +2,8 @@ import type { Change, PullResponse, PushResponse } from "@dotlife/sync";
 
 import { syncOnce, type Remote } from "../sync/engine";
 import { ApiError, authed, currentSession, loadSession, onSession } from "./api";
-import { records } from "./records";
+import { foldTakenLists } from "./model";
+import { LOCAL, records } from "./records";
 
 /**
  * Keeping this tab and the account in step: a sync when the tab opens or comes back into view,
@@ -61,6 +62,8 @@ export function syncNow(): Promise<void> {
     try {
       const first = (await records.local.cursor()) === 0;
       await syncOnce(records.local, remote);
+      // what was written here before signing in is in the account now: its «شخصی» joins the account's
+      if (first) foldTakenLists(records.takenLists());
       await records.persist();
       setState({ status: "idle", lastAt: Date.now() });
       const arrived = records.takeArrived();
@@ -91,7 +94,10 @@ export async function startSync(): Promise<void> {
   const open = async (): Promise<void> => {
     const s = currentSession();
     if (s === null) {
-      await records.clear();
+      // signing out forgets the account's copy; opening the tab signed out keeps this browser's own
+      const owner = records.owner();
+      if (owner !== "" && owner !== LOCAL) await records.clear();
+      else await records.open(LOCAL);
       setState({ status: "signed-out", lastAt: null });
       return;
     }

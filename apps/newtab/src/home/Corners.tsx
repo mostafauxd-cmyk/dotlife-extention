@@ -80,7 +80,12 @@ function SyncBadge() {
         ? ["آفلاین", "آفلاین؛ وقتی وصل شدی می‌فرستم"]
         : s.status === "error"
           ? ["ناهمگام", "همگام نشد؛ دوباره امتحان می‌کنم"]
-          : ["همگام", "همگام با گوشی"];
+          : s.status === "signed-out"
+            ? [
+                "روی این مرورگر",
+                "فقط روی همین مرورگر نگه داشته می‌شود؛ با ورود به نقطه روی گوشی هم می‌آید",
+              ]
+            : ["همگام", "همگام با گوشی"];
   return (
     <span className={`sync ${s.status}`} title={full}>
       <i />
@@ -137,22 +142,17 @@ export function TasksCard({
 }) {
   useRecordsVersion();
   const [draft, setDraft] = useState("");
-  if (!signedIn) {
-    return (
-      <>
-        <h3>کارهای امروز</h3>
-        <SignInHint head="کارهای گوشی‌ات، همین‌جا" place="tasks" onSignIn={onSignIn} />
-      </>
-    );
-  }
   const lists = new Map(liveLists().map((l) => [l.id, l]));
-  const rows = todayRows(liveTasks());
+  const all = liveTasks();
+  const rows = todayRows(all);
   return (
     <>
       <h3>
         کارهای امروز <SyncBadge />
       </h3>
-      {rows.length === 0 ? (
+      {rows.length === 0 && !signedIn && all.length === 0 ? (
+        <SignInHint head="کارهای گوشی‌ات، همین‌جا" place="tasks" onSignIn={onSignIn} />
+      ) : rows.length === 0 ? (
         <div className="empty">برای امروز کاری نیست.</div>
       ) : (
         <ul className="tasks">
@@ -209,7 +209,17 @@ export function TasksCard({
           }}
         />
       </form>
+      {!signedIn && all.length > 0 && <SyncInvite onSignIn={onSignIn} />}
     </>
+  );
+}
+
+/** Signed out, with things written here: one quiet line that offers to keep them on the phone too. */
+function SyncInvite({ onSignIn }: { onSignIn: () => void }) {
+  return (
+    <button type="button" className="sync-invite" onClick={onSignIn}>
+      فقط روی همین مرورگر است. <b>وارد نقطه شو</b> تا روی گوشی هم بیاید.
+    </button>
   );
 }
 
@@ -224,14 +234,6 @@ export function NotesCard({
 }) {
   useRecordsVersion();
   const [draft, setDraft] = useState("");
-  if (!signedIn) {
-    return (
-      <>
-        <h3>یادداشت‌ها</h3>
-        <SignInHint head="یادداشت‌های گوشی‌ات، همین‌جا" place="notes" onSignIn={onSignIn} />
-      </>
-    );
-  }
   const notes = liveNotes().slice(0, 2);
   const save = (): void => {
     const v = draft.trim();
@@ -266,7 +268,7 @@ export function NotesCard({
           }}
         />
         <div className="qn-f">
-          <span>روی گوشی هم دیده می‌شود</span>
+          <span>{signedIn ? "روی گوشی هم دیده می‌شود" : "روی همین مرورگر نگه داشته می‌شود"}</span>
           <button
             type="submit"
             className="qn-go"
@@ -277,7 +279,9 @@ export function NotesCard({
           </button>
         </div>
       </form>
-      {notes.length === 0 ? (
+      {notes.length === 0 && !signedIn ? (
+        <SignInHint head="یادداشت‌های گوشی‌ات، همین‌جا" place="notes" onSignIn={onSignIn} />
+      ) : notes.length === 0 ? (
         <div className="empty">هنوز یادداشتی نیست.</div>
       ) : (
         <div className="rlist" aria-label="یادداشت‌های اخیر">
@@ -292,6 +296,7 @@ export function NotesCard({
           ))}
         </div>
       )}
+      {!signedIn && notes.length > 0 && <SyncInvite onSignIn={onSignIn} />}
     </>
   );
 }

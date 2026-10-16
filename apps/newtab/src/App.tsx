@@ -6,6 +6,8 @@ import { DateLine } from "./home/DateLine";
 import { Dot } from "./home/Dot";
 import { Edge } from "./home/Edge";
 import { Launcher } from "./home/Launcher";
+import { NotesSlide } from "./home/NotesSlide";
+import { Rail, type SlideInfo } from "./home/Rail";
 import { SearchBox } from "./home/SearchBox";
 import { SignIn } from "./home/SignIn";
 import { useSession, useSettings } from "./hooks";
@@ -105,74 +107,103 @@ export function App() {
     };
   }, []); // only on opening the tab
   const cls = ["nt", entering ? "enter" : "", hinting ? "hinting" : ""].filter(Boolean).join(" ");
+  const scroller = useRef<HTMLDivElement>(null);
+  const slides: SlideInfo[] = [
+    { id: "s-home", icon: "home", name: "خانه" },
+    ...(isOn(s, "s-notes")
+      ? [{ id: "s-notes", icon: "sticker-note", name: "یادداشت‌ها" } as const]
+      : []),
+  ];
   const empty = new Set<string>();
 
   return (
     <div className={cls} style={{ "--bgc": theme.bg, "--tint": theme.tint } as React.CSSProperties}>
       <div className="wall" />
 
-      <main className="hero">
-        <Dot drawAfter={entering ? 0 : null} />
-        <SearchBox
-          signedIn={signedIn}
-          traceAfter={entering ? 350 : null}
-          onNeedSignIn={openSignIn}
-          onSaved={saved}
-        />
-        {isOn(s, "launcher") && <Launcher />}
-        {isOn(s, "dateline") && <DateLine />}
-      </main>
+      {/* the slides, one screen each, snapping into place as you scroll; the home is always first */}
+      <div className="slides" ref={scroller}>
+        <section className="slide" id="s-home" aria-label="خانه">
+          <main className="hero">
+            <Dot drawAfter={entering ? 0 : null} />
+            <SearchBox traceAfter={entering ? 350 : null} onSaved={saved} />
+            {isOn(s, "launcher") && <Launcher />}
+            {isOn(s, "dateline") && <DateLine />}
+          </main>
 
-      {isOn(s, "tasks") && (
-        <Corner
-          pos="tr"
-          icon="tick-square"
-          label="کارها"
-          pinned={pinned}
-          peek={peeks.tasks}
-          dot={dots.tasks}
-        >
-          <TasksCard signedIn={signedIn} fresh={peeks.tasks?.keys ?? empty} onSignIn={openSignIn} />
-        </Corner>
-      )}
-      {isOn(s, "notes") && (
-        <Corner
-          pos="tl"
-          icon="sticker-note"
-          label="یادداشت‌ها"
-          pinned={pinned}
-          peek={peeks.notes}
-          dot={dots.notes}
-        >
-          <NotesCard signedIn={signedIn} fresh={peeks.notes?.keys ?? empty} onSignIn={openSignIn} />
-        </Corner>
-      )}
-      {isOn(s, "today") && (
-        <Corner pos="bl" icon="calendar-face" label="امروز" pinned={pinned} peek={null} dot={false}>
-          <TodayCard />
-        </Corner>
-      )}
+          {isOn(s, "tasks") && (
+            <Corner
+              pos="tr"
+              icon="tick-square"
+              label="کارها"
+              pinned={pinned}
+              peek={peeks.tasks}
+              dot={dots.tasks}
+            >
+              <TasksCard
+                signedIn={signedIn}
+                fresh={peeks.tasks?.keys ?? empty}
+                onSignIn={openSignIn}
+              />
+            </Corner>
+          )}
+          {isOn(s, "notes") && (
+            <Corner
+              pos="tl"
+              icon="sticker-note"
+              label="یادداشت‌ها"
+              pinned={pinned}
+              peek={peeks.notes}
+              dot={dots.notes}
+            >
+              <NotesCard
+                signedIn={signedIn}
+                fresh={peeks.notes?.keys ?? empty}
+                onSignIn={openSignIn}
+              />
+            </Corner>
+          )}
+          {isOn(s, "today") && (
+            <Corner
+              pos="bl"
+              icon="calendar-face"
+              label="امروز"
+              pinned={pinned}
+              peek={null}
+              dot={false}
+            >
+              <TodayCard />
+            </Corner>
+          )}
 
-      <Edge
-        showBookmarks={isOn(s, "bookmarks")}
-        pinned={false}
-        onCustomize={() => {
-          setCustOpen(true);
-        }}
-      />
+          <Edge
+            showBookmarks={isOn(s, "bookmarks")}
+            pinned={false}
+            onCustomize={() => {
+              setCustOpen(true);
+            }}
+          />
 
-      {/* always in sight: the one way into «شخصی‌سازی» that needs no hunting */}
-      <button
-        type="button"
-        className="gear"
-        aria-label="شخصی‌سازی"
-        title="شخصی‌سازی"
-        onClick={() => {
-          setCustOpen(true);
-        }}
-      >
-        <Icon name="setting" />
-      </button>
+          {/* always in sight: the one way into «شخصی‌سازی» that needs no hunting */}
+          <button
+            type="button"
+            className="gear"
+            aria-label="شخصی‌سازی"
+            title="شخصی‌سازی"
+            onClick={() => {
+              setCustOpen(true);
+            }}
+          >
+            <Icon name="setting" />
+          </button>
+        </section>
+
+        {isOn(s, "s-notes") && (
+          <section className="slide" id="s-notes" aria-label="یادداشت‌ها">
+            <NotesSlide signedIn={signedIn} onSignIn={openSignIn} />
+          </section>
+        )}
+      </div>
+      <Rail slides={slides} scroller={scroller} />
 
       {custOpen && (
         <Customize
