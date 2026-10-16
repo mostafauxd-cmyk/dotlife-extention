@@ -188,7 +188,7 @@ export function App() {
           onClose={(created) => {
             setSignIn(null);
             if (created) {
-              setToast("حساب نقطه‌ات ساخته شد · همین حساب در پاکت هم کار می‌کند");
+              setToast("حساب نقطه‌ات ساخته شد");
               setTimeout(() => {
                 setToast(null);
               }, 3200);
