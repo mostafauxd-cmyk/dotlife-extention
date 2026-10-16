@@ -4254,6 +4254,8 @@ label.ts-line {
 .td-row {
   border-radius: var(--row-r);
   border-bottom-color: transparent;
+  /* the same space beside the check box as above and below it, so the lit row looks even */
+  padding: 10px 14px;
 }
 .task .t,
 .td-row .t {
@@ -4375,4 +4377,48 @@ a.ts-link {
 }
 .ts-seg[hidden] {
   display: none;
+}
+
+/* «اسلایدها» in the customize panel: a switch and up/down for each */
+.slist {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.srow3 {
+  display: flex;
+  align-items: stretch;
+  gap: 8px;
+}
+.srow3 .trow {
+  flex: 1;
+}
+.smove {
+  display: flex;
+  gap: 4px;
+}
+.smove button {
+  width: 40px;
+  border: 0;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--ink-2);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+}
+.smove button:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--ink);
+}
+.smove button:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+.smove .ico {
+  width: 18px;
+  height: 18px;
+}
+.ico.down {
+  transform: rotate(180deg);
 }

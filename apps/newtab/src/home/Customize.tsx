@@ -3,7 +3,17 @@ import { useEffect } from "react";
 import { useSession, useSettings, useSyncState } from "../hooks";
 import { signOut } from "../noghte/api";
 import { syncNow } from "../noghte/sync";
-import { BLOCKS, DEFAULTS, isOn, THEMES, toggleBlock, updateSettings } from "../settings";
+import {
+  BLOCKS,
+  DEFAULTS,
+  isOn,
+  moveSlide,
+  orderedSlides,
+  SLIDES,
+  THEMES,
+  toggleBlock,
+  updateSettings,
+} from "../settings";
 import { ago, fa } from "../ui/fa";
 import { Icon } from "../ui/Icon";
 
@@ -77,6 +87,48 @@ export function Customize({ onClose, onSignIn }: { onClose: () => void; onSignIn
               {name}
               <span className="sw" />
             </button>
+          ))}
+        </div>
+
+        <h3>اسلایدها</h3>
+        <div className="chint">زیر صفحه‌ی اول، به همین ترتیب. خانه همیشه اول است.</div>
+        <div className="slist">
+          {orderedSlides(s).map((id, i, all) => (
+            <div key={id} className="srow3">
+              <button
+                type="button"
+                className="trow"
+                aria-pressed={isOn(s, id)}
+                onClick={() => {
+                  toggleBlock(id);
+                }}
+              >
+                {SLIDES.find(([x]) => x === id)?.[1]}
+                <span className="sw" />
+              </button>
+              <span className="smove">
+                <button
+                  type="button"
+                  aria-label="بالاتر"
+                  disabled={i === 0}
+                  onClick={() => {
+                    moveSlide(id, -1);
+                  }}
+                >
+                  <Icon name="arrow-up" />
+                </button>
+                <button
+                  type="button"
+                  aria-label="پایین‌تر"
+                  disabled={i === all.length - 1}
+                  onClick={() => {
+                    moveSlide(id, 1);
+                  }}
+                >
+                  <Icon name="arrow-up" className="down" />
+                </button>
+              </span>
+            </div>
           ))}
         </div>
 

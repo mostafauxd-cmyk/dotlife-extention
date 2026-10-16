@@ -14,8 +14,9 @@ import { SignIn } from "./home/SignIn";
 import { TaskEditorHost } from "./home/TaskEditor";
 import { useSession, useSettings } from "./hooks";
 import { onArrival } from "./noghte/sync";
-import { isOn, themeOf, updateSettings } from "./settings";
+import { isOn, orderedSlides, SLIDES, themeOf, updateSettings, type SlideId } from "./settings";
 import { Icon } from "./ui/Icon";
+import type { IconName } from "./ui/icons";
 
 type Corners = "tasks" | "notes";
 
@@ -110,14 +111,22 @@ export function App() {
   }, []); // only on opening the tab
   const cls = ["nt", entering ? "enter" : "", hinting ? "hinting" : ""].filter(Boolean).join(" ");
   const scroller = useRef<HTMLDivElement>(null);
+  // the slides in the person's order; each one that is switched on and built gets a screen
+  const SLIDE_UI: Partial<Record<SlideId, { icon: IconName; node: React.ReactNode }>> = {
+    "s-plans": { icon: "calendar-face", node: <PlansSlide /> },
+    "s-notes": {
+      icon: "sticker-note",
+      node: <NotesSlide signedIn={signedIn} onSignIn={openSignIn} />,
+    },
+  };
+  const shownSlides = orderedSlides(s).filter((id) => isOn(s, id) && SLIDE_UI[id] !== undefined);
   const slides: SlideInfo[] = [
     { id: "s-home", icon: "home", name: "خانه" },
-    ...(isOn(s, "s-plans")
-      ? [{ id: "s-plans", icon: "calendar-face", name: "برنامه‌ها" } as const]
-      : []),
-    ...(isOn(s, "s-notes")
-      ? [{ id: "s-notes", icon: "sticker-note", name: "یادداشت‌ها" } as const]
-      : []),
+    ...shownSlides.map((id) => ({
+      id,
+      icon: SLIDE_UI[id]?.icon ?? "home",
+      name: SLIDES.find(([x]) => x === id)?.[1] ?? "",
+    })),
   ];
   const empty = new Set<string>();
 
@@ -202,17 +211,16 @@ export function App() {
           </button>
         </section>
 
-        {isOn(s, "s-plans") && (
-          <section className="slide" id="s-plans" aria-label="برنامه‌ها">
-            <PlansSlide />
+        {shownSlides.map((id) => (
+          <section
+            key={id}
+            className="slide"
+            id={id}
+            aria-label={SLIDES.find(([x]) => x === id)?.[1]}
+          >
+            {SLIDE_UI[id]?.node}
           </section>
-        )}
-
-        {isOn(s, "s-notes") && (
-          <section className="slide" id="s-notes" aria-label="یادداشت‌ها">
-            <NotesSlide signedIn={signedIn} onSignIn={openSignIn} />
-          </section>
-        )}
+        ))}
       </div>
       <Rail slides={slides} scroller={scroller} />
 
