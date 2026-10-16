@@ -45,6 +45,8 @@
   --cx: 16px;
   --cy: 12px;
   --ir: calc(var(--cr) - var(--cp));
+  /* a one-line row is too short for --ir (it would turn into a pill): a soft square instead */
+  --row-r: 14px;
 }
 * {
   box-sizing: border-box;
@@ -943,7 +945,7 @@ svg {
   align-items: center;
   gap: 12px;
   padding: 5px var(--cx);
-  border-radius: var(--ir);
+  border-radius: var(--row-r);
   transition: background 0.8s;
 }
 .task.fresh {
@@ -1122,7 +1124,7 @@ svg {
   display: flex;
   justify-content: space-between;
   padding: 10px 16px;
-  border-radius: var(--ir);
+  border-radius: var(--row-r);
   background: rgba(0, 0, 0, 0.18);
   font-size: 16px;
 }
@@ -1221,7 +1223,7 @@ svg {
   align-items: center;
   gap: 10px;
   padding: 7px var(--cx);
-  border-radius: var(--ir);
+  border-radius: var(--row-r);
   color: var(--ink);
   text-decoration: none;
   background: none;
