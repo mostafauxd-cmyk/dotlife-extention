@@ -271,14 +271,14 @@ button { font: inherit; color: inherit; }
 
 /* ---------- slide 3: news row ---------- */
 .s3 .s-pad { grid-template-rows: minmax(0,1fr) 258px; padding-block: 28px; gap: 18px; }
-.s3 .card { gap: 10px; padding: 20px 24px; }
+.s3 .card { gap: 8px; padding: 18px 24px; }
 .s3 .kpi .tot { font-size: 38px; }
 .s3 .px { padding: 3px 10px; }
 .news { grid-column: 1 / -1; }
 .pxh { display: flex; flex-direction: column; gap: 0; }
 .pxh .l1 { display: flex; justify-content: space-between; align-items: center; }
 .pxh .px-head b { font-size: 28px; line-height: 1.4; }
-.ncards { flex: 1; min-height: 0; display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+.ncards { flex: 1; min-height: 0; display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; }
 .ncard { font: inherit; color: var(--ink); text-align: start; cursor: pointer; border-radius: 20px; padding: 14px 16px; background: rgba(0,0,0,.22); border: 1px solid var(--stroke); display: flex; flex-direction: column; gap: 6px; min-width: 0; overflow: hidden; transition: background .2s; }
 .ncard:hover { background: rgba(255,255,255,.07); }
 .ncard .kh { display: flex; align-items: center; gap: 8px; }
@@ -320,7 +320,7 @@ button { font: inherit; color: inherit; }
 .ptools { margin-inline-start: auto; display: flex; align-items: center; gap: 8px; }
 .gsync { display: flex; align-items: center; gap: 8px; padding: 6px 14px 6px 10px; border-radius: 999px; border: 1px solid var(--stroke-hi); font-size: 15px; white-space: nowrap; }
 .gsync b { width: 24px; height: 24px; border-radius: 50%; background: #fff; color: #0B0D12; display: grid; place-items: center; font-size: 14px; font-weight: 700; }
-.side { padding: 18px 20px; gap: 10px; }
+.side { padding: 16px 20px; gap: 7px; }
 .mini-h { display: flex; align-items: baseline; justify-content: space-between; }
 .mini-h b { font-size: 19px; font-weight: 600; }
 .mini-h span { font-size: 13px; color: var(--ink-2); }
@@ -328,7 +328,7 @@ button { font: inherit; color: inherit; }
 .mini-wk { font-size: 13px; color: var(--ink-2); margin-top: 6px; }
 .mini-wk span:last-child { color: var(--coral); }
 .mini-g { row-gap: 2px; }
-.mini-g button { font: inherit; color: var(--ink); background: none; border: 0; height: 38px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px; font-size: 16px; position: relative; }
+.mini-g button { font: inherit; color: var(--ink); background: none; border: 0; height: 32px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px; font-size: 16px; position: relative; }
 .mini-g button.fri { color: var(--coral); }
 .mini-g button.inwk { background: rgba(255,255,255,.08); }
 .mini-g button.inwk.ws { border-start-start-radius: 12px; border-end-start-radius: 12px; }
@@ -336,14 +336,14 @@ button { font: inherit; color: inherit; }
 .mini-g button .nn { width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; line-height: 1; }
 .mini-g button.tdy .nn { background: #fff; color: #0B0D12; font-weight: 600; }
 .mini-g button i { position: absolute; bottom: 2px; width: 4px; height: 4px; border-radius: 50%; background: var(--amber); }
-.mini-g .pad { height: 38px; }
+.mini-g .pad { height: 32px; }
 .occl { display: flex; flex-direction: column; gap: 2px; }
 .occl button { font: inherit; color: var(--ink); background: none; border: 0; cursor: pointer; text-align: start; display: flex; gap: 10px; align-items: baseline; padding: 3px 8px; border-radius: 10px; font-size: 15px; }
 .occl button:hover { background: rgba(255,255,255,.06); }
 .occl button .dt { min-width: 50px; font-size: 13px; color: var(--ink-2); }
 .occl button.now { background: rgba(242,201,76,.10); }
 .cals { display: flex; flex-direction: column; gap: 2px; }
-.cals button { font: inherit; color: var(--ink); background: none; border: 0; cursor: pointer; display: flex; align-items: center; gap: 10px; padding: 3px 8px; border-radius: 10px; font-size: 15px; text-align: start; }
+.cals button { font: inherit; color: var(--ink); background: none; border: 0; cursor: pointer; display: flex; align-items: center; gap: 10px; padding: 1px 8px; border-radius: 10px; font-size: 15px; text-align: start; }
 .cals button:hover { background: rgba(255,255,255,.06); }
 .cals button .bx { width: 18px; height: 18px; border-radius: 6px; border: 2px solid; display: grid; place-items: center; flex: none; }
 .cals button .bx svg { width: 12px; height: 12px; color: #0B0D12; stroke-width: 3; }
@@ -444,6 +444,30 @@ button { font: inherit; color: inherit; }
 .b-v .dur { font-size: 14px; color: var(--ink-2); font-variant-numeric: tabular-nums; }
 .b-v .tr { font-size: 16px; color: var(--ink-2); line-height: 1.9; }
 
+/* ---------- extra ad slots ---------- */
+.toppill { height: 48px; display: flex; align-items: center; gap: 10px; padding: 0 18px; border-radius: 999px; font-size: 16px; white-space: nowrap; }
+.toppill svg { width: 18px; height: 18px; color: var(--amber); }
+.spev { display: flex; align-items: center; gap: 12px; border-radius: 16px; padding: 8px 10px; background: rgba(0,0,0,.22); border: 1px solid var(--stroke); }
+.spev .pst { width: 44px; height: 44px; border-radius: 12px; flex: none; background: linear-gradient(135deg, #7a3b5e, #2b3480); display: grid; place-items: center; font-size: 12px; font-weight: 700; }
+.spev div { display: flex; flex-direction: column; line-height: 1.5; min-width: 0; }
+.spev b { font-size: 15px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.spev span { font-size: 13px; color: var(--ink-2); }
+.spev button { margin-inline-start: auto; font: inherit; font-size: 13px; border-radius: 999px; border: 1px solid var(--stroke-hi); background: none; color: var(--ink); padding: 2px 10px; cursor: pointer; white-space: nowrap; }
+.occsp { margin: -2px 0 2px; padding: 2px 10px 2px 8px; margin-inline-start: 58px; white-space: nowrap; font-size: 13px; color: var(--ink-2); display: flex; gap: 8px; align-items: center; }
+.sprow { display: flex; align-items: center; gap: 12px; padding: 8px 12px; border-radius: 14px; font-size: 16px; }
+.sprow i { width: 10px; height: 10px; border-radius: 3px; background: var(--amber); }
+.sprow .tag { margin-inline-start: auto; }
+.spx { cursor: default; }
+.spx .tag { margin-inline-start: 4px; }
+.kind.ad { background: rgba(255,255,255,.10); color: var(--ink-2); }
+.adcard { border-style: dashed; border-color: var(--stroke-hi); }
+.tpl { margin-top: auto; border-radius: 18px; padding: 12px 14px; background: rgba(0,0,0,.22); border: 1px solid var(--stroke); display: flex; flex-direction: column; gap: 4px; }
+.tpl b { font-size: 16px; font-weight: 600; }
+.tpl > span:not(.sec) { font-size: 13px; color: var(--ink-2); display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+.tpl .chip { align-self: flex-start; font-size: 14px; padding: 3px 14px; margin-top: 4px; }
+.tpl + .newf { margin-top: 8px; }
+tr.grp td { background: rgba(255,255,255,.04); font-weight: 600; color: var(--ink); }
+
 /* ad-slot overlay */
 [data-slot] { position: relative; }
 .show-ads [data-slot] { outline: 2px dashed var(--ad); outline-offset: 5px; border-radius: 16px; }
@@ -522,6 +546,7 @@ td.them { color: var(--ink-2); }
             <div class="top">
               <div class="hello"><div class="avatar">ن</div><span id="greet">عصر بخیر، نسیم</span></div>
               <div class="end">
+                <a class="toppill g" data-slot="۶"><svg viewBox="0 0 24 24"><path d="M12 3l2.6 5.6 6 .7-4.5 4.1 1.2 6L12 16.4 6.7 19.4l1.2-6-4.5-4.1 6-.7z"/></svg>بلیت قطار مشهد از ۴۵۰ هزار تومان<span class="tag">معرفی‌شده</span></a>
                 <div class="sync g" id="sync"><i></i><span id="syncTxt">همگام با گوشی · زنده</span></div>
                 <button class="rbtn" aria-label="تنظیمات"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button>
               </div>
@@ -629,6 +654,7 @@ td.them { color: var(--ink-2); }
                 <div class="hr"></div>
                 <div class="sec">مناسبت‌ها</div>
                 <div class="occl" id="occl"></div>
+                <div class="spev" data-slot="۷"><span class="pst">کنسرت</span><div><b>ارکستر ملی، شب حافظ</b><span>جمعه ۱ آبان · تالار وحدت · معرفی‌شده</span></div><button>+ برنامه</button></div>
                 <div class="hr"></div>
                 <div class="sec">تقویم‌ها</div>
                 <div class="cals" id="cals"></div>
@@ -684,8 +710,9 @@ td.them { color: var(--ink-2); }
                 <div class="pxh"><div class="l1"><span id="pxName" class="sec">طلای ۱۸ عیار · گرم</span><span id="pxChg" class="chg dn">−۰٫۴۱٪</span></div><div class="px-head"><b id="pxVal">۲۶٬۲۲۷٬۰۰۰</b><span id="pxUnit" class="sec">تومان</span></div></div>
                 <div class="chart" id="pxChart"></div>
                 <div class="prices" id="prices"></div>
+                <div class="px spx" data-slot="۱۱"><span>صندوق طلا<span class="tag">نماد معرفی‌شده</span></span><span></span><span class="v">۴۸٬۲۰۰</span><span class="c up">+۰٫۹۰٪</span></div>
                 <div class="mine" style="margin-top:auto" title="۱۲ گرم طلا، ۲ سکه، ۵۰۰ دلار"><span>دارایی‌های من</span><span style="margin-inline-start:auto;white-space:nowrap"><b class="amt">۹۹۳٫۶ میلیون</b> <span class="up" style="font-size:14px">+۰٫۳۵٪</span></span></div>
-                <div class="partner" data-slot="۶"><b>خرید طلای آب‌شده</b> از ۱۰۰ هزار تومان<span class="tag">معرفی‌شده</span></div>
+                <div class="partner" data-slot="۱۰"><b>خرید طلای آب‌شده</b> از ۱۰۰ هزار تومان<span class="tag">معرفی‌شده</span></div>
               </div>
 
               <!-- news -->
@@ -710,6 +737,7 @@ td.them { color: var(--ink-2); }
               <aside class="card g folders">
                 <div class="card-h"><h2>یادداشت‌ها</h2><span class="app n" style="font-size:14px;color:var(--ink-2);display:flex;gap:6px;align-items:center;margin-inline-start:auto"><i style="width:8px;height:8px;border-radius:50%;background:var(--noghte);display:block"></i>نقطه</span></div>
                 <div class="flist" id="flist"></div>
+                <div class="tpl" data-slot="۱۳"><span class="sec">قالب پیشنهادی</span><b>چک‌لیست سفر شمال</b><span>از طرف یک آژانس سفر<span class="tag">معرفی‌شده</span></span><button class="chip">استفاده از قالب</button></div>
                 <button class="newf"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>پوشه‌ی تازه</button>
               </aside>
               <div class="card g nlist">
@@ -749,7 +777,7 @@ td.them { color: var(--ink-2); }
         <div><b>فولد اول خلوت، عمق با اسکرول</b><span>صفحه‌ی اول بدون اسکرول همه‌چیز را خلاصه نشان می‌دهد. تقویم کامل و پول کامل با یک اسکرول یا یک کلیک روی نوار کنار صفحه می‌آیند.</span></div>
         <div><b>فونت درشت</b><span>کوچک‌ترین متن ۱۳ پیکسل و فقط برای برچسب‌های فرعی است، متن اصلی ۱۷ و ۱۸ و ساعت ۱۰۸ با وزن نازک یکان بخ، مثل هیروی تقویم نقطه.</span></div>
         <div><b>داده‌ی خود کاربر</b><span>کارها، یادداشت‌ها، برنامه‌ی روز، حساب‌ها و دارایی‌های خود آدم. قیمت روز هم هست، ولی کنار ارزش طلا و سکه‌ای که خودش دارد.</span></div>
-        <div><b>تبلیغی که بنر نیست</b><span>شش جایگاه بومی، هر کدام با برچسب «معرفی‌شده»، سقف تکرار و هدف‌گیری بدون استفاده از داده‌ی شخصی.</span></div>
+        <div><b>تبلیغی که بنر نیست</b><span>۱۳ جایگاه بومی در چهار اسلاید، همه در حاشیه‌ها و بیرون از محتوای کاربر، با برچسب «معرفی‌شده» و حداکثر ۳ جایگاه هم‌زمان در هر اسلاید.</span></div>
       </div>
     </section>
 
@@ -778,7 +806,7 @@ td.them { color: var(--ink-2); }
           <tr><td>تسک و یادداشت</td><td class="them">محلی و خالی («هنوز تسکی ثبت نکردی»)</td><td>همان کارها و یادداشت‌های گوشی، دوطرفه و زنده</td></tr>
           <tr><td>تقویم</td><td class="them">تقویم کوچک کنار صفحه</td><td>نمای هفته‌ی گوگل‌کلندری با ساختن برنامه با کشیدن، به‌اضافه‌ی ماه کوچک، مناسبت‌ها، اوقات شرعی و قبض‌ها</td></tr>
           <tr><td>مالی</td><td class="them">قیمت طلا و ارز</td><td>قیمت روز و خبرهای اقتصادی پاکت، به‌اضافه‌ی حساب‌ها، بودجه، پیش‌بینی و ارزش دارایی‌های خود کاربر</td></tr>
-          <tr><td>تبلیغ</td><td class="them">بنر استخدام، پاپ‌آپ تخفیف با شمارش معکوس</td><td>کاشی، بوکمارک، والپیپر، پیشنهاد سرچ، خط مناسبت، دکمه‌ی همکار در قیمت روز</td></tr>
+          <tr><td>تبلیغ</td><td class="them">بنر استخدام، پاپ‌آپ تخفیف با شمارش معکوس</td><td>۱۳ جایگاه بومی در حاشیه‌ی چهار اسلاید، حداکثر ۳ تا هم‌زمان در هر اسلاید</td></tr>
         </tbody>
       </table></div>
     </section>
@@ -795,24 +823,37 @@ td.them { color: var(--ink-2); }
 
     <section>
       <h2>جایگاه‌های تبلیغ<small>با «نمایش جایگاه‌های تبلیغ» در ماک‌آپ، هر جایگاه با شماره‌اش مشخص می‌شود</small></h2>
+      <p>۱۳ جایگاه در چهار اسلاید. همه بومی‌اند، یعنی شکل و اندازه‌ی همان چیزی را دارند که کنارش نشسته‌اند و فقط برچسب «معرفی‌شده» فرقشان را نشان می‌دهد.</p>
       <div class="tbl"><table>
-        <thead><tr><th></th><th>جایگاه</th><th>شکل</th><th>سقف</th><th>هدف‌گیری</th></tr></thead>
+        <thead><tr><th></th><th>جایگاه</th><th>شکل</th><th>سقف</th><th>هدف‌گیری</th><th>مدل فروش</th></tr></thead>
         <tbody>
-          <tr><td class="n"><span class="num">۱</span></td><td>کاشی دسترسی سریع</td><td>یک کاشی هم‌شکل بقیه با نقطه‌ی کهربایی و برچسب در hover</td><td>۱ از ۸</td><td>پرسونا، شهر</td></tr>
-          <tr><td class="n"><span class="num">۲</span></td><td>بوکمارک قفسه</td><td>یک کپسول در قفسه‌ی پرسونا با برچسب «معرفی‌شده»</td><td>۱ در هر قفسه</td><td>پرسونا</td></tr>
-          <tr><td class="n"><span class="num">۳</span></td><td>والپیپر روز</td><td>تصویر پس‌زمینه‌ی برند، فقط با یک خط کردیت پایین صفحه</td><td>حداکثر ۱ روز در هفته؛ قابل خاموش کردن</td><td>همه</td></tr>
-          <tr><td class="n"><span class="num">۴</span></td><td>پیشنهاد سرچ</td><td>یک ردیف بین پیشنهادهای سرچ</td><td>۱ در هر جستجو</td><td>کلمه‌ی تایپ‌شده</td></tr>
-          <tr><td class="n"><span class="num">۵</span></td><td>خط مناسبت</td><td>یک جمله کنار مناسبت امروز</td><td>فقط روزهایی که مناسبت دارند</td><td>مناسبت، شهر</td></tr>
-          <tr><td class="n"><span class="num">۶</span></td><td>دکمه‌ی همکار در قیمت روز</td><td>یک دکمه‌ی کم‌رنگ زیر فهرست قیمت‌ها («خرید طلای آب‌شده از ۱۰۰ هزار تومان»)</td><td>۱ همکار در هر زمان</td><td>همه؛ بدون داده‌ی مالی کاربر</td></tr>
+          <tr class="grp"><td colspan="6">اسلاید ۱ · خانه</td></tr>
+          <tr><td class="n"><span class="num">۱</span></td><td>کاشی دسترسی سریع</td><td>یک کاشی هم‌شکل بقیه با نقطه‌ی کهربایی</td><td>۱ از ۸</td><td>پرسونا، شهر</td><td>هر کلیک</td></tr>
+          <tr><td class="n"><span class="num">۲</span></td><td>بوکمارک قفسه</td><td>یک کپسول در قفسه‌ی پرسونا</td><td>۱ در هر قفسه</td><td>پرسونا</td><td>هر کلیک</td></tr>
+          <tr><td class="n"><span class="num">۳</span></td><td>والپیپر روز</td><td>تصویر پس‌زمینه‌ی برند با یک خط کردیت</td><td>۱ روز در هفته؛ قابل خاموش کردن</td><td>همه</td><td>اسپانسر روزانه</td></tr>
+          <tr><td class="n"><span class="num">۴</span></td><td>پیشنهاد سرچ</td><td>یک ردیف بین پیشنهادهای سرچ</td><td>۱ در هر جستجو</td><td>کلمه‌ی تایپ‌شده</td><td>هر کلیک</td></tr>
+          <tr><td class="n"><span class="num">۵</span></td><td>خط مناسبت</td><td>یک جمله کنار مناسبت امروز</td><td>روزهای دارای مناسبت</td><td>مناسبت، شهر</td><td>اسپانسر روزانه</td></tr>
+          <tr><td class="n"><span class="num">۶</span></td><td>کپسول نوار بالا</td><td>یک کپسول شیشه‌ای کنار وضعیت سینک («بلیت قطار مشهد از ۴۵۰ هزار تومان»)</td><td>۱؛ چرخش روزانه</td><td>شهر، پرسونا، فصل</td><td>هر هزار نمایش</td></tr>
+          <tr class="grp"><td colspan="6">اسلاید ۲ · برنامه‌ها</td></tr>
+          <tr><td class="n"><span class="num">۷</span></td><td>رویداد شهر</td><td>کارت کوچک کنسرت، نمایش یا نمایشگاه با دکمه‌ی «+ برنامه» که آن را به تقویم اضافه می‌کند</td><td>۱</td><td>شهر، آخر هفته</td><td>هر خرید بلیت</td></tr>
+          <tr><td class="n"><span class="num">۸</span></td><td>پیشنهاد زیر مناسبت</td><td>یک خط کوچک زیر مناسبت مرتبط در فهرست مناسبت‌ها («روز ورزش ← کفش ورزشی»)</td><td>۱ در فهرست</td><td>مناسبت</td><td>اسپانسر مناسبت</td></tr>
+          <tr><td class="n"><span class="num">۹</span></td><td>ردیف سرچ برنامه‌ها</td><td>یک ردیف آخر نتایج سرچ برنامه‌ها</td><td>۱ در هر جستجو</td><td>کلمه‌ی تایپ‌شده</td><td>هر کلیک</td></tr>
+          <tr class="grp"><td colspan="6">اسلاید ۳ · پول</td></tr>
+          <tr><td class="n"><span class="num">۱۰</span></td><td>دکمه‌ی همکار</td><td>دکمه‌ی کم‌رنگ زیر قیمت‌ها («خرید طلای آب‌شده از ۱۰۰ هزار تومان»)</td><td>۱ همکار</td><td>همه</td><td>کارمزد هر خرید</td></tr>
+          <tr><td class="n"><span class="num">۱۱</span></td><td>نماد معرفی‌شده</td><td>یک ردیف در فهرست قیمت روز، مثل صندوق طلا یا صندوق درآمد ثابت</td><td>۱</td><td>همه</td><td>اسپانسر ماهانه</td></tr>
+          <tr><td class="n"><span class="num">۱۲</span></td><td>کارت آخر ردیف خبر</td><td>یک کارت جدا با حاشیه‌ی خط‌چین در انتهای ردیف خبرها، نه در میان آن‌ها</td><td>۱</td><td>همه</td><td>هر هزار نمایش</td></tr>
+          <tr class="grp"><td colspan="6">اسلاید ۴ · یادداشت‌ها</td></tr>
+          <tr><td class="n"><span class="num">۱۳</span></td><td>قالب پیشنهادی</td><td>کارت یک قالب یادداشت (چک‌لیست سفر، برنامه‌ی تمرین) در ستون پوشه‌ها؛ «استفاده» یک یادداشت تازه از روی آن می‌سازد</td><td>۱</td><td>پرسونا، فصل</td><td>اسپانسر ماهانه</td></tr>
         </tbody>
       </table></div>
       <h3>قانون‌ها</h3>
       <ul>
-        <li>هیچ تبلیغی کنار موجودی، خرج، بدهی یا دارایی کاربر و کنار کارها و یادداشت‌ها نمی‌آید. جایگاه ۶ فقط در بخش قیمت‌های عمومی بازار است.</li>
-        <li>ردیف خبرها محتوای تحریریه‌ی تیم پاکت است، نه تبلیغ: نه آگهی‌دهنده دارد، نه هدف‌گیری، نه سنجش (همان قاعده‌ی قرارداد <code>news</code> در پاکت). خبر پولی هرگز در این ردیف نمی‌آید.</li>
-        <li>هدف‌گیری هرگز از روی متن یادداشت، کار، تراکنش یا دارایی انجام نمی‌شود. فقط پرسونا، شهر، مناسبت و کلمه‌ی سرچ.</li>
-        <li>زیرساخت را از ماژول <code>advertising</code> پاکت برمی‌داریم: باندل امضاشده‌ی کمپین (ed25519)، رضایت کاربر (<code>/ads/consent</code>)، دکمه‌ی «چرا این را می‌بینم» (<code>/ads/why</code>) و ثبت رویداد بدون شناسه‌ی شخصی. انتخاب تبلیغ روی دستگاه انجام می‌شود.</li>
-        <li>بدون پاپ‌آپ، بدون شمارش معکوس، بدون بنر وسط صفحه. مشترک پاکت پلاس جایگاه‌های ۱ تا ۳ را نمی‌بیند.</li>
+        <li><b>بیرون از محتوای کاربر:</b> هیچ تبلیغی بین کارها، داخل جدول ساعت‌های برنامه‌ها، داخل فهرست یا ویرایشگر یادداشت، و کنار موجودی، خرج، بدهی یا دارایی کاربر نمی‌آید. جایگاه‌ها فقط در حاشیه‌اند: نوار بالا، ستون‌های کناری، سرچ و ردیف‌های عمومی مثل قیمت روز و خبر.</li>
+        <li><b>سقف هم‌زمان:</b> در هر اسلاید حداکثر ۳ جایگاه با هم پر می‌شوند. جایگاه فروخته‌نشده خالی می‌ماند یا با معرفی خود نقطه و پاکت پر می‌شود، هیچ‌وقت با تبلیغ پرکننده‌ی شبکه‌ای.</li>
+        <li><b>هدف‌گیری:</b> هرگز از روی متن یادداشت، کار، برنامه، تراکنش یا دارایی. فقط پرسونا، شهر، فصل، مناسبت و کلمه‌ی سرچ.</li>
+        <li><b>خبرها:</b> ردیف خبر محتوای تحریریه‌ی تیم پاکت است (قرارداد <code>news</code>: بدون آگهی‌دهنده، هدف‌گیری و سنجش). کارت ۱۲ از ماژول تبلیغ می‌آید، آخر ردیف می‌نشیند و با حاشیه‌ی خط‌چین و برچسب از خبرها جداست.</li>
+        <li><b>زیرساخت:</b> ماژول <code>advertising</code> پاکت: باندل امضاشده‌ی کمپین (ed25519)، رضایت کاربر (<code>/ads/consent</code>)، دکمه‌ی «چرا این را می‌بینم» (<code>/ads/why</code>) و ثبت رویداد بدون شناسه‌ی شخصی. انتخاب تبلیغ روی دستگاه انجام می‌شود. هر جایگاه در باندل یک شناسه‌ی ثابت دارد تا پنل ادمین جدا بفروشدش.</li>
+        <li><b>بدون</b> پاپ‌آپ، شمارش معکوس یا بنر وسط صفحه. مشترک پاکت پلاس هیچ جایگاهی را نمی‌بیند جز دکمه‌ی همکار (۱۰)، چون آن یک سرویس خرید است.</li>
       </ul>
     </section>
 
@@ -863,7 +904,7 @@ td.them { color: var(--ink-2); }
         <div class="ph"><b>فاز ۰ · طراحی<small>۱ هفته</small></b><span>نهایی کردن این ماک‌آپ در فیگما، لیست پرسوناها و قفسه‌ها، انتخاب منبع قیمت، تست سینک نقطه روی گوشی واقعی (هنوز انجام نشده و پیش‌نیاز همه‌چیز است).</span></div>
         <div class="ph"><b>فاز ۱ · خانه، برنامه‌ها و یادداشت‌ها<small>۴ هفته</small></b><span>اسلاید ۱، ۲ و ۴: ساعت و تاریخ، سرچ، دسترسی سریع، قفسه‌ی پرسونا، کارها و یادداشت‌های دوطرفه با pull هر ۱۵ ثانیه، نمای هفته با مناسبت و اوقات شرعی، اتصال تقویم گوگل و ساختن برنامه با کشیدن، ویرایشگر یادداشت، اتصال QR.</span></div>
         <div class="ph"><b>فاز ۲ · پول<small>۲ تا ۳ هفته</small></b><span>اسلاید ۳: <code>/v1/home/summary</code> و <code>/v1/market/prices</code>، نمودار خرج و قیمت، ارزش دارایی‌ها، ردیف خبرها از <code>/v1/news</code> موجود، قبض‌های پاکت داخل تقویم.</span></div>
-        <div class="ph"><b>فاز ۳ · زنده و تبلیغ<small>۲ هفته</small></b><span><code>/sync/wait</code>، ارسال فوری از گوشی، شش جایگاه تبلیغ با رضایت کاربر و گزارش در پنل ادمین.</span></div>
+        <div class="ph"><b>فاز ۳ · زنده و تبلیغ<small>۲ هفته</small></b><span><code>/sync/wait</code>، ارسال فوری از گوشی، ۱۳ جایگاه تبلیغ با رضایت کاربر و گزارش در پنل ادمین.</span></div>
         <div class="ph"><b>فاز ۴ · بعدی‌ها</b><span>Edge و Firefox، چیدمان قابل‌تنظیم، ثبت خرج از نیوتب، هشدار قیمت.</span></div>
       </div>
     </section>
@@ -1091,8 +1132,9 @@ td.them { color: var(--ink-2); }
   }
   function renderOcc() {
     const list = [];
-    for (let d = 19; d <= 31 && list.length < 5; d++) if (OCC[d]) list.push(d);
-    $("occl").innerHTML = list.map((d) => `<button data-d="${d}" class="${d === TODAY ? "now" : ""}"><span class="dt">${d === TODAY ? "امروز" : dayName(d)}</span>${OCC[d][0]}</button>`).join("");
+    for (let d = TODAY; d <= 31 && list.length < 3; d++) if (OCC[d]) list.push(d);
+    $("occl").innerHTML = list.map((d) => `<button data-d="${d}" class="${d === TODAY ? "now" : ""}"><span class="dt">${d === TODAY ? "امروز" : dayName(d)}</span>${OCC[d][0]}</button>`
+      + (d === 26 ? `<div class="occsp" data-slot="۸">کفش ورزشی ۲۰٪ تخفیف<span class="tag">معرفی‌شده</span></div>` : "")).join("");
   }
   const tick2 = '<svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
   function renderCals() {
@@ -1181,6 +1223,7 @@ td.them { color: var(--ink-2); }
     Object.entries(OCC).forEach(([d, l]) => l.forEach((t) => t.includes(q) && res.push({ k: "occ", d: +d, t, c: CALS.occ.color, m: dayName(+d) })));
     NOTES.forEach((n, i) => (n.title.includes(q) || noteText(n).includes(q)) && res.push({ k: "note", i, t: n.title, c: "#8C9EFF", m: "یادداشت" }));
     pdrop.innerHTML = res.length ? res.slice(0, 7).map((r, j) => `<button data-j="${j}"><i style="background:${r.c}"></i>${r.t}<span>${r.m}</span></button>`).join("") : `<div class="empty">چیزی با «${q}» پیدا نشد.</div>`;
+    pdrop.innerHTML += `<div class="sprow" data-slot="۹"><i></i>بلیت سینما و تئاتر این آخر هفته<span class="tag">معرفی‌شده</span></div>`;
     pdrop._res = res; pdrop.hidden = false;
   }
   pq.addEventListener("input", psearch);
@@ -1374,7 +1417,7 @@ td.them { color: var(--ink-2); }
     const [n, u, v, c, cur] = ASSETS[selA];
     $("pxName").textContent = u ? `${n} · ${u}` : n;
     $("pxVal").textContent = (cur === "دلار" ? "$" : "") + fmt(v); $("pxUnit").textContent = cur === "دلار" ? "" : "تومان";
-    const W = 400, H = 66, vals = series(selA + 11 + period, period === 365 ? 52 : period, v, period === 365 ? 0.9 : period === 30 ? 0.08 : 0.02);
+    const W = 400, H = 50, vals = series(selA + 11 + period, period === 365 ? 52 : period, v, period === 365 ? 0.9 : period === 30 ? 0.08 : 0.02);
     const pc = (vals.at(-1) / vals[0] - 1) * 100;
     $("pxChg").textContent = pct(pc) + (period === 7 ? " هفته" : period === 30 ? " ماه" : " سال"); $("pxChg").className = "chg " + (pc >= 0 ? "up" : "dn");
     const pts = sparkPath(vals, W, H, 4), col = pc >= 0 ? "#8ADD88" : "#F0817A";
@@ -1399,7 +1442,8 @@ td.them { color: var(--ink-2); }
   const KIND = { ipo: "عرضه‌ی اولیه", opportunity: "فرصت سرمایه‌گذاری", announcement: "اطلاعیه", offer: "پیشنهاد" };
   const pin = '<svg viewBox="0 0 24 24" aria-label="سنجاق‌شده"><path d="M9 4h6l-1 6 3 3H7l3-3z"/><path d="M12 13v7"/></svg>';
   $("ncards").innerHTML = NEWS.map((n, i) => `<button class="ncard" data-i="${i}"><span class="kh"><span class="kind ${n.kind}">${KIND[n.kind]}</span>${n.pinned ? pin : ""}</span>
-    <b>${n.title}</b><p>${n.summary}</p><span class="ft"><span>${n.t}</span><span>${n.cta} ←</span></span></button>`).join("");
+    <b>${n.title}</b><p>${n.summary}</p><span class="ft"><span>${n.t}</span><span>${n.cta} ←</span></span></button>`).join("")
+    + `<div class="ncard adcard" data-slot="۱۲"><span class="kh"><span class="kind ad">معرفی‌شده</span></span><b>سپرده‌ی روزشمار، برداشت هر روز بدون جریمه</b><p>افتتاح آنلاین در ۵ دقیقه.</p><span class="ft"><span>از طرف یک بانک</span><span>افتتاح حساب ←</span></span></div>`;
   let lastFocus = null;
   function openNews(i) {
     const n = NEWS[i]; lastFocus = document.activeElement;
@@ -1409,7 +1453,7 @@ td.them { color: var(--ink-2); }
     document.querySelector(".rail .bdg")?.remove();
   }
   const closeNews = () => { $("sheetBg").hidden = true; lastFocus?.focus?.(); };
-  $("ncards").addEventListener("click", (e) => { const b = e.target.closest(".ncard"); if (b) openNews(+b.dataset.i); });
+  $("ncards").addEventListener("click", (e) => { const b = e.target.closest("button.ncard"); if (b) openNews(+b.dataset.i); });
   $("shClose").addEventListener("click", closeNews);
   $("sheetBg").addEventListener("click", (e) => { if (e.target === $("sheetBg")) closeNews(); });
   document.addEventListener("keydown", (e) => { if (e.key === "Escape" && !$("sheetBg").hidden) closeNews(); });
