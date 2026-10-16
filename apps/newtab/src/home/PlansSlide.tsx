@@ -193,7 +193,7 @@ export function PlansSlide() {
           </b>
           <span>{sub}</span>
         </div>
-        <div className="ptabs" role="tablist" aria-label="نما">
+        <div className="ptabs morph" role="tablist" aria-label="نما">
           <button
             type="button"
             role="tab"
@@ -235,7 +235,7 @@ export function PlansSlide() {
         )}
         {view === "cal" && (
           <div className="ptools">
-            <div className="seg" role="radiogroup" aria-label="چند روز">
+            <div className="seg morph" role="radiogroup" aria-label="چند روز">
               {([1, 3, 7] as const).map((n) => (
                 <button
                   key={n}
@@ -660,7 +660,7 @@ function TodoView({
   return (
     <div className="card g todo">
       <div className="td-top">
-        <div className="td-f">
+        <div className="td-f morph">
           <button
             type="button"
             aria-pressed={only === null}

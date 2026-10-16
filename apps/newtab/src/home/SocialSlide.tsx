@@ -124,7 +124,7 @@ export function SocialSlide() {
     <div className="s-pad social-s">
       <div className="soc-top">
         <h2>شبکه‌ها</h2>
-        <div className="stabs" role="tablist" aria-label="سرویس‌ها">
+        <div className="stabs morph" role="tablist" aria-label="سرویس‌ها">
           {tabs.map((t) => (
             <button
               key={t.id}

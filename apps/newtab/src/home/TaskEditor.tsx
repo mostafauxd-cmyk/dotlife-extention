@@ -685,7 +685,7 @@ function Sheet({ input, onClose }: { input: EditorInput; onClose: () => void }) 
           </div>
           <div className="ts-div" />
 
-          <div className="ts-seg" role="radiogroup" aria-label="زمان" hidden={isEvent}>
+          <div className="ts-seg morph" role="radiogroup" aria-label="زمان" hidden={isEvent}>
             {(inShopping ? KINDS.filter((k) => k.kind !== "range") : KINDS).map((k) => (
               <button
                 key={k.kind}

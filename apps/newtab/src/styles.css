@@ -5011,3 +5011,45 @@ a.ts-link {
   line-height: 1.7;
   color: var(--ink-2);
 }
+
+/* the morphing tab pill (ui/morph.ts): the bar's own ::before, under the chosen item */
+.morph {
+  position: relative;
+  isolation: isolate;
+}
+.morph::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  top: var(--mt, 0);
+  left: var(--ml, 0);
+  width: var(--mw, 0);
+  height: var(--mh, 0);
+  opacity: var(--mo, 0);
+  border-radius: 999px;
+  background: #fff;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.22);
+  pointer-events: none;
+  transition: opacity 0.2s;
+}
+.morph > [aria-selected="true"],
+.morph > [aria-pressed="true"],
+.morph > [aria-checked="true"] {
+  background: transparent !important;
+  border-color: transparent !important;
+}
+.morph > * {
+  transition: color 0.3s ease;
+}
+.ts-seg.morph::before {
+  border-radius: 9px;
+  background: rgba(255, 255, 255, 0.14);
+  box-shadow: none;
+}
+.td-f.morph::before {
+  background: rgba(255, 255, 255, 0.1);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.18);
+}
+.morph:has(> :focus-visible)::before {
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--tint) 65%, transparent);
+}
