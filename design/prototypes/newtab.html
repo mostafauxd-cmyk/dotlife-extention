@@ -1,0 +1,632 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>میز نقطه و پاکت</title>
+<style>
+@font-face { font-family: "Yekan Bakh"; font-weight: 100; src: url("../fonts/Yekan_Bakh_Fanum_Thin.TTF") format("truetype"); }
+@font-face { font-family: "Yekan Bakh"; font-weight: 300; src: url("../fonts/Yekan_Bakh_Fanum_Light.TTF") format("truetype"); }
+@font-face { font-family: "Yekan Bakh"; font-weight: 400; src: url("../fonts/Yekan_Bakh_Fanum_Regular.TTF") format("truetype"); }
+@font-face { font-family: "Yekan Bakh"; font-weight: 500; src: url("../fonts/Yekan_Bakh_Fanum_Medium.TTF") format("truetype"); }
+@font-face { font-family: "Yekan Bakh"; font-weight: 600; src: url("../fonts/Yekan_Bakh_Fanum_Semi_Bold.TTF") format("truetype"); }
+@font-face { font-family: "Yekan Bakh"; font-weight: 700; src: url("../fonts/Yekan_Bakh_Fanum_Bold.TTF") format("truetype"); }
+/* Layout: the new tab itself is the hero (scaled 1440×900 canvas), the plan reads below it in one narrow column with wide tables. Dark-first, single look — نقطه's default skin. */
+:root {
+  color-scheme: dark;
+  --bg: #0B0B0C;
+  --ink: #F5F6F8;
+  --ink-2: #A7A7A7;
+  --ink-3: #6D6D6D;
+  --glass: rgba(255,255,255,.07);
+  --glass-hi: rgba(255,255,255,.11);
+  --stroke: rgba(255,255,255,.10);
+  --stroke-hi: rgba(255,255,255,.18);
+  --noghte: #8C9EFF;      /* نقطه default accent (indigo) */
+  --paket: #8ADD88;       /* پاکت brand green */
+  --amber: #F2C94C;
+  --coral: #FF6B57;
+  --ad: #F2C94C;          /* ad-slot outline in the mockup only */
+  --font: "Yekan Bakh", "Vazirmatn", Tahoma, system-ui, sans-serif;
+  --ease: cubic-bezier(.22,1,.36,1);
+}
+* { box-sizing: border-box; }
+html { background: var(--bg); }
+body {
+  margin: 0; background: var(--bg); color: var(--ink); font-family: var(--font);
+  font-size: 17px; line-height: 1.9; -webkit-font-smoothing: antialiased;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 40px 96px;
+}
+svg { stroke: currentColor; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+button { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--noghte); outline-offset: 3px; }
+
+/* ---------- page header ---------- */
+.wrap { max-width: 1280px; margin: 0 auto; display: flex; flex-direction: column; gap: 28px; }
+.head { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 16px 32px; }
+.head .eyebrow { color: var(--ink-2); font-size: 15px; letter-spacing: .02em; }
+.head h1 { margin: 0; font-weight: 300; font-size: clamp(40px, 6vw, 68px); line-height: 1.2; text-wrap: balance; }
+.head h1 b { font-weight: 600; }
+.head p { margin: 0; color: var(--ink-2); max-width: 46ch; }
+
+/* ---------- stage ---------- */
+.stage { position: relative; border-radius: 22px; overflow: hidden; background: #000;
+  box-shadow: 0 0 0 1px var(--stroke-hi), 0 40px 120px rgba(0,0,0,.6); }
+.chrome-bar { height: 40px; display: flex; align-items: center; gap: 10px; padding: 0 14px; background: #1b1c1f; direction: ltr; font-size: 13px; color: var(--ink-2); }
+.chrome-bar .dots { display: flex; gap: 7px; }
+.chrome-bar .dots i { width: 11px; height: 11px; border-radius: 50%; background: #3a3b40; display: block; }
+.chrome-bar .tab { background: #2a2b30; color: var(--ink); padding: 4px 14px; border-radius: 9px 9px 0 0; align-self: flex-end; height: 32px; display: flex; align-items: center; gap: 8px; }
+.chrome-bar .tab b { width: 8px; height: 8px; border-radius: 50%; background: var(--noghte); }
+.viewport { position: relative; overflow: hidden; }
+.canvas { width: 1440px; height: 900px; transform-origin: top left; position: absolute; top: 0; left: 0; direction: rtl; }
+.stage:fullscreen { border-radius: 0; display: flex; flex-direction: column; justify-content: center; }
+
+/* ---------- controls ---------- */
+.controls { display: flex; flex-wrap: wrap; gap: 12px 28px; align-items: center; }
+.ctl { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.ctl > span { color: var(--ink-2); font-size: 15px; margin-inline-end: 4px; }
+.chip { border: 1px solid var(--stroke-hi); background: var(--glass); border-radius: 999px; padding: 6px 16px; font-size: 15px; cursor: pointer; transition: background .2s, color .2s; }
+.chip:hover { background: var(--glass-hi); }
+.chip[aria-pressed="true"] { background: #fff; color: #0B0D12; border-color: #fff; font-weight: 600; }
+.chip.ad[aria-pressed="true"] { background: var(--ad); border-color: var(--ad); }
+.sw { width: 34px; height: 34px; border-radius: 11px; border: 2px solid transparent; cursor: pointer; padding: 0; }
+.sw[aria-pressed="true"] { border-color: #fff; }
+
+/* ================= THE NEW TAB (1440×900) ================= */
+.nt { position: absolute; inset: 0; font-size: 18px; line-height: 1.7; color: var(--ink); overflow: hidden; }
+.nt .wall { position: absolute; inset: 0; transition: background .6s var(--ease); }
+.nt .wall::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(4,6,12,.15), rgba(4,6,12,.55)); }
+.nt[data-wall="night"] .wall { background: radial-gradient(900px 600px at 78% 8%, #2b3480 0%, transparent 60%), radial-gradient(700px 520px at 12% 92%, #1b3b52 0%, transparent 60%), #0c1022; }
+.nt[data-wall="mist"]  .wall { background: radial-gradient(900px 600px at 20% 10%, #5b5f52 0%, transparent 60%), radial-gradient(800px 600px at 90% 90%, #3c4250 0%, transparent 60%), #24262b; }
+.nt[data-wall="dawn"]  .wall { background: radial-gradient(1000px 640px at 70% 0%, #c27a5a 0%, transparent 55%), radial-gradient(900px 600px at 10% 100%, #3d2b5e 0%, transparent 60%), #1e1830; }
+.nt > .in { position: relative; z-index: 1; height: 100%; display: grid; grid-template-rows: auto auto auto auto minmax(0,1fr) auto; justify-items: center; padding: 24px 56px 22px; gap: 0; }
+
+.g { background: rgba(255,255,255,.08); border: 1px solid var(--stroke);
+  backdrop-filter: blur(30px) saturate(150%); -webkit-backdrop-filter: blur(30px) saturate(150%);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.10), 0 16px 48px rgba(0,0,0,.28); }
+.rbtn { width: 48px; height: 48px; border-radius: 50%; display: grid; place-items: center; background: rgba(255,255,255,.10); border: 1px solid var(--stroke-hi); cursor: pointer; }
+.rbtn svg { width: 22px; height: 22px; }
+
+.top { width: 100%; display: flex; justify-content: space-between; align-items: center; }
+.hello { display: flex; align-items: center; gap: 14px; font-size: 20px; font-weight: 500; }
+.avatar { width: 48px; height: 48px; border-radius: 50%; background: linear-gradient(135deg, #8C9EFF, #CDB7FF); color: #0B0D12; display: grid; place-items: center; font-weight: 700; }
+.top .end { display: flex; gap: 10px; align-items: center; }
+.sync { display: flex; align-items: center; gap: 10px; height: 48px; padding: 0 18px; border-radius: 999px; font-size: 16px; color: var(--ink); }
+.sync i { width: 9px; height: 9px; border-radius: 50%; background: var(--paket); box-shadow: 0 0 0 0 rgba(138,221,136,.6); animation: beat 2.4s infinite; }
+.sync.flash i { background: var(--noghte); }
+@keyframes beat { 0% { box-shadow: 0 0 0 0 rgba(138,221,136,.55) } 70% { box-shadow: 0 0 0 10px rgba(138,221,136,0) } 100% { box-shadow: 0 0 0 0 rgba(138,221,136,0) } }
+
+.time { margin-top: -6px; text-align: center; display: flex; flex-direction: column; align-items: center; }
+.time .clock { font-size: 108px; font-weight: 200; line-height: 1.02; letter-spacing: -.02em; }
+.time .date { font-size: 26px; font-weight: 500; }
+.time .sub { display: flex; gap: 10px; align-items: center; margin-top: 4px; font-size: 16px; color: rgba(255,255,255,.78); }
+.pill { border-radius: 999px; padding: 3px 14px; background: rgba(255,255,255,.10); border: 1px solid var(--stroke); }
+.pill.occ { display: inline-flex; align-items: center; gap: 8px; }
+.pill.occ small { font-size: 15px; color: rgba(255,255,255,.62); border-inline-start: 1px solid var(--stroke-hi); padding-inline-start: 8px; }
+
+.search { margin-top: 20px; width: 760px; position: relative; }
+.search .bar { height: 64px; border-radius: 999px; display: flex; align-items: center; gap: 14px; padding: 0 26px 0 10px; }
+.search input { flex: 1; background: none; border: 0; outline: 0; color: var(--ink); font: inherit; font-size: 21px; }
+.search input::placeholder { color: rgba(255,255,255,.55); }
+.search .eng { width: 48px; height: 48px; border-radius: 50%; display: grid; place-items: center; background: #fff; color: #0B0D12; }
+.search .eng svg { width: 22px; height: 22px; }
+.drop { position: absolute; top: 72px; inset-inline: 0; border-radius: 26px; padding: 10px; z-index: 5; background: rgba(18,18,22,.86); }
+.drop .row { display: flex; align-items: center; gap: 14px; padding: 10px 16px; border-radius: 16px; font-size: 18px; }
+.drop .row:hover { background: rgba(255,255,255,.07); }
+.drop .row svg { width: 20px; height: 20px; color: var(--ink-2); flex: none; }
+.drop .row .k { color: var(--ink-2); font-size: 15px; margin-inline-start: auto; }
+.drop .sep { height: 1px; background: var(--stroke); margin: 6px 12px; }
+.tag { font-size: 13px; color: var(--ink-2); border: 1px solid var(--stroke-hi); border-radius: 999px; padding: 0 9px; line-height: 22px; }
+
+.quick { margin-top: 20px; display: flex; gap: 26px; }
+.q { width: 84px; display: flex; flex-direction: column; align-items: center; gap: 8px; font-size: 15px; color: rgba(255,255,255,.88); cursor: pointer; position: relative; }
+.q .ic { width: 64px; height: 64px; border-radius: 22px; display: grid; place-items: center; font-weight: 700; font-size: 24px; color: #fff; }
+.q .ic svg { width: 26px; height: 26px; }
+.q .spons { position: absolute; top: -4px; inset-inline-end: 6px; width: 10px; height: 10px; border-radius: 50%; background: var(--amber); border: 2px solid #1a1d2a; }
+
+.widgets { margin-top: 22px; width: 100%; max-width: 1260px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; min-height: 0; align-self: stretch; }
+.w { border-radius: 28px; padding: 18px 22px; display: flex; flex-direction: column; gap: 8px; min-height: 0; overflow: hidden; }
+.w h3 { margin: 0; display: flex; align-items: center; gap: 10px; font-size: 19px; font-weight: 600; }
+.w h3 .app { margin-inline-start: auto; font-size: 14px; font-weight: 500; color: var(--ink-2); display: flex; align-items: center; gap: 6px; }
+.w h3 .app i { width: 8px; height: 8px; border-radius: 50%; display: block; }
+.w h3 .app.n i { background: var(--noghte); }
+.w h3 .app.p i { background: var(--paket); }
+.w h3 button { border: 0; background: none; cursor: pointer; color: var(--ink-2); padding: 0; display: grid; }
+.w h3 button svg { width: 20px; height: 20px; }
+
+.tasks { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 2px; }
+.task { display: flex; align-items: center; gap: 12px; padding: 5px 6px; border-radius: 14px; transition: background .8s; }
+.task.new { background: rgba(140,158,255,.18); }
+.task .cb { width: 24px; height: 24px; border-radius: 50%; border: 1.8px solid rgba(255,255,255,.55); flex: none; display: grid; place-items: center; cursor: pointer; background: none; padding: 0; }
+.task .cb svg { width: 14px; height: 14px; opacity: 0; color: #0B0D12; stroke-width: 2.6; }
+.task.done .cb { background: #fff; border-color: #fff; }
+.task.done .cb svg { opacity: 1; }
+.task.done .t { color: var(--ink-3); text-decoration: line-through; }
+.task .t { flex: 1; font-size: 18px; }
+.task .m { font-size: 15px; color: var(--ink-2); font-variant-numeric: tabular-nums; }
+.task .from { font-size: 13px; color: var(--noghte); }
+.add { margin-top: auto; height: 48px; border-radius: 999px; background: rgba(0,0,0,.28); border: 1px solid var(--stroke); display: flex; align-items: center; padding: 0 18px; gap: 10px; }
+.add input { flex: 1; background: none; border: 0; outline: 0; color: var(--ink); font: inherit; font-size: 17px; }
+.add input::placeholder { color: rgba(255,255,255,.5); }
+.add svg { width: 20px; height: 20px; color: var(--ink-2); }
+
+.note { border-radius: 18px; background: rgba(0,0,0,.22); border: 1px solid var(--stroke); padding: 12px 16px; }
+.note .nt-title { font-weight: 600; font-size: 18px; }
+.note ul { list-style: none; margin: 4px 0 0; padding: 0; font-size: 16px; color: rgba(255,255,255,.8); }
+.note li { display: flex; gap: 10px; align-items: center; }
+.note li i { width: 14px; height: 14px; border-radius: 4px; border: 1.6px solid rgba(255,255,255,.5); flex: none; }
+.note li.ok i { background: var(--noghte); border-color: var(--noghte); }
+.note .meta { font-size: 14px; color: var(--ink-2); margin-top: 6px; }
+.notes-more { display: flex; gap: 8px; flex-wrap: wrap; font-size: 15px; }
+.notes-more span { padding: 2px 12px; border-radius: 999px; background: rgba(255,255,255,.07); color: rgba(255,255,255,.85); }
+
+.money { font-variant-numeric: tabular-nums; }
+.money .big { font-size: 38px; font-weight: 300; line-height: 1.2; }
+.money .big small { font-size: 17px; color: var(--ink-2); margin-inline-start: 6px; }
+.money .lbl { font-size: 15px; color: var(--ink-2); }
+.bud { display: flex; flex-direction: column; gap: 6px; }
+.bud .track { height: 8px; border-radius: 99px; background: rgba(255,255,255,.12); overflow: hidden; }
+.bud .track b { display: block; height: 100%; width: 70%; border-radius: 99px; background: var(--paket); }
+.bud .row { display: flex; justify-content: space-between; font-size: 15px; color: var(--ink-2); }
+.bills { display: flex; flex-direction: column; gap: 4px; }
+.bill { display: flex; justify-content: space-between; align-items: center; font-size: 17px; }
+.bill .d { font-size: 14px; color: var(--amber); margin-inline-start: 8px; }
+.pend { margin-top: auto; display: flex; align-items: center; gap: 10px; font-size: 15px; color: var(--ink-2); }
+.pend b { background: var(--paket); color: #0B1A0B; border-radius: 99px; padding: 0 9px; font-size: 14px; }
+.hide-money .amt { filter: blur(9px); }
+
+.shelf { margin-top: 16px; display: flex; align-items: center; gap: 10px; flex-wrap: nowrap; padding: 8px 10px 8px 8px; border-radius: 999px; max-width: 100%; }
+.shelf .who { padding: 6px 16px; border-radius: 999px; background: #fff; color: #0B0D12; font-weight: 600; font-size: 16px; display: flex; align-items: center; gap: 8px; white-space: nowrap; }
+.shelf .who svg { width: 16px; height: 16px; }
+.bm { display: flex; align-items: center; gap: 8px; padding: 6px 14px; border-radius: 999px; font-size: 16px; color: rgba(255,255,255,.9); white-space: nowrap; position: relative; }
+.bm:hover { background: rgba(255,255,255,.08); }
+.bm .f { width: 22px; height: 22px; border-radius: 7px; display: grid; place-items: center; font-size: 12px; font-weight: 700; color: #fff; }
+.bm .tag { margin-inline-start: 2px; }
+.credit { position: absolute; bottom: 30px; inset-inline-end: 56px; font-size: 13px; color: rgba(255,255,255,.6); z-index: 1; }
+
+/* ad-slot overlay */
+[data-slot] { position: relative; }
+.show-ads [data-slot] { outline: 2px dashed var(--ad); outline-offset: 5px; border-radius: 16px; }
+.show-ads [data-slot]::before { content: attr(data-slot); position: absolute; top: -14px; inset-inline-start: -12px; width: 26px; height: 26px; border-radius: 50%; background: var(--ad); color: #0B0D12; font-weight: 700; font-size: 15px; display: grid; place-items: center; z-index: 9; line-height: 1; }
+
+/* ---------- plan ---------- */
+.plan { max-width: 980px; margin: 32px auto 0; display: flex; flex-direction: column; gap: 56px; }
+.plan section { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+.plan h2 { margin: 0; font-size: 30px; font-weight: 600; line-height: 1.4; text-wrap: balance; }
+.plan h2 small { display: block; font-size: 15px; font-weight: 400; color: var(--ink-2); }
+.plan h3 { margin: 10px 0 0; font-size: 21px; font-weight: 600; }
+.plan p, .plan li { max-width: 68ch; }
+.plan p { margin: 0; color: rgba(245,246,248,.9); }
+.plan ul, .plan ol { margin: 0; padding-inline-start: 1.3em; display: flex; flex-direction: column; gap: 6px; }
+.plan code { font-family: ui-monospace, "SFMono-Regular", Menlo, monospace; font-size: .86em; background: var(--glass-hi); padding: 1px 7px; border-radius: 7px; direction: ltr; unicode-bidi: isolate; }
+.principles { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 14px; }
+.principles div { border-top: 1px solid var(--stroke-hi); padding-top: 12px; display: flex; flex-direction: column; gap: 4px; }
+.principles b { font-size: 19px; font-weight: 600; }
+.principles span { color: var(--ink-2); font-size: 16px; line-height: 1.8; }
+.tbl { overflow-x: auto; border: 1px solid var(--stroke); border-radius: 22px; }
+table { border-collapse: collapse; width: 100%; min-width: 640px; font-size: 16px; }
+th, td { text-align: right; padding: 12px 16px; vertical-align: top; border-bottom: 1px solid var(--stroke); }
+th { color: var(--ink-2); font-weight: 500; font-size: 15px; background: rgba(255,255,255,.03); }
+tr:last-child td { border-bottom: 0; }
+td.n { width: 44px; }
+.num { display: inline-grid; place-items: center; width: 26px; height: 26px; border-radius: 50%; background: var(--ad); color: #0B0D12; font-weight: 700; font-size: 15px; line-height: 1; }
+td.them { color: var(--ink-2); }
+.flow { display: grid; grid-template-columns: 1fr auto 1fr auto 1fr; gap: 10px; align-items: stretch; }
+.flow .node { border: 1px solid var(--stroke-hi); background: var(--glass); border-radius: 22px; padding: 14px 16px; display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.flow .node b { font-size: 18px; }
+.flow .node span { font-size: 15px; color: var(--ink-2); line-height: 1.8; }
+.flow .arr { display: grid; place-items: center; color: var(--ink-2); font-size: 14px; text-align: center; }
+.flow .arr svg { width: 26px; height: 26px; }
+.phases { display: flex; flex-direction: column; gap: 0; border-inline-start: 2px solid var(--stroke-hi); margin-inline-start: 8px; }
+.ph { position: relative; padding: 0 26px 22px; display: flex; flex-direction: column; gap: 4px; }
+.ph::before { content: ""; position: absolute; inset-inline-start: -8px; top: 9px; width: 14px; height: 14px; border-radius: 50%; background: var(--bg); border: 2px solid var(--noghte); }
+.ph b { font-size: 19px; }
+.ph b small { font-weight: 400; color: var(--ink-2); font-size: 15px; margin-inline-start: 8px; }
+.ph span { color: rgba(245,246,248,.85); font-size: 16px; }
+.note-box { border: 1px solid var(--stroke-hi); border-radius: 22px; padding: 16px 20px; background: var(--glass); }
+
+@media (max-width: 720px) {
+  body { font-size: 16px; padding-block: 24px 64px; }
+  .flow { grid-template-columns: 1fr; }
+  .flow .arr { transform: rotate(-90deg); height: 28px; }
+  .plan h2 { font-size: 25px; }
+}
+@media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+</style>
+</head>
+<body>
+<div class="wrap" dir="rtl">
+  <header class="head">
+    <div>
+      <div class="eyebrow">پیش‌نویس پلن · نیوتب کروم · ۲۴ مهر ۱۴۰۵</div>
+      <h1><b>میز</b> نقطه و پاکت</h1>
+    </div>
+    <p>صفحه‌ی نیوتب کروم که کارها و یادداشت‌های نقطه و وضعیت پول پاکت را کنار سرچ می‌آورد. هر چیزی که کاربر روی گوشی بنویسد، چند ثانیه بعد همین‌جاست. ماک‌آپ زیر کار می‌کند: کار اضافه کنید، روی سرچ کلیک کنید، پرسونا را عوض کنید.</p>
+  </header>
+
+  <div class="stage" id="stage">
+    <div class="chrome-bar"><div class="dots"><i></i><i></i><i></i></div><div class="tab"><b></b>میز</div></div>
+    <div class="viewport" id="vp">
+      <div class="canvas" id="canvas">
+        <div class="nt" id="nt" data-wall="night">
+          <div class="wall"></div>
+          <div class="in">
+            <div class="top">
+              <div class="hello"><div class="avatar">ن</div><span id="greet">عصر بخیر، نسیم</span></div>
+              <div class="end">
+                <div class="sync g" id="sync"><i></i><span id="syncTxt">همگام با گوشی · زنده</span></div>
+                <button class="rbtn" aria-label="تنظیمات"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button>
+              </div>
+            </div>
+
+            <div class="time">
+              <div class="clock" id="clock">۱۴:۲۱</div>
+              <div class="date">جمعه ۲۴ مهر ۱۴۰۵</div>
+              <div class="sub">
+                <span>۱۶ اکتبر ۲۰۲۶</span><span>·</span><span>۴ جمادی‌الاول ۱۴۴۸</span>
+                <span class="pill occ" data-slot="۵">روز جهانی غذا <small>شام امشب با ۲۰٪ تخفیف · معرفی‌شده</small></span>
+              </div>
+            </div>
+
+            <div class="search" id="search">
+              <div class="bar g">
+                <svg viewBox="0 0 24 24" style="width:24px;height:24px;color:rgba(255,255,255,.7)"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+                <input id="q" placeholder="جستجو در وب، کارها و یادداشت‌ها…" autocomplete="off">
+                <div class="eng" title="موتور جستجوی پیش‌فرض کروم"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg></div>
+              </div>
+              <div class="drop g" id="drop" hidden>
+                <div class="row"><svg viewBox="0 0 24 24"><path d="M9 11l3 3 8-8"/><path d="M20 12v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h9"/></svg><span id="dq1">کار: تمدید بیمه‌ی ماشین</span><span class="k">نقطه</span></div>
+                <div class="row"><svg viewBox="0 0 24 24"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6M8 13h8M8 17h5"/></svg><span>یادداشت: ایده‌های کمپین پاییز</span><span class="k">نقطه</span></div>
+                <div class="sep"></div>
+                <div class="row"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><span>قیمت دلار امروز</span></div>
+                <div class="row"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><span>سامانه‌ی مودیان</span></div>
+                <div class="row" data-slot="۴"><svg viewBox="0 0 24 24"><path d="M12 3l2.6 5.6 6 .7-4.5 4.1 1.2 6L12 16.4 6.7 19.4l1.2-6-4.5-4.1 6-.7z"/></svg><span>بیمه‌ی بدنه‌ی آنلاین، استعلام در ۲ دقیقه</span><span class="k"><span class="tag">معرفی‌شده</span></span></div>
+              </div>
+            </div>
+
+            <div class="quick" id="quick"></div>
+
+            <div class="widgets">
+              <!-- نقطه: کارها -->
+              <div class="w g">
+                <h3>کارهای امروز <span class="app n"><i></i>نقطه</span></h3>
+                <ul class="tasks" id="tasks"></ul>
+                <form class="add" id="addForm">
+                  <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+                  <input id="addInput" placeholder="کار جدید…" autocomplete="off">
+                </form>
+              </div>
+              <!-- نقطه: یادداشت -->
+              <div class="w g">
+                <h3>یادداشت‌ها <span class="app n"><i></i>نقطه</span></h3>
+                <div class="note">
+                  <div class="nt-title">ایده‌های کمپین پاییز</div>
+                  <ul>
+                    <li class="ok"><i></i>بنر «بازگشت به مدرسه»</li>
+                    <li class="ok"><i></i>هماهنگی با تیم محتوا</li>
+                  </ul>
+                  <div class="meta">سنجاق‌شده · ویرایش روی گوشی، ۱۰ دقیقه پیش</div>
+                </div>
+                <div class="notes-more"><span>لیست خرید</span><span>صورت‌جلسه‌ی شنبه</span><span>کتاب‌ها</span></div>
+                <div class="add" style="margin-top:auto"><svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg><input placeholder="یادداشت سریع…" aria-label="یادداشت سریع"></div>
+              </div>
+              <!-- پاکت -->
+              <div class="w g money" id="money">
+                <h3><button id="eye" aria-label="پنهان کردن مبالغ"><svg viewBox="0 0 24 24"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></button>پول من <span class="app p"><i></i>پاکت</span></h3>
+                <div>
+                  <div class="lbl">خرج امروز</div>
+                  <div class="big"><span class="amt">۴۸۵٬۰۰۰</span><small>تومان</small></div>
+                </div>
+                <div class="bud">
+                  <div class="track"><b></b></div>
+                  <div class="row"><span>بودجه‌ی مهر</span><span class="amt">۸٫۴ از ۱۲ میلیون</span></div>
+                </div>
+                <div class="bills">
+                  <div class="bill"><span>قبض برق <span class="d">۲ روز دیگر</span></span><span class="amt">۳۱۲٬۰۰۰</span></div>
+                  <div class="bill"><span>قسط وام <span class="d" style="color:var(--ink-2)">۵ آبان</span></span><span class="amt">۴٬۲۰۰٬۰۰۰</span></div>
+                </div>
+                <div class="pend"><b>۳</b> پیامک بانکی منتظر تأیید در پاکت</div>
+              </div>
+            </div>
+
+            <div class="shelf g" id="shelf"></div>
+          </div>
+          <div class="credit" id="credit" hidden data-slot="۳">والپیپر امروز: کمپین «پاییز» · معرفی‌شده</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="controls">
+    <div class="ctl" id="personas"><span>پرسونا:</span></div>
+    <div class="ctl"><span>پس‌زمینه:</span>
+      <button class="sw" data-wall="night" aria-pressed="true" aria-label="شب" style="background:radial-gradient(circle at 70% 20%,#2b3480,#0c1022)"></button>
+      <button class="sw" data-wall="mist" aria-pressed="false" aria-label="مه" style="background:radial-gradient(circle at 20% 20%,#5b5f52,#24262b)"></button>
+      <button class="sw" data-wall="dawn" aria-pressed="false" aria-label="سحر (اسپانسری)" style="background:radial-gradient(circle at 70% 0%,#c27a5a,#1e1830)"></button>
+    </div>
+    <div class="ctl">
+      <button class="chip ad" id="adsBtn" aria-pressed="false">نمایش جایگاه‌های تبلیغ</button>
+      <button class="chip" id="phoneBtn" aria-pressed="false">ثبت یک کار از گوشی</button>
+      <button class="chip" id="fsBtn" aria-pressed="false">اندازه‌ی واقعی</button>
+    </div>
+  </div>
+
+  <!-- ====================== PLAN ====================== -->
+  <main class="plan">
+    <section>
+      <h2>اصول<small>چیزهایی که در هر تصمیم طراحی و فنی رعایت می‌شود</small></h2>
+      <div class="principles">
+        <div><b>سه ویجت، نه دوازده</b><span>صفحه فقط ساعت و تاریخ، سرچ، ۸ دسترسی سریع، سه ویجت و یک قفسه‌ی بوکمارک دارد. بقیه‌ی ابزارها در تنظیمات قابل‌انتخاب‌اند و جای یکی از سه ویجت را می‌گیرند.</span></div>
+        <div><b>فونت درشت</b><span>کوچک‌ترین متن ۱۵ پیکسل است، متن اصلی ۱۸ و ساعت ۱۰۸ با وزن نازک یکان بخ. درست مثل هیروی تقویم نقطه.</span></div>
+        <div><b>داده‌ی خود کاربر</b><span>به‌جای قیمت طلا و خبر، کارها، یادداشت‌ها و پول خود آدم را نشان می‌دهیم. همین چیزی است که دستیار ندارد.</span></div>
+        <div><b>تبلیغی که بنر نیست</b><span>پنج جایگاه بومی، هر کدام با برچسب «معرفی‌شده»، سقف تکرار و هدف‌گیری فقط با پرسونا و شهر.</span></div>
+      </div>
+    </section>
+
+    <section>
+      <h2>میز در برابر دستیار</h2>
+      <div class="tbl"><table>
+        <thead><tr><th></th><th>دستیار (اسکرین‌شات‌ها)</th><th>میز</th></tr></thead>
+        <tbody>
+          <tr><td>تعداد بلوک روی صفحه</td><td class="them">۱۲+ ویجت، تب‌های دسته‌بندی، اسکرول</td><td>یک صفحه، بدون اسکرول</td></tr>
+          <tr><td>کوچک‌ترین متن</td><td class="them">حدود ۱۱ پیکسل</td><td>۱۵ پیکسل؛ متن اصلی ۱۸</td></tr>
+          <tr><td>تسک و یادداشت</td><td class="them">محلی و خالی («هنوز تسکی ثبت نکردی»)</td><td>همان کارها و یادداشت‌های گوشی، دوطرفه و زنده</td></tr>
+          <tr><td>مالی</td><td class="them">قیمت طلا و ارز</td><td>خرج امروز، بودجه، قبض‌های پیشِ رو از پاکت</td></tr>
+          <tr><td>تبلیغ</td><td class="them">بنر استخدام، پاپ‌آپ تخفیف با شمارش معکوس</td><td>کاشی، بوکمارک، والپیپر، پیشنهاد سرچ، خط مناسبت</td></tr>
+          <tr><td>سبک</td><td class="them">کارت‌های خاکستری کدر روی آبی روشن</td><td>شیشه‌ی تیره‌ی نقطه روی والپیپر، کپسول سفید برای حالت فعال</td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <section>
+      <h2>چیدمان صفحه<small>از بالا به پایین، همه وسط‌چین و در یک صفحه</small></h2>
+      <ol>
+        <li><b>نوار بالا:</b> سلام با اسم کاربر، وضعیت همگام‌سازی («همگام با گوشی · زنده»)، دکمه‌ی تنظیمات.</li>
+        <li><b>ساعت و تاریخ:</b> ساعت ۱۰۸ پیکسلی، تاریخ شمسی، میلادی و قمری از <code>@dotlife/calendar-core</code> و مناسبت امروز از <code>event-data</code>. اوقات شرعی فقط اگر کاربر در نقطه روشنش کرده باشد.</li>
+        <li><b>سرچ:</b> ۷۶۰ پیکسل عرض، ۶۸ ارتفاع، متن ۲۱. هم‌زمان در کارها و یادداشت‌های خود کاربر (روی دستگاه) و پیشنهادهای وب می‌گردد. ارسال با <code>chrome.search.query</code> به موتور پیش‌فرض خود کاربر.</li>
+        <li><b>دسترسی سریع:</b> حداکثر ۸ کاشی؛ ۶ تا از سایت‌های پربازدید کاربر (<code>chrome.topSites</code>)، یکی اسپانسری، یکی «افزودن».</li>
+        <li><b>سه ویجت:</b> کارهای امروز (نقطه)، یادداشت‌ها (نقطه)، پول من (پاکت). کاربر می‌تواند هر کدام را با تقویم ماه، اوقات شرعی یا لیست خرید عوض کند.</li>
+        <li><b>قفسه‌ی پرسونا:</b> یک ردیف کپسولی پایین صفحه با ۶ تا ۷ بوکمارک مخصوص نقش شغلی.</li>
+      </ol>
+    </section>
+
+    <section>
+      <h2>پرسونا و بوکمارک‌های اختصاصی</h2>
+      <p>اولین بار که تب باز می‌شود یک سؤال می‌پرسیم: «بیشتر وقتت پشت سیستم صرف چه کاری می‌شود؟» با ۶ گزینه‌ی بزرگ. جواب در تنظیمات شخصی‌سازی نقطه به‌عنوان یک فیلد تازه، <code>profile.role</code>، ذخیره و سینک می‌شود. پس گوشی هم نقش کاربر را می‌داند و بعدها می‌تواند پیشنهادهای خودش را بدهد.</p>
+      <p>محتوای قفسه‌ها مثل مناسبت‌ها و پروموها از سرور می‌آید (<code>packages/content</code>) و از پنل ادمین عوض می‌شود، بدون انتشار نسخه‌ی جدید. کاربر هر بوکمارک را می‌تواند حذف یا سنجاق کند و بوکمارک خودش را اضافه کند.</p>
+      <div class="tbl"><table>
+        <thead><tr><th>پرسونا</th><th>نمونه‌ی قفسه</th><th>ویجت پیش‌فرض متفاوت</th></tr></thead>
+        <tbody id="personaTable"></tbody>
+      </table></div>
+    </section>
+
+    <section>
+      <h2>جایگاه‌های تبلیغ<small>با «نمایش جایگاه‌های تبلیغ» در ماک‌آپ، هر جایگاه با شماره‌اش مشخص می‌شود</small></h2>
+      <div class="tbl"><table>
+        <thead><tr><th></th><th>جایگاه</th><th>شکل</th><th>سقف</th><th>هدف‌گیری</th></tr></thead>
+        <tbody>
+          <tr><td class="n"><span class="num">۱</span></td><td>کاشی دسترسی سریع</td><td>یک کاشی هم‌شکل بقیه با نقطه‌ی کهربایی و برچسب در hover</td><td>۱ از ۸</td><td>پرسونا، شهر</td></tr>
+          <tr><td class="n"><span class="num">۲</span></td><td>بوکمارک قفسه</td><td>یک کپسول در قفسه‌ی پرسونا با برچسب «معرفی‌شده»</td><td>۱ در هر قفسه</td><td>پرسونا</td></tr>
+          <tr><td class="n"><span class="num">۳</span></td><td>والپیپر روز</td><td>تصویر پس‌زمینه‌ی برند، فقط با یک خط کردیت پایین صفحه</td><td>حداکثر ۱ روز در هفته؛ کاربر می‌تواند خاموش کند</td><td>همه</td></tr>
+          <tr><td class="n"><span class="num">۴</span></td><td>پیشنهاد سرچ</td><td>یک ردیف بین پیشنهادهای سرچ</td><td>۱ در هر جستجو</td><td>کلمه‌ی تایپ‌شده</td></tr>
+          <tr><td class="n"><span class="num">۵</span></td><td>خط مناسبت</td><td>یک جمله کنار مناسبت امروز («روز جهانی غذا · شام امشب با ۲۰٪ تخفیف»)</td><td>فقط روزهایی که مناسبت دارند</td><td>مناسبت، شهر</td></tr>
+        </tbody>
+      </table></div>
+      <h3>قانون‌ها</h3>
+      <ul>
+        <li>هیچ تبلیغی داخل ویجت پاکت یا کنار کارها و یادداشت‌ها نمی‌آید. اعتماد به داده‌ی مالی مهم‌تر از درآمد آن جایگاه است.</li>
+        <li>هدف‌گیری هرگز از روی متن یادداشت، کار یا تراکنش انجام نمی‌شود. فقط پرسونا، شهر، مناسبت و کلمه‌ی سرچ.</li>
+        <li>زیرساخت را از ماژول <code>advertising</code> پاکت برمی‌داریم: باندل امضاشده‌ی کمپین (ed25519)، رضایت کاربر (<code>/ads/consent</code>)، دکمه‌ی «چرا این را می‌بینم» (<code>/ads/why</code>) و ثبت رویداد بدون شناسه‌ی شخصی. انتخاب تبلیغ روی دستگاه انجام می‌شود.</li>
+        <li>بدون پاپ‌آپ، بدون شمارش معکوس، بدون بنر استخدام وسط صفحه. مشترک پاکت پلاس جایگاه‌های ۱ تا ۳ را نمی‌بیند.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>سینک و زنده بودن</h2>
+      <p>امروز هر دو اپ فقط با درخواست دوره‌ای (polling) سینک می‌شوند: نقطه با <code>/sync/push</code> و <code>/sync/pull</code> و قانون «آخرین تغییر برنده است»، پاکت با <code>/v1/sync/changes</code>. هیچ‌کدام WebSocket یا SSE ندارند و گوشی نقطه تغییرها را حدود ۸ ثانیه بعد می‌فرستد. برای اینکه «هر چی روی گوشی می‌نویسه بیاد» واقعاً زنده باشد، سه تغییر لازم است:</p>
+      <div class="flow">
+        <div class="node"><b>گوشی</b><span>کارهای کوچک (افزودن، تیک‌زدن) فوری ارسال می‌شوند؛ ویرایش متن مثل الان با تأخیر کوتاه.</span></div>
+        <div class="arr"><svg viewBox="0 0 24 24"><path d="M19 12H5M11 18l-6-6 6-6"/></svg><code>/sync/push</code></div>
+        <div class="node"><b>سرور نقطه</b><span>مسیر تازه‌ی <code>/sync/wait</code>: درخواست تا ۲۵ ثانیه باز می‌ماند و به‌محض عوض شدن rev حساب جواب می‌دهد.</span></div>
+        <div class="arr"><svg viewBox="0 0 24 24"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>long-poll</div>
+        <div class="node"><b>نیوتب</b><span>با جواب، <code>/sync/pull</code> می‌زند. فقط وقتی تب دیده می‌شود گوش می‌دهد.</span></div>
+      </div>
+      <ul>
+        <li><b>هدف:</b> زیر ۳ ثانیه از گوشی تا نیوتب و برعکس، وقتی هر دو آنلاین‌اند.</li>
+        <li><b>چرا long-poll و نه WebSocket:</b> همه‌ی ترافیک API از CDN آروان رد می‌شود. یک درخواست HTTP معمولی که دیر جواب می‌گیرد از هر CDN و فیلتری رد می‌شود، و سرور Fastify فعلی با چند خط آن را پشتیبانی می‌کند. اگر بیش از یک نمونه‌ی سرور داشتیم، با <code>LISTEN/NOTIFY</code> پستگرس به هم خبر می‌دهند.</li>
+        <li><b>باز شدن فوری تب:</b> آخرین وضعیت در IndexedDB نگه داشته می‌شود و تب در کمتر از ۱۰۰ میلی‌ثانیه پر می‌شود؛ بعد pull در پس‌زمینه.</li>
+        <li><b>نوشتن از نیوتب:</b> همان outbox گوشی و همان قانون ادغام از <code>@dotlife/sync</code>. یادداشت‌ها و پوشه‌ها باید به سینک اضافه شوند: مدل یادداشت از اپ موبایل به پکیج <code>packages/notes</code> منتقل می‌شود و موجودیت <code>folder</code> به سینک اضافه می‌شود.</li>
+        <li><b>پاکت در فاز اول فقط خواندنی است.</b> چون صفحه‌ی خانه‌ی پاکت روی گوشی ساخته می‌شود و بودجه‌ها هنوز به سرور نمی‌روند، یک مسیر تازه لازم است: <code>GET /v1/home/summary</code> با خرج امروز و ماه، قبض‌های پیش رو و تعداد پیامک‌های منتظر. هر ۶۰ ثانیه و هر بار که تب فوکوس می‌گیرد. نوار بودجه بعد از آپلود بودجه‌ها اضافه می‌شود.</li>
+        <li><b>حریم خصوصی:</b> مبالغ با یک کلیک روی آیکون چشم پنهان می‌شوند و این انتخاب می‌ماند، برای وقتی که صفحه در جلسه به اشتراک گذاشته می‌شود.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>ورود و اتصال حساب‌ها</h2>
+      <p>نقطه با کد پیامکی یا گوگل وارد می‌شود و پاکت با نام کاربری و رمز. نمی‌خواهیم کاربر در نیوتب رمز تایپ کند. پیشنهاد: <b>اتصال با QR</b>. نیوتب یک QR نشان می‌دهد، کاربر آن را با اپ نقطه یا پاکت که در آن وارد شده اسکن می‌کند و سرور برای نیوتب یک دستگاه تازه با توکن خودش می‌سازد. پاکت توکن‌ها را به دستگاه گره می‌زند، پس این روش با مدلش جور است و می‌شود به این دستگاه فقط دسترسی خواندن داد. هر دو مسیر <code>/auth/pair</code> در سرورها اضافه می‌شود.</p>
+      <p>افزونه برای دامنه‌ی API هر دو اپ <code>host_permissions</code> می‌گیرد، پس به تغییر CORS سرورها نیازی نیست.</p>
+    </section>
+
+    <section>
+      <h2>ساختار فنی</h2>
+      <ul>
+        <li>اپ تازه‌ی <code>apps/newtab</code> در مونوریپوی نقطه: Chrome Manifest V3، Vite و React 19 مثل <code>apps/web</code>، TypeScript سخت‌گیر.</li>
+        <li>استفاده‌ی مستقیم از <code>@dotlife/tasks</code> (کارهای امروز، تکرارها، عقب‌افتاده‌ها)، <code>@dotlife/sync</code>، <code>@dotlife/calendar-core</code>، <code>event-data</code> و <code>personalization</code>. هیچ منطقی دوباره نوشته نمی‌شود.</li>
+        <li>یک کلاینت کوچک برای پاکت که فقط <code>/v1/auth/*</code> و <code>/v1/home/summary</code> را صدا می‌زند.</li>
+        <li>فونت یکان بخ داخل افزونه، بدون درخواست بیرونی. والپیپرها از سرور نقطه با کش.</li>
+        <li>بدون کد از راه دور (قانون MV3): باندل تبلیغ و محتوای قفسه‌ها فقط داده‌ی JSON امضاشده‌اند.</li>
+        <li>متن کارها، یادداشت‌ها و مبالغ هرگز به لاگ یا آنالیتیکس نمی‌رود؛ همان قانون فعلی نقطه.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>فازها<small>مدت‌ها تخمین اولیه‌اند</small></h2>
+      <div class="phases">
+        <div class="ph"><b>فاز ۰ · طراحی<small>۱ هفته</small></b><span>نهایی کردن این ماک‌آپ در فیگما، لیست پرسوناها و محتوای قفسه‌ها، تست سینک نقطه روی گوشی واقعی (هنوز انجام نشده و پیش‌نیاز همه‌چیز است).</span></div>
+        <div class="ph"><b>فاز ۱ · MVP نقطه<small>۳ هفته</small></b><span>ساعت، تاریخ و مناسبت، سرچ، دسترسی سریع، قفسه‌ی پرسونا، کارها و یادداشت‌های دوطرفه با pull هر ۱۵ ثانیه، اتصال QR.</span></div>
+        <div class="ph"><b>فاز ۲ · پاکت<small>۲ هفته</small></b><span>مسیر <code>/v1/home/summary</code>، ویجت «پول من» فقط‌خواندنی، پنهان کردن مبالغ.</span></div>
+        <div class="ph"><b>فاز ۳ · زنده و تبلیغ<small>۲ هفته</small></b><span>‏<code>/sync/wait</code>، ارسال فوری از گوشی، پنج جایگاه تبلیغ با رضایت کاربر و گزارش در پنل ادمین.</span></div>
+        <div class="ph"><b>فاز ۴ · بعدی‌ها</b><span>Edge و Firefox، چیدمان قابل‌تنظیم، ثبت خرج از نیوتب، بودجه بعد از آپلودش در پاکت.</span></div>
+      </div>
+    </section>
+
+    <section>
+      <h2>ریسک‌ها و سؤال‌های باز</h2>
+      <ul>
+        <li><b>انتشار در Chrome Web Store:</b> حساب توسعه‌دهنده و پرداخت آن از ایران ممکن نیست و کاربر هم برای نصب ممکن است به فیلترشکن نیاز داشته باشد. Edge Add-ons و فایل مستقیم با راهنمای نصب را هم باید بسنجیم.</li>
+        <li><b>سیاست‌های استور:</b> تبلیغ در نیوتب مجاز است اگر شفاف باشد، ولی تغییر موتور جستجو و پیشنهاد سرچ اسپانسری بررسی دقیق می‌خواهد. جایگاه ۴ را بعد از خواندن سیاست‌ها فعال کنیم.</li>
+        <li><b>دو حساب جدا:</b> نقطه و پاکت حساب مشترک ندارند. برای فاز ۱ دو اتصال جدا کافی است. آیا در بلندمدت ورود مشترک می‌خواهیم؟</li>
+        <li><b>متن پایین صفحه:</b> کروم همیشه اسم افزونه و دکمه‌ی Customize Chrome را پایین نیوتب نشان می‌دهد. نمی‌شود حذفش کرد، پس اسم افزونه باید خودش معرفی خوبی باشد («میز نقطه»).</li>
+      </ul>
+    </section>
+  </main>
+</div>
+
+<script>
+(function () {
+  const fa = (s) => String(s).replace(/\d/g, (d) => "۰۱۲۳۴۵۶۷۸۹"[d]);
+  const $ = (id) => document.getElementById(id);
+
+  /* ---------- scale the 1440×900 canvas ---------- */
+  const stage = $("stage"), vp = $("vp"), canvas = $("canvas");
+  function fit() {
+    const full = document.fullscreenElement === stage;
+    const w = stage.clientWidth;
+    const h = full ? window.innerHeight - 40 : Infinity;
+    const s = Math.min(w / 1440, h / 900);
+    canvas.style.transform = `scale(${s})`;
+    canvas.style.left = full ? `${(w - 1440 * s) / 2}px` : "0px";
+    vp.style.height = `${900 * s}px`;
+  }
+  new ResizeObserver(fit).observe(stage);
+  window.addEventListener("resize", fit);
+  fit();
+
+  $("fsBtn").addEventListener("click", () => {
+    if (document.fullscreenElement) document.exitFullscreen?.();
+    else stage.requestFullscreen?.().catch(() => {});
+  });
+  document.addEventListener("fullscreenchange", () => { $("fsBtn").setAttribute("aria-pressed", String(!!document.fullscreenElement)); requestAnimationFrame(fit); });
+
+  /* ---------- clock ---------- */
+  function tick() {
+    const d = new Date();
+    $("clock").textContent = fa(String(d.getHours()).padStart(2, "0") + ":" + String(d.getMinutes()).padStart(2, "0"));
+    const h = d.getHours();
+    $("greet").textContent = (h < 12 ? "صبح بخیر" : h < 17 ? "عصر بخیر" : "شب بخیر") + "، نسیم";
+  }
+  tick(); setInterval(tick, 15000);
+
+  /* ---------- quick access ---------- */
+  const quick = [
+    ["گوگل", "G", "#4C6BFF"], ["یوتیوب", "▶", "#E2453C"], ["دیجی‌کالا", "د", "#EF3A55"],
+    ["دیوار", "د", "#A62626"], ["اسنپ", "ا", "#1FB25A"], ["بله", "ب", "#2EA6A6"],
+  ];
+  const qEl = $("quick");
+  qEl.innerHTML = quick.map(([n, l, c]) => `<div class="q"><div class="ic" style="background:${c}">${l}</div>${n}</div>`).join("")
+    + `<div class="q" data-slot="۱"><span class="spons"></span><div class="ic" style="background:linear-gradient(135deg,#F2C94C,#E58A3A)">ب</div>بیمه‌ی آنلاین</div>`
+    + `<div class="q"><div class="ic" style="background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.18)"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></div>افزودن</div>`;
+
+  /* ---------- tasks ---------- */
+  let tasks = [
+    { t: "تمدید بیمه‌ی ماشین", m: "۱۰:۰۰", done: true },
+    { t: "جلسه با تیم طراحی", m: "۱۴:۳۰" },
+    { t: "پرداخت قبض برق", m: "تا یکشنبه" },
+    { t: "خرید هدیه‌ی تولد سارا", m: "" },
+  ];
+  const check = '<svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
+  function renderTasks() {
+    $("tasks").innerHTML = tasks.map((k, i) => `<li class="task${k.done ? " done" : ""}${k.isNew ? " new" : ""}">
+      <button class="cb" data-i="${i}" aria-label="انجام شد">${check}</button>
+      <span class="t">${k.t}</span>${k.from ? `<span class="from">${k.from}</span>` : `<span class="m">${k.m}</span>`}</li>`).join("");
+  }
+  renderTasks();
+  $("tasks").addEventListener("click", (e) => {
+    const b = e.target.closest(".cb"); if (!b) return;
+    const k = tasks[+b.dataset.i]; k.done = !k.done; renderTasks(); pulse("ارسال شد · گوشی به‌روز شد");
+  });
+  $("addForm").addEventListener("submit", (e) => {
+    e.preventDefault();
+    const v = $("addInput").value.trim(); if (!v) return;
+    tasks.splice(tasks.findIndex((k) => k.done) >= 0 ? 0 : 0, 0, { t: v, m: "" });
+    tasks = tasks.slice(0, 4);
+    $("addInput").value = ""; renderTasks(); pulse("ارسال شد · گوشی به‌روز شد");
+  });
+
+  /* ---------- live sync simulation ---------- */
+  let pulseTimer;
+  function pulse(msg) {
+    const s = $("sync"); s.classList.add("flash"); $("syncTxt").textContent = msg;
+    clearTimeout(pulseTimer);
+    pulseTimer = setTimeout(() => { s.classList.remove("flash"); $("syncTxt").textContent = "همگام با گوشی · زنده"; }, 2600);
+  }
+  const incoming = ["زنگ به آقای رحیمی", "گرفتن نتیجه‌ی آزمایش", "خرید نان و شیر"];
+  let inc = 0;
+  function fromPhone() {
+    const t = incoming[inc++ % incoming.length];
+    tasks.forEach((k) => (k.isNew = false));
+    tasks.unshift({ t, from: "از گوشی · همین حالا", isNew: true });
+    tasks = tasks.slice(0, 4);
+    renderTasks(); pulse("۱ کار تازه از گوشی رسید");
+    setTimeout(() => { tasks.forEach((k) => (k.isNew = false)); renderTasks(); }, 3000);
+  }
+  $("phoneBtn").addEventListener("click", fromPhone);
+  setTimeout(fromPhone, 6000);
+
+  /* ---------- search dropdown ---------- */
+  const q = $("q"), drop = $("drop");
+  q.addEventListener("focus", () => (drop.hidden = false));
+  q.addEventListener("blur", () => setTimeout(() => (drop.hidden = true), 150));
+  q.addEventListener("input", () => { $("dq1").textContent = q.value ? `در کارها و یادداشت‌ها: «${q.value}»` : "کار: تمدید بیمه‌ی ماشین"; });
+  q.addEventListener("keydown", (e) => { if (e.key === "Enter") e.preventDefault(); });
+
+  /* ---------- money eye ---------- */
+  $("eye").addEventListener("click", () => {
+    const m = $("money"); m.classList.toggle("hide-money");
+    $("eye").setAttribute("aria-label", m.classList.contains("hide-money") ? "نمایش مبالغ" : "پنهان کردن مبالغ");
+  });
+
+  /* ---------- ads overlay ---------- */
+  $("adsBtn").addEventListener("click", () => {
+    const on = $("nt").classList.toggle("show-ads");
+    $("adsBtn").setAttribute("aria-pressed", String(on));
+  });
+
+  /* ---------- wallpaper ---------- */
+  document.querySelectorAll(".sw").forEach((b) => b.addEventListener("click", () => {
+    document.querySelectorAll(".sw").forEach((x) => x.setAttribute("aria-pressed", String(x === b)));
+    $("nt").dataset.wall = b.dataset.wall;
+    $("credit").hidden = b.dataset.wall !== "dawn";
+  }));
+
+  /* ---------- personas ---------- */
+  const P = {
+    designer: { n: "طراح", w: "تقویم ماه به‌جای یادداشت‌ها", bm: [["فیگما", "F", "#A259FF"], ["Mobbin", "M", "#333"], ["دریبل", "D", "#EA4C89"], ["بیهنس", "B", "#1769FF"], ["Coolors", "C", "#2BB3A3"], ["فونت‌های فارسی", "ف", "#6B5BD2"]], ad: ["دوره‌ی UI", "#E58A3A"] },
+    dev: { n: "برنامه‌نویس", w: "بدون تغییر", bm: [["GitHub", "G", "#24292F"], ["Stack Overflow", "S", "#F48024"], ["MDN", "M", "#1B1B1B"], ["لیارا", "ل", "#2D7FF9"], ["آروان", "آ", "#00B2A9"], ["npm", "n", "#CB3837"]], ad: ["هاست ابری", "#E58A3A"] },
+    acc: { n: "حسابدار", w: "پول من بزرگ‌تر، با ماه مالی", bm: [["سامانه‌ی مودیان", "م", "#1E6F50"], ["امور مالیاتی", "ا", "#2C5F8A"], ["تأمین اجتماعی", "ت", "#1A6EA8"], ["کدال", "ک", "#7A4E2D"], ["TSETMC", "T", "#3B4BA8"], ["نرخ ارز", "ن", "#5B6C2E"]], ad: ["نرم‌افزار حسابداری", "#E58A3A"] },
+    student: { n: "دانشجو", w: "برنامه‌ی کلاس‌ها به‌جای پول من", bm: [["گوگل اسکالر", "G", "#4285F4"], ["گلستان", "گ", "#2F7D4A"], ["ایرانداک", "ا", "#8A3B3B"], ["Coursera", "C", "#0056D2"], ["فرادرس", "ف", "#D9532B"], ["مترجم", "م", "#3D6B8C"]], ad: ["کلاس زبان", "#E58A3A"] },
+    seller: { n: "فروشنده‌ی آنلاین", w: "پول من با فروش امروز", bm: [["باسلام", "ب", "#E05A2A"], ["دیجی‌کالا سلر", "د", "#EF3A55"], ["ترب", "ت", "#E74C3C"], ["تیپاکس", "ت", "#C0392B"], ["زرین‌پال", "ز", "#F5B400"], ["اینستاگرام", "I", "#C13584"]], ad: ["پنل پیامک", "#E58A3A"] },
+    manager: { n: "مدیر و کارمند", w: "جلسه‌های امروز از تقویم گوگل", bm: [["جیمیل", "G", "#D93025"], ["تقویم گوگل", "۳۱", "#1A73E8"], ["اسکای‌روم", "S", "#2E86C1"], ["Jira", "J", "#0052CC"], ["گوگل درایو", "D", "#188038"], ["بله", "ب", "#2EA6A6"]], ad: ["اتاق جلسه‌ی ابری", "#E58A3A"] },
+  };
+  const userIcon = '<svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>';
+  const pills = $("personas");
+  Object.entries(P).forEach(([k, v], i) => {
+    const b = document.createElement("button");
+    b.className = "chip"; b.textContent = v.n; b.dataset.k = k; b.setAttribute("aria-pressed", String(i === 0));
+    b.addEventListener("click", () => { pills.querySelectorAll(".chip").forEach((x) => x.setAttribute("aria-pressed", String(x === b))); shelf(k); });
+    pills.appendChild(b);
+  });
+  function shelf(k) {
+    const v = P[k];
+    $("shelf").innerHTML = `<div class="who">${userIcon}میز ${v.n}</div>`
+      + v.bm.map(([n, l, c]) => `<div class="bm"><span class="f" style="background:${c}">${l}</span>${n}</div>`).join("")
+      + `<div class="bm" data-slot="۲"><span class="f" style="background:${v.ad[1]}">★</span>${v.ad[0]}<span class="tag">معرفی‌شده</span></div>`;
+  }
+  shelf("designer");
+  $("personaTable").innerHTML = Object.values(P).map((v) => `<tr><td>${v.n}</td><td>${v.bm.map((b) => b[0]).join("، ")}</td><td>${v.w}</td></tr>`).join("");
+})();
+</script>
+</body>
+</html>
