@@ -56,19 +56,6 @@ export function occasionsOn(jdn: number): Occurrence[] {
   return occurrencesOn(jdn, { packs: PACKS });
 }
 
-/** A day's prayer times in minutes after midnight: dawn, noon and sunset adhans. */
-export function prayersOn(date: string): { name: string; minutes: number }[] {
-  const times = computePrayerTimes({
-    date: parseLocalDate(date),
-    location: { latitude: PLACE.latitude, longitude: PLACE.longitude },
-    utcOffsetHours: IRAN_UTC_OFFSET_HOURS,
-  });
-  return (["fajr", "dhuhr", "maghrib"] as const).flatMap((k) => {
-    const minutes = times[k];
-    return minutes === null ? [] : [{ name: PRAYER_NAMES_FA[k], minutes }];
-  });
-}
-
 export type Today = {
   weekday: string;
   /** «۲۴ مهر ۱۴۰۵» */

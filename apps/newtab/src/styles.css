@@ -3248,30 +3248,6 @@ svg {
 .pcol.tdy {
   background: rgba(255, 255, 255, 0.025);
 }
-.prl {
-  position: absolute;
-  inset-inline: 0;
-  border-top: 1px dashed rgba(255, 255, 255, 0.22);
-  pointer-events: none;
-}
-.prl span {
-  position: absolute;
-  top: -11px;
-  inset-inline-end: 4px;
-  padding: 0 6px;
-  border-radius: 6px;
-  font-size: 12px;
-  line-height: 1.7;
-  white-space: nowrap;
-  color: var(--ink-2);
-  background: rgba(16, 18, 26, 0.85);
-  opacity: 0;
-  transition: opacity 0.2s;
-}
-.pcol:hover .prl span,
-.pcol.tdy .prl span {
-  opacity: 1;
-}
 .ev {
   position: absolute;
   display: flex;

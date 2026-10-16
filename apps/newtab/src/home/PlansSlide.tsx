@@ -31,15 +31,14 @@ import {
 } from "../noghte/model";
 import { noteTitle, normalize, searchNotes } from "../noghte/notes";
 import { updateSettings } from "../settings";
-import { occasionsOn, prayersOn } from "../today";
+import { occasionsOn } from "../today";
 import { fa } from "../ui/fa";
 import { Icon } from "../ui/Icon";
 
 /**
  * The plans slide, as the app's «برنامه‌ها». Two tabs:
  * - «تقویم»: a week (or three days, or one) in Google Calendar's manner. Each day a column of hours
- *   with the day's timed tasks, the dawn, noon and sunset adhans as dashed lines and «now» as a white
- *   one; above them a row for the whole day — occasions and tasks with no time. Dragging over the
+ *   with the day's timed tasks and «now» as a white line; above them a row for the whole day — occasions and tasks with no time. Dragging over the
  *   hours opens «برنامه‌ی تازه», which asks for the title and the list, as the app does.
  * - «کارها»: the account's open tasks, late, today, coming up and with no date, per list or all.
  * Beside both a small month with a dot on every day that has an occasion, the occasions coming up,
@@ -261,7 +260,6 @@ export function PlansSlide() {
           ))}
           <span className="cgrp">دیگر</span>
           <CalSwitch id="occ" name="مناسبت‌ها" color={OCC} hidden={hidden} />
-          <CalSwitch id="pr" name="اوقات شرعی" color="#C9CBD2" hidden={hidden} />
         </div>
       </aside>
 
@@ -354,7 +352,6 @@ export function PlansSlide() {
                       return [{ o, ...p, color: c }];
                     }),
                   )}
-                  prayers={hidden.has("pr") ? [] : prayersOn(d)}
                   draft={draft?.day === d ? draft : null}
                   picked={picked}
                   onPick={setPicked}
@@ -385,7 +382,6 @@ function DayColumn({
   isToday,
   nowMin,
   timed,
-  prayers,
   draft,
   picked,
   onPick,
@@ -396,7 +392,6 @@ function DayColumn({
   isToday: boolean;
   nowMin: number;
   timed: Timed[];
-  prayers: { name: string; minutes: number }[];
   draft: Draft | null;
   picked: string | null;
   onPick: (key: string | null) => void;
@@ -459,13 +454,6 @@ function DayColumn({
         setDrag({ from: m, to: m });
       }}
     >
-      {prayers.map((p) => (
-        <div key={p.name} className="prl" style={{ top: y(p.minutes) }}>
-          <span>
-            {p.name} {hhmm(Math.round(p.minutes))}
-          </span>
-        </div>
-      ))}
       {timed.map((t) => {
         const key = `${t.o.taskId}@${t.o.originalDate}`;
         const h = Math.max(22, y(t.end - t.start) - 2);
