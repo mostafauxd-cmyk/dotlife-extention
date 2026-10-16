@@ -1437,6 +1437,11 @@ svg {
   box-shadow: 0 0 80px rgba(0, 0, 0, 0.5);
   animation: fade 0.25s ease both;
 }
+.cust-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 19;
+}
 .cust > * {
   flex-shrink: 0;
 }
