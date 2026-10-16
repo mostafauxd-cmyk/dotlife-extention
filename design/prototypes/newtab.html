@@ -1250,6 +1250,20 @@ td.them { color: var(--ink-2); }
 .td-add { flex: 0 0 236px; width: 236px; height: 34px; margin: 0; padding: 0 12px; gap: 8px; }
 .td-add input { font-size: 14px; }
 .td-add span[data-ico] svg { width: 16px; height: 16px; }
+
+/* ---------- v18 ---------- */
+/* tiles: a lifted surface made from the page colour itself, so it never melts into the background */
+.lt .ic, .lt .ic.fav, .lt.addt .ic, .lt.pchip .ic { background: color-mix(in srgb, var(--bgc) 74%, #fff); border: 1px solid rgba(255,255,255,.16); box-shadow: inset 0 1px 0 rgba(255,255,255,.14), 0 8px 22px rgba(0,0,0,.32); }
+.lt:hover .ic, .lt:hover .ic.fav, .lt:focus-visible .ic { background: color-mix(in srgb, var(--bgc) 66%, #fff); }
+.lt.back .ic { background: #fff; }
+/* an open corner card always sits above the search box, on a fully solid surface */
+.hz:hover, .hz:focus-within, .hz.pin, .hz.livep { z-index: 12; }
+.hz .ccard.g { background: color-mix(in srgb, var(--bgc) 86%, #fff); }
+/* the mic: a round backing a little larger than the glyph, like the send button */
+.sbox .ibtn.mic { width: 38px; height: 38px; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.10); color: var(--ink); transition: background .2s, color .2s; }
+.sbox .ibtn.mic:hover { background: rgba(255,255,255,.14); }
+.sbox .ibtn.mic.on { background: var(--tint); border-color: transparent; color: #0B0D12; animation: micring 1.4s ease-out infinite; }
+@keyframes micring { 0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--tint) 55%, transparent); } 100% { box-shadow: 0 0 0 12px transparent; } }
 </style>
 </head>
 <body>
@@ -1292,7 +1306,7 @@ td.them { color: var(--ink-2); }
                     <button type="button" class="act" id="toNote" title="متن را به‌عنوان یادداشت تازه ذخیره کن"><span data-ico="sticker-note"></span>به یادداشت‌ها</button>
                     <span class="grow"></span>
                     <span class="hintk" id="hintk">Enter جستجو · Shift+Enter خط تازه</span>
-                    <button type="button" class="ibtn" aria-label="جستجوی صوتی"><span data-ico="voice"></span></button>
+                    <button type="button" class="ibtn mic" aria-label="جستجوی صوتی" aria-pressed="false"><span data-ico="voice"></span></button>
                     <button type="submit" class="ibtn go" aria-label="جستجو در گوگل"><span data-ico="arrow-up"></span></button>
                   </div>
                 </form>
@@ -1703,6 +1717,7 @@ td.them { color: var(--ink-2); }
       <h3>سرچ گوگل</h3>
       <p>سرچ بزرگ‌ترین چیز صفحه است: یک کادر دوخطی مثل Dia. خط اول متن است (نشانه‌ی ساده‌ی G، هم‌رنگ متن)، و با متن طولانی تا چند خط بزرگ می‌شود، چون گوگل هم تا ۲۰۴۸ نویسه می‌پذیرد. Enter جستجو می‌کند و Shift+Enter خط تازه می‌زند. خط دوم کاربردی است: «به کارها» و «به یادداشت‌ها» همان متن را به‌جای جستجو در نقطه ذخیره می‌کنند (و گوشه‌ی مربوط باز می‌شود و نشانش می‌دهد)، و کنارشان میکروفون و فلش جستجو.</p>
       <p><b>کارها و یادداشت‌های خود کاربر در همان سرچ:</b> وقتی کاربر تایپ می‌کند، فهرست پیشنهادها دو بخش دارد. بالا «گوگل» (جستجو در گوگل و پیشنهادهای آن) و پایین «در نقطه‌ی تو»، یعنی کارها و یادداشت‌هایی که آن کلمه را دارند. این بخش دوم روی خود دستگاه گشته می‌شود: کارها و یادداشت‌ها از قبل با سینک در IndexedDB افزونه هستند و افزونه همان‌جا در آن‌ها می‌گردد، پس چیزی از این جستجو به سرور ما یا به گوگل نمی‌رود. با کلیک روی یک کار یا یادداشت، همان در اسلاید خودش باز می‌شود. اگر چیزی پیدا نشود، این بخش اصلاً نشان داده نمی‌شود؛ کلید جدایی لازم نیست و در شخصی‌سازی می‌شود کلاً خاموشش کرد.</p>
+      <p><b>سرچ صوتی:</b> دکمه‌ی میکروفون از تشخیص گفتار خود کروم (<code>SpeechRecognition</code> با زبان <code>fa-IR</code>) استفاده می‌کند. رایگان است، کلید و سرور ما را لازم ندارد، فارسی و انگلیسی را می‌فهمد و متن را هم‌زمان با حرف زدن در کادر می‌نویسد. صدا را خود کروم برای گوگل می‌فرستد، همان‌جایی که جستجو هم می‌رود. بار اول کروم اجازه‌ی میکروفون را برای صفحه‌ی افزونه می‌پرسد. اگر سرویس گفتار گوگل از ایران جواب ندهد (قبل از انتشار باید آزمایش شود)، میز صدا را با <code>MediaRecorder</code> ضبط می‌کند و به همان سرویس تبدیل صدا به متن سرور نقطه می‌فرستد که اپ برای «نوشتن متنِ صدا» در نظر گرفته است (<code>transcribe.ts</code>، مثلاً Whisper روی سرور خودمان). یادداشت صوتی از نیوتب هم از همین سرویس سرور متن می‌گیرد، تا با اپ یکی باشد.</p>
       <p>ارسال با <code>chrome.search.query</code> انجام می‌شود که موتور پیش‌فرض کروم را صدا می‌زند (برای بیشتر کاربران گوگل)؛ اگر موتور پیش‌فرض کسی گوگل نباشد، نشانه و متن راهنما اسم همان موتور را نشان می‌دهند تا قول نادرستی نداده باشیم و سیاست استور هم رعایت شود.</p>
       <h3>ردیف دسترسی سریع</h3>
       <p>دسترسی سریع و بوکمارک‌های شغلی یکی شده‌اند: یک ردیف زیر سرچ. اولش چند سایت مشترک برای همه (یوتیوب، جیمیل، دیجی‌کالا)، بعد پوشه‌ها و سایت‌های همان شغلی که کاربر انتخاب کرده، بعد کاشی اسپانسری و «افزودن». کاشی‌ها فقط آیکون‌اند و اسمشان با رفتن موس می‌آید تا ردیف شلوغ نشود.</p>
@@ -2264,6 +2279,28 @@ td.them { color: var(--ink-2); }
     else { $("cNote").innerHTML = `<div class="fresh"><div class="nt-title">${v.split("\n")[0].slice(0, 40)}</div>${v.includes("\n") ? `<div class="meta">${v.split("\n").slice(1).join(" ").slice(0, 60)}</div>` : ""}</div>`; peekCorner("notes", "از سرچ · همین حالا"); }
     pulse("ذخیره شد · روی گوشی هم هست"); q.value = ""; grow(); $("drop").hidden = true;
   };
+  // voice search: Chrome's own speech recognition (Persian), filling the box as you speak
+  const mic = document.querySelector(".sbox .ibtn.mic"); let micRec = null;
+  mic.addEventListener("click", () => {
+    if (mic.classList.contains("on")) { micRec?.stop(); return; }
+    const ph = q.placeholder; let faked = false;
+    mic.classList.add("on"); mic.setAttribute("aria-pressed", "true"); q.placeholder = "گوش می‌دهم… بگو چه می‌خواهی";
+    const done = () => { mic.classList.remove("on"); mic.setAttribute("aria-pressed", "false"); q.placeholder = ph; micRec = null; q.focus(); };
+    // no microphone here (or no permission): show what it does with a sample sentence
+    const fake = () => { if (faked) return; faked = true; const s = "قیمت طلای ۱۸ عیار امروز"; let i = 0;
+      const t = setInterval(() => { q.value = s.slice(0, (i += 2)); grow(); if (i >= s.length) { clearInterval(t); setTimeout(done, 350); } }, 60); };
+    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SR) { setTimeout(fake, 900); return; }
+    try {
+      const r = new SR(); r.lang = "fa-IR"; r.interimResults = true; micRec = r;
+      // the mock-up has no real speaker: after a few silent seconds it shows the sample instead
+      const guard = setTimeout(() => { fake(); try { r.abort(); } catch {} }, 3500);
+      r.onresult = (e) => { clearTimeout(guard); q.value = [...e.results].map((x) => x[0].transcript).join(""); grow(); };
+      r.onerror = () => { clearTimeout(guard); setTimeout(fake, 500); };
+      r.onend = () => { if (!faked) done(); };
+      r.start();
+    } catch { setTimeout(fake, 600); }
+  });
   $("toTask").addEventListener("click", () => saveAs("task"));
   $("toNote").addEventListener("click", () => saveAs("note"));
   // Google's G as a plain outline glyph in the text colour (no badge, no brand colours)
