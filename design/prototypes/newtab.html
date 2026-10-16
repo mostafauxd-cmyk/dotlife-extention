@@ -1497,6 +1497,61 @@ td.them { color: var(--ink-2); }
 .fblur i:nth-child(1) { backdrop-filter: blur(3px); -webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - 12px), transparent); mask-image: linear-gradient(to bottom, #000 calc(100% - 12px), transparent); }
 .fblur i:nth-child(2) { backdrop-filter: blur(10px); -webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - 28px), transparent calc(100% - 8px)); mask-image: linear-gradient(to bottom, #000 calc(100% - 28px), transparent calc(100% - 8px)); }
 .fblur i:nth-child(3) { backdrop-filter: blur(22px); -webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - 42px), transparent calc(100% - 20px)); mask-image: linear-gradient(to bottom, #000 calc(100% - 42px), transparent calc(100% - 20px)); }
+
+/* notes corner: mostly a place to write; the latest notes under it */
+.qnote { margin-inline: calc(-1 * var(--cx)); border-radius: var(--ir); background: rgba(0,0,0,.18); border: 1px solid var(--stroke); padding: 12px 14px 8px; display: flex; flex-direction: column; gap: 4px; transition: border-color .2s; }
+.qnote:focus-within { border-color: var(--stroke-hi); }
+.qnote textarea { background: none; border: 0; outline: 0; resize: none; color: var(--ink); font: inherit; font-size: 16px; line-height: 1.8; min-height: 116px; padding: 0; scrollbar-width: none; }
+.qnote textarea::placeholder { color: var(--ink-3); }
+.qn-f { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--ink-3); }
+.qn-go { margin-inline-start: auto; width: 34px; height: 34px; border-radius: 50%; border: 0; display: grid; place-items: center; background: rgba(255,255,255,.1); color: var(--ink-2); cursor: pointer; transition: background .2s, color .2s; }
+.qn-go svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.qn-go:not(:disabled) { background: #fff; color: #0B0D12; }
+.qn-go:disabled { cursor: default; }
+.rlist { margin-inline: calc(-1 * var(--cx)); display: flex; flex-direction: column; }
+.rnote { font: inherit; color: var(--ink); background: none; border: 0; text-align: start; cursor: pointer; display: flex; flex-direction: column; padding-block: 6px; border-radius: 14px; min-width: 0;
+  margin-inline: calc(var(--hx) - var(--cp)); width: calc(100% + 2 * (var(--cp) - var(--hx))); padding-inline: calc(var(--cx) + var(--cp) - var(--hx)); }
+.rnote:hover { background: rgba(255,255,255,.06); }
+.rnote b { font-size: 15px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.rnote small { font-size: 13px; color: var(--ink-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.rnote.fresh { background: color-mix(in srgb, var(--tint) 14%, transparent); }
+.rnote.fresh small::before { content: ""; display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--tint); margin-inline-end: 6px; vertical-align: middle; }
+.hz.livep:not(:hover):not(:focus-within) .ccard .qnote { display: none; }
+
+/* social: a short introduction before a service's own sign-in page */
+.sonb { margin: auto; width: 520px; max-width: calc(100% - 40px); display: flex; flex-direction: column; align-items: center; text-align: center; gap: 14px; animation: rise .5s var(--ease) both; }
+.sonb-art { position: relative; width: 220px; height: 130px; margin-bottom: 6px; }
+.sonb-art span { position: absolute; border-radius: 18px; }
+.sonb-art .b1 { inset-inline-start: 0; top: 18px; width: 120px; height: 34px; background: rgba(255,255,255,.08); border-radius: 18px 18px 18px 6px; }
+.sonb-art .b2 { inset-inline-end: 0; top: 62px; width: 104px; height: 34px; background: color-mix(in srgb, var(--sc) 30%, transparent); border-radius: 18px 18px 6px 18px; }
+.sonb-art .b3 { inset-inline-start: 26px; top: 104px; width: 70px; height: 22px; background: rgba(255,255,255,.05); }
+.sonb-art .slg { left: 50%; top: 22px; translate: -50% 0; width: 76px; height: 76px; border-radius: 24px; display: grid; place-items: center; color: #fff; font-size: 34px; font-weight: 700; box-shadow: 0 0 0 8px #0f1116, 0 20px 50px color-mix(in srgb, var(--sc) 40%, transparent); }
+.sonb h3 { margin: 0; font-size: 28px; font-weight: 700; }
+.sonb p { margin: 0; font-size: 16px; color: var(--ink-2); line-height: 1.9; max-width: 44ch; }
+.sonb ul { list-style: none; margin: 4px 0 6px; padding: 0; display: flex; flex-direction: column; gap: 8px; align-self: center; text-align: start; }
+.sonb li { display: flex; align-items: center; gap: 10px; font-size: 15px; color: rgba(255,255,255,.85); }
+.sonb li svg { width: 18px; height: 18px; flex: none; fill: none; stroke: var(--sc); stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+.sonb .cta { min-width: 240px; height: 50px; font-size: 17px; }
+.loginc .fl2 { align-self: stretch; display: flex; flex-direction: column; gap: 6px; text-align: start; font-size: 14px; color: var(--ink-2); }
+.loginc .fl2 input { height: 46px; border-radius: 14px; border: 1px solid var(--stroke-hi); background: rgba(0,0,0,.3); color: var(--ink); font: inherit; font-size: 16px; padding: 0 14px; outline: none; }
+.loginc .cta { align-self: stretch; }
+/* social: the customize window */
+#socCust { flex: none; }
+.soc-list { display: flex; flex-direction: column; gap: 6px; }
+.socrow { display: flex; align-items: center; gap: 12px; padding: 8px 12px 8px 10px; border-radius: 16px; background: rgba(255,255,255,.04); border: 1px solid var(--stroke); }
+.socrow.dragging { opacity: .45; }
+.socrow.off .lg, .socrow.off .nm { opacity: .45; }
+.socrow .grip { width: 18px; height: 18px; color: var(--ink-3); cursor: grab; flex: none; }
+.socrow .grip svg { width: 18px; height: 18px; fill: currentColor; display: block; }
+.socrow .lg { width: 34px; height: 34px; border-radius: 11px; display: grid; place-items: center; color: #fff; font-size: 14px; font-weight: 700; flex: none; }
+.socrow .nm { flex: 1; min-width: 0; display: flex; flex-direction: column; line-height: 1.5; }
+.socrow .nm b { font-size: 16px; font-weight: 600; display: flex; align-items: center; }
+.socrow .nm small { font-size: 12.5px; color: var(--ink-3); direction: ltr; text-align: right; }
+.tag-ir { font-style: normal; font-size: 11px; font-weight: 500; color: var(--ink-2); border: 1px solid var(--stroke-hi); border-radius: 99px; padding: 0 7px; margin-inline-start: 8px; line-height: 18px; }
+.socrow .mv { display: flex; gap: 4px; }
+.socrow .mv button { width: 30px; height: 30px; border-radius: 50%; border: 0; background: rgba(255,255,255,.06); color: var(--ink-2); display: grid; place-items: center; cursor: pointer; }
+.socrow .mv button:disabled { opacity: .3; cursor: default; }
+.socrow .mv svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 </style>
 </head>
 <body>
@@ -1576,8 +1631,11 @@ td.them { color: var(--ink-2); }
               <span class="cmk" data-ico="sticker-note" title="یادداشت‌ها"></span><span class="cl">یادداشت‌ها</span>
               <div class="ccard g">
                 <h3>یادداشت‌ها</h3>
-                <div class="note" id="cNote"><div class="nt-title">ایده‌های کمپین پاییز</div><ul><li class="ok"><i></i>بنر «بازگشت به مدرسه»</li><li><i></i>بودجه‌ی تبلیغات</li></ul></div>
-                <div class="add"><svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg><input placeholder="یادداشت سریع…" aria-label="یادداشت سریع"></div>
+                <form class="qnote" id="qnForm">
+                  <textarea id="qnText" rows="4" placeholder="یادداشت سریع بنویس… خط اول، عنوانش می‌شود." aria-label="یادداشت سریع"></textarea>
+                  <div class="qn-f"><span>در «شخصی» · روی گوشی هم</span><button type="submit" class="qn-go" id="qnGo" disabled aria-label="ذخیره‌ی یادداشت"><svg viewBox="0 0 24 24"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button></div>
+                </form>
+                <div class="rlist" id="cRecent" aria-label="یادداشت‌های اخیر"></div>
                 <button class="more" data-go="s4">همه‌ی یادداشت‌ها ↓</button>
               </div>
             </div>
@@ -1791,6 +1849,7 @@ td.them { color: var(--ink-2); }
               <div class="soc-top">
                 <h2 style="margin:0;font-size:30px;font-weight:600">شبکه‌ها</h2>
                 <div class="stabs" id="stabs" role="tablist" aria-label="سرویس‌ها"></div>
+                <button class="rbtn sm" id="socCust" aria-label="چیدمان شبکه‌ها" title="چیدمان شبکه‌ها"><span data-ico="setting"></span></button>
                 <div class="spev chan" data-slot="۱۵" style="margin-inline-start:auto"><span class="pst" style="background:linear-gradient(135deg,#2AABEE,#1d6fa5)">کانال</span><div><b>آموزش عکاسی با موبایل</b><span>کانال تلگرام · معرفی‌شده</span></div><button>عضویت</button></div>
               </div>
               <div class="tablet">
@@ -1870,6 +1929,16 @@ td.them { color: var(--ink-2); }
               <div class="gp-list" id="grpList"></div>
               <form class="gp-new" id="grpNew"><input id="grpNewName" placeholder="اسم دسته‌ی تازه" autocomplete="off" aria-label="اسم دسته‌ی تازه"><div class="gp-colors" id="grpNewColors"></div><button class="cta" id="grpAdd" disabled>افزودن</button></form>
               <div class="mfoot"><span class="cnt">اسم را همان‌جا عوض کن؛ با زدن دایره‌ی رنگی، رنگش را.</span><button class="cta" id="grpDone" type="button">تمام</button></div>
+            </div>
+          </div>
+
+          <!-- social: which services are on the desk, and their order -->
+          <div class="modal-bg" id="socModal" hidden>
+            <div class="modal sm" role="dialog" aria-modal="true" aria-labelledby="socTitle">
+              <div class="card-h"><h2 id="socTitle">چیدمان شبکه‌ها</h2><button class="rbtn sm" id="socClose" aria-label="بستن" style="margin-inline-start:auto"><span data-ico="close"></span></button></div>
+              <p class="gp-sub">کدام‌ها روی میز باشند و به چه ترتیبی. برای جابه‌جایی بکش، یا با فلش‌ها بالا و پایین ببر.</p>
+              <div class="soc-list" id="socList"></div>
+              <div class="mfoot"><span class="cnt">پنهان کردن فقط تب را برمی‌دارد؛ ورودت سر جایش می‌ماند.</span><button class="cta" id="socDone" type="button">تمام</button></div>
             </div>
           </div>
 
@@ -2541,7 +2610,7 @@ td.them { color: var(--ink-2); }
   const saveAs = (kind) => {
     const v = q.value.trim(); if (!v) return;
     if (kind === "task") { tasks.unshift({ t: v.split("\n")[0].slice(0, 80), m: "", l: "personal", isNew: true }); tasks = tasks.slice(0, 5); renderTasks(); peekCorner("tasks", "از سرچ · همین حالا"); }
-    else { $("cNote").innerHTML = `<div class="fresh"><div class="nt-title">${v.split("\n")[0].slice(0, 40)}</div>${v.includes("\n") ? `<div class="meta">${v.split("\n").slice(1).join(" ").slice(0, 60)}</div>` : ""}</div>`; peekCorner("notes", "از سرچ · همین حالا"); }
+    else { addNote(v.split("\n")[0].slice(0, 60), v.split("\n").slice(1).join("\n")); peekCorner("notes", "از سرچ · همین حالا"); }
     pulse("ذخیره شد · روی گوشی هم هست"); q.value = ""; grow(); $("drop").hidden = true;
   };
   // voice search: Chrome's own speech recognition (Persian), filling the box as you speak
@@ -2839,6 +2908,27 @@ td.them { color: var(--ink-2); }
       { k: "v", dur: "۱:۰۸", peaks: [4, 7, 5, 9, 11, 6, 3, 8, 10, 12, 9, 5, 7, 4, 6, 9, 13, 8, 6, 4, 7, 10, 8, 5, 3, 5, 8, 6, 4, 3], t: "یک دستیار کوچک که آخر هر شب می‌پرسد امروز چه کار کردی و خودش یادداشت روزانه می‌سازد." },
     ] },
   ];
+  // the notes corner: a quick note on top, the three latest notes under it
+  const snippet = (n) => (n.blocks || []).map((b) => b.t).filter(Boolean).join(" · ");
+  function renderCNotes() {
+    $("cRecent").innerHTML = NOTES.slice(0, 3).map((n, i) => `<button class="rnote${n.fresh ? " fresh" : ""}" data-note="${i}"><b>${n.title}</b><small>${n.when.split(" · ")[0]}${snippet(n) ? " · " + snippet(n) : ""}</small></button>`).join("");
+  }
+  function addNote(title, body, items, when = "همین حالا", f = "personal") {
+    NOTES.forEach((x) => (x.fresh = false));
+    const blocks = items ? items.map((t) => ({ k: "c", t })) : body ? [{ k: "p", t: body }] : [];
+    NOTES.unshift({ f, title, when, fresh: true, blocks }); curNote++;
+    renderFolders(); renderNoteList(); renderCNotes();
+  }
+  const qn = $("qnText");
+  qn.addEventListener("input", () => { $("qnGo").disabled = !qn.value.trim(); });
+  qn.addEventListener("keydown", (e) => { if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) { e.preventDefault(); $("qnForm").requestSubmit(); } });
+  $("qnForm").addEventListener("submit", (e) => {
+    e.preventDefault(); const v = qn.value.trim(); if (!v) return;
+    addNote(v.split("\n")[0].slice(0, 60), v.split("\n").slice(1).join("\n"));
+    qn.value = ""; $("qnGo").disabled = true; pulse("ذخیره شد · روی گوشی هم هست");
+  });
+  $("cRecent").addEventListener("click", (e) => { const b = e.target.closest("[data-note]"); if (b) { selectNote(+b.dataset.note); go("s4"); } });
+  renderCNotes();
   const noteText = (n) => n.blocks.map((b) => b.t || "").join(" ");
   let folder = "all", curNote = 0;
   const ICON = {
@@ -3390,6 +3480,21 @@ td.them { color: var(--ink-2); }
     ig: { n: "اینستاگرام", c: "#DD2A7B", l: "I", u: "instagram.com", on: true },
     wa: { n: "واتس‌اپ", c: "#25D366", l: "W", u: "web.whatsapp.com", on: false },
     x: { n: "ایکس", c: "#000000", l: "X", u: "x.com", on: false },
+    bale: { n: "بله", c: "#20A776", l: "ب", u: "web.bale.ai", on: false, ir: true },
+    rubika: { n: "روبیکا", c: "#7B3FE4", l: "ر", u: "web.rubika.ir", on: false, ir: true },
+    eitaa: { n: "ایتا", c: "#F08A24", l: "ا", u: "web.eitaa.com", on: false, ir: true },
+  };
+  // which services are on the desk, in the order of their tabs (set in «چیدمان شبکه‌ها»)
+  let ORDER = ["tg", "ig", "wa", "x", "bale", "rubika", "eitaa"];
+  const SHOWN = new Set(["tg", "ig", "wa", "bale", "rubika"]);
+  // a service the person hasn't signed in to: first a short introduction, then the service's own sign-in page
+  const STAGE = {};
+  const LOGIN_URL = { tg: "web.telegram.org/a/#login", ig: "instagram.com/accounts/login", wa: "web.whatsapp.com", x: "x.com/i/flow/login", bale: "web.bale.ai/login", rubika: "web.rubika.ir/#login", eitaa: "web.eitaa.com/#login" };
+  const INTRO = {
+    tg: ["پیام‌ها، کانال‌ها و گروه‌هایت", "بدون باز کردن تب تازه"], ig: ["ریلز و دایرکت", "در یک قاب جمع‌وجور، بدون تب تازه"],
+    wa: ["گفتگوهای واتس‌اپ", "با یک بار اسکن از گوشی"], x: ["تایم‌لاین و پیام‌ها", "کنار بقیه‌ی شبکه‌ها"],
+    bale: ["گفتگوها، کانال‌ها و کیف پول بله", "همان حساب گوشی‌ات"], rubika: ["پیام‌ها، کانال‌ها و ویترین روبیکا", "همان حساب گوشی‌ات"],
+    eitaa: ["گفتگوها و کانال‌های ایتا", "همان حساب گوشی‌ات"],
   };
   let svc = "tg", tgOpen = 3;
   const TG = [
@@ -3399,10 +3504,15 @@ td.them { color: var(--ink-2); }
     ["کتاب‌خوان‌ها", "#C98F00", "نسیم: سووشون را تمام کردم", "۳ روز", 0], ["علی", "#F0691F", "باشه، فردا صحبت می‌کنیم", "۳ روز", 0],
   ];
   const WA = [["مامان", "#25D366", "عزیزم یادت نره نان بگیری", "۱۱:۲۰", 2], ["گروه دانشگاه", "#128C7E", "رضا: جزوه‌ی فصل ۳ را فرستادم", "۱۰:۵۵", 5], ["آقای رحیمی", "#3a3d48", "ممنون، دریافت شد", "دیروز", 0], ["همسایه‌ها", "#6B8E23", "جلسه‌ی ساختمان پنجشنبه", "دیروز", 0]];
+  const IRCHATS = {
+    bale: [["خانواده", "#8E5CF7", "بابا: عکس‌ها را فرستادم", "۱۱:۱۰", 4], ["بانک ملی · نمونه", "#1B6DB5", "برداشت ۲۵۰٬۰۰۰ تومان از حساب", "۱۰:۳۲", 1], ["همکارها", "#20A776", "نسیم: فایل نهایی بالاست", "دیروز", 0], ["سارا", "#35D07F", "باشه ممنون", "دیروز", 0]],
+    rubika: [["کانال خبری · نمونه", "#E2453C", "پیش‌بینی هوای آخر هفته", "۱۱:۰۰", 8], ["گروه کلاس", "#7B3FE4", "استاد: جلسه‌ی بعد آزمونک داریم", "۱۰:۱۵", 3], ["علی", "#F0691F", "فردا می‌بینمت", "دیروز", 0], ["فروشگاه · نمونه", "#C98F00", "سفارش شما ارسال شد", "۲ روز", 0]],
+    eitaa: [["مسجد محل · نمونه", "#3FA98A", "برنامه‌ی شب‌های جمعه", "۹:۴۰", 2], ["خانواده", "#8E5CF7", "مامان: شب منتظریم", "دیروز", 0], ["مدرسه · نمونه", "#1B6DB5", "زمان جلسه‌ی اولیا", "۲ روز", 0]],
+  };
   const MSGS = [["امیر", "سلام، ساعت ۲:۳۰ جلسه داریم برای کمپین پاییز", "۱۰:۱۲"], ["نسیم", "فایل‌های بنر را آماده کردم", "۱۰:۱۴"], [null, "عالیه، تا ۲ می‌فرستم که قبل جلسه ببینید", "۱۰:۲۰"], ["امیر", "فقط نسخه‌ی استوری را هم بگذار", "۱۰:۲۱"]];
   const chatRows = (list, col, active) => list.map(([n, c, m, t, u], i) => `<div class="chat${i === active ? " on" : ""}" data-ch="${i}"><span class="av" style="background:${c}">${[...n][0]}</span><span class="cx"><b>${n}</b><span>${m}</span></span><span class="cm">${t}${u ? `<em style="background:${col}">${fa(u)}</em>` : ""}</span></div>`).join("");
   const pane = (list, col, open) => {
-    const [n, c] = list[open];
+    const [n, c] = list[Math.min(open, list.length - 1)]; open = Math.min(open, list.length - 1);
     return `<div class="tp-list" id="tpList">${chatRows(list, col, open)}</div><div class="tp-chat"><div class="tp-h"><span class="av" style="background:${c}">${[...n][0]}</span><span><b>${n}</b><small>${open === 3 ? "۴ عضو" : "آخرین بازدید به‌تازگی"}</small></span></div>
       <div class="tp-msgs">${MSGS.map(([w, m, t]) => `<div class="bub${w ? "" : " me"}" ${w ? "" : `style="background:${col}33"`}>${w ? `<span class="who" style="color:${col}">${w}</span><br>` : ""}${m}<small>${t}</small></div>`).join("")}</div>
       <div class="tp-in"><input placeholder="پیام…" aria-label="پیام"><button class="ibtn go" aria-label="فرستادن"><svg viewBox="0 0 24 24"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button></div></div>`;
@@ -3415,20 +3525,41 @@ td.them { color: var(--ink-2); }
   let reelI = 0, reelT = null;
   const playSvg2 = '<svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>', pauseSvg2 = '<svg viewBox="0 0 24 24"><path d="M7 5h4v14H7zM13 5h4v14h-4z"/></svg>';
   const XPOSTS = [["حساب خبری · نمونه", "#1d9bf0", "پیش‌بینی هواشناسی: از پنجشنبه هوای تهران خنک‌تر می‌شود.", "۱۲", "۳۴۰"], ["طراح · نمونه", "#8E5CF7", "یک نکته‌ی ساده: فاصله‌ها را از ۸ پیکسل بسازید؛ همه‌چیز مرتب‌تر می‌شود.", "۴۸", "۱٫۲ هزار"], ["کتاب‌خوان · نمونه", "#C98F00", "سووشون را دوباره خواندم و این بار جور دیگری دیدمش.", "۹", "۲۱۰"], ["برنامه‌نویس · نمونه", "#35D07F", "امروز یک باگ سه‌روزه با یک خط حل شد. همیشه همین‌طور است.", "۶۰", "۲ هزار"]];
+  const tabs = () => ORDER.filter((k) => SHOWN.has(k));
+  const lgStyle = (k, sv) => `background:${sv.c};${k === "x" ? "border:1px solid #444" : ""}`;
+  const okSvg2 = '<svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
+  function intro(k) {
+    const sv = SVC[k], [what, how] = INTRO[k], dark = k === "x";
+    return `<div class="sonb" style="--sc:${dark ? "#fff" : sv.c}">
+      <div class="sonb-art" aria-hidden="true"><span class="b1"></span><span class="b2"></span><span class="b3"></span><span class="slg" style="${lgStyle(k, sv)}">${sv.l}</span></div>
+      <h3>${sv.n} را همین‌جا داشته باش</h3>
+      <p>${what}، ${how}. هر وقت خواستی با یک کلیک برمی‌گردی سر میزت.</p>
+      <ul><li>${okSvg2}ورود فقط یک بار، در صفحه‌ی خود ${sv.n}</li><li>${okSvg2}رمز و پیام‌هایت هیچ‌وقت به میز نمی‌رسد</li><li>${okSvg2}هر وقت خواستی با «خروج» قطعش کن</li></ul>
+      <button class="cta" data-tologin="${k}" style="background:${dark ? "#fff" : sv.c};color:${dark ? "#000" : "#fff"}">ورود به ${sv.n}</button>
+    </div>`;
+  }
+  function loginPage(k) {
+    const sv = SVC[k];
+    const btn = `<button class="cta" data-login="${k}" style="background:${k === "x" ? "#fff" : sv.c};color:${k === "x" ? "#000" : "#fff"}">وصل شدم</button>`;
+    if (k === "x") return `<div class="loginc"><div class="xb">X</div><h3>به ایکس وارد شو</h3><p>این صفحه‌ی ورود خود ایکس است؛ نام کاربری و رمزت فقط به ایکس می‌رود.</p><button class="cta wide" data-login="x">ورود با گوگل</button><button class="ghost wide" data-login="x">ورود با نام کاربری</button><span class="safe">میز فقط قاب این صفحه است.</span></div>`;
+    if (k === "ig") return `<div class="loginc"><h3>ورود به اینستاگرام</h3><p>نام کاربری و رمزت را همین‌جا، در صفحه‌ی خود اینستاگرام بنویس.</p><label class="fl2">نام کاربری<input class="ltr" autocomplete="off"></label><label class="fl2">رمز<input class="ltr" type="password"></label>${btn.replace("وصل شدم", "ورود")}<span class="safe">میز فقط قاب این صفحه است.</span></div>`;
+    const app = k === "wa" ? "«دستگاه‌های متصل» ← «اتصال دستگاه»" : "تنظیمات ← «دستگاه‌ها» ← «اسکن کد»";
+    return `<div class="loginc"><h3>ورود به ${sv.n}</h3><p>با گوشی‌ات این کد را اسکن کن؛ همان حساب گوشی این‌جا باز می‌شود.</p><div class="qr">${qrSvg(k.length * 7)}</div><ol class="steps"><li>${sv.n} را روی گوشی باز کن.</li><li>برو به ${app}.</li><li>دوربین را روی این کد بگیر.</li></ol>${btn}${k === "wa" ? "" : `<button class="ghost wide" data-login="${k}">ورود با شماره‌ی موبایل</button>`}<span class="safe">این کد را خود ${sv.n} می‌سازد، نه میز.</span></div>`;
+  }
   function renderSocial() {
-    $("stabs").innerHTML = Object.entries(SVC).map(([k, s]) => `<button role="tab" aria-selected="${k === svc}" data-s6="${k}"><span class="lg" style="background:${s.c};${k === "x" ? "border:1px solid #444" : ""}">${s.l}</span>${s.n}<i class="${s.on ? "on" : ""}"></i></button>`).join("");
-    const s = SVC[svc];
-    $("tbLg").textContent = s.l; $("tbLg").style.background = s.c; $("tbName").textContent = s.n; $("tbUrl").textContent = s.u;
-    $("tbSt").innerHTML = s.on ? "<i></i>وارد شده · ذخیره در همین کروم" : "وارد نشده";
+    if (!SHOWN.has(svc)) svc = tabs()[0] || "tg";
+    $("stabs").innerHTML = tabs().map((k) => { const sv = SVC[k]; return `<button role="tab" aria-selected="${k === svc}" data-s6="${k}"><span class="lg" style="${lgStyle(k, sv)}">${sv.l}</span>${sv.n}<i class="${sv.on ? "on" : ""}"></i></button>`; }).join("");
+    const s = SVC[svc], atLogin = !s.on && STAGE[svc] === "login";
+    $("tbLg").textContent = s.l; $("tbLg").style.background = s.c; $("tbName").textContent = s.n; $("tbUrl").textContent = atLogin ? LOGIN_URL[svc] : s.u;
+    $("tbSt").innerHTML = s.on ? "<i></i>وارد شده · ذخیره در همین کروم" : atLogin ? `صفحه‌ی ورود خود ${s.n}` : "وارد نشده";
     $("tbOut").hidden = !s.on;
     const B = $("tbBody");
     if (reelT) { clearInterval(reelT); reelT = null; }
+    if (!s.on) { B.innerHTML = atLogin ? loginPage(svc) : intro(svc); return; }
+    if (IRCHATS[svc]) { B.innerHTML = pane(IRCHATS[svc], s.c, 0); return; }
     if (svc === "tg") B.innerHTML = pane(TG, "#2AABEE", tgOpen);
-    if (svc === "wa") B.innerHTML = s.on ? pane(WA, "#25D366", 0)
-      : `<div class="loginc"><h3>واتس‌اپ را وصل کن</h3><p>یک بار اسکن کن؛ از این به بعد پیام‌هایت همین‌جاست.</p><div class="qr">${qrSvg(7)}</div><ol class="steps"><li>واتس‌اپ را روی گوشی باز کن.</li><li>برو به «دستگاه‌های متصل» و «اتصال دستگاه».</li><li>دوربین را روی این کد بگیر.</li></ol><button class="cta" data-login="wa" style="background:#25D366;color:#06210f">وصل شدم</button><span class="safe">این کد را خود واتس‌اپ می‌سازد، نه میز.</span></div>`;
-    if (svc === "x") B.innerHTML = s.on
-      ? `<div class="xfeed"><div class="xcol">${XPOSTS.map(([n, c, t, r, l]) => `<div class="xpost"><span class="av" style="background:${c}">${[...n][0]}</span><div><b>${n}</b> <small>@sample · ۲ ساعت</small><p>${t}</p><div class="acts"><span>پاسخ ${fa(r)}</span><span>بازنشر</span><span>پسند ${l}</span></div></div></div>`).join("")}</div></div>`
-      : `<div class="loginc"><div class="xb">X</div><h3>به ایکس وارد شو</h3><p>این صفحه‌ی ورود خود ایکس است؛ نام کاربری و رمزت فقط به ایکس می‌رود. یک بار وارد شوی، دفعه‌ی بعد همین‌جا باز است.</p><button class="cta wide" data-login="x">ورود با گوگل</button><button class="ghost wide" data-login="x">ورود با نام کاربری</button><span class="safe">میز هیچ رمزی ذخیره نمی‌کند؛ نشست ورود در خود کروم می‌ماند.</span></div>`;
+    if (svc === "wa") B.innerHTML = pane(WA, "#25D366", 0);
+    if (svc === "x") B.innerHTML = `<div class="xfeed"><div class="xcol">${XPOSTS.map(([n, c, t, r, l]) => `<div class="xpost"><span class="av" style="background:${c}">${[...n][0]}</span><div><b>${n}</b> <small>@sample · ۲ ساعت</small><p>${t}</p><div class="acts"><span>پاسخ ${fa(r)}</span><span>بازنشر</span><span>پسند ${l}</span></div></div></div>`).join("")}</div></div>`;
     if (svc === "ig") {
       B.innerHTML = `<div class="ig"><div class="reel" id="reel"><div class="rtabs"><span class="on">ریلز</span><span>دنبال‌شده‌ها</span></div>
         <button class="play" id="reelPlay" aria-label="پخش">${playSvg2}</button>
@@ -3444,9 +3575,34 @@ td.them { color: var(--ink-2); }
   }
   renderSocial();
   $("stabs").addEventListener("click", (e) => { const b = e.target.closest("[data-s6]"); if (b) { svc = b.dataset.s6; renderSocial(); } });
-  $("tbOut").addEventListener("click", () => { SVC[svc].on = false; renderSocial(); });
+  const gripSvg = '<svg viewBox="0 0 24 24"><circle cx="9" cy="6" r="1.4"/><circle cx="15" cy="6" r="1.4"/><circle cx="9" cy="12" r="1.4"/><circle cx="15" cy="12" r="1.4"/><circle cx="9" cy="18" r="1.4"/><circle cx="15" cy="18" r="1.4"/></svg>';
+  const upSvg = '<svg viewBox="0 0 24 24"><path d="m6 14 6-6 6 6"/></svg>', downSvg = '<svg viewBox="0 0 24 24"><path d="m6 10 6 6 6-6"/></svg>';
+  function renderSocList() {
+    $("socList").innerHTML = ORDER.map((k, i) => { const sv = SVC[k]; return `<div class="socrow${SHOWN.has(k) ? "" : " off"}" draggable="true" data-k="${k}"><span class="grip" aria-hidden="true">${gripSvg}</span><span class="lg" style="${lgStyle(k, sv)}">${sv.l}</span><span class="nm"><b>${sv.n}${sv.ir ? '<em class="tag-ir">ایرانی</em>' : ""}</b><small>${sv.on ? "وارد شده" : sv.u}</small></span><span class="mv"><button data-up="${k}" aria-label="بالاتر" ${i ? "" : "disabled"}>${upSvg}</button><button data-down="${k}" aria-label="پایین‌تر" ${i < ORDER.length - 1 ? "" : "disabled"}>${downSvg}</button></span><button class="sw2" role="switch" aria-checked="${SHOWN.has(k)}" aria-label="${sv.n} روی میز" data-sw="${k}"></button></div>`; }).join("");
+  }
+  const openSoc = () => { renderSocList(); $("socModal").hidden = false; paintIcons($("socModal")); };
+  const closeSoc = () => { $("socModal").hidden = true; };
+  $("socCust").addEventListener("click", openSoc); $("socClose").addEventListener("click", closeSoc); $("socDone").addEventListener("click", closeSoc);
+  $("socModal").addEventListener("mousedown", (e) => { if (e.target === e.currentTarget) closeSoc(); });
+  $("socList").addEventListener("click", (e) => {
+    const sw = e.target.closest("[data-sw]"), up = e.target.closest("[data-up]"), dn = e.target.closest("[data-down]");
+    if (sw) { const k = sw.dataset.sw; if (SHOWN.has(k)) { if (SHOWN.size > 1) SHOWN.delete(k); else return pulse("دست‌کم یک شبکه روی میز بماند"); } else SHOWN.add(k); }
+    else if (up || dn) { const k = (up || dn).dataset.up || (up || dn).dataset.down, i = ORDER.indexOf(k), j = i + (up ? -1 : 1); [ORDER[i], ORDER[j]] = [ORDER[j], ORDER[i]]; }
+    else return;
+    renderSocList(); renderSocial();
+  });
+  let dragK = null;
+  $("socList").addEventListener("dragstart", (e) => { const r = e.target.closest(".socrow"); if (!r) return; dragK = r.dataset.k; r.classList.add("dragging"); e.dataTransfer.effectAllowed = "move"; });
+  $("socList").addEventListener("dragover", (e) => {
+    if (!dragK) return; e.preventDefault();
+    const over = e.target.closest(".socrow"), me = $("socList").querySelector(".dragging"); if (!over || over === me) return;
+    const r = over.getBoundingClientRect(); over.parentNode.insertBefore(me, e.clientY < r.top + r.height / 2 ? over : over.nextSibling);
+  });
+  $("socList").addEventListener("dragend", () => { if (!dragK) return; dragK = null; ORDER = [...$("socList").children].map((r) => r.dataset.k); renderSocList(); renderSocial(); });
+  $("tbOut").addEventListener("click", () => { SVC[svc].on = false; STAGE[svc] = null; renderSocial(); });
   $("tbBody").addEventListener("click", (e) => {
-    const lg = e.target.closest("[data-login]"); if (lg) { SVC[lg.dataset.login].on = true; renderSocial(); return; }
+    const tl = e.target.closest("[data-tologin]"); if (tl) { STAGE[tl.dataset.tologin] = "login"; renderSocial(); return; }
+    const lg = e.target.closest("[data-login]"); if (lg) { SVC[lg.dataset.login].on = true; STAGE[lg.dataset.login] = null; renderSocial(); return; }
     const ch = e.target.closest("[data-ch]"); if (ch && svc === "tg") { tgOpen = +ch.dataset.ch; renderSocial(); return; }
     if (e.target.closest("#reelNext")) { reelI = (reelI + 1) % REELS.length; showReel(); return; }
     if (e.target.closest("#reelPlay")) {
@@ -3491,7 +3647,7 @@ td.them { color: var(--ink-2); }
   let nn = 0;
   $("noteBtn").addEventListener("click", () => {
     const [t, items] = NEWNOTES[nn++ % NEWNOTES.length];
-    $("cNote").innerHTML = `<div class="fresh"><div class="nt-title">${t}</div><ul>${items.map((x) => `<li><i></i>${x}</li>`).join("")}</ul></div>`;
+    addNote(t, "", items, "همین حالا · از گوشی");
     pulse("۱ یادداشت تازه از گوشی رسید"); peekCorner("notes", "یادداشت تازه از گوشی");
   });
   let spent = 485000;
@@ -3663,10 +3819,7 @@ td.them { color: var(--ink-2); }
       tasks.unshift({ t: v.split("\n")[0].slice(0, 80), m: qpWhen === "tomorrow" ? "فردا" : "", l: qpList, isNew: true }); tasks = tasks.slice(0, 5); renderTasks(); peekCorner("tasks", "از سرچ · همین حالا");
     } else {
       const desc = ($("qpDesc")?.value || "").trim(), title = v.split("\n")[0].slice(0, 60), body = [v.split("\n").slice(1).join("\n"), desc].filter(Boolean).join("\n");
-      NOTES.forEach((x) => (x.fresh = false));
-      NOTES.unshift({ f: qpList, title, when: "همین حالا", fresh: true, blocks: [{ k: "p", t: body }] }); curNote++;
-      renderFolders(); renderNoteList();
-      $("cNote").innerHTML = `<div class="fresh"><div class="nt-title">${title}</div>${body ? `<div class="meta">${body.replace(/\n/g, " ").slice(0, 60)}</div>` : ""}</div>`; peekCorner("notes", "از سرچ · همین حالا");
+      addNote(title, body, null, "همین حالا", qpList); peekCorner("notes", "از سرچ · همین حالا");
     }
     pulse("ذخیره شد · روی گوشی هم هست"); q.value = ""; grow(); q.dispatchEvent(new Event("input")); renderQP(); q.focus();
   }
