@@ -1185,8 +1185,11 @@ td.them { color: var(--ink-2); }
 /* ---------- v16: concentric cards ----------
    Every box inside a card sits --cp from the card's edge on all sides, and its corner is the card's
    corner minus that gap (--cr − --cp), so the two curves run parallel. Titles and plain text keep
-   their old, deeper inset (--cp + --cx = 24px from the side, --cy from the top). */
-:root { --cr: 32px; --cp: 8px; --cx: 16px; --cy: 12px; --ir: calc(var(--cr) - var(--cp)); }
+   their own, deeper inset (--cp + --cx + --tx = 24px from the side, --cy from the top); everything else
+   runs 16px in. */
+:root { --cr: 32px; --cp: 8px; --cx: 8px; --tx: 8px; --cy: 12px; --ir: calc(var(--cr) - var(--cp)); }
+/* content (rows, lists, the calendar, toggles) runs --cp + --cx = 16px from the side; section titles get --tx more, 24px */
+:is(.slide .card, .s3 .card, .ccard, .side2) :is(.card-h, .mh, .sec, .mini-h) { padding-inline: var(--tx); }
 .card, .ccard, .side2 { border-radius: var(--cr); }
 .slide .card, .s3 .card, .ccard, .side2 { padding: var(--cy) calc(var(--cp) + var(--cx)) var(--cp); }
 .slide .card.planner { padding: 0; }
