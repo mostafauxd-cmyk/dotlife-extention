@@ -48,12 +48,18 @@
   --ir: calc(var(--cr) - var(--cp));
   /* a one-line row is too short for --ir (it would turn into a pill): a soft square instead */
   --row-r: 14px;
+  /* the whole page is drawn at this size: 1 would be the design's own pixels, which read too large in
+     Chrome beside other browsers' new tabs. Viewport units below are divided by it to stay full-screen. */
+  --z: 0.8;
 }
 * {
   box-sizing: border-box;
 }
 [hidden] {
   display: none !important;
+}
+html {
+  zoom: var(--z);
 }
 html,
 body,
@@ -771,7 +777,7 @@ svg {
 .ccard {
   position: absolute;
   width: 380px;
-  max-height: calc(100vh - 36px);
+  max-height: calc((100vh / var(--z)) - 36px);
   overflow-y: auto;
   scrollbar-width: none;
   border-radius: var(--cr);
@@ -1212,7 +1218,7 @@ svg {
   right: 14px;
   top: 50%;
   width: 330px;
-  max-height: min(660px, calc(100vh - 40px));
+  max-height: min(660px, calc((100vh / var(--z)) - 40px));
   overflow-y: auto;
   scrollbar-width: none;
   border-radius: var(--cr);
@@ -1367,7 +1373,7 @@ svg {
   top: 0;
   bottom: 0;
   inset-inline-end: 0;
-  width: min(460px, 100vw);
+  width: min(460px, (100vw / var(--z)));
   padding: 24px 26px;
   display: flex;
   flex-direction: column;
@@ -1522,7 +1528,7 @@ svg {
   animation: fade 0.2s ease both;
 }
 .modal {
-  width: min(560px, calc(100vw - 32px));
+  width: min(560px, calc((100vw / var(--z)) - 32px));
   border-radius: 30px;
   padding: 26px 30px;
   display: flex;
@@ -1533,7 +1539,7 @@ svg {
   box-shadow: 0 40px 120px rgba(0, 0, 0, 0.6);
 }
 .modal.wide {
-  width: min(760px, calc(100vw - 32px));
+  width: min(760px, calc((100vw / var(--z)) - 32px));
 }
 .modal h2 {
   margin: 0;
@@ -1659,7 +1665,7 @@ svg {
     transition-duration: 0.01ms !important;
   }
 }
-@media (max-height: 760px) {
+@media (max-height: 608px) {
   .dotlogo {
     width: 84px;
     height: 84px;
@@ -1675,8 +1681,8 @@ svg {
   background: rgba(0, 0, 0, 0.62);
 }
 .dia {
-  width: min(1100px, calc(100vw - 32px));
-  height: min(680px, calc(100vh - 32px));
+  width: min(1100px, calc((100vw / var(--z)) - 32px));
+  height: min(680px, calc((100vh / var(--z)) - 32px));
   border-radius: 36px;
   display: grid;
   grid-template-columns: 480px minmax(0, 1fr);
@@ -2058,10 +2064,10 @@ svg {
 .dia-art .phone2 i:first-child {
   background: color-mix(in srgb, var(--tint) 35%, transparent);
 }
-@media (max-width: 900px) {
+@media (max-width: 720px) {
   .dia {
     grid-template-columns: minmax(0, 1fr);
-    width: min(520px, calc(100vw - 32px));
+    width: min(520px, calc((100vw / var(--z)) - 32px));
   }
   .dia-art {
     display: none;
