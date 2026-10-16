@@ -89,12 +89,13 @@ function SyncBadge() {
   );
 }
 
+/** Signed out: one line that says what you get, one that says how, the button; the app's code beside. */
 function SignInHint({
-  what,
+  head,
   place,
   onSignIn,
 }: {
-  what: string;
+  head: string;
   place: string;
   onSignIn: () => void;
 }) {
@@ -104,16 +105,16 @@ function SignInHint({
   }, []);
   return (
     <div className="signin-cta">
-      <p>
-        {what} از اپ نقطه این‌جا می‌آیند و هر چه این‌جا بنویسی روی گوشی هم هست. اپ را نداری؟ این کد
-        را با دوربین گوشی اسکن کن.
-      </p>
+      <div className="sc-text">
+        <b>{head}</b>
+        <p>وارد شو تا این‌جا و گوشی یکی شوند. نقطه را نداری؟ کد را با گوشی اسکن کن.</p>
+        <button type="button" className="cta" onClick={onSignIn}>
+          ورود به نقطه
+        </button>
+      </div>
       {install !== null && (
         <Qr text={getLink("noghte", place, install)} label="کد نصب نقطه از کافه‌بازار" />
       )}
-      <button type="button" className="cta" onClick={onSignIn}>
-        ورود به نقطه
-      </button>
     </div>
   );
 }
@@ -140,7 +141,7 @@ export function TasksCard({
     return (
       <>
         <h3>کارهای امروز</h3>
-        <SignInHint what="کارهای امروزت" place="tasks" onSignIn={onSignIn} />
+        <SignInHint head="کارهای گوشی‌ات، همین‌جا" place="tasks" onSignIn={onSignIn} />
       </>
     );
   }
@@ -227,7 +228,7 @@ export function NotesCard({
     return (
       <>
         <h3>یادداشت‌ها</h3>
-        <SignInHint what="یادداشت‌هایت" place="notes" onSignIn={onSignIn} />
+        <SignInHint head="یادداشت‌های گوشی‌ات، همین‌جا" place="notes" onSignIn={onSignIn} />
       </>
     );
   }

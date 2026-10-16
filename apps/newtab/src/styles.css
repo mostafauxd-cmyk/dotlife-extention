@@ -1149,33 +1149,49 @@ svg {
   font-weight: 500;
   font-variant-numeric: tabular-nums;
 }
-/* signed out: the text with the sign-in button under it, and the app's install code in its own
-   column on the left; no boxes inside the card */
+/* signed out: a bold line, a quiet line, the button; the app's code beside them. The code is as tall
+   as the text column, so its top meets the bold line and its bottom the button's */
 .signin-cta {
-  padding-top: 2px;
-  display: grid;
-  grid-template-columns: 1fr auto;
-  grid-template-rows: 1fr auto;
-  column-gap: 18px;
-  row-gap: 14px;
-  font-size: 15px;
+  --qr: 128px;
+  padding-top: 4px;
+  display: flex;
+  gap: 20px;
+}
+.sc-text {
+  flex: 1;
+  min-width: 0;
+  min-height: var(--qr);
+  display: flex;
+  flex-direction: column;
+}
+.sc-text b {
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.35;
+  color: var(--ink);
+  /* the line box sits a little above the letters; this lets their tops meet the code's */
+  margin-top: -2px;
+}
+.sc-text p {
+  margin: 4px 0 0;
+  font-size: 13.5px;
+  line-height: 1.75;
   color: var(--ink-2);
 }
-.signin-cta p {
-  margin: 0;
+.sc-text .cta {
+  margin-top: auto;
+  height: 44px;
+  padding: 0 22px;
+  font-size: 15px;
+  align-self: flex-start;
 }
 .signin-cta .qr {
-  grid-column: 2;
-  grid-row: 1 / 3;
-  align-self: center;
-  width: 118px;
-  height: 118px;
-  padding: 5px;
-  border-radius: 14px;
+  flex: none;
+  width: var(--qr);
+  height: var(--qr);
+  padding: 6px;
+  border-radius: 16px;
   background: #fff;
-}
-.signin-cta .cta {
-  grid-column: 1;
 }
 
 /* ---------- right edge: Chrome bookmarks and customisation ---------- */
