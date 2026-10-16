@@ -889,6 +889,19 @@ tr.grp td { background: rgba(255,255,255,.04); font-weight: 600; color: var(--in
 .ev.editing { box-shadow: 0 0 0 2px var(--noghte); }
 .fdot { width: 10px; height: 10px; border-radius: 3px; flex: none; }
 
+/* live peek: a corner opens by itself when something new arrives */
+.hz.livep .ccard { opacity: 1; transform: none; pointer-events: auto; transition-delay: 0s; box-shadow: 0 0 0 1px color-mix(in srgb, var(--tint) 45%, transparent), 0 24px 70px rgba(0,0,0,.45); }
+.hz.livep .cmk { opacity: 0; }
+.cmk.has::after { content: ""; position: absolute; top: 3px; right: 3px; width: 9px; height: 9px; border-radius: 50%; background: var(--coral); box-shadow: 0 0 0 2px var(--bgc); }
+.ping { display: flex; align-items: center; gap: 8px; font-size: 13px; color: color-mix(in srgb, var(--tint) 70%, #fff); margin-bottom: -4px; animation: fade .3s ease both; }
+.ping i { width: 7px; height: 7px; border-radius: 50%; background: currentColor; animation: beat 1.6s infinite; }
+.ptimer { margin-inline-start: auto; width: 44px; height: 3px; border-radius: 3px; background: rgba(255,255,255,.12); overflow: hidden; }
+.ptimer b { display: block; height: 100%; background: currentColor; animation: ptime 5s linear forwards; }
+.hz:hover .ptimer b, .hz:focus-within .ptimer b { animation-play-state: paused; }
+@keyframes ptime { from { width: 100%; } to { width: 0; } }
+.fresh { border-radius: 12px; padding: 6px 10px; margin: -2px -6px; background: color-mix(in srgb, var(--tint) 16%, transparent); animation: fade .4s ease both; }
+.rail .bdg2 { position: absolute; top: -3px; right: -3px; width: 8px; height: 8px; border-radius: 50%; background: var(--coral); }
+
 /* ad-slot overlay */
 [data-slot] { position: relative; }
 .show-ads [data-slot] { outline: 2px dashed var(--ad); outline-offset: 5px; border-radius: 16px; }
@@ -1009,7 +1022,7 @@ td.them { color: var(--ink-2); }
               <span class="cmk" data-ico="sticker-note" title="یادداشت‌ها"></span><span class="cl">یادداشت‌ها</span>
               <div class="ccard g">
                 <h3>یادداشت‌ها</h3>
-                <div class="note"><div class="nt-title">ایده‌های کمپین پاییز</div><ul><li class="ok"><i></i>بنر «بازگشت به مدرسه»</li><li><i></i>بودجه‌ی تبلیغات</li></ul></div>
+                <div class="note" id="cNote"><div class="nt-title">ایده‌های کمپین پاییز</div><ul><li class="ok"><i></i>بنر «بازگشت به مدرسه»</li><li><i></i>بودجه‌ی تبلیغات</li></ul></div>
                 <div class="add"><svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg><input placeholder="یادداشت سریع…" aria-label="یادداشت سریع"></div>
                 <button class="more" data-go="s4">همه‌ی یادداشت‌ها ↓</button>
               </div>
@@ -1019,8 +1032,9 @@ td.them { color: var(--ink-2); }
               <span class="cmk" data-ico="activity" title="پول"></span><span class="cl">پول</span>
               <div class="ccard g money" id="money">
                 <h3>پول من <button id="eye" class="more" aria-label="پنهان کردن مبالغ"><svg viewBox="0 0 24 24"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></button></h3>
-                <div><div class="lbl">خرج امروز</div><div class="big"><span class="amt">۴۸۵٬۰۰۰</span><small>تومان</small></div></div>
+                <div><div class="lbl">خرج امروز</div><div class="big"><span class="amt" id="cSpent">۴۸۵٬۰۰۰</span><small>تومان</small></div></div>
                 <div class="bud"><div class="track"><b></b></div><div class="row"><span>بودجه‌ی مهر</span><span class="amt">۸٫۴ از ۱۲ میلیون</span></div></div>
+                <div id="cTx"></div>
                 <div class="bill"><span>قبض برق <span class="d">۲ روز دیگر</span></span><span class="amt">۳۱۲٬۰۰۰</span></div>
                 <button class="more" data-go="s3">نمودارها و قیمت روز ↓</button>
               </div>
@@ -1278,7 +1292,7 @@ td.them { color: var(--ink-2); }
     <div class="ctl"><button class="chip" id="ctlCust" aria-pressed="false">شخصی‌سازی و پس‌زمینه</button><button class="chip" id="ctlOnb" aria-pressed="false">دیدن آنبوردینگ</button><button class="chip" id="ctlEnter" aria-pressed="false">دیدن افکت ورود</button></div>
     <div class="ctl">
       <button class="chip ad" id="adsBtn" aria-pressed="false">نمایش جایگاه‌های تبلیغ</button>
-      <button class="chip" id="phoneBtn" aria-pressed="false">ثبت یک کار از گوشی</button>
+      <button class="chip" id="phoneBtn" aria-pressed="false">کار تازه از گوشی</button><button class="chip" id="noteBtn" aria-pressed="false">یادداشت تازه از گوشی</button><button class="chip" id="smsBtn" aria-pressed="false">پیامک بانکی در پاکت</button>
       <button class="chip" id="fsBtn" aria-pressed="false">اندازه‌ی واقعی</button>
     </div>
   </div>
@@ -1423,6 +1437,8 @@ td.them { color: var(--ink-2); }
       </div>
       <ul>
         <li><b>هدف:</b> زیر ۳ ثانیه از گوشی تا نیوتب و برعکس، وقتی هر دو آنلاین‌اند.</li>
+        <li><b>تغییر تازه در گوشه:</b> وقتی چیزی از گوشی می‌رسد و کاربر روی صفحه‌ی اول است، کارت همان گوشه خودش مثل یک نوتیفیکیشن باز می‌شود: کار تازه در گوشه‌ی کارها، یادداشت تازه در گوشه‌ی یادداشت‌ها، تراکنش تازه‌ی پاکت در گوشه‌ی پول. بالای کارت یک خط «از گوشی · همین حالا» با یک نوار زمان کوچک می‌آید، ردیف تازه رنگی می‌شود و بعد از ۵ ثانیه کارت برمی‌گردد. اگر موس روی کارت باشد یا کاربر در آن تایپ کند، باز می‌ماند. فوکوس از جای دیگری گرفته نمی‌شود و صدایی پخش نمی‌شود.</li>
+        <li><b>اگر کاربر جای دیگری است</b> (اسلاید دیگر یا شخصی‌سازی که این رفتار را خاموش کرده): فقط یک نقطه‌ی قرمز روی آیکون همان گوشه و روی «خانه» در نوار اسلایدها می‌نشیند؛ با برگشتن به صفحه‌ی اول، گوشه‌ها یکی‌یکی باز می‌شوند. تغییرهای پاکت با همان چرخه‌ی خواندن پاکت می‌رسند (هر ۶۰ ثانیه، و بعد با همان مسیر long-poll).</li>
         <li><b>چرا long-poll و نه WebSocket:</b> همه‌ی ترافیک API از CDN آروان رد می‌شود. یک درخواست HTTP معمولی که دیر جواب می‌گیرد از هر CDN و فیلتری رد می‌شود و سرور Fastify فعلی با چند خط آن را پشتیبانی می‌کند. اگر بیش از یک نمونه‌ی سرور داشتیم، با <code>LISTEN/NOTIFY</code> پستگرس به هم خبر می‌دهند.</li>
         <li><b>باز شدن فوری تب:</b> آخرین وضعیت هر چهار اسلاید در IndexedDB نگه داشته می‌شود و تب در کمتر از ۱۰۰ میلی‌ثانیه پر می‌شود؛ بعد pull در پس‌زمینه. بقیه‌ی اسلایدها فقط وقتی به آن‌ها اسکرول می‌شود داده‌ی تازه می‌گیرند.</li>
         <li><b>نوشتن از نیوتب:</b> همان outbox گوشی و همان قانون ادغام از <code>@dotlife/sync</code>. مدل یادداشت از اپ موبایل به پکیج <code>packages/notes</code> منتقل می‌شود. پوشه‌های یادداشت جدا سینک نمی‌شوند، چون در نقطه پوشه‌ها همان لیست‌های کارند (بخش «یک منبع برای دسته‌ها»). یادداشت صوتی امروز فقط روی همان گوشی فایل دارد و با سینک فقط موج صدا و متنش می‌آید؛ برای پخش در نیوتب، فایل صدا باید به سرور برود. تا آن موقع نیوتب موج و متن را نشان می‌دهد.</li>
@@ -1734,7 +1750,7 @@ td.them { color: var(--ink-2); }
     tasks.forEach((k) => (k.isNew = false));
     tasks.unshift({ t, from: "از گوشی · همین حالا", isNew: true });
     tasks = tasks.slice(0, 4);
-    renderTasks(); pulse("۱ کار تازه از گوشی رسید");
+    renderTasks(); pulse("۱ کار تازه از گوشی رسید"); peekCorner("tasks", "از گوشی · همین حالا");
     setTimeout(() => { tasks.forEach((k) => (k.isNew = false)); renderTasks(); }, 3000);
   }
   $("phoneBtn").addEventListener("click", fromPhone);
@@ -2255,7 +2271,7 @@ td.them { color: var(--ink-2); }
 
 
   /* ================= customization: blocks on/off without breaking the layout ================= */
-  const BLOCKS = [["tasks", "کارها"], ["notes", "یادداشت‌ها"], ["money", "پول"], ["today", "امروز"], ["launcher", "ردیف دسترسی سریع"], ["bookmarks", "بوکمارک‌های کروم"], ["dateline", "تاریخ زیر سرچ"], ["pin", "کارت‌ها همیشه باز"]];
+  const BLOCKS = [["tasks", "کارها"], ["notes", "یادداشت‌ها"], ["money", "پول"], ["today", "امروز"], ["launcher", "ردیف دسترسی سریع"], ["bookmarks", "بوکمارک‌های کروم"], ["dateline", "تاریخ زیر سرچ"], ["pin", "کارت‌ها همیشه باز"], ["peek", "باز شدن گوشه با تغییر تازه"]];
   const SLIDES = [["s2", "برنامه‌ها"], ["s3", "پول"], ["s4", "یادداشت‌ها"], ["s5", "خبر"], ["s6", "شبکه‌ها"]];
   const offB = new Set(["pin"]), offS = new Set();
   function renderToggles() {
@@ -2488,6 +2504,53 @@ td.them { color: var(--ink-2); }
       btn.innerHTML = pauseSvg2; let p = parseFloat($("rProg").style.width) || 0;
       reelT = setInterval(() => { p += 2; $("rProg").style.width = p + "%"; if (p >= 100) { reelI = (reelI + 1) % REELS.length; showReel(); p = 0; } }, 120);
     }
+  });
+
+  /* ================= live peek: something new arrives → its corner opens like a notification ================= */
+  const peekT = {};
+  const atHome = () => scroller.scrollTop < 450;
+  function peekCorner(blk, label) {
+    const hz = document.querySelector(`.hz[data-blk="${blk}"]`); if (!hz || hz.hidden) return;
+    hz.dataset.ping = label;
+    if (!atHome() || offB.has("peek")) {            // elsewhere, or the user turned it off: a dot only
+      hz.querySelector(".cmk").classList.add("has");
+      const home = railBtns[0]; if (!home.querySelector(".bdg2")) home.insertAdjacentHTML("beforeend", '<span class="bdg2"></span>');
+      return;
+    }
+    const card = hz.querySelector(".ccard");
+    card.querySelector(".ping")?.remove();
+    card.insertAdjacentHTML("afterbegin", `<div class="ping"><i></i>${label}<span class="ptimer"><b></b></span></div>`);
+    hz.classList.add("livep"); hz.querySelector(".cmk").classList.remove("has");
+    clearTimeout(peekT[blk]);
+    const close = () => {
+      if (hz.matches(":hover") || hz.matches(":focus-within")) { peekT[blk] = setTimeout(close, 1200); return; }
+      hz.classList.remove("livep"); card.querySelector(".ping")?.remove(); delete hz.dataset.ping;
+    };
+    peekT[blk] = setTimeout(close, 5000);
+  }
+  // back on the home slide: the corners that got something meanwhile open one after another
+  scroller.addEventListener("scroll", () => {
+    if (!atHome()) return;
+    railBtns[0].querySelector(".bdg2")?.remove();
+    [...document.querySelectorAll(".s1 .cmk.has")].forEach((m, k) => { const hz = m.closest(".hz"); setTimeout(() => peekCorner(hz.dataset.blk, hz.dataset.ping || "تازه"), 400 + k * 700); });
+  }, { passive: true });
+  document.querySelectorAll(".s1 .hz").forEach((hz) => hz.addEventListener("mouseenter", () => hz.querySelector(".cmk").classList.remove("has")));
+
+  const NEWNOTES = [["فهرست مهمان‌های تولد", ["سارا و امیر", "خانواده‌ی رحیمی"]], ["ایده برای اسم کافه", ["کافه‌ی نقطه", "پاییز"]]];
+  let nn = 0;
+  $("noteBtn").addEventListener("click", () => {
+    const [t, items] = NEWNOTES[nn++ % NEWNOTES.length];
+    $("cNote").innerHTML = `<div class="fresh"><div class="nt-title">${t}</div><ul>${items.map((x) => `<li><i></i>${x}</li>`).join("")}</ul></div>`;
+    pulse("۱ یادداشت تازه از گوشی رسید"); peekCorner("notes", "یادداشت تازه از گوشی");
+  });
+  let spent = 485000;
+  const TX = [["اسنپ", 185000, "ملت"], ["سوپرمارکت", 320000, "سامان"], ["کافه", 140000, "ملت"]];
+  let tx = 0;
+  $("smsBtn").addEventListener("click", () => {
+    const [n, a, bank] = TX[tx++ % TX.length]; spent += a;
+    $("cSpent").textContent = fmt(spent);
+    $("cTx").innerHTML = `<div class="bill fresh"><span>${n} <span class="d" style="color:var(--ink-2)">${bank} · همین حالا</span></span><span class="amt">${fmt(a)}</span></div>`;
+    peekCorner("money", "پیامک بانکی ثبت شد · پاکت");
   });
 })();
 </script>
