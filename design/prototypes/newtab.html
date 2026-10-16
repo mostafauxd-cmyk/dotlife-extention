@@ -1239,8 +1239,8 @@ td.them { color: var(--ink-2); }
 .trace { position: absolute; inset: -1.5px; pointer-events: none; overflow: visible; }
 .trace path { fill: none; stroke-linecap: round; }
 .trace .glo { stroke: var(--tint); stroke-width: 5; filter: blur(4px); opacity: .9; }
-.trace .core { stroke: #fff; stroke-width: 1.6; }
-.trace .mid { stroke: color-mix(in srgb, var(--tint) 70%, #fff); stroke-width: 1.5; opacity: .55; }
+.trace .core { stroke: #fff; stroke-width: 1.1; filter: drop-shadow(0 0 2px color-mix(in srgb, var(--tint) 70%, transparent)); }
+.trace .mid { stroke: color-mix(in srgb, var(--tint) 70%, #fff); stroke-width: 1; }
 .trace .far { stroke: var(--tint); stroke-width: 1.4; opacity: .22; }
 
 /* ---------- v17: the to-do bar on one line ---------- */
@@ -1765,7 +1765,7 @@ td.them { color: var(--ink-2); }
       <p>نسخه‌ی پیش‌فرض عکس ندارد؛ فقط چند رنگ تیره و آرام: نقطه، گرافیت، آسمان، کهربا، جنگل، شب بنفش و رز، به‌اضافه‌ی «تم روز» اسپانسری (جایگاه ۳). هر رنگ دو مقدار دارد: زمینه و یک رنگ روشن‌تر هم‌خانواده. زمینه یک هاله‌ی محو از همان رنگ روشن و کمی دانه (grain) دارد تا تخت و مرده دیده نشود.</p>
       <ul>
         <li><b>نقطه‌ی بالای سرچ</b> همان خط‌خطی نقطه‌ی اپ است (همان مولد seed‌دار <code>BrandMark.tsx</code>) و با رنگ روشن همان تم کشیده می‌شود، پس با هر زمینه یکی می‌شود؛ مثل لوگوی Dia که با رنگ پنجره عوض می‌شود. بعد از کشیده شدن ثابت می‌ماند و با کلیک روی نقطه دوباره با قلم کشیده می‌شود.</li>
-        <li><b>افکت ورود</b> (هر بار که تب باز می‌شود، کمتر از ۳ ثانیه)، مثل ورود Dia: رنگ زمینه یک‌باره و روشن‌تر از حالت عادی می‌آید و در یک و نیم ثانیه آرام می‌نشیند؛ هم‌زمان نقطه با قلم کشیده می‌شود، سرچ از کمی پایین‌تر بالا می‌آید، و در همان لحظه یک نور نرم به رنگ تم پشت کادر سرچ روشن می‌شود و آرام خاموش می‌شود. بعد دو خط نازک نور از وسط لبه‌ی پایین کادر جدا می‌شوند، در طول لبه‌ی پایین به دو گوشه می‌روند، از دو طرف بالا می‌آیند و وسط لبه‌ی بالا به هم می‌رسند؛ سر هر خط سفید است و دنباله‌اش با رنگ تم کم‌کم محو می‌شود، و بعد از رسیدن به هم ناپدید می‌شوند. برای کسی که «کاهش حرکت» را در سیستم روشن کرده، همه‌چیز بی‌حرکت می‌آید.</li>
+        <li><b>افکت ورود</b> (هر بار که تب باز می‌شود، کمتر از ۳ ثانیه)، مثل ورود Dia: رنگ زمینه یک‌باره و روشن‌تر از حالت عادی می‌آید و در یک و نیم ثانیه آرام می‌نشیند؛ هم‌زمان نقطه با قلم کشیده می‌شود، سرچ از کمی پایین‌تر بالا می‌آید، و در همان لحظه یک نور نرم به رنگ تم پشت کادر سرچ روشن می‌شود و آرام خاموش می‌شود. بعد دو خط بسیار نازک نور (یک پیکسل، با دنباله‌ی کوتاه و بدون هاله‌ی پهن) از وسط لبه‌ی پایین کادر جدا می‌شوند، در طول لبه‌ی پایین به دو گوشه می‌روند، از دو طرف بالا می‌آیند و وسط لبه‌ی بالا به هم می‌رسند؛ سر هر خط سفید است و دنباله‌اش با رنگ تم کم‌کم محو می‌شود، و بعد از رسیدن به هم ناپدید می‌شوند. برای کسی که «کاهش حرکت» را در سیستم روشن کرده، همه‌چیز بی‌حرکت می‌آید.</li>
         <li>عکس‌ها و درخت زنده‌ی اپ بعداً به‌عنوان گزینه‌ی اختیاری می‌آیند، نه پیش‌فرض.</li>
         <li><b>کارت‌های هم‌مرکز:</b> مثل کارت تقویم اپ نقطه، هر جعبه‌ای که داخل کارت است (ردیف انتخاب‌شده، سرچ، کارت خبر، ویجت هوا، تب‌ها) از هر چهار طرف به یک اندازه (۱۶ پیکسل) با لبه‌ی کارت فاصله دارد و گوشه‌اش برابر گوشه‌ی کارت منهای همان فاصله است (۳۲ − ۱۶ = ۱۶)، پس دو منحنی موازی می‌مانند. تیتر سکشن‌ها و متن ساده استثنا هستند و ۸ پیکسل جلوتر از جعبه‌ها شروع می‌شوند.</li>
         <li><b>تب‌ها:</b> یک پیل زیر تب انتخاب‌شده است که با کلیک تا تب تازه کش می‌آید، لحظه‌ای روی هر دو می‌ماند و بعد در جای تازه جمع می‌شود (حدود نیم ثانیه، با «کاهش حرکت» بی‌انیمیشن). تب بالای صفحه‌ی برنامه هم‌قد و هم‌شکل کادر سرچ کنارش است.</li>
@@ -2260,7 +2260,7 @@ td.them { color: var(--ink-2); }
       const half = (dir) => { const x0 = dir < 0 ? e : w - e, sx = dir < 0 ? 1 : 0, cx = (x) => (dir < 0 ? x : w - x);
         return `M${m} ${h - e}H${cx(e + R)}A${R} ${R} 0 0 ${sx} ${x0} ${h - e - R}V${e + R}A${R} ${R} 0 0 ${sx} ${cx(e + R)} ${e}H${m}`; };
       const svg = svgEl("svg", { class: "trace", width: w, height: h, viewBox: `0 0 ${w} ${h}`, "aria-hidden": "true" });
-      const layers = [["far", 1], ["mid", 0.42], ["glo", 0.2], ["core", 0.13]], parts = [];
+      const layers = [["mid", 0.22], ["core", 0.09]], parts = [];
       for (const dir of [-1, 1]) for (const [cls, tail] of layers) { const p = svgEl("path", { d: half(dir), class: cls }); svg.append(p); parts.push([p, tail]); }
       box.append(svg);
       const L = parts[0][0].getTotalLength(), T = 1500, ease = (t) => 1 - Math.pow(1 - Math.min(1, Math.max(0, t)), 3);
@@ -2269,7 +2269,7 @@ td.them { color: var(--ink-2); }
         t0 ??= now; const k = (now - t0) / T, head = ease(k / 0.72) * L, fade = k < 0.72 ? 1 : Math.max(0, 1 - (k - 0.72) / 0.28);
         for (const [p, tail] of parts) {
           const from = Math.max(0, head - tail * L * (k < 0.72 ? 1 : 1 + (k - 0.72) * 2)), len = Math.max(0.01, head - from);
-          p.style.strokeDasharray = `${len} ${L * 3}`; p.style.strokeDashoffset = -from; p.style.opacity = fade * (p.classList.contains("far") ? 0.22 : p.classList.contains("mid") ? 0.55 : p.classList.contains("glo") ? 0.9 : 1);
+          p.style.strokeDasharray = `${len} ${L * 3}`; p.style.strokeDashoffset = -from; p.style.opacity = fade * (p.classList.contains("mid") ? 0.4 : 0.85);
         }
         if (k < 1) requestAnimationFrame(step); else svg.remove();
       };
