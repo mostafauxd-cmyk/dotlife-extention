@@ -343,7 +343,6 @@ export function PlansSlide() {
                   key={d}
                   day={d}
                   isToday={d === todayD}
-                  nowMin={nowMin}
                   timed={lanes(
                     tasksOnDay(tasks, d).flatMap((o) => {
                       const p = placeOf(o, d);
@@ -359,6 +358,10 @@ export function PlansSlide() {
                   onDraft={setDraft}
                 />
               ))}
+              {/* «now»: one line across every day, from its time in the gutter */}
+              {days.includes(todayD) && (
+                <div className="pnow" style={{ top: (nowMin / 60) * HOUR }} />
+              )}
             </div>
           </div>
         </div>
@@ -380,7 +383,6 @@ export function PlansSlide() {
 function DayColumn({
   day,
   isToday,
-  nowMin,
   timed,
   draft,
   picked,
@@ -390,7 +392,6 @@ function DayColumn({
 }: {
   day: LocalDate;
   isToday: boolean;
-  nowMin: number;
   timed: Timed[];
   draft: Draft | null;
   picked: string | null;
@@ -510,7 +511,6 @@ function DayColumn({
           </small>
         </div>
       )}
-      {isToday && <div className="pnow" style={{ top: y(nowMin) }} />}
     </div>
   );
 }

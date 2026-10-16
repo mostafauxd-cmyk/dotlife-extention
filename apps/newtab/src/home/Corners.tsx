@@ -209,17 +209,33 @@ export function TasksCard({
           }}
         />
       </form>
-      {!signedIn && all.length > 0 && <SyncInvite onSignIn={onSignIn} />}
+      {!signedIn && all.length > 0 && <SyncInvite place="tasks" onSignIn={onSignIn} />}
     </>
   );
 }
 
-/** Signed out, with things written here: one quiet line that offers to keep them on the phone too. */
-function SyncInvite({ onSignIn }: { onSignIn: () => void }) {
+/**
+ * Signed out, with things written here: a small box that says they live in this browser only and
+ * offers to keep them on the phone too — two short lines, the sign-in button, and the app's code.
+ */
+export function SyncInvite({ place, onSignIn }: { place: string; onSignIn: () => void }) {
+  const [install, setInstall] = useState<string | null>(null);
+  useEffect(() => {
+    void installId().then(setInstall);
+  }, []);
   return (
-    <button type="button" className="sync-invite" onClick={onSignIn}>
-      فقط روی همین مرورگر است. <b>وارد نقطه شو</b> تا روی گوشی هم بیاید.
-    </button>
+    <div className="sync-invite">
+      <div className="si-text">
+        <b>فقط روی همین مرورگر است</b>
+        <span>وارد شو تا روی گوشی هم بیاید.</span>
+        <button type="button" className="cta" onClick={onSignIn}>
+          ورود به نقطه
+        </button>
+      </div>
+      {install !== null && (
+        <Qr text={getLink("noghte", place, install)} label="کد نصب نقطه از کافه‌بازار" />
+      )}
+    </div>
   );
 }
 
@@ -296,7 +312,7 @@ export function NotesCard({
           ))}
         </div>
       )}
-      {!signedIn && notes.length > 0 && <SyncInvite onSignIn={onSignIn} />}
+      {!signedIn && notes.length > 0 && <SyncInvite place="notes" onSignIn={onSignIn} />}
     </>
   );
 }

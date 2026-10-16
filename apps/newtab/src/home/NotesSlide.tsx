@@ -37,6 +37,7 @@ import {
 } from "../noghte/notes";
 import { ago, fa } from "../ui/fa";
 import { Icon } from "../ui/Icon";
+import { SyncInvite } from "./Corners";
 
 /**
  * The notes slide, as the app's notes: folders (which are task lists), the list with its pinned
@@ -196,11 +197,7 @@ export function NotesSlide({ signedIn, onSignIn }: { signedIn: boolean; onSignIn
             ))
           )}
         </div>
-        {!signedIn && (
-          <button type="button" className="sync-invite" onClick={onSignIn}>
-            یادداشت‌هایت فقط روی همین مرورگر است. <b>وارد نقطه شو</b> تا روی گوشی هم بیاید.
-          </button>
-        )}
+        {!signedIn && <SyncInvite place="notes-slide" onSignIn={onSignIn} />}
         <button type="button" className="cta newn" onClick={create}>
           <Icon name="edit" />
           یادداشت تازه
