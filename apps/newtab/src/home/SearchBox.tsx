@@ -147,6 +147,11 @@ export function SearchBox({
     el.style.height = `${String(Math.min(el.scrollHeight, 150))}px`;
   }, [text]);
 
+  // typing goes straight into the box when the tab opens (public/focus.js brings the keyboard here)
+  useEffect(() => {
+    input.current?.focus({ preventScroll: true });
+  }, []);
+
   useEffect(() => {
     if (traceAfter === null) return;
     const t = setTimeout(() => {
