@@ -1185,15 +1185,21 @@ td.them { color: var(--ink-2); }
 /* ---------- v16: concentric cards ----------
    Every box inside a card sits --cp from the card's edge on all sides, and its corner is the card's
    corner minus that gap (--cr − --cp), so the two curves run parallel. Titles and plain text keep
-   their old, deeper inset (--cp + --cx). */
-:root { --cr: 32px; --cp: 12px; --cx: 12px; --ir: calc(var(--cr) - var(--cp)); }
+   their old, deeper inset (--cp + --cx = 24px from the side, --cy from the top). */
+:root { --cr: 32px; --cp: 8px; --cx: 16px; --cy: 12px; --ir: calc(var(--cr) - var(--cp)); }
 .card, .ccard, .side2 { border-radius: var(--cr); }
-.slide .card, .s3 .card, .ccard, .side2 { padding: var(--cp) calc(var(--cp) + var(--cx)); }
+.slide .card, .s3 .card, .ccard, .side2 { padding: var(--cy) calc(var(--cp) + var(--cx)) var(--cp); }
 .slide .card.planner { padding: 0; }
 .slide .card.editor { padding: 26px 40px 30px; }
 .slide .card.feed, .slide .card.todo { padding-bottom: 0; }
 .wxc, .nextp, .spcard, .spev, .mtabs, #spx, .plist, .ncards, .flist, .tpl, .newf, .nlist .nsearch, .nitems, .newn, .addsrc, .saved,
-.feed-top, .flistv, .occl, .side2 .shelf, .td-top, .td-list { margin-inline: calc(-1 * var(--cx)); }
+.feed-top, .flistv, .occl, .side2 .shelf, .td-top, .td-list, .ccard .note, .ccard .add { margin-inline: calc(-1 * var(--cx)); }
+#spx { width: auto; }
+/* the editor's text runs 40px in, but a voice note in it is a box: it reaches out to --cp like every other box */
+.slide .card.editor .b-v { margin-inline: calc(var(--cp) - 40px); border-radius: var(--ir); }
+.ccard .note { border-radius: var(--ir); }
+/* a box that opens a card (no title above it) sits --cp from the top too */
+.slide .card > .nsearch:first-child, .slide .card > .feed-top:first-child { margin-top: calc(var(--cp) - var(--cy)); }
 .wxc, .nextp, .spcard, .spev, .prow, .ncard, .flist button, .tpl, .newf, .nitem, .addsrc, .fbig, .frow, .saved, .occl button, .side2 .bm, .mtabs { border-radius: var(--ir); }
 .prow, .flist button, .nitem, .occl button, .side2 .bm { padding-inline: var(--cx); }
 .mtabs { padding: 3px; }
