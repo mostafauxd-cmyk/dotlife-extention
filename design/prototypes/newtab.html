@@ -81,7 +81,7 @@ button { font: inherit; color: inherit; }
 .nt[data-wall="night"] .wall { background: radial-gradient(900px 600px at 78% 8%, #2b3480 0%, transparent 60%), radial-gradient(700px 520px at 12% 92%, #1b3b52 0%, transparent 60%), #0c1022; }
 .nt[data-wall="mist"]  .wall { background: radial-gradient(900px 600px at 20% 10%, #5b5f52 0%, transparent 60%), radial-gradient(800px 600px at 90% 90%, #3c4250 0%, transparent 60%), #24262b; }
 .nt[data-wall="dawn"]  .wall { background: radial-gradient(1000px 640px at 70% 0%, #c27a5a 0%, transparent 55%), radial-gradient(900px 600px at 10% 100%, #3d2b5e 0%, transparent 60%), #1e1830; }
-.nt > .in { position: relative; z-index: 1; height: 100%; display: grid; grid-template-rows: auto auto auto auto minmax(0,1fr) auto; justify-items: center; padding: 24px 56px 22px; gap: 0; }
+.nt .in { position: relative; z-index: 1; height: 100%; display: grid; grid-template-rows: auto auto auto auto minmax(0,1fr) auto; justify-items: center; padding: 24px 56px 22px; gap: 0; }
 
 .g { background: rgba(255,255,255,.08); border: 1px solid var(--stroke);
   backdrop-filter: blur(30px) saturate(150%); -webkit-backdrop-filter: blur(30px) saturate(150%);
@@ -186,6 +186,134 @@ button { font: inherit; color: inherit; }
 .bm .tag { margin-inline-start: 2px; }
 .credit { position: absolute; bottom: 30px; inset-inline-end: 56px; font-size: 13px; color: rgba(255,255,255,.6); z-index: 1; }
 
+/* ---------- scroller + rail ---------- */
+.scroller { position: absolute; inset: 0; overflow-y: auto; overflow-x: hidden; scroll-snap-type: y mandatory; scrollbar-width: none; overscroll-behavior: auto; z-index: 1; }
+.scroller::-webkit-scrollbar { display: none; }
+.slide { position: relative; height: 900px; scroll-snap-align: start; }
+.slide > .in { height: 100%; }
+.rail { position: absolute; z-index: 4; inset-inline-end: 18px; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; gap: 6px; padding: 7px; border-radius: 999px; background: rgba(16,18,26,.58); }
+.rail button { width: 50px; height: 50px; border-radius: 999px; border: 0; background: none; color: rgba(255,255,255,.75); cursor: pointer; display: grid; place-items: center; position: relative; transition: background .25s, color .25s; }
+.rail button svg { width: 22px; height: 22px; }
+.rail button[aria-current="true"] { background: #fff; color: #0B0D12; height: 64px; }
+.rail button .tip { position: absolute; inset-inline-end: 62px; white-space: nowrap; font-size: 15px; padding: 2px 12px; border-radius: 999px; background: rgba(16,18,26,.8); color: var(--ink); opacity: 0; pointer-events: none; transition: opacity .2s; }
+.rail button:hover .tip { opacity: 1; }
+.more { margin-inline-start: auto; font-size: 15px; color: var(--ink-2); background: none; border: 0; cursor: pointer; display: inline-flex; gap: 4px; align-items: center; padding: 0; }
+.more:hover { color: var(--ink); }
+.more svg { width: 16px; height: 16px; }
+.hint { position: absolute; bottom: 92px; left: 50%; transform: translateX(-50%); z-index: 2; }
+
+.s-pad { height: 100%; padding: 40px 56px 40px 110px; display: grid; gap: 20px; }
+.card { border-radius: 28px; padding: 24px 26px; display: flex; flex-direction: column; gap: 14px; min-height: 0; overflow: hidden; }
+.card-h { display: flex; align-items: center; gap: 12px; }
+.card-h h2 { margin: 0; font-size: 22px; font-weight: 600; }
+.card-h .sub { color: var(--ink-2); font-size: 15px; }
+.sec { font-size: 15px; color: var(--ink-2); display: flex; align-items: center; gap: 8px; }
+
+/* ---------- slide 2: calendar ---------- */
+.s2 .s-pad { grid-template-columns: 1.45fr 1fr; }
+.mhead { display: flex; align-items: center; gap: 14px; }
+.mhead .t { display: flex; flex-direction: column; line-height: 1.4; }
+.mhead .t b { font-size: 36px; font-weight: 600; }
+.mhead .t span { font-size: 15px; color: var(--ink-2); }
+.mhead .tools { margin-inline-start: auto; display: flex; align-items: center; gap: 8px; }
+.seg { display: flex; padding: 4px; border-radius: 999px; background: rgba(0,0,0,.25); border: 1px solid var(--stroke); }
+.seg span { padding: 4px 14px; border-radius: 999px; font-size: 15px; color: rgba(255,255,255,.75); }
+.seg span.on { background: #fff; color: #0B0D12; font-weight: 600; }
+.rbtn.sm { width: 40px; height: 40px; }
+.rbtn.sm svg { width: 18px; height: 18px; }
+.wk { display: grid; grid-template-columns: repeat(7, 1fr); font-size: 15px; color: var(--ink-2); text-align: center; }
+.wk span:last-child { color: var(--coral); }
+.month { flex: 1; display: grid; grid-template-columns: repeat(7, 1fr); grid-template-rows: repeat(5, 1fr); gap: 6px; min-height: 0; }
+.day { border-radius: 18px; padding: 8px 10px; display: flex; flex-direction: column; gap: 2px; cursor: pointer; border: 1px solid transparent; background: rgba(255,255,255,.035); text-align: start; min-width: 0; overflow: hidden; }
+.day:hover { background: rgba(255,255,255,.08); }
+.day .top2 { display: flex; align-items: baseline; justify-content: space-between; }
+.day .n { font-size: 26px; font-weight: 300; line-height: 1.2; }
+.day .gr { font-size: 13px; color: var(--ink-3); }
+.day .ev { font-size: 13px; color: rgba(255,255,255,.72); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 1.6; }
+.day .dots { display: flex; gap: 4px; margin-top: auto; }
+.day .dots i { width: 6px; height: 6px; border-radius: 50%; background: var(--noghte); }
+.day .dots i.p { background: var(--paket); }
+.day.fri .n { color: var(--coral); }
+.day.out { opacity: .4; }
+.day.empty { background: none; cursor: default; }
+.day.today .n { background: #fff; color: #0B0D12; border-radius: 999px; padding: 0 10px; font-weight: 500; }
+.day.sel { border-color: var(--stroke-hi); background: rgba(255,255,255,.10); }
+.dayp .dh b { font-size: 30px; font-weight: 600; display: block; line-height: 1.4; }
+.dayp .dh span { font-size: 15px; color: var(--ink-2); }
+.occs { display: flex; flex-wrap: wrap; gap: 8px; }
+.occs span { font-size: 15px; padding: 3px 14px; border-radius: 999px; background: rgba(255,255,255,.08); border: 1px solid var(--stroke); }
+.occs span.none { color: var(--ink-3); background: none; border-style: dashed; }
+.prayer { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; text-align: center; }
+.prayer div { border-radius: 16px; padding: 6px 0; background: rgba(0,0,0,.2); display: flex; flex-direction: column; }
+.prayer b { font-size: 20px; font-weight: 400; font-variant-numeric: tabular-nums; }
+.prayer span { font-size: 13px; color: var(--ink-2); }
+.prayer .next { background: #fff; color: #0B0D12; }
+.prayer .next span { color: #3a3d48; }
+.agenda { display: flex; flex-direction: column; gap: 4px; }
+.ag { display: flex; align-items: center; gap: 12px; padding: 7px 12px; border-radius: 14px; background: rgba(0,0,0,.18); font-size: 17px; }
+.ag .tm { width: 52px; color: var(--ink-2); font-size: 15px; font-variant-numeric: tabular-nums; flex: none; }
+.ag .bar { width: 4px; align-self: stretch; border-radius: 4px; background: var(--noghte); flex: none; }
+.ag .bar.g { background: #F2C94C; }
+.ag .bar.p { background: var(--paket); }
+.ag .src { margin-inline-start: auto; font-size: 13px; color: var(--ink-2); }
+.ag.done .tt { color: var(--ink-3); text-decoration: line-through; }
+.ag-empty { color: var(--ink-3); font-size: 16px; padding: 8px 4px; }
+.upc { display: flex; flex-direction: column; gap: 2px; font-size: 16px; }
+.upc div { display: flex; justify-content: space-between; gap: 10px; }
+.upc span:last-child { color: var(--ink-2); font-size: 15px; white-space: nowrap; }
+
+/* ---------- slide 3: money ---------- */
+.s3 .s-pad { grid-template-columns: 1fr 1.3fr 1.05fr; }
+.tot { font-size: 40px; font-weight: 300; line-height: 1.2; font-variant-numeric: tabular-nums; }
+.tot small { font-size: 17px; color: var(--ink-2); margin-inline-start: 6px; }
+.acc { display: flex; flex-direction: column; gap: 6px; }
+.acc div { display: flex; align-items: center; gap: 10px; font-size: 17px; }
+.acc i { width: 30px; height: 30px; border-radius: 10px; display: grid; place-items: center; font-style: normal; font-size: 13px; font-weight: 700; color: #fff; flex: none; }
+.acc .v { margin-inline-start: auto; font-variant-numeric: tabular-nums; }
+.acc .c { font-size: 14px; color: var(--ink-3); }
+.hr { height: 1px; background: var(--stroke); }
+.mlist { display: flex; flex-direction: column; gap: 6px; font-size: 17px; }
+.mlist div { display: flex; align-items: center; gap: 8px; }
+.mlist .v { margin-inline-start: auto; font-variant-numeric: tabular-nums; }
+.mlist .d { font-size: 14px; color: var(--amber); }
+.mlist .d.mut { color: var(--ink-2); }
+.kpi { display: flex; align-items: flex-end; gap: 14px; flex-wrap: wrap; }
+.kpi .tot { font-size: 44px; }
+.kpi .of { font-size: 17px; color: var(--ink-2); padding-bottom: 6px; }
+.ok-pill { font-size: 15px; padding: 3px 14px; border-radius: 999px; background: rgba(138,221,136,.14); color: var(--paket); border: 1px solid rgba(138,221,136,.3); }
+.chart { position: relative; }
+.chart svg { display: block; width: 100%; height: auto; overflow: visible; }
+.chart text, .chart rect { stroke: none; }
+.chart .tipbox { position: absolute; pointer-events: none; padding: 6px 12px; border-radius: 12px; background: rgba(12,13,18,.92); border: 1px solid var(--stroke-hi); font-size: 14px; white-space: nowrap; transform: translate(-50%, -125%); }
+.legend { display: flex; gap: 18px; font-size: 14px; color: var(--ink-2); flex-wrap: wrap; }
+.legend i { display: inline-block; width: 18px; height: 0; border-top: 2px solid; vertical-align: middle; margin-inline-end: 6px; }
+.cats { display: flex; flex-direction: column; gap: 8px; }
+.cat { display: grid; grid-template-columns: 110px 1fr 76px; align-items: center; gap: 10px; font-size: 16px; }
+.cat .tr { height: 10px; border-radius: 99px; background: rgba(255,255,255,.08); overflow: hidden; }
+.cat .tr b { display: block; height: 100%; border-radius: 99px; background: var(--paket); }
+.cat .v { text-align: start; color: var(--ink-2); font-size: 15px; font-variant-numeric: tabular-nums; }
+.px-head { display: flex; align-items: baseline; gap: 10px; }
+.px-head b { font-size: 30px; font-weight: 400; font-variant-numeric: tabular-nums; }
+.px-head .chg { font-size: 15px; }
+.up { color: var(--paket); }
+.dn { color: #F0817A; }
+.prices { display: flex; flex-direction: column; }
+.px { display: grid; grid-template-columns: minmax(0,1fr) 56px auto 62px; white-space: nowrap; align-items: center; gap: 10px; padding: 5px 10px; border-radius: 14px; font-size: 16px; cursor: pointer; border: 0; background: none; text-align: start; }
+.px:hover { background: rgba(255,255,255,.06); }
+.px.on { background: rgba(255,255,255,.10); }
+.px .v { font-variant-numeric: tabular-nums; text-align: start; }
+.px .c { font-size: 14px; text-align: start; font-variant-numeric: tabular-nums; }
+.px svg { width: 64px; height: 22px; }
+.mine { border-radius: 18px; padding: 10px 14px; background: rgba(0,0,0,.22); border: 1px solid var(--stroke); display: flex; align-items: center; gap: 10px; font-size: 15px; color: var(--ink-2); }
+.mine b { font-size: 20px; color: var(--ink); font-weight: 500; font-variant-numeric: tabular-nums; }
+.partner { display: flex; align-items: center; gap: 10px; border-radius: 999px; padding: 8px 16px; background: rgba(242,201,76,.10); border: 1px solid rgba(242,201,76,.28); font-size: 15px; }
+.partner b { font-weight: 600; }
+.partner .tag { margin-inline-start: auto; }
+.chips2 { display: flex; gap: 6px; margin-inline-start: auto; }
+.chips2 button { font: inherit; font-size: 14px; padding: 2px 12px; border-radius: 999px; border: 1px solid var(--stroke); background: none; color: rgba(255,255,255,.75); cursor: pointer; }
+.chips2 button[aria-pressed="true"] { background: #fff; color: #0B0D12; border-color: #fff; }
+.sample { font-size: 13px; color: var(--ink-3); }
+
 /* ad-slot overlay */
 [data-slot] { position: relative; }
 .show-ads [data-slot] { outline: 2px dashed var(--ad); outline-offset: 5px; border-radius: 16px; }
@@ -243,7 +371,7 @@ td.them { color: var(--ink-2); }
       <div class="eyebrow">پیش‌نویس پلن · نیوتب کروم · ۲۴ مهر ۱۴۰۵</div>
       <h1><b>میز</b> نقطه و پاکت</h1>
     </div>
-    <p>صفحه‌ی نیوتب کروم که کارها و یادداشت‌های نقطه و وضعیت پول پاکت را کنار سرچ می‌آورد. هر چیزی که کاربر روی گوشی بنویسد، چند ثانیه بعد همین‌جاست. ماک‌آپ زیر کار می‌کند: کار اضافه کنید، روی سرچ کلیک کنید، پرسونا را عوض کنید.</p>
+    <p>صفحه‌ی نیوتب کروم که کارها و یادداشت‌های نقطه و وضعیت پول پاکت را کنار سرچ می‌آورد. هر چیزی که کاربر روی گوشی بنویسد، چند ثانیه بعد همین‌جاست. ماک‌آپ زیر کار می‌کند: داخلش اسکرول کنید یا از نوار کنار صفحه به تقویم و پول بروید، روز انتخاب کنید، کار اضافه کنید، پرسونا را عوض کنید.</p>
   </header>
 
   <div class="stage" id="stage">
@@ -252,6 +380,13 @@ td.them { color: var(--ink-2); }
       <div class="canvas" id="canvas">
         <div class="nt" id="nt" data-wall="night">
           <div class="wall"></div>
+          <nav class="rail" aria-label="اسلایدها">
+            <button aria-current="true" aria-label="خانه"><svg viewBox="0 0 24 24"><path d="M3 11.5 12 4l9 7.5"/><path d="M5 10v10h14V10"/></svg><span class="tip">خانه</span></button>
+            <button aria-current="false" aria-label="تقویم"><svg viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15" rx="3"/><path d="M8 3v4M16 3v4M3.5 10h17"/></svg><span class="tip">تقویم</span></button>
+            <button aria-current="false" aria-label="پول"><svg viewBox="0 0 24 24"><path d="M4 7.5A2.5 2.5 0 0 1 6.5 5H18v4"/><rect x="4" y="7.5" width="16" height="11.5" rx="2.5"/><circle cx="16" cy="13.2" r="1.3"/></svg><span class="tip">پول</span></button>
+          </nav>
+          <div class="scroller" id="scroller">
+          <section class="slide s1" aria-label="خانه">
           <div class="in">
             <div class="top">
               <div class="hello"><div class="avatar">ن</div><span id="greet">عصر بخیر، نسیم</span></div>
@@ -291,7 +426,7 @@ td.them { color: var(--ink-2); }
             <div class="widgets">
               <!-- نقطه: کارها -->
               <div class="w g">
-                <h3>کارهای امروز <span class="app n"><i></i>نقطه</span></h3>
+                <h3>کارهای امروز <span class="app n"><i></i>نقطه</span><button class="more" data-go="1" style="margin-inline-start:14px">تقویم ↓</button></h3>
                 <ul class="tasks" id="tasks"></ul>
                 <form class="add" id="addForm">
                   <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
@@ -327,12 +462,102 @@ td.them { color: var(--ink-2); }
                   <div class="bill"><span>قبض برق <span class="d">۲ روز دیگر</span></span><span class="amt">۳۱۲٬۰۰۰</span></div>
                   <div class="bill"><span>قسط وام <span class="d" style="color:var(--ink-2)">۵ آبان</span></span><span class="amt">۴٬۲۰۰٬۰۰۰</span></div>
                 </div>
-                <div class="pend"><b>۳</b> پیامک بانکی منتظر تأیید در پاکت</div>
+                <div class="pend"><b>۳</b> پیامک منتظر تأیید<button class="more" data-go="2">نمودارها و قیمت روز ↓</button></div>
               </div>
             </div>
 
             <div class="shelf g" id="shelf"></div>
           </div>
+          </section>
+
+          <!-- ============ SLIDE 2 · CALENDAR ============ -->
+          <section class="slide s2" id="s2" aria-label="تقویم">
+            <div class="s-pad">
+              <div class="card g">
+                <div class="mhead">
+                  <div class="t"><b>مهر ۱۴۰۵</b><span>سپتامبر–اکتبر ۲۰۲۶ · ربیع‌الثانی–جمادی‌الاول ۱۴۴۸</span></div>
+                  <div class="tools">
+                    <div class="seg"><span class="on">شمسی</span><span>میلادی</span><span>قمری</span></div>
+                    <button class="rbtn sm" aria-label="ماه قبل"><svg viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></svg></button>
+                    <button class="rbtn sm" aria-label="ماه بعد"><svg viewBox="0 0 24 24"><path d="m15 6-6 6 6 6"/></svg></button>
+                    <button class="chip" id="todayBtn">امروز</button>
+                  </div>
+                </div>
+                <div class="wk"><span>شنبه</span><span>یکشنبه</span><span>دوشنبه</span><span>سه‌شنبه</span><span>چهارشنبه</span><span>پنجشنبه</span><span>جمعه</span></div>
+                <div class="month" id="month"></div>
+              </div>
+              <div class="card g dayp">
+                <div class="dh" id="dh"></div>
+                <div class="occs" id="occs"></div>
+                <div class="sec">اوقات شرعی امروز · تهران</div>
+                <div class="prayer" id="prayer"></div>
+                <div class="sec">برنامه‌ی روز <span class="tag">کارهای نقطه</span><span class="tag">تقویم گوگل</span><span class="tag">قبض‌های پاکت</span></div>
+                <div class="agenda" id="agenda"></div>
+                <div class="sec" style="margin-top:auto">مناسبت‌های پیش رو</div>
+                <div class="upc" id="upc"></div>
+              </div>
+            </div>
+          </section>
+
+          <!-- ============ SLIDE 3 · MONEY ============ -->
+          <section class="slide s3" id="s3" aria-label="پول">
+            <div class="s-pad" id="moneyPad">
+              <!-- my money -->
+              <div class="card g">
+                <div class="card-h"><h2>موجودی من</h2><span class="app p" style="font-size:14px;color:var(--ink-2);display:flex;gap:6px;align-items:center"><i style="width:8px;height:8px;border-radius:50%;background:var(--paket);display:block"></i>پاکت</span>
+                  <button class="more" id="eye2" aria-label="پنهان کردن مبالغ"><svg viewBox="0 0 24 24"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>پنهان کردن</button></div>
+                <div><div class="sec">جمع ۳ حساب</div><div class="tot"><span class="amt">۱۸۴٬۶۲۰٬۰۰۰</span><small>تومان</small></div></div>
+                <div class="acc">
+                  <div><i style="background:#C1272D">م</i><span>ملت <span class="c">••۴۲۱۸</span></span><span class="v amt">۹۶٬۲۰۰٬۰۰۰</span></div>
+                  <div><i style="background:#1F5FAD">س</i><span>سامان <span class="c">••۷۷۰۱</span></span><span class="v amt">۶۱٬۴۲۰٬۰۰۰</span></div>
+                  <div><i style="background:#3B3E48">ن</i><span>نقدی</span><span class="v amt">۲۷٬۰۰۰٬۰۰۰</span></div>
+                </div>
+                <div class="hr"></div>
+                <div class="sec">خرج‌های پیش رو</div>
+                <div class="mlist">
+                  <div>قبض برق <span class="d">۲ روز دیگر</span><span class="v amt">۳۱۲٬۰۰۰</span></div>
+                  <div>اجاره <span class="d">۱ آبان</span><span class="v amt">۱۸٬۰۰۰٬۰۰۰</span></div>
+                  <div>قسط وام <span class="d mut">۵ آبان</span><span class="v amt">۴٬۲۰۰٬۰۰۰</span></div>
+                </div>
+                <div class="hr"></div>
+                <div class="sec">بدهی و طلب</div>
+                <div class="mlist">
+                  <div>طلب از علی <span class="v amt up">۲٬۵۰۰٬۰۰۰</span></div>
+                  <div>بدهی به مریم <span class="v amt dn">۸۰۰٬۰۰۰</span></div>
+                </div>
+                <div class="hr"></div>
+                <div class="sec">تراکنش‌های امروز</div>
+                <div class="mlist">
+                  <div>سوپرمارکت <span class="d mut">ملت</span><span class="v amt">۳۰۰٬۰۰۰</span></div>
+                  <div>اسنپ <span class="d mut">سامان</span><span class="v amt">۱۸۵٬۰۰۰</span></div>
+                </div>
+                <div class="pend" style="margin-top:auto"><b>۳</b> پیامک بانکی منتظر تأیید در پاکت</div>
+              </div>
+
+              <!-- spending chart -->
+              <div class="card g">
+                <div class="card-h"><h2>خرج مهر</h2><span class="sub">تا امروز، ۲۴ مهر</span></div>
+                <div class="kpi"><div class="tot"><span class="amt">۸٬۴۲۰٬۰۰۰</span></div><div class="of">از بودجه‌ی <span class="amt">۱۲٬۰۰۰٬۰۰۰</span> تومان</div><span class="ok-pill">روزانه تا <span class="amt">۵۹۶</span> هزار تومان جا دارید</span></div>
+                <div class="legend"><span><i style="border-color:var(--paket)"></i>خرج تجمعی</span><span><i style="border-color:var(--paket);border-top-style:dashed"></i>پیش‌بینی پاکت</span><span><i style="border-color:rgba(255,255,255,.45);border-top-style:dotted"></i>مسیر بودجه</span></div>
+                <div class="chart" id="spendChart"></div>
+                <div class="sec">بر اساس دسته</div>
+                <div class="cats" id="cats"></div>
+              </div>
+
+              <!-- market -->
+              <div class="card g">
+                <div class="card-h"><h2>قیمت روز</h2><span class="sample">نمونه</span>
+                  <div class="chips2" id="period"><button aria-pressed="false" data-p="7">هفته</button><button aria-pressed="true" data-p="30">ماه</button><button aria-pressed="false" data-p="365">سال</button></div></div>
+                <div class="px-head"><span id="pxName" class="sec">طلای ۱۸ عیار · گرم</span></div>
+                <div class="px-head"><b id="pxVal">۲۶٬۲۲۷٬۰۰۰</b><span id="pxUnit" class="sec">تومان</span><span id="pxChg" class="chg dn">−۰٫۴۱٪</span></div>
+                <div class="chart" id="pxChart"></div>
+                <div class="prices" id="prices"></div>
+                <div class="mine" style="margin-top:auto"><span>دارایی‌های من<br><span style="font-size:13px">۱۲ گرم طلا · ۲ سکه · ۵۰۰ دلار</span></span><span style="margin-inline-start:auto;text-align:left"><b class="amt">۹۹۳٫۶ میلیون</b><br><span class="up">+۰٫۳۵٪ امروز</span></span></div>
+                <div class="partner" data-slot="۶"><b>خرید طلای آب‌شده</b> از ۱۰۰ هزار تومان<span class="tag">معرفی‌شده</span></div>
+              </div>
+            </div>
+          </section>
+        </div>
           <div class="credit" id="credit" hidden data-slot="۳">والپیپر امروز: کمپین «پاییز» · معرفی‌شده</div>
         </div>
       </div>
@@ -358,11 +583,25 @@ td.them { color: var(--ink-2); }
     <section>
       <h2>اصول<small>چیزهایی که در هر تصمیم طراحی و فنی رعایت می‌شود</small></h2>
       <div class="principles">
-        <div><b>سه ویجت، نه دوازده</b><span>صفحه فقط ساعت و تاریخ، سرچ، ۸ دسترسی سریع، سه ویجت و یک قفسه‌ی بوکمارک دارد. بقیه‌ی ابزارها در تنظیمات قابل‌انتخاب‌اند و جای یکی از سه ویجت را می‌گیرند.</span></div>
-        <div><b>فونت درشت</b><span>کوچک‌ترین متن ۱۵ پیکسل است، متن اصلی ۱۸ و ساعت ۱۰۸ با وزن نازک یکان بخ. درست مثل هیروی تقویم نقطه.</span></div>
-        <div><b>داده‌ی خود کاربر</b><span>به‌جای قیمت طلا و خبر، کارها، یادداشت‌ها و پول خود آدم را نشان می‌دهیم. همین چیزی است که دستیار ندارد.</span></div>
-        <div><b>تبلیغی که بنر نیست</b><span>پنج جایگاه بومی، هر کدام با برچسب «معرفی‌شده»، سقف تکرار و هدف‌گیری فقط با پرسونا و شهر.</span></div>
+        <div><b>فولد اول خلوت، عمق با اسکرول</b><span>صفحه‌ی اول بدون اسکرول همه‌چیز را خلاصه نشان می‌دهد. تقویم کامل و پول کامل با یک اسکرول یا یک کلیک روی نوار کنار صفحه می‌آیند.</span></div>
+        <div><b>فونت درشت</b><span>کوچک‌ترین متن ۱۳ پیکسل و فقط برای برچسب‌های فرعی است، متن اصلی ۱۷ و ۱۸ و ساعت ۱۰۸ با وزن نازک یکان بخ، مثل هیروی تقویم نقطه.</span></div>
+        <div><b>داده‌ی خود کاربر</b><span>کارها، یادداشت‌ها، برنامه‌ی روز، حساب‌ها و دارایی‌های خود آدم. قیمت روز هم هست، ولی کنار ارزش طلا و سکه‌ای که خودش دارد.</span></div>
+        <div><b>تبلیغی که بنر نیست</b><span>شش جایگاه بومی، هر کدام با برچسب «معرفی‌شده»، سقف تکرار و هدف‌گیری بدون استفاده از داده‌ی شخصی.</span></div>
       </div>
+    </section>
+
+    <section>
+      <h2>سه صفحه، یک اسکرول</h2>
+      <p>نیوتب سه اسلاید تمام‌صفحه دارد که با اسکرول یکی‌یکی جا می‌افتند (scroll-snap). نوار کپسولی کنار صفحه، مثل نوبار پایین اپ نقطه، نشان می‌دهد کجای صفحه هستید و با یک کلیک به هر اسلاید می‌رود. هر بار که تب باز می‌شود از اسلاید اول شروع می‌شود، مگر کاربر در تنظیمات اسلاید دیگری را انتخاب کند.</p>
+      <div class="tbl"><table>
+        <thead><tr><th>اسلاید</th><th>چه چیزی</th><th>داده از</th></tr></thead>
+        <tbody>
+          <tr><td>۱ · خانه</td><td>سلام و وضعیت سینک، ساعت و تاریخ سه‌گانه و مناسبت، سرچ، ۸ کاشی دسترسی سریع، کارهای امروز، یادداشت‌ها، خلاصه‌ی پول، قفسه‌ی بوکمارک پرسونا</td><td>نقطه، پاکت، <code>chrome.topSites</code></td></tr>
+          <tr><td>۲ · تقویم</td><td>ماه کامل با تاریخ میلادی و مناسبت داخل هر خانه، جمعه و تعطیلی قرمز، نقطه‌ی کار و قبض روی هر روز. کنارش پنل روز انتخاب‌شده: مناسبت‌ها، اوقات شرعی (اگر روشن باشد)، برنامه‌ی روز با کارهای نقطه و جلسه‌های تقویم گوگل و قبض‌های پاکت، و مناسبت‌های پیش رو</td><td><code>calendar-core</code>، <code>event-data</code>، <code>prayer-times</code>، <code>tasks</code>، گوگل از طریق relay، قبض‌های پاکت</td></tr>
+          <tr><td>۳ · پول</td><td>موجودی حساب‌ها، خرج‌های پیش رو، بدهی و طلب، نمودار خرج تجمعی ماه با مسیر بودجه و پیش‌بینی پاکت، خرج بر اساس دسته، قیمت روز طلا و سکه و ارز و کریپتو با نمودار، و ارزش دارایی‌های خود کاربر</td><td>پاکت (حساب‌ها، <code>category_period_aggregates</code>، <code>expense_predictions</code>، <code>upcoming_expenses</code>، <code>investments.positions</code>) و منبع قیمت</td></tr>
+        </tbody>
+      </table></div>
+      <p>اتصال دو اپ در اسلاید تقویم دیده می‌شود: قبض «برق» که در پاکت ثبت شده، در تقویم نقطه روی یکشنبه با نقطه‌ی سبز می‌نشیند. یعنی کاربر برنامه‌ی کاری و برنامه‌ی پولی‌اش را یک‌جا می‌بیند.</p>
     </section>
 
     <section>
@@ -370,31 +609,19 @@ td.them { color: var(--ink-2); }
       <div class="tbl"><table>
         <thead><tr><th></th><th>دستیار (اسکرین‌شات‌ها)</th><th>میز</th></tr></thead>
         <tbody>
-          <tr><td>تعداد بلوک روی صفحه</td><td class="them">۱۲+ ویجت، تب‌های دسته‌بندی، اسکرول</td><td>یک صفحه، بدون اسکرول</td></tr>
-          <tr><td>کوچک‌ترین متن</td><td class="them">حدود ۱۱ پیکسل</td><td>۱۵ پیکسل؛ متن اصلی ۱۸</td></tr>
+          <tr><td>ساختار</td><td class="them">۱۲+ ویجت در تب‌های دسته‌بندی، اسکرول آزاد</td><td>سه اسلاید با جای مشخص، فولد اول کامل</td></tr>
+          <tr><td>کوچک‌ترین متن</td><td class="them">حدود ۱۱ پیکسل</td><td>۱۳ برای برچسب فرعی؛ متن اصلی ۱۷ و ۱۸</td></tr>
           <tr><td>تسک و یادداشت</td><td class="them">محلی و خالی («هنوز تسکی ثبت نکردی»)</td><td>همان کارها و یادداشت‌های گوشی، دوطرفه و زنده</td></tr>
-          <tr><td>مالی</td><td class="them">قیمت طلا و ارز</td><td>خرج امروز، بودجه، قبض‌های پیشِ رو از پاکت</td></tr>
-          <tr><td>تبلیغ</td><td class="them">بنر استخدام، پاپ‌آپ تخفیف با شمارش معکوس</td><td>کاشی، بوکمارک، والپیپر، پیشنهاد سرچ، خط مناسبت</td></tr>
-          <tr><td>سبک</td><td class="them">کارت‌های خاکستری کدر روی آبی روشن</td><td>شیشه‌ی تیره‌ی نقطه روی والپیپر، کپسول سفید برای حالت فعال</td></tr>
+          <tr><td>تقویم</td><td class="them">تقویم کوچک کنار صفحه</td><td>ماه کامل با مناسبت‌ها، برنامه‌ی روز و قبض‌ها</td></tr>
+          <tr><td>مالی</td><td class="them">قیمت طلا و ارز</td><td>قیمت روز به‌اضافه‌ی حساب‌ها، بودجه، پیش‌بینی و ارزش دارایی‌های خود کاربر</td></tr>
+          <tr><td>تبلیغ</td><td class="them">بنر استخدام، پاپ‌آپ تخفیف با شمارش معکوس</td><td>کاشی، بوکمارک، والپیپر، پیشنهاد سرچ، خط مناسبت، دکمه‌ی همکار در قیمت روز</td></tr>
         </tbody>
       </table></div>
     </section>
 
     <section>
-      <h2>چیدمان صفحه<small>از بالا به پایین، همه وسط‌چین و در یک صفحه</small></h2>
-      <ol>
-        <li><b>نوار بالا:</b> سلام با اسم کاربر، وضعیت همگام‌سازی («همگام با گوشی · زنده»)، دکمه‌ی تنظیمات.</li>
-        <li><b>ساعت و تاریخ:</b> ساعت ۱۰۸ پیکسلی، تاریخ شمسی، میلادی و قمری از <code>@dotlife/calendar-core</code> و مناسبت امروز از <code>event-data</code>. اوقات شرعی فقط اگر کاربر در نقطه روشنش کرده باشد.</li>
-        <li><b>سرچ:</b> ۷۶۰ پیکسل عرض، ۶۸ ارتفاع، متن ۲۱. هم‌زمان در کارها و یادداشت‌های خود کاربر (روی دستگاه) و پیشنهادهای وب می‌گردد. ارسال با <code>chrome.search.query</code> به موتور پیش‌فرض خود کاربر.</li>
-        <li><b>دسترسی سریع:</b> حداکثر ۸ کاشی؛ ۶ تا از سایت‌های پربازدید کاربر (<code>chrome.topSites</code>)، یکی اسپانسری، یکی «افزودن».</li>
-        <li><b>سه ویجت:</b> کارهای امروز (نقطه)، یادداشت‌ها (نقطه)، پول من (پاکت). کاربر می‌تواند هر کدام را با تقویم ماه، اوقات شرعی یا لیست خرید عوض کند.</li>
-        <li><b>قفسه‌ی پرسونا:</b> یک ردیف کپسولی پایین صفحه با ۶ تا ۷ بوکمارک مخصوص نقش شغلی.</li>
-      </ol>
-    </section>
-
-    <section>
       <h2>پرسونا و بوکمارک‌های اختصاصی</h2>
-      <p>اولین بار که تب باز می‌شود یک سؤال می‌پرسیم: «بیشتر وقتت پشت سیستم صرف چه کاری می‌شود؟» با ۶ گزینه‌ی بزرگ. جواب در تنظیمات شخصی‌سازی نقطه به‌عنوان یک فیلد تازه، <code>profile.role</code>، ذخیره و سینک می‌شود. پس گوشی هم نقش کاربر را می‌داند و بعدها می‌تواند پیشنهادهای خودش را بدهد.</p>
+      <p>اولین بار که تب باز می‌شود یک سؤال می‌پرسیم: «بیشتر وقتت پشت سیستم صرف چه کاری می‌شود؟» با ۶ گزینه‌ی بزرگ. جواب در تنظیمات شخصی‌سازی نقطه به‌عنوان یک فیلد تازه، <code>profile.role</code>، ذخیره و سینک می‌شود. پس گوشی هم نقش کاربر را می‌داند.</p>
       <p>محتوای قفسه‌ها مثل مناسبت‌ها و پروموها از سرور می‌آید (<code>packages/content</code>) و از پنل ادمین عوض می‌شود، بدون انتشار نسخه‌ی جدید. کاربر هر بوکمارک را می‌تواند حذف یا سنجاق کند و بوکمارک خودش را اضافه کند.</p>
       <div class="tbl"><table>
         <thead><tr><th>پرسونا</th><th>نمونه‌ی قفسه</th><th>ویجت پیش‌فرض متفاوت</th></tr></thead>
@@ -409,17 +636,18 @@ td.them { color: var(--ink-2); }
         <tbody>
           <tr><td class="n"><span class="num">۱</span></td><td>کاشی دسترسی سریع</td><td>یک کاشی هم‌شکل بقیه با نقطه‌ی کهربایی و برچسب در hover</td><td>۱ از ۸</td><td>پرسونا، شهر</td></tr>
           <tr><td class="n"><span class="num">۲</span></td><td>بوکمارک قفسه</td><td>یک کپسول در قفسه‌ی پرسونا با برچسب «معرفی‌شده»</td><td>۱ در هر قفسه</td><td>پرسونا</td></tr>
-          <tr><td class="n"><span class="num">۳</span></td><td>والپیپر روز</td><td>تصویر پس‌زمینه‌ی برند، فقط با یک خط کردیت پایین صفحه</td><td>حداکثر ۱ روز در هفته؛ کاربر می‌تواند خاموش کند</td><td>همه</td></tr>
+          <tr><td class="n"><span class="num">۳</span></td><td>والپیپر روز</td><td>تصویر پس‌زمینه‌ی برند، فقط با یک خط کردیت پایین صفحه</td><td>حداکثر ۱ روز در هفته؛ قابل خاموش کردن</td><td>همه</td></tr>
           <tr><td class="n"><span class="num">۴</span></td><td>پیشنهاد سرچ</td><td>یک ردیف بین پیشنهادهای سرچ</td><td>۱ در هر جستجو</td><td>کلمه‌ی تایپ‌شده</td></tr>
-          <tr><td class="n"><span class="num">۵</span></td><td>خط مناسبت</td><td>یک جمله کنار مناسبت امروز («روز جهانی غذا · شام امشب با ۲۰٪ تخفیف»)</td><td>فقط روزهایی که مناسبت دارند</td><td>مناسبت، شهر</td></tr>
+          <tr><td class="n"><span class="num">۵</span></td><td>خط مناسبت</td><td>یک جمله کنار مناسبت امروز</td><td>فقط روزهایی که مناسبت دارند</td><td>مناسبت، شهر</td></tr>
+          <tr><td class="n"><span class="num">۶</span></td><td>دکمه‌ی همکار در قیمت روز</td><td>یک دکمه‌ی کم‌رنگ زیر فهرست قیمت‌ها («خرید طلای آب‌شده از ۱۰۰ هزار تومان»)</td><td>۱ همکار در هر زمان</td><td>همه؛ بدون داده‌ی مالی کاربر</td></tr>
         </tbody>
       </table></div>
       <h3>قانون‌ها</h3>
       <ul>
-        <li>هیچ تبلیغی داخل ویجت پاکت یا کنار کارها و یادداشت‌ها نمی‌آید. اعتماد به داده‌ی مالی مهم‌تر از درآمد آن جایگاه است.</li>
-        <li>هدف‌گیری هرگز از روی متن یادداشت، کار یا تراکنش انجام نمی‌شود. فقط پرسونا، شهر، مناسبت و کلمه‌ی سرچ.</li>
+        <li>هیچ تبلیغی کنار موجودی، خرج، بدهی یا دارایی کاربر و کنار کارها و یادداشت‌ها نمی‌آید. جایگاه ۶ فقط در بخش قیمت‌های عمومی بازار است.</li>
+        <li>هدف‌گیری هرگز از روی متن یادداشت، کار، تراکنش یا دارایی انجام نمی‌شود. فقط پرسونا، شهر، مناسبت و کلمه‌ی سرچ.</li>
         <li>زیرساخت را از ماژول <code>advertising</code> پاکت برمی‌داریم: باندل امضاشده‌ی کمپین (ed25519)، رضایت کاربر (<code>/ads/consent</code>)، دکمه‌ی «چرا این را می‌بینم» (<code>/ads/why</code>) و ثبت رویداد بدون شناسه‌ی شخصی. انتخاب تبلیغ روی دستگاه انجام می‌شود.</li>
-        <li>بدون پاپ‌آپ، بدون شمارش معکوس، بدون بنر استخدام وسط صفحه. مشترک پاکت پلاس جایگاه‌های ۱ تا ۳ را نمی‌بیند.</li>
+        <li>بدون پاپ‌آپ، بدون شمارش معکوس، بدون بنر وسط صفحه. مشترک پاکت پلاس جایگاه‌های ۱ تا ۳ را نمی‌بیند.</li>
       </ul>
     </section>
 
@@ -435,17 +663,18 @@ td.them { color: var(--ink-2); }
       </div>
       <ul>
         <li><b>هدف:</b> زیر ۳ ثانیه از گوشی تا نیوتب و برعکس، وقتی هر دو آنلاین‌اند.</li>
-        <li><b>چرا long-poll و نه WebSocket:</b> همه‌ی ترافیک API از CDN آروان رد می‌شود. یک درخواست HTTP معمولی که دیر جواب می‌گیرد از هر CDN و فیلتری رد می‌شود، و سرور Fastify فعلی با چند خط آن را پشتیبانی می‌کند. اگر بیش از یک نمونه‌ی سرور داشتیم، با <code>LISTEN/NOTIFY</code> پستگرس به هم خبر می‌دهند.</li>
-        <li><b>باز شدن فوری تب:</b> آخرین وضعیت در IndexedDB نگه داشته می‌شود و تب در کمتر از ۱۰۰ میلی‌ثانیه پر می‌شود؛ بعد pull در پس‌زمینه.</li>
-        <li><b>نوشتن از نیوتب:</b> همان outbox گوشی و همان قانون ادغام از <code>@dotlife/sync</code>. یادداشت‌ها و پوشه‌ها باید به سینک اضافه شوند: مدل یادداشت از اپ موبایل به پکیج <code>packages/notes</code> منتقل می‌شود و موجودیت <code>folder</code> به سینک اضافه می‌شود.</li>
-        <li><b>پاکت در فاز اول فقط خواندنی است.</b> چون صفحه‌ی خانه‌ی پاکت روی گوشی ساخته می‌شود و بودجه‌ها هنوز به سرور نمی‌روند، یک مسیر تازه لازم است: <code>GET /v1/home/summary</code> با خرج امروز و ماه، قبض‌های پیش رو و تعداد پیامک‌های منتظر. هر ۶۰ ثانیه و هر بار که تب فوکوس می‌گیرد. نوار بودجه بعد از آپلود بودجه‌ها اضافه می‌شود.</li>
-        <li><b>حریم خصوصی:</b> مبالغ با یک کلیک روی آیکون چشم پنهان می‌شوند و این انتخاب می‌ماند، برای وقتی که صفحه در جلسه به اشتراک گذاشته می‌شود.</li>
+        <li><b>چرا long-poll و نه WebSocket:</b> همه‌ی ترافیک API از CDN آروان رد می‌شود. یک درخواست HTTP معمولی که دیر جواب می‌گیرد از هر CDN و فیلتری رد می‌شود و سرور Fastify فعلی با چند خط آن را پشتیبانی می‌کند. اگر بیش از یک نمونه‌ی سرور داشتیم، با <code>LISTEN/NOTIFY</code> پستگرس به هم خبر می‌دهند.</li>
+        <li><b>باز شدن فوری تب:</b> آخرین وضعیت هر سه اسلاید در IndexedDB نگه داشته می‌شود و تب در کمتر از ۱۰۰ میلی‌ثانیه پر می‌شود؛ بعد pull در پس‌زمینه. اسلایدهای ۲ و ۳ فقط وقتی به آن‌ها اسکرول می‌شود داده‌ی تازه می‌گیرند.</li>
+        <li><b>نوشتن از نیوتب:</b> همان outbox گوشی و همان قانون ادغام از <code>@dotlife/sync</code>. مدل یادداشت از اپ موبایل به پکیج <code>packages/notes</code> منتقل می‌شود و موجودیت <code>folder</code> به سینک اضافه می‌شود.</li>
+        <li><b>پاکت فقط خواندنی است.</b> چون صفحه‌ی خانه‌ی پاکت روی گوشی ساخته می‌شود، یک مسیر تازه لازم است: <code>GET /v1/home/summary</code> با موجودی حساب‌ها، خرج روزانه‌ی ماه، جمع هر دسته (از <code>category_period_aggregates</code>)، پیش‌بینی پایان ماه (از <code>expense_predictions</code>)، خرج‌های پیش رو، بدهی و طلب و تعداد پیامک‌های منتظر. هر ۶۰ ثانیه و هر بار که تب فوکوس می‌گیرد. بودجه‌ها هنوز به سرور نمی‌روند؛ تا وقتی آپلود نشوند، نوار و مسیر بودجه نمایش داده نمی‌شود.</li>
+        <li><b>قیمت روز:</b> پاکت امروز منبع قیمت ندارد. ماژول <code>investments</code> دارایی‌ها را با کد و مقدار نگه می‌دارد ولی قیمت ندارد. پیشنهاد: worker پاکت هر ۵ دقیقه از یک منبع قیمت (طلا، سکه، ارز، کریپتو) می‌خواند و در <code>GET /v1/market/prices</code> با تاریخچه برای نمودار می‌گذارد. همین مسیر به اپ پاکت هم ارزش دارایی‌ها را می‌دهد.</li>
+        <li><b>حریم خصوصی:</b> مبالغ با یک کلیک روی آیکون چشم در هر دو اسلاید پنهان می‌شوند و این انتخاب می‌ماند، برای وقتی که صفحه در جلسه به اشتراک گذاشته می‌شود.</li>
       </ul>
     </section>
 
     <section>
       <h2>ورود و اتصال حساب‌ها</h2>
-      <p>نقطه با کد پیامکی یا گوگل وارد می‌شود و پاکت با نام کاربری و رمز. نمی‌خواهیم کاربر در نیوتب رمز تایپ کند. پیشنهاد: <b>اتصال با QR</b>. نیوتب یک QR نشان می‌دهد، کاربر آن را با اپ نقطه یا پاکت که در آن وارد شده اسکن می‌کند و سرور برای نیوتب یک دستگاه تازه با توکن خودش می‌سازد. پاکت توکن‌ها را به دستگاه گره می‌زند، پس این روش با مدلش جور است و می‌شود به این دستگاه فقط دسترسی خواندن داد. هر دو مسیر <code>/auth/pair</code> در سرورها اضافه می‌شود.</p>
+      <p>نقطه با کد پیامکی یا گوگل وارد می‌شود و پاکت با نام کاربری و رمز. نمی‌خواهیم کاربر در نیوتب رمز تایپ کند. پیشنهاد: <b>اتصال با QR</b>. نیوتب یک QR نشان می‌دهد، کاربر آن را با اپ نقطه یا پاکت که در آن وارد شده اسکن می‌کند و سرور برای نیوتب یک دستگاه تازه با توکن خودش می‌سازد. پاکت توکن‌ها را به دستگاه گره می‌زند، پس این روش با مدلش جور است و می‌شود به این دستگاه فقط دسترسی خواندن داد. هر دو سرور مسیر <code>/auth/pair</code> می‌گیرند. قیمت روز بدون ورود هم دیده می‌شود.</p>
       <p>افزونه برای دامنه‌ی API هر دو اپ <code>host_permissions</code> می‌گیرد، پس به تغییر CORS سرورها نیازی نیست.</p>
     </section>
 
@@ -453,10 +682,10 @@ td.them { color: var(--ink-2); }
       <h2>ساختار فنی</h2>
       <ul>
         <li>اپ تازه‌ی <code>apps/newtab</code> در مونوریپوی نقطه: Chrome Manifest V3، Vite و React 19 مثل <code>apps/web</code>، TypeScript سخت‌گیر.</li>
-        <li>استفاده‌ی مستقیم از <code>@dotlife/tasks</code> (کارهای امروز، تکرارها، عقب‌افتاده‌ها)، <code>@dotlife/sync</code>، <code>@dotlife/calendar-core</code>، <code>event-data</code> و <code>personalization</code>. هیچ منطقی دوباره نوشته نمی‌شود.</li>
-        <li>یک کلاینت کوچک برای پاکت که فقط <code>/v1/auth/*</code> و <code>/v1/home/summary</code> را صدا می‌زند.</li>
-        <li>فونت یکان بخ داخل افزونه، بدون درخواست بیرونی. والپیپرها از سرور نقطه با کش.</li>
-        <li>بدون کد از راه دور (قانون MV3): باندل تبلیغ و محتوای قفسه‌ها فقط داده‌ی JSON امضاشده‌اند.</li>
+        <li>استفاده‌ی مستقیم از <code>@dotlife/tasks</code>، <code>@dotlife/sync</code>، <code>@dotlife/calendar-core</code>، <code>event-data</code>، <code>prayer-times</code> و <code>personalization</code>. همه‌ی محاسبه‌ی تقویم و اوقات شرعی روی دستگاه، بدون سرور.</li>
+        <li>یک کلاینت کوچک برای پاکت که فقط <code>/v1/auth/*</code>، <code>/v1/home/summary</code> و <code>/v1/market/prices</code> را صدا می‌زند.</li>
+        <li>نمودارها SVG دست‌ساز، بدون کتابخانه‌ی سنگین؛ هر نمودار با hover و tooltip.</li>
+        <li>فونت یکان بخ داخل افزونه. بدون کد از راه دور (قانون MV3): باندل تبلیغ و محتوای قفسه‌ها فقط داده‌ی JSON امضاشده‌اند.</li>
         <li>متن کارها، یادداشت‌ها و مبالغ هرگز به لاگ یا آنالیتیکس نمی‌رود؛ همان قانون فعلی نقطه.</li>
       </ul>
     </section>
@@ -464,11 +693,11 @@ td.them { color: var(--ink-2); }
     <section>
       <h2>فازها<small>مدت‌ها تخمین اولیه‌اند</small></h2>
       <div class="phases">
-        <div class="ph"><b>فاز ۰ · طراحی<small>۱ هفته</small></b><span>نهایی کردن این ماک‌آپ در فیگما، لیست پرسوناها و محتوای قفسه‌ها، تست سینک نقطه روی گوشی واقعی (هنوز انجام نشده و پیش‌نیاز همه‌چیز است).</span></div>
-        <div class="ph"><b>فاز ۱ · MVP نقطه<small>۳ هفته</small></b><span>ساعت، تاریخ و مناسبت، سرچ، دسترسی سریع، قفسه‌ی پرسونا، کارها و یادداشت‌های دوطرفه با pull هر ۱۵ ثانیه، اتصال QR.</span></div>
-        <div class="ph"><b>فاز ۲ · پاکت<small>۲ هفته</small></b><span>مسیر <code>/v1/home/summary</code>، ویجت «پول من» فقط‌خواندنی، پنهان کردن مبالغ.</span></div>
-        <div class="ph"><b>فاز ۳ · زنده و تبلیغ<small>۲ هفته</small></b><span>‏<code>/sync/wait</code>، ارسال فوری از گوشی، پنج جایگاه تبلیغ با رضایت کاربر و گزارش در پنل ادمین.</span></div>
-        <div class="ph"><b>فاز ۴ · بعدی‌ها</b><span>Edge و Firefox، چیدمان قابل‌تنظیم، ثبت خرج از نیوتب، بودجه بعد از آپلودش در پاکت.</span></div>
+        <div class="ph"><b>فاز ۰ · طراحی<small>۱ هفته</small></b><span>نهایی کردن این ماک‌آپ در فیگما، لیست پرسوناها و قفسه‌ها، انتخاب منبع قیمت، تست سینک نقطه روی گوشی واقعی (هنوز انجام نشده و پیش‌نیاز همه‌چیز است).</span></div>
+        <div class="ph"><b>فاز ۱ · خانه و تقویم<small>۳ هفته</small></b><span>اسلاید ۱ و ۲: ساعت و تاریخ، سرچ، دسترسی سریع، قفسه‌ی پرسونا، کارها و یادداشت‌های دوطرفه با pull هر ۱۵ ثانیه، ماه کامل با مناسبت و اوقات شرعی، اتصال QR.</span></div>
+        <div class="ph"><b>فاز ۲ · پول<small>۲ تا ۳ هفته</small></b><span>اسلاید ۳: <code>/v1/home/summary</code> و <code>/v1/market/prices</code>، نمودار خرج و قیمت، ارزش دارایی‌ها، قبض‌های پاکت داخل تقویم.</span></div>
+        <div class="ph"><b>فاز ۳ · زنده و تبلیغ<small>۲ هفته</small></b><span><code>/sync/wait</code>، ارسال فوری از گوشی، شش جایگاه تبلیغ با رضایت کاربر و گزارش در پنل ادمین.</span></div>
+        <div class="ph"><b>فاز ۴ · بعدی‌ها</b><span>Edge و Firefox، چیدمان قابل‌تنظیم، ثبت خرج از نیوتب، هشدار قیمت.</span></div>
       </div>
     </section>
 
@@ -476,9 +705,10 @@ td.them { color: var(--ink-2); }
       <h2>ریسک‌ها و سؤال‌های باز</h2>
       <ul>
         <li><b>انتشار در Chrome Web Store:</b> حساب توسعه‌دهنده و پرداخت آن از ایران ممکن نیست و کاربر هم برای نصب ممکن است به فیلترشکن نیاز داشته باشد. Edge Add-ons و فایل مستقیم با راهنمای نصب را هم باید بسنجیم.</li>
-        <li><b>سیاست‌های استور:</b> تبلیغ در نیوتب مجاز است اگر شفاف باشد، ولی تغییر موتور جستجو و پیشنهاد سرچ اسپانسری بررسی دقیق می‌خواهد. جایگاه ۴ را بعد از خواندن سیاست‌ها فعال کنیم.</li>
+        <li><b>منبع قیمت:</b> قیمت بازار آزاد طلا و ارز منبع رسمی ندارد. باید منبعی انتخاب کنیم که اجازه‌ی استفاده‌ی تجاری بدهد و همیشه زمان آخرین به‌روزرسانی را کنار قیمت نشان دهیم.</li>
+        <li><b>سیاست‌های استور:</b> تبلیغ در نیوتب مجاز است اگر شفاف باشد، ولی پیشنهاد سرچ اسپانسری بررسی دقیق می‌خواهد. جایگاه ۴ را بعد از خواندن سیاست‌ها فعال کنیم.</li>
         <li><b>دو حساب جدا:</b> نقطه و پاکت حساب مشترک ندارند. برای فاز ۱ دو اتصال جدا کافی است. آیا در بلندمدت ورود مشترک می‌خواهیم؟</li>
-        <li><b>متن پایین صفحه:</b> کروم همیشه اسم افزونه و دکمه‌ی Customize Chrome را پایین نیوتب نشان می‌دهد. نمی‌شود حذفش کرد، پس اسم افزونه باید خودش معرفی خوبی باشد («میز نقطه»).</li>
+        <li><b>صفحه‌های کوتاه:</b> فولد اول برای ۱۴۴۰×۹۰۰ طراحی شده. در لپ‌تاپ‌های ۷۶۸ پیکسلی ویجت‌ها کوتاه‌تر می‌شوند و کارهای کمتری نشان می‌دهند. این حالت باید جدا طراحی و تست شود.</li>
       </ul>
     </section>
   </main>
@@ -584,7 +814,7 @@ td.them { color: var(--ink-2); }
 
   /* ---------- money eye ---------- */
   $("eye").addEventListener("click", () => {
-    const m = $("money"); m.classList.toggle("hide-money");
+    const m = $("nt"); m.classList.toggle("hide-money");
     $("eye").setAttribute("aria-label", m.classList.contains("hide-money") ? "نمایش مبالغ" : "پنهان کردن مبالغ");
   });
 
@@ -626,6 +856,182 @@ td.them { color: var(--ink-2); }
   }
   shelf("designer");
   $("personaTable").innerHTML = Object.values(P).map((v) => `<tr><td>${v.n}</td><td>${v.bm.map((b) => b[0]).join("، ")}</td><td>${v.w}</td></tr>`).join("");
+
+  /* ================= slides + rail ================= */
+  const scroller = $("scroller");
+  const railBtns = [...document.querySelectorAll(".rail button")];
+  const go = (i) => scroller.scrollTo({ top: i * 900, behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
+  railBtns.forEach((b, i) => b.addEventListener("click", () => go(i)));
+  document.querySelectorAll("[data-go]").forEach((b) => b.addEventListener("click", () => go(+b.dataset.go)));
+  scroller.addEventListener("scroll", () => {
+    const i = Math.round(scroller.scrollTop / 900);
+    railBtns.forEach((b, k) => b.setAttribute("aria-current", String(k === i)));
+  }, { passive: true });
+
+  const fmt = (n) => fa(Math.round(n).toLocaleString("en-US").replace(/,/g, "٬"));
+  const pct = (n) => (n > 0 ? "+" : n < 0 ? "−" : "") + fa(Math.abs(n).toFixed(2).replace(".", "٫")) + "٪";
+
+  /* ================= slide 2: calendar (مهر ۱۴۰۵) ================= */
+  // 1 مهر ۱۴۰۵ = چهارشنبه ۲۳ سپتامبر ۲۰۲۶ = ۱۱ ربیع‌الثانی ۱۴۴۸. Occasions from packages/event-data.
+  const OCC = {
+    7: ["روز بزرگداشت شمس تبریزی", "روز آتش‌نشانی و ایمنی"], 8: ["روز بزرگداشت مولوی"], 10: ["جشن مهرگان"],
+    12: ["آغاز هفته‌ی جهانی فضا"], 13: ["روز نیروی انتظامی", "روز جهانی معلم"], 14: ["روز دامپزشکی"],
+    16: ["روز ملی کودک"], 17: ["روز جهانی پست"], 19: ["روز جهانی دختر"], 20: ["روز بزرگداشت حافظ"],
+    22: ["روز جهانی استاندارد"], 24: ["روز جهانی غذا"], 25: ["ولادت حضرت زینب", "روز پرستار", "روز جهانی ریشه‌کنی فقر"],
+    26: ["روز تربیت‌بدنی و ورزش"], 29: ["روز ملی کوهنورد"],
+  };
+  const ABAN = [[1, "روز بزرگداشت ابوالفضل بیهقی"], [8, "روز محیط‌بان"], [10, "جشن آبانگان"], [13, "روز دانش‌آموز"]];
+  // [time, title, source: n=نقطه g=گوگل p=پاکت, done]
+  const PLAN = {
+    20: [["", "تحویل بروشور", "n", true]],
+    22: [["۱۶:۰۰", "دندان‌پزشکی", "n", true]],
+    24: [["۱۰:۰۰", "تمدید بیمه‌ی ماشین", "n", true], ["۱۴:۳۰", "جلسه با تیم طراحی", "g"], ["۱۸:۰۰", "باشگاه", "n"], ["", "خرید هدیه‌ی تولد سارا", "n"]],
+    26: [["", "پرداخت قبض برق · ۳۱۲٬۰۰۰", "p"], ["۱۰:۰۰", "جلسه‌ی هفتگی", "g"]],
+    27: [["۱۱:۰۰", "تحویل طرح اولیه‌ی کمپین", "n"]],
+    30: [["", "تولد سارا", "n"]],
+  };
+  const WD = ["شنبه", "یکشنبه", "دوشنبه", "سه‌شنبه", "چهارشنبه", "پنجشنبه", "جمعه"];
+  const greg = (d) => (d <= 8 ? [22 + d, "سپتامبر"] : [d - 8, "اکتبر"]);
+  const hij = (d) => (d <= 20 ? [10 + d, "ربیع‌الثانی"] : [d - 20, "جمادی‌الاول"]);
+  const OFFSET = 4; // چهارشنبه
+  let sel = 24;
+  function buildMonth() {
+    let h = "";
+    for (let i = 0; i < OFFSET; i++) h += `<div class="day empty"></div>`;
+    for (let d = 1; d <= 30; d++) {
+      const col = (OFFSET + d - 1) % 7;
+      const plans = PLAN[d] || [];
+      const dots = plans.slice(0, 3).map((p) => `<i class="${p[2] === "p" ? "p" : ""}"></i>`).join("");
+      h += `<button class="day${col === 6 ? " fri" : ""}${d === 24 ? " today" : ""}${d === sel ? " sel" : ""}" data-d="${d}">
+        <span class="top2"><span class="n">${fa(d)}</span><span class="gr">${fa(greg(d)[0])}</span></span>
+        ${OCC[d] ? `<span class="ev">${OCC[d][0]}</span>` : ""}<span class="dots">${dots}</span></button>`;
+    }
+    h += `<div class="day out"><span class="top2"><span class="n">۱</span><span class="gr">۲۳</span></span><span class="ev">آبان</span></div>`;
+    $("month").innerHTML = h;
+  }
+  const SRC = { n: ["", "نقطه"], g: ["g", "تقویم گوگل"], p: ["p", "پاکت"] };
+  function buildDay() {
+    const col = (OFFSET + sel - 1) % 7;
+    const [gd, gm] = greg(sel), [hd, hm] = hij(sel);
+    $("dh").innerHTML = `<b>${WD[col]} ${fa(sel)} مهر${sel === 24 ? " · امروز" : ""}</b><span>${fa(gd)} ${gm} ۲۰۲۶ · ${fa(hd)} ${hm} ۱۴۴۸</span>`;
+    $("occs").innerHTML = OCC[sel] ? OCC[sel].map((o) => `<span>${o}</span>`).join("") : `<span class="none">مناسبتی ثبت نشده</span>`;
+    const plans = PLAN[sel] || [];
+    $("agenda").innerHTML = plans.length
+      ? plans.map(([t, title, s, done]) => `<div class="ag${done ? " done" : ""}"><span class="tm">${t || "همه‌روز"}</span><span class="bar ${SRC[s][0]}"></span><span class="tt">${title}</span><span class="src">${SRC[s][1]}</span></div>`).join("")
+      : `<div class="ag-empty">برای این روز برنامه‌ای نیست.</div>`;
+    const up = [];
+    for (let d = sel + 1; d <= 30 && up.length < 4; d++) (OCC[d] || []).slice(0, 1).forEach((o) => up.push([o, `${fa(d)} مهر`]));
+    for (const [d, o] of ABAN) if (up.length < 4) up.push([o, `${fa(d)} آبان`]);
+    $("upc").innerHTML = up.map(([o, d]) => `<div><span>${o}</span><span>${d}</span></div>`).join("");
+  }
+  $("month").addEventListener("click", (e) => {
+    const b = e.target.closest("button.day"); if (!b) return;
+    sel = +b.dataset.d; buildMonth(); buildDay();
+  });
+  $("todayBtn").addEventListener("click", () => { sel = 24; buildMonth(); buildDay(); });
+  buildMonth(); buildDay();
+
+  // computed with packages/prayer-times for Tehran, 16 Oct 2026 (method: tehran)
+  const PRAY = [["اذان صبح", 4 * 60 + 47], ["طلوع آفتاب", 6 * 60 + 6], ["اذان ظهر", 11 * 60 + 50], ["غروب", 17 * 60 + 34], ["اذان مغرب", 17 * 60 + 45]];
+  function buildPrayer() {
+    const now = new Date(), m = now.getHours() * 60 + now.getMinutes();
+    let next = PRAY.findIndex(([, t]) => t > m); if (next < 0) next = 0;
+    $("prayer").innerHTML = PRAY.map(([n, t], i) => `<div class="${i === next ? "next" : ""}"><b>${fa(String(Math.floor(t / 60)).padStart(2, "0") + ":" + String(t % 60).padStart(2, "0"))}</b><span>${n}</span></div>`).join("");
+  }
+  buildPrayer(); setInterval(buildPrayer, 60000);
+
+  /* ================= slide 3: money ================= */
+  const NS = "http://www.w3.org/2000/svg";
+  const svgEl = (tag, attrs) => { const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); return e; };
+  const GRID = "rgba(255,255,255,.10)", AXIS = "#8b8d95", LINE = "#8ADD88";
+
+  // daily spending, thousand toman, days 1..24 (sums to 8,420)
+  const DAILY = [520, 140, 380, 90, 260, 410, 1250, 120, 330, 200, 75, 640, 310, 180, 95, 420, 260, 150, 380, 1030, 140, 230, 325, 485];
+  const cum = DAILY.reduce((a, v) => (a.push((a.at(-1) || 0) + v), a), []);
+  const BUDGET = 12000, FORECAST = 10500;
+  (function spendChart() {
+    const W = 430, H = 210, L = 38, R = 12, T = 14, B = 30;
+    const x = (d) => L + ((d - 1) / 29) * (W - L - R);
+    const y = (v) => T + (1 - v / 13000) * (H - T - B);
+    const s = svgEl("svg", { viewBox: `0 0 ${W} ${H}`, role: "img", "aria-label": "نمودار خرج تجمعی مهر" });
+    s.setAttribute("direction", "ltr");
+    for (const v of [0, 4000, 8000, 12000]) {
+      s.append(svgEl("line", { x1: L, x2: W - R, y1: y(v), y2: y(v), stroke: GRID, "stroke-width": 1 }));
+      const t = svgEl("text", { x: L - 8, y: y(v) + 4, fill: AXIS, "font-size": 14, "text-anchor": "end" }); t.textContent = v ? fa(v / 1000) + "م" : "۰"; s.append(t);
+    }
+    for (const d of [1, 10, 20, 30]) { const t = svgEl("text", { x: x(d), y: H - 8, fill: AXIS, "font-size": 14, "text-anchor": "middle" }); t.textContent = fa(d) + " مهر"; s.append(t); }
+    const defs = svgEl("defs", {}); const g = svgEl("linearGradient", { id: "sg", x1: 0, x2: 0, y1: 0, y2: 1 });
+    g.append(svgEl("stop", { offset: "0", "stop-color": LINE, "stop-opacity": ".32" }), svgEl("stop", { offset: "1", "stop-color": LINE, "stop-opacity": "0" }));
+    defs.append(g); s.append(defs);
+    s.append(svgEl("line", { x1: x(1), y1: y(BUDGET / 30), x2: x(30), y2: y(BUDGET), stroke: "rgba(255,255,255,.45)", "stroke-width": 1.5, "stroke-dasharray": "2 4", fill: "none" }));
+    const pts = cum.map((v, i) => `${x(i + 1)},${y(v)}`).join(" ");
+    s.append(svgEl("polygon", { points: `${x(1)},${y(0)} ${pts} ${x(24)},${y(0)}`, fill: "url(#sg)", stroke: "none" }));
+    s.append(svgEl("polyline", { points: pts, fill: "none", stroke: LINE, "stroke-width": 2.2 }));
+    s.append(svgEl("line", { x1: x(24), y1: y(cum[23]), x2: x(30), y2: y(FORECAST), stroke: LINE, "stroke-width": 2, "stroke-dasharray": "6 5", fill: "none" }));
+    s.append(svgEl("circle", { cx: x(30), cy: y(FORECAST), r: 4, fill: "#0c1022", stroke: LINE, "stroke-width": 2 }));
+    const ft = svgEl("text", { x: x(30) - 8, y: y(FORECAST) - 10, fill: "#F5F6F8", "font-size": 15, "text-anchor": "end" }); ft.textContent = "پیش‌بینی ۱۰٫۵م"; s.append(ft);
+    s.append(svgEl("circle", { cx: x(24), cy: y(cum[23]), r: 5, fill: LINE, stroke: "#0c1022", "stroke-width": 2 }));
+    const cross = svgEl("line", { y1: T, y2: H - B, stroke: "rgba(255,255,255,.35)", "stroke-width": 1, visibility: "hidden" });
+    const dot = svgEl("circle", { r: 5, fill: LINE, stroke: "#0c1022", "stroke-width": 2, visibility: "hidden" });
+    s.append(cross, dot);
+    const hit = svgEl("rect", { x: L, y: 0, width: W - L - R, height: H - B, fill: "transparent" }); s.append(hit);
+    const box = $("spendChart"); box.append(s);
+    const tip = document.createElement("div"); tip.className = "tipbox"; tip.hidden = true; box.append(tip);
+    hit.addEventListener("mousemove", (e) => {
+      const r = s.getBoundingClientRect(); const px = ((e.clientX - r.left) / r.width) * W;
+      const d = Math.max(1, Math.min(24, Math.round(((px - L) / (W - L - R)) * 29 + 1)));
+      cross.setAttribute("x1", x(d)); cross.setAttribute("x2", x(d)); dot.setAttribute("cx", x(d)); dot.setAttribute("cy", y(cum[d - 1]));
+      cross.setAttribute("visibility", "visible"); dot.setAttribute("visibility", "visible");
+      tip.hidden = false; tip.innerHTML = `${fa(d)} مهر · خرج روز ${fmt(DAILY[d - 1])} هزار<br>تا اینجا ${fmt(cum[d - 1])} هزار تومان`;
+      tip.style.left = (x(d) / W) * box.offsetWidth + "px"; tip.style.top = (y(cum[d - 1]) / H) * box.offsetHeight + "px";
+    });
+    hit.addEventListener("mouseleave", () => { tip.hidden = true; cross.setAttribute("visibility", "hidden"); dot.setAttribute("visibility", "hidden"); });
+  })();
+
+  const CATS = [["خوراک", 2900], ["خرید", 1800], ["حمل‌ونقل", 1400], ["قبض و شارژ", 1100], ["تفریح", 700], ["سایر", 520]];
+  $("cats").innerHTML = CATS.map(([n, v]) => `<div class="cat"><span>${n}</span><span class="tr"><b style="width:${(v / 2900) * 100}%"></b></span><span class="v amt">${fa((v / 1000).toFixed(2).replace(/0$/, "").replace(".", "٫"))} م</span></div>`).join("");
+
+  // market prices (sample values)
+  const ASSETS = [
+    ["طلای ۱۸ عیار", "گرم", 26227000, -0.41, "تومان"], ["سکه امامی", "", 274500000, 0.8, "تومان"],
+    ["دلار", "آزاد", 259800, 0.3, "تومان"], ["یورو", "آزاد", 302400, 0.12, "تومان"], ["تتر", "USDT", 261600, 0.05, "تومان"],
+    ["نقره", "گرم", 488900, -0.46, "تومان"], ["بیت‌کوین", "BTC", 82007, -1.2, "دلار"], ["اتریوم", "ETH", 2452, -0.85, "دلار"],
+  ];
+  function series(seed, n, end, drift) {
+    let r = seed * 9301 + 49297; const rnd = () => ((r = (r * 9301 + 49297) % 233280) / 233280);
+    const out = [1]; for (let i = 1; i < n; i++) out.push(out[i - 1] * (1 + (rnd() - 0.5) * 0.03 + drift / n));
+    const k = end / out[n - 1]; return out.map((v) => v * k);
+  }
+  let selA = 0, period = 30;
+  function sparkPath(vals, w, h, pad) {
+    const mn = Math.min(...vals), mx = Math.max(...vals);
+    return vals.map((v, i) => `${pad + (i / (vals.length - 1)) * (w - 2 * pad)},${pad + (1 - (v - mn) / (mx - mn || 1)) * (h - 2 * pad)}`).join(" ");
+  }
+  function buildPrices() {
+    $("prices").innerHTML = ASSETS.map(([n, u, v, c, cur], i) => {
+      const pts = sparkPath(series(i + 3, 24, v, c / 10), 64, 22, 2);
+      return `<button class="px${i === selA ? " on" : ""}" data-i="${i}"><span>${n} <span class="sample">${u}</span></span>
+        <svg viewBox="0 0 64 22" aria-hidden="true"><polyline points="${pts}" fill="none" stroke="${c >= 0 ? "#8ADD88" : "#F0817A"}" stroke-width="1.6"/></svg>
+        <span class="v">${cur === "دلار" ? "$" : ""}${fmt(v)}</span><span class="c ${c >= 0 ? "up" : "dn"}">${pct(c)}</span></button>`;
+    }).join("");
+    const [n, u, v, c, cur] = ASSETS[selA];
+    $("pxName").textContent = u ? `${n} · ${u}` : n;
+    $("pxVal").textContent = (cur === "دلار" ? "$" : "") + fmt(v); $("pxUnit").textContent = cur === "دلار" ? "" : "تومان";
+    const W = 400, H = 110, vals = series(selA + 11 + period, period === 365 ? 52 : period, v, period === 365 ? 0.9 : period === 30 ? 0.08 : 0.02);
+    const pc = (vals.at(-1) / vals[0] - 1) * 100;
+    $("pxChg").textContent = pct(pc) + (period === 7 ? " هفته" : period === 30 ? " ماه" : " سال"); $("pxChg").className = "chg " + (pc >= 0 ? "up" : "dn");
+    const pts = sparkPath(vals, W, H, 4), col = pc >= 0 ? "#8ADD88" : "#F0817A";
+    $("pxChart").innerHTML = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="نمودار ${n}"><defs><linearGradient id="pg" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="${col}" stop-opacity=".28"/><stop offset="1" stop-color="${col}" stop-opacity="0"/></linearGradient></defs>
+      <line x1="4" x2="${W - 4}" y1="${H / 2}" y2="${H / 2}" stroke="${GRID}"/><polygon points="4,${H} ${pts} ${W - 4},${H}" fill="url(#pg)" stroke="none"/><polyline points="${pts}" fill="none" stroke="${col}" stroke-width="2"/>
+      <circle cx="${W - 4}" cy="${pts.split(" ").at(-1).split(",")[1]}" r="4" fill="${col}" stroke="#0c1022" stroke-width="2"/></svg>`;
+  }
+  $("prices").addEventListener("click", (e) => { const b = e.target.closest(".px"); if (!b) return; selA = +b.dataset.i; buildPrices(); });
+  $("period").addEventListener("click", (e) => {
+    const b = e.target.closest("button"); if (!b) return; period = +b.dataset.p;
+    $("period").querySelectorAll("button").forEach((x) => x.setAttribute("aria-pressed", String(x === b))); buildPrices();
+  });
+  buildPrices();
+  $("eye2").addEventListener("click", () => $("eye").click());
 })();
 </script>
 </body>
