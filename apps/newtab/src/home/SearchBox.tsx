@@ -43,18 +43,6 @@ const MODES: Record<Mode, { ph: string; hint: string; go: string }> = {
   },
 };
 
-type SpeechCtor = new () => {
-  lang: string;
-  interimResults: boolean;
-  onresult: ((e: { results: ArrayLike<ArrayLike<{ transcript: string }>> }) => void) | null;
-  onend: (() => void) | null;
-  onerror: (() => void) | null;
-  start: () => void;
-  stop: () => void;
-};
-const Speech = ((window as unknown as Record<string, unknown>).SpeechRecognition ??
-  (window as unknown as Record<string, unknown>).webkitSpeechRecognition) as SpeechCtor | undefined;
-
 const reduced = (): boolean => matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 /** One thin line from the bottom middle of the box, round both sides, meeting at the top: sharp at its head, faded at its tail. */
@@ -133,7 +121,6 @@ export function SearchBox({
   const [desc, setDesc] = useState("");
   const [listId, setListId] = useState<string | null>(null);
   const [when, setWhen] = useState<When>("today");
-  const [listening, setListening] = useState(false);
   const [swap, setSwap] = useState(0);
   const box = useRef<HTMLFormElement>(null);
   const input = useRef<HTMLTextAreaElement>(null);
@@ -203,29 +190,6 @@ export function SearchBox({
     input.current?.focus();
   };
 
-  const listen = (): void => {
-    if (Speech === undefined) return;
-    const r = new Speech();
-    r.lang = "fa-IR";
-    r.interimResults = true;
-    r.onresult = (e) => {
-      setText(
-        Array.from(e.results)
-          .map((x) => x[0]?.transcript ?? "")
-          .join(""),
-      );
-    };
-    r.onend = () => {
-      setListening(false);
-      input.current?.focus();
-    };
-    r.onerror = () => {
-      setListening(false);
-    };
-    setListening(true);
-    r.start();
-  };
-
   const M = MODES[mode];
   const recentNotes = mode === "note" ? liveNotes().slice(0, 2) : [];
   const recentTasks =
@@ -264,7 +228,7 @@ export function SearchBox({
             ref={input}
             rows={1}
             value={text}
-            placeholder={listening ? "گوش می‌دهم… بگو چه می‌خواهی" : M.ph}
+            placeholder={M.ph}
             aria-label={mode === "google" ? "جستجو در گوگل" : M.ph}
             autoComplete="off"
             onChange={(e) => {
@@ -312,17 +276,6 @@ export function SearchBox({
           </button>
           <span className="grow" />
           <span className="hintk">{M.hint}</span>
-          {Speech !== undefined && (
-            <button
-              type="button"
-              className={listening ? "ibtn mic on" : "ibtn mic"}
-              aria-label="جستجوی صوتی"
-              aria-pressed={listening}
-              onClick={listen}
-            >
-              <Icon name="voice" />
-            </button>
-          )}
           <button
             type="submit"
             className={text.trim() !== "" ? "ibtn go ready" : "ibtn go"}

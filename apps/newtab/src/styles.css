@@ -316,31 +316,6 @@ svg {
   width: 21px;
   height: 21px;
 }
-.ibtn.mic {
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  color: var(--ink);
-  transition:
-    background 0.2s,
-    color 0.2s;
-}
-.ibtn.mic:hover {
-  background: rgba(255, 255, 255, 0.14);
-}
-.ibtn.mic.on {
-  background: var(--tint);
-  border-color: transparent;
-  color: #0b0d12;
-  animation: micring 1.4s ease-out infinite;
-}
-@keyframes micring {
-  from {
-    box-shadow: 0 0 0 0 color-mix(in srgb, var(--tint) 55%, transparent);
-  }
-  to {
-    box-shadow: 0 0 0 12px transparent;
-  }
-}
 .ibtn.go {
   background: rgba(255, 255, 255, 0.12);
   color: var(--ink);
