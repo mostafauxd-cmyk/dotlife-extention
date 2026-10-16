@@ -87,14 +87,15 @@ type Market = {
 };
 
 /**
- * Asked again every minute while the tab is in view (the server keeps each answer for half a
- * minute). Changing `period` asks for that history once; what was shown stays until it arrives.
+ * Asked again every minute while the slide is in view (the server keeps each answer for half a
+ * minute); `active` is false while it is scrolled away. Changing `period` asks for that history once; what was shown stays until it arrives.
  */
-export function useMarket(period: Period): Market {
+export function useMarket(period: Period, active = true): Market {
   const [prices, setPrices] = useState<Prices | null>(null);
   const [ticker, setTicker] = useState<Ticker | null>(null);
   const [offline, setOffline] = useState(false);
   useEffect(() => {
+    if (!active) return;
     let live = true;
     const pull = (): void => {
       if (document.visibilityState !== "visible") return;
@@ -116,6 +117,6 @@ export function useMarket(period: Period): Market {
       clearInterval(t);
       document.removeEventListener("visibilitychange", pull);
     };
-  }, [period]);
+  }, [period, active]);
   return { prices, ticker, offline };
 }

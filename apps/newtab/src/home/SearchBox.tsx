@@ -15,6 +15,8 @@ import { search, suggest } from "../platform";
 import { addDays } from "@dotlife/tasks";
 import { ago } from "../ui/fa";
 import { GMark, Icon } from "../ui/Icon";
+import { openNote } from "./openNote";
+import { openEditor } from "./TaskEditor";
 
 /**
  * The big box: Google by default. «به کارها» and «به یادداشت‌ها» turn it into a quick task or note —
@@ -206,6 +208,10 @@ export function SearchBox({
     input.current?.focus();
   };
 
+  const listName = (id: string | null | undefined): string => {
+    const n = lists.find((l) => l.id === id)?.name;
+    return n === undefined ? "" : ` · ${n}`;
+  };
   const M = MODES[mode];
   const recentNotes = mode === "note" ? liveNotes().slice(0, 2) : [];
   const recentTasks =
@@ -368,92 +374,125 @@ export function SearchBox({
           }}
         >
           {mode === "note" ? (
-            <textarea
-              ref={descRef}
-              rows={3}
-              value={desc}
-              placeholder="توضیح… (اختیاری؛ عنوان همان متن بالاست)"
-              aria-label="توضیح یادداشت"
-              onChange={(e) => {
-                setDesc(e.target.value);
-              }}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) {
-                  e.preventDefault();
-                  submit();
-                } else if (e.key === "Escape") {
-                  setMode("google");
-                  input.current?.focus();
-                }
-              }}
-            />
+            <div className="ts-line top qp-desc">
+              <Icon name="edit" />
+              <textarea
+                ref={descRef}
+                className="ts-notes"
+                rows={3}
+                value={desc}
+                placeholder="توضیح… (اختیاری؛ عنوان همان متن بالاست)"
+                aria-label="توضیح یادداشت"
+                onChange={(e) => {
+                  setDesc(e.target.value);
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) {
+                    e.preventDefault();
+                    submit();
+                  } else if (e.key === "Escape") {
+                    setMode("google");
+                    input.current?.focus();
+                  }
+                }}
+              />
+            </div>
           ) : (
-            <div className="chips">
-              <span>کی؟</span>
-              {(
-                [
-                  ["today", "امروز"],
-                  ["tomorrow", "فردا"],
-                  ["none", "بدون تاریخ"],
-                ] as const
-              ).map(([k, n]) => (
-                <button
-                  key={k}
-                  type="button"
-                  aria-pressed={when === k}
-                  onClick={() => {
-                    setWhen(k);
-                  }}
-                >
-                  {n}
-                </button>
-              ))}
+            <div className="qp-sec">
+              <span className="qp-k">کی؟</span>
+              <div className="ts-seg morph" role="radiogroup" aria-label="زمان">
+                {(
+                  [
+                    ["today", "امروز"],
+                    ["tomorrow", "فردا"],
+                    ["none", "بدون تاریخ"],
+                  ] as const
+                ).map(([k, n]) => (
+                  <button
+                    key={k}
+                    type="button"
+                    role="radio"
+                    aria-checked={when === k}
+                    onClick={() => {
+                      setWhen(k);
+                    }}
+                  >
+                    {n}
+                  </button>
+                ))}
+              </div>
             </div>
           )}
           {lists.length > 0 && (
-            <div className="chips">
-              <span>در</span>
-              {lists.map((l) => (
-                <button
-                  key={l.id}
-                  type="button"
-                  aria-pressed={l.id === chosenList?.id}
-                  onClick={() => {
-                    setListId(l.id);
-                  }}
-                >
-                  <i style={{ background: l.color }} />
-                  {l.name}
-                </button>
-              ))}
+            <div className="qp-sec">
+              <span className="qp-k">در</span>
+              <div className="ts-chips">
+                {lists.map((l) => (
+                  <button
+                    key={l.id}
+                    type="button"
+                    aria-pressed={l.id === chosenList?.id}
+                    onClick={() => {
+                      setListId(l.id);
+                    }}
+                  >
+                    <i style={{ background: l.color }} />
+                    {l.name}
+                  </button>
+                ))}
+              </div>
             </div>
           )}
-          <div className="dhd">{mode === "note" ? "یادداشت‌های اخیر" : "کارهای اخیر"}</div>
+          <div className="ts-div" />
+          <div className="qp-h">{mode === "note" ? "یادداشت‌های اخیر" : "کارهای اخیر"}</div>
           {mode === "note"
             ? recentNotes.map((n) => (
-                <div key={n.id} className="qrow">
-                  <Icon name="sticker-note" />
-                  <span>
+                <button
+                  key={n.id}
+                  type="button"
+                  className="qrow"
+                  onClick={() => {
+                    openNote(n.id);
+                  }}
+                >
+                  <span className="qi">
+                    <Icon name="sticker-note" />
+                  </span>
+                  <span className="qt">
                     <b>{noteTitle(n) || "یادداشت بی‌عنوان"}</b>
                     <small>
-                      {ago(n.updatedAt)} · {lists.find((l) => l.id === n.folderId)?.name ?? ""}
+                      {ago(n.updatedAt)}
+                      {listName(n.folderId)}
                     </small>
                   </span>
-                </div>
+                </button>
               ))
             : recentTasks.map((t) => (
-                <div key={t.id} className="qrow">
-                  <Icon name="tick-square" />
-                  <span>
+                <button
+                  key={t.id}
+                  type="button"
+                  className="qrow"
+                  onClick={() => {
+                    openEditor({ mode: "edit", task: t, occurrence: null });
+                  }}
+                >
+                  <span className="qi">
+                    <Icon name="tick-square" />
+                  </span>
+                  <span className="qt">
                     <b>{t.title}</b>
                     <small>
-                      {ago(t.createdAt)} · {lists.find((l) => l.id === t.listId)?.name ?? ""}
+                      {ago(t.createdAt)}
+                      {listName(t.listId)}
                     </small>
                   </span>
-                </div>
+                </button>
               ))}
           {(mode === "note" ? recentNotes : recentTasks).length === 0 && (
-            <div className="dhd">هنوز چیزی نیست.</div>
+            <p className="qp-none">
+              {mode === "note" ? "هنوز یادداشتی نیست." : "هنوز کاری نیست."} همین‌که ذخیره کنی،
+              این‌جا پیدایش می‌شود.
+            </p>
           )}
         </div>
       )}

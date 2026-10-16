@@ -1,4 +1,4 @@
-import { useLayoutEffect, useRef, useState, type KeyboardEvent } from "react";
+import { useEffect, useLayoutEffect, useRef, useState, type KeyboardEvent } from "react";
 
 import { localNow } from "@dotlife/tasks";
 
@@ -38,6 +38,7 @@ import {
 import { ago, fa } from "../ui/fa";
 import { Icon } from "../ui/Icon";
 import { SyncInvite } from "./Corners";
+import { onOpenNote } from "./openNote";
 
 /**
  * The notes slide, as the app's notes: folders (which are task lists), the list with its pinned
@@ -61,6 +62,16 @@ export function NotesSlide({ signedIn, onSignIn }: { signedIn: boolean; onSignIn
   const [openId, setOpenId] = useState<string | null>(null);
   const [naming, setNaming] = useState(false);
   const focusTitle = useRef(false);
+  // a note picked elsewhere on the page (the search box's recent notes)
+  useEffect(
+    () =>
+      onOpenNote((id) => {
+        setFolder("all");
+        setQuery("");
+        setOpenId(id);
+      }),
+    [],
+  );
 
   const lists = liveLists();
   const notes = allNotes();

@@ -54,7 +54,7 @@ function Badge({ id, small }: { id: string; small?: boolean }) {
 function TickerCell({ t }: { t: TickerItem }) {
   const b = BADGE[t.id];
   return (
-    <span className="tk-i">
+    <span className={t.live ? "tk-i" : "tk-i stale"}>
       <i
         className="g"
         style={{ background: b?.bg ?? "#3a3d48", color: b?.dark === true ? "#3a2a05" : undefined }}
@@ -225,7 +225,10 @@ function Row({
     <button type="button" className={on ? "prow on" : "prow"} onClick={pick}>
       <Badge id={it.id} small />
       <span className="nm2">
-        <b>{it.name}</b>
+        <b>
+          {it.name}
+          <i className={it.live ? "live-dot" : "live-dot off"} />
+        </b>
         <small>{it.sub}</small>
       </span>
       <Spark vals={series} up={up} />
@@ -288,10 +291,10 @@ export function MarketCard({
     <div className="card g mc mkt">
       <div className="mh">
         <h2>قیمت روز</h2>
-        {prices?.lastUpdated !== undefined && prices.lastUpdated !== null && (
-          <span className={prices.live ? "live" : "live off"}>
+        {cur !== undefined && (
+          <span className={cur.live ? "live" : "live off"}>
             <i />
-            {prices.live ? "زنده" : "آخرین قیمت"} · {clockOf(prices.lastUpdated)}
+            {cur.live ? "زنده" : "آخرین قیمت"} · {clockOf(cur.asOf)}
           </span>
         )}
       </div>

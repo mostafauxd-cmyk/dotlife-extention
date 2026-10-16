@@ -339,14 +339,16 @@ svg {
   top: calc(100% + 10px);
   inset-inline: 0;
   z-index: 8;
-  border-radius: 26px;
-  padding: 12px;
+  border-radius: 28px;
+  padding: 14px 20px 12px;
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  background: color-mix(in srgb, var(--bgc) 86%, #fff);
-  border: 1px solid var(--stroke);
-  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.4);
+  gap: 2px;
+  /* as the task form and «شخصی‌سازی»: a dark sheet, rows and chips in the same few shapes */
+  background: color-mix(in srgb, var(--bgc) 92%, #000);
+  border: 1px solid var(--stroke-hi);
+  box-shadow: 0 30px 90px rgba(0, 0, 0, 0.55);
+  animation: rise 0.35s var(--ease) both;
 }
 /* Google's suggestions under the box: the typed part plain, the rest of each suggestion bold */
 .sugg-list {
@@ -391,89 +393,94 @@ svg {
   font-weight: 600;
   color: var(--ink);
 }
-.qpanel textarea {
-  font: inherit;
-  font-size: 16px;
-  line-height: 1.8;
-  color: var(--ink);
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid var(--stroke);
-  border-radius: 16px;
-  padding: 10px 14px;
-  resize: none;
-  outline: none;
-}
-.qpanel textarea:focus {
-  border-color: color-mix(in srgb, var(--tint) 50%, transparent);
-}
-.chips {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  flex-wrap: wrap;
-  font-size: 14px;
-  color: var(--ink-3);
-}
-.chips button {
-  font-size: 14px;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 3px 11px;
-  border-radius: 999px;
-  border: 1px solid var(--stroke);
-  background: none;
-  color: var(--ink-2);
-  cursor: pointer;
-}
-.chips button i {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-}
-.chips button[aria-pressed="true"] {
-  color: var(--ink);
-  background: rgba(255, 255, 255, 0.1);
-  border-color: var(--stroke-hi);
-}
-.dhd {
-  font-size: 13px;
-  color: var(--ink-3);
-  padding: 4px 4px 0;
-}
-.qrow {
-  color: var(--ink);
-  width: 100%;
+.qp-sec {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 8px 10px;
-  border-radius: 14px;
+  min-height: 44px;
 }
-.qrow .ico {
-  width: 19px;
-  height: 19px;
-  color: var(--ink-2);
+.qp-k {
+  flex: none;
+  width: 30px;
+  font-size: 14px;
+  color: var(--ink-3);
 }
-.qrow span {
-  display: flex;
-  flex-direction: column;
-  line-height: 1.5;
+.qp-sec .ts-seg {
+  flex: 1;
+  margin-bottom: 0;
+}
+.qp-sec .ts-chips {
+  flex: 1;
   min-width: 0;
 }
-.qrow b {
+.qp-desc {
+  padding-top: 4px;
+  min-height: 0;
+}
+.qp-h {
+  padding: 2px 0 4px;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--ink-2);
+}
+.qrow {
+  font: inherit;
+  color: var(--ink);
+  background: none;
+  border: 0;
+  text-align: start;
+  cursor: pointer;
+  width: calc(100% + 16px);
+  margin-inline: -8px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 7px 8px;
+  border-radius: 14px;
+  transition: background 0.2s;
+}
+.qrow:hover,
+.qrow:focus-visible {
+  background: rgba(255, 255, 255, 0.06);
+  outline: none;
+}
+.qi {
+  flex: none;
+  width: 34px;
+  height: 34px;
+  border-radius: 11px;
+  display: grid;
+  place-items: center;
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--ink-2);
+}
+.qi .ico {
+  width: 18px;
+  height: 18px;
+}
+.qt {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.55;
+  min-width: 0;
+}
+.qt b {
   font-weight: 500;
-  font-size: 16px;
+  font-size: 15.5px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
-.qrow small {
+.qt small {
   font-size: 12.5px;
   color: var(--ink-3);
 }
-.qrow.fresh {
-  background: color-mix(in srgb, var(--tint) 14%, transparent);
+.qp-none {
+  margin: 0;
+  padding: 6px 0 8px;
+  font-size: 14px;
+  line-height: 1.8;
+  color: var(--ink-3);
 }
 
 /* the entry: a light behind the box and a thin line round it */
@@ -4580,6 +4587,12 @@ a.ts-link {
 }
 .tb-empty p {
   margin: 0;
+  max-width: 460px;
+  text-align: center;
+  line-height: 1.9;
+}
+.tb-empty a.cta {
+  text-decoration: none;
 }
 .soc-note {
   font-size: 14px;
@@ -5895,4 +5908,18 @@ a.ts-link {
 }
 .chart.spend {
   margin-top: 2px;
+}
+.prow .live-dot {
+  width: 6px;
+  height: 6px;
+  margin-inline-start: 6px;
+  display: inline-block;
+  border-radius: 50%;
+  background: #8add88;
+}
+.prow .live-dot.off {
+  background: var(--ink-3);
+}
+.tk-i.stale {
+  opacity: 0.55;
 }

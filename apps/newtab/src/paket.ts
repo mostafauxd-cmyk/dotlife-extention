@@ -329,7 +329,7 @@ export async function paketNews(): Promise<NewsItem[]> {
  * The summary, asked again every minute while the tab is in view and when it comes back. The last one
  * received is shown at once (and kept when Paket cannot be reached), with `error` saying why it is old.
  */
-export function useSnapshot(): { data: Snapshot | null; error: string | null } {
+export function useSnapshot(active = true): { data: Snapshot | null; error: string | null } {
   const on = usePaketLinked();
   const [data, setData] = useState<Snapshot | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -357,6 +357,11 @@ export function useSnapshot(): { data: Snapshot | null; error: string | null } {
         },
       );
     };
+    if (!active) {
+      return () => {
+        live = false;
+      };
+    }
     pull();
     const t = setInterval(pull, 60_000);
     document.addEventListener("visibilitychange", pull);
@@ -365,7 +370,7 @@ export function useSnapshot(): { data: Snapshot | null; error: string | null } {
       clearInterval(t);
       document.removeEventListener("visibilitychange", pull);
     };
-  }, [on]);
+  }, [on, active]);
   return { data, error };
 }
 

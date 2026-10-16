@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { fromJdn, monthName } from "@dotlife/calendar-core";
 import { dateToJdn, localNow } from "@dotlife/tasks";
@@ -36,13 +36,30 @@ const solarDay = (iso: string): string => {
 export function MoneySlide() {
   const s = useSettings();
   const linked = usePaketLinked();
-  const { data, error } = useSnapshot();
+  // Paket and the market are asked only while this slide is on screen (and once more when it comes back)
+  const root = useRef<HTMLDivElement>(null);
+  const [inView, setInView] = useState(false);
+  useEffect(() => {
+    const el = root.current;
+    if (el === null) return;
+    const seen = new IntersectionObserver(
+      ([e]) => {
+        setInView(e?.isIntersecting === true);
+      },
+      { threshold: 0.3 },
+    );
+    seen.observe(el);
+    return () => {
+      seen.disconnect();
+    };
+  }, []);
+  const { data, error } = useSnapshot(inView);
   const [period, setPeriod] = useState<Period>(30);
-  const { prices, ticker, offline } = useMarket(period);
+  const { prices, ticker, offline } = useMarket(period, inView);
   const news = usePaketNews();
   const hide = s.hideMoney;
   return (
-    <div className="s-pad money-s">
+    <div className="s-pad money-s" ref={root}>
       <div className="mbar">
         <h2>پول</h2>
         {linked && data !== null && (
@@ -126,7 +143,27 @@ function PaketCards({ data, hide }: { data: Snapshot; hide: boolean }) {
   const net = sum(data.obligations.owedToMe.amountMinor, data.obligations.owedByMe.amountMinor);
   const netShort = shortToman(net.replace("-", ""));
   const today = localNow(TIME_ZONE).date;
-  const soon = data.upcoming.filter((u) => dateToJdn(u.dueDate) - dateToJdn(today) <= 14);
+  // the bills and instalments of the next fourteen days (what is overdue too), earliest first
+  const soon = [
+    ...data.upcoming,
+    ...data.obligations.items.flatMap((o) =>
+      o.nextDueDate === null
+        ? []
+        : [
+            {
+              id: `ob-${o.id}`,
+              title: o.title,
+              dueDate: o.nextDueDate,
+              amountMinor: o.amountMinor,
+              currencyCode: o.currencyCode,
+              categoryName: o.kind === "claim" ? "طلب" : "قسط",
+              categoryColor: o.kind === "claim" ? "#8add88" : "#5ab0ff",
+            },
+          ],
+    ),
+  ]
+    .filter((u) => dateToJdn(u.dueDate) - dateToJdn(today) <= 14)
+    .sort((a, b) => dateToJdn(a.dueDate) - dateToJdn(b.dueDate));
   const change = data.balance.changePercent;
   return (
     <>

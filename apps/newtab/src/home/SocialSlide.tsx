@@ -231,7 +231,13 @@ export function SocialSlide() {
                   })
                 : seen && (
                     <div className="tb-empty">
-                      <p>{svc.name} فقط داخل افزونه در این قاب باز می‌شود.</p>
+                      <p>
+                        صفحه‌ی ورود {svc.name} فقط در افزونه‌ی نصب‌شده داخل این قاب باز می‌شود؛ خود
+                        سرویس اجازه‌ی قاب شدن در یک سایت معمولی را نمی‌دهد.
+                      </p>
+                      <a className="cta" href={svc.url} target="_blank" rel="noreferrer">
+                        باز کردن {svc.name} در تب جدا
+                      </a>
                     </div>
                   )}
             </div>
