@@ -210,60 +210,66 @@ export function NotesCard({
       </>
     );
   }
-  const notes = liveNotes();
-  const [first, ...rest] = notes;
-  const checks = first?.blocks.filter((b) => b.kind === "check").slice(0, 3) ?? [];
+  const notes = liveNotes().slice(0, 3);
+  const save = (): void => {
+    const v = draft.trim();
+    if (v === "") return;
+    const [title = "", ...body] = v.split("\n");
+    addNote(title, body.join("\n"));
+    setDraft("");
+  };
   return (
     <>
       <h3>یادداشت‌ها</h3>
-      {first === undefined ? (
-        <div className="empty">هنوز یادداشتی نیست.</div>
-      ) : (
-        <div className={fresh.has(first.id) ? "note fresh" : "note"}>
-          <div className="nt-title">{noteTitle(first) || "یادداشت بی‌عنوان"}</div>
-          {checks.length > 0 ? (
-            <ul>
-              {checks.map((b) => (
-                <li key={b.id} className={b.done === true ? "ok" : ""}>
-                  <i />
-                  {b.text}
-                </li>
-              ))}
-            </ul>
-          ) : (
-            noteSnippet(first) !== "" && <div className="meta">{noteSnippet(first)}</div>
-          )}
-        </div>
-      )}
-      {rest.length > 0 && (
-        <div className="nlinks">
-          {rest.slice(0, 2).map((n) => (
-            <div key={n.id}>
-              <span>{noteTitle(n) || "یادداشت بی‌عنوان"}</span>
-              <small>{ago(n.updatedAt)}</small>
-            </div>
-          ))}
-        </div>
-      )}
       <form
-        className="add"
+        className="qnote"
         onSubmit={(e) => {
           e.preventDefault();
-          if (draft.trim() === "") return;
-          addNote(draft, "");
-          setDraft("");
+          save();
         }}
       >
-        <Icon name="edit" />
-        <input
+        <textarea
+          rows={4}
           value={draft}
-          placeholder="یادداشت سریع…"
+          placeholder="یادداشت سریع بنویس… خط اول، عنوانش می‌شود."
           aria-label="یادداشت سریع"
           onChange={(e) => {
             setDraft(e.target.value);
           }}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) {
+              e.preventDefault();
+              save();
+            }
+          }}
         />
+        <div className="qn-f">
+          <span>روی گوشی هم دیده می‌شود</span>
+          <button
+            type="submit"
+            className="qn-go"
+            disabled={draft.trim() === ""}
+            aria-label="ذخیره‌ی یادداشت"
+          >
+            <Icon name="arrow-up" />
+          </button>
+        </div>
       </form>
+      {notes.length === 0 ? (
+        <div className="empty">هنوز یادداشتی نیست.</div>
+      ) : (
+        <div className="rlist" aria-label="یادداشت‌های اخیر">
+          {notes.map((n) => (
+            <div key={n.id} className={fresh.has(n.id) ? "rnote fresh" : "rnote"}>
+              <b>{noteTitle(n) || "یادداشت بی‌عنوان"}</b>
+              <small>
+                {ago(n.updatedAt)}
+                {noteSnippet(n) !== "" && ` · ${noteSnippet(n)}`}
+              </small>
+            </div>
+          ))}
+        </div>
+      )}
     </>
   );
 }
