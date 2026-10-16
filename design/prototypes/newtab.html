@@ -921,14 +921,15 @@ tr.grp td { background: rgba(255,255,255,.04); font-weight: 600; color: var(--in
 .lt .ic.fold i .fl { width: 13px; height: 13px; border-radius: 4px; background: var(--fc, #fff); color: #fff !important; box-shadow: none; display: grid; place-items: center; font-size: 8px; font-weight: 800; }
 
 /* the G: a plain glyph in the text colour */
-.gmark { width: 22px; height: 22px; flex: none; color: var(--ink-2); display: grid; place-items: center; }
-.gmark svg { width: 20px; height: 20px; }
+.gmark { width: 30px; height: 30px; flex: none; color: var(--ink-2); display: grid; place-items: center; }
+.gmark svg { width: 26px; height: 26px; }
+.drop .gmark { width: 22px; height: 22px; } .drop .gmark svg { width: 20px; height: 20px; }
 /* corner cards and the edge panel: a solid, slightly lifted surface so nothing shows through */
 .hz .ccard.g, .edge .side2.g { background: color-mix(in srgb, color-mix(in srgb, var(--bgc) 86%, #fff) 96%, transparent); border: 1px solid rgba(255,255,255,.10); backdrop-filter: blur(30px) saturate(140%); -webkit-backdrop-filter: blur(30px) saturate(140%); box-shadow: inset 0 1px 0 rgba(255,255,255,.07), 0 30px 80px rgba(0,0,0,.5); }
 .hz .ccard .note, .hz .ccard .add, .hz .ccard .nextp { background: rgba(0,0,0,.18); }
 /* search: one row */
 .sbox .srow { height: auto; min-height: 46px; align-items: flex-start; padding-top: 8px; }
-.sbox .gmark { margin-top: 4px; }
+.sbox .gmark { margin-top: 2px; }
 .srow textarea { flex: 1; min-width: 0; resize: none; background: none; border: 0; outline: 0; color: var(--ink); font: inherit; font-size: 21px; line-height: 1.6; max-height: 150px; overflow-y: auto; padding: 0; scrollbar-width: thin; }
 .srow textarea::placeholder { color: rgba(255,255,255,.5); }
 .act { font: inherit; font-size: 15px; height: 34px; padding: 0 12px 0 14px; border-radius: 999px; border: 1px solid rgba(255,255,255,.12); background: none; color: var(--ink-2); cursor: pointer; display: inline-flex; align-items: center; gap: 7px; white-space: nowrap; }
@@ -1028,6 +1029,41 @@ tr.grp td { background: rgba(255,255,255,.04); font-weight: 600; color: var(--in
 .flist button .fdel:hover { color: #F0817A; background: rgba(240,129,122,.12); }
 .flist button .fdel svg { width: 16px; height: 16px; }
 .modal .rbtn.sm span[data-ico] svg { width: 18px; height: 18px; display: block; }
+
+/* planner tabs + todo view */
+.ptabs { display: flex; gap: 2px; padding: 4px; border-radius: 999px; background: rgba(0,0,0,.22); border: 1px solid var(--stroke); }
+.ptabs button { font: inherit; font-size: 15px; color: var(--ink-2); background: none; border: 0; border-radius: 999px; padding: 5px 16px; cursor: pointer; display: inline-flex; gap: 6px; align-items: center; }
+.ptabs button[aria-selected="true"] { background: #fff; color: #0B0D12; font-weight: 600; }
+.ptabs button span { font-size: 12px; min-width: 20px; height: 20px; padding: 0 6px; border-radius: 999px; background: rgba(255,255,255,.12); display: grid; place-items: center; }
+.ptabs button[aria-selected="true"] span { background: rgba(0,0,0,.1); }
+.s2.todo-on .ptools .seg, .s2.todo-on #wkPrev, .s2.todo-on #wkNext, .s2.todo-on #todayBtn { visibility: hidden; }
+.todo { padding: 20px 28px 0; gap: 14px; }
+.td-top { display: flex; align-items: center; gap: 14px; flex: none; }
+.td-f { display: flex; gap: 6px; flex-wrap: wrap; }
+.td-f button { font: inherit; font-size: 14px; display: inline-flex; align-items: center; gap: 7px; padding: 4px 12px; border-radius: 999px; border: 1px solid var(--stroke); background: none; color: var(--ink-2); cursor: pointer; }
+.td-f button i { width: 8px; height: 8px; border-radius: 50%; }
+.td-f button small { color: var(--ink-3); font-size: 12px; }
+.td-f button[aria-pressed="true"] { background: rgba(255,255,255,.1); color: var(--ink); border-color: var(--stroke-hi); }
+.td-add { margin: 0 auto 0 0; margin-inline-start: auto; width: 340px; height: 42px; border-radius: 999px; background: rgba(0,0,0,.25); border: 1px solid var(--stroke); display: flex; align-items: center; gap: 10px; padding: 0 14px; }
+.td-add span[data-ico] svg { width: 18px; height: 18px; display: block; color: var(--ink-2); }
+.td-add input { flex: 1; min-width: 0; background: none; border: 0; outline: 0; color: var(--ink); font: inherit; font-size: 16px; }
+.td-in { font-size: 12px; color: var(--ink-3); white-space: nowrap; }
+.td-list { flex: 1; min-height: 0; overflow-y: auto; scrollbar-width: thin; scrollbar-color: rgba(255,255,255,.18) transparent; padding-bottom: 20px; columns: 2; column-gap: 40px; }
+.td-sec { break-inside: avoid; margin-bottom: 18px; }
+.td-sec h4 { margin: 0 0 4px; font-size: 14px; font-weight: 600; color: var(--ink-2); display: flex; gap: 8px; align-items: center; }
+.td-sec h4 small { font-weight: 400; color: var(--ink-3); }
+.td-sec.late h4 { color: #F0817A; }
+.td-row { display: flex; align-items: center; gap: 12px; padding: 8px 6px; border-bottom: 1px solid rgba(255,255,255,.05); font-size: 16px; }
+.td-row .cb { width: 22px; height: 22px; border-radius: 50%; border: 1.8px solid rgba(255,255,255,.5); background: none; flex: none; display: grid; place-items: center; cursor: pointer; padding: 0; }
+.td-row .cb svg { width: 13px; height: 13px; opacity: 0; color: #0B0D12; stroke-width: 2.8; }
+.td-row.done .cb { background: #fff; border-color: #fff; }
+.td-row.done .cb svg { opacity: 1; }
+.td-row.done .t { color: var(--ink-3); text-decoration: line-through; }
+.td-row .t { flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.td-row .ld { width: 7px; height: 7px; border-radius: 50%; flex: none; }
+.td-row .m { font-size: 13px; color: var(--ink-3); white-space: nowrap; font-variant-numeric: tabular-nums; }
+.td-sec.late .td-row .m { color: #F0817A; }
+.td-done { font: inherit; font-size: 14px; color: var(--ink-3); background: none; border: 0; cursor: pointer; padding: 6px; }
 
 /* ad-slot overlay */
 [data-slot] { position: relative; }
@@ -1200,6 +1236,7 @@ td.them { color: var(--ink-2); }
             <div class="s-pad">
               <div class="pbar">
                 <div class="ptitle"><b id="wkTitle">مهر ۱۴۰۵</b><span id="wkSub">هفته‌ی ۱۸ تا ۲۴</span></div>
+                <div class="ptabs" id="ptabs" role="tablist"><button role="tab" aria-selected="true" data-v="cal">تقویم</button><button role="tab" aria-selected="false" data-v="todo">کارها <span id="todoN"></span></button></div>
                 <div class="psearch g" id="psearch">
                   <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
                   <input id="pq" placeholder="جستجو در برنامه‌ها، مناسبت‌ها و یادداشت‌ها…" autocomplete="off" aria-label="جستجو در برنامه‌ها">
@@ -1236,6 +1273,13 @@ td.them { color: var(--ink-2); }
                   <div class="pgrid" id="pgrid"></div>
                 </div>
                 <div class="ptoast" id="ptoast" hidden></div>
+              </div>
+              <div class="card g todo" id="todoView" hidden>
+                <div class="td-top">
+                  <div class="td-f" id="tdFilter"></div>
+                  <form class="td-add" id="tdAdd"><span data-ico="plus"></span><input id="tdInput" placeholder="کار تازه… (Enter)" autocomplete="off" aria-label="کار تازه"><span class="td-in" id="tdIn"></span></form>
+                </div>
+                <div class="td-list" id="tdList"></div>
               </div>
             </div>
           </section>
@@ -1637,6 +1681,7 @@ td.them { color: var(--ink-2); }
       <p>در اپ نقطه «دسته‌ها» یک مجموعه‌اند: لیست‌های کار همان پوشه‌های یادداشت‌اند (<code>TaskList</code> با نام و رنگ؛ صفحه‌ی <code>profile/lists</code> برای هر دسته هم کارها و هم یادداشت‌ها را می‌شمارد). این مجموعه در سینک موجودیت <code>list</code> است. نیوتب هیچ دسته‌ی جدایی نمی‌سازد و همه‌جا همان را نشان می‌دهد:</p>
       <ul>
         <li><b>کارها</b> (گوشه‌ی صفحه‌ی اول و برنامه‌ها) نقطه‌ی رنگ دسته‌شان را دارند و رنگ بلوکشان در جدول هفته همان رنگ دسته است.</li>
+        <li><b>تب «کارها»:</b> بالای اسلاید برنامه‌ها یک سوییچ کوچک «تقویم · کارها» هست. «کارها» همان فهرست کارهای اپ است: فیلتر دسته‌ها با تعدادشان، بخش‌های عقب‌افتاده، امروز، پیش رو و بدون تاریخ، تیک زدن، و یک خط «کار تازه» که در دسته‌ی انتخاب‌شده می‌سازد. این فهرست با گوشه‌ی کارهای صفحه‌ی اول و با گوشی یکی است. ستون کناری (ماه، مناسبت‌ها، تقویم‌ها) در هر دو حالت می‌ماند.</li>
         <li><b>ساختن برنامه:</b> کشیدن روی ساعت‌ها فقط بازه را مشخص می‌کند و چیزی ذخیره نمی‌شود. یک پنجره باز می‌شود با زمان، عنوان، دسته (همان دسته‌های اپ) و جای ذخیره (کار در نقطه، یا تقویم گوگل شخصی یا کار)؛ «ساختن» تا عنوان نوشته نشود فعال نیست و «انصراف» یا Esc همه‌چیز را پاک می‌کند، مثل اپ موبایل.</li>
         <li><b>حذف یک دسته:</b> چون دسته روی گوشی هم حذف می‌شود و کارها و یادداشت‌هایش را هم می‌برد، پنجره‌ی حذف تعدادشان را می‌گوید و تا کاربر اسم دسته را دوباره ننویسد دکمه‌ی حذف فعال نمی‌شود. کنار اسم یک دکمه‌ی «کپی» هست. دسته‌ی پیش‌فرض «شخصی» حذف نمی‌شود.</li>
         <li><b>برنامه‌ها:</b> فهرست «تقویم‌ها» سه گروه دارد: دسته‌های نقطه (هر کدام کلید روشن و خاموش)، تقویم‌های گوگل، و مناسبت‌ها و قبض‌ها و اوقات شرعی.</li>
@@ -1899,6 +1944,7 @@ td.them { color: var(--ink-2); }
   ];
   const check = '<svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
   function renderTasks() {
+    if (window.__todoReady) renderTodo();
     $("tasks").innerHTML = tasks.map((k, i) => `<li class="task${k.done ? " done" : ""}${k.isNew ? " new" : ""}">
       <button class="cb" data-i="${i}" aria-label="انجام شد">${check}</button>
       <span class="ld" style="background:${LST[k.l || "personal"].c}" title="${LST[k.l || "personal"].n}"></span><span class="t">${k.t}</span>${k.from ? `<span class="from">${k.from}</span>` : `<span class="m">${k.m}</span>`}</li>`).join("");
@@ -2806,6 +2852,52 @@ td.them { color: var(--ink-2); }
     $("cSpent").textContent = fmt(spent);
     $("cTx").innerHTML = `<div class="bill fresh"><span>${n} <span class="d" style="color:var(--ink-2)">${bank} · همین حالا</span></span><span class="amt">${fmt(a)}</span></div>`;
     peekCorner("money", "پیامک بانکی ثبت شد · پاکت");
+  });
+
+  /* ================= slide 2: «کارها» tab — the same tasks as the corner and the app ================= */
+  const LATER = [
+    { t: "ارسال فاکتور به مشتری", m: "۲۲ مهر", l: "work", late: true },
+    { t: "تحویل طرح اولیه‌ی کمپین", m: "یکشنبه ۱۱:۰۰", l: "campaign" }, { t: "تولد سارا", m: "۳۰ مهر", l: "personal" },
+    { t: "تمدید پاسپورت", m: "۱۰ آبان", l: "personal" }, { t: "جمع‌بندی بودجه‌ی تبلیغات", m: "۲۸ مهر", l: "campaign" },
+    { t: "خواندن سووشون", m: "", l: "books", nodate: true }, { t: "یاد گرفتن انیمیشن در فیگما", m: "", l: "work", nodate: true },
+    { t: "میوه برای مهمانی", m: "", l: "shop", nodate: true },
+  ];
+  let tdList = "all", tdShowDone = false;
+  const tdKey = (k) => (k.late ? "late" : k.nodate ? "nodate" : tasks.includes(k) ? "today" : "later");
+  function renderTodo() {
+    const all = [...tasks, ...LATER], inL = (k) => tdList === "all" || (k.l || "personal") === tdList;
+    $("todoN").textContent = fa(all.filter((k) => !k.done).length);
+    $("tdFilter").innerHTML = `<button data-l="all" aria-pressed="${tdList === "all"}">همه <small>${fa(all.filter((k) => !k.done).length)}</small></button>`
+      + LISTS.map((l) => `<button data-l="${l.id}" aria-pressed="${tdList === l.id}"><i style="background:${l.c}"></i>${l.n} <small>${fa(all.filter((k) => !k.done && (k.l || "personal") === l.id).length)}</small></button>`).join("");
+    $("tdIn").textContent = `در «${tdList === "all" ? "شخصی" : LST[tdList].n}»`;
+    const sec = (key, title, extra = "") => {
+      const items = all.filter((k) => tdKey(k) === key && inL(k) && (tdShowDone || !k.done));
+      if (!items.length) return "";
+      return `<div class="td-sec ${key === "late" ? "late" : ""}"><h4>${title} <small>${fa(items.length)}</small>${extra}</h4>${items.map((k) => `<div class="td-row${k.done ? " done" : ""}">
+        <button class="cb" data-k="${all.indexOf(k)}" aria-label="انجام شد">${check}</button><span class="ld" style="background:${LST[k.l || "personal"].c}"></span><span class="t">${k.t}</span><span class="m">${k.m || ""}</span></div>`).join("")}</div>`;
+    };
+    const doneN = all.filter((k) => k.done && inL(k)).length;
+    $("tdList").innerHTML = sec("late", "عقب‌افتاده") + sec("today", "امروز") + sec("later", "پیش رو") + sec("nodate", "بدون تاریخ")
+      + (doneN ? `<button class="td-done" id="tdDone">${tdShowDone ? "پنهان کردن" : "نمایش"} ${fa(doneN)} انجام‌شده</button>` : "")
+      || `<div style="color:var(--ink-3);padding:12px">کاری در این دسته نیست.</div>`;
+  }
+  window.__todoReady = true; renderTodo();
+  $("tdFilter").addEventListener("click", (e) => { const b = e.target.closest("[data-l]"); if (b) { tdList = b.dataset.l; renderTodo(); } });
+  $("tdList").addEventListener("click", (e) => {
+    if (e.target.closest("#tdDone")) { tdShowDone = !tdShowDone; renderTodo(); return; }
+    const b = e.target.closest("[data-k]"); if (!b) return;
+    const all = [...tasks, ...LATER], k = all[+b.dataset.k]; k.done = !k.done; renderTasks(); pulse("ارسال شد · گوشی به‌روز شد");
+  });
+  $("tdAdd").addEventListener("submit", (e) => {
+    e.preventDefault(); const v = $("tdInput").value.trim(); if (!v) return;
+    tasks.unshift({ t: v, m: "", l: tdList === "all" ? "personal" : tdList, isNew: true }); $("tdInput").value = ""; renderTasks(); pulse("ارسال شد · گوشی به‌روز شد");
+  });
+  $("ptabs").addEventListener("click", (e) => {
+    const b = e.target.closest("[data-v]"); if (!b) return; const todo = b.dataset.v === "todo";
+    $("ptabs").querySelectorAll("button").forEach((x) => x.setAttribute("aria-selected", String(x === b)));
+    $("todoView").hidden = !todo; document.querySelector(".s2 .planner").hidden = todo; $("s2").classList.toggle("todo-on", todo);
+    $("wkSub").textContent = todo ? `${fa([...tasks, ...LATER].filter((k) => !k.done).length)} کار باز` : `هفته‌ی ${dayName(ws)} تا ${dayName(ws + 6)}`;
+    paintIcons($("todoView"));
   });
 })();
 </script>
