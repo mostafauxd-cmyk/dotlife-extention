@@ -1279,6 +1279,21 @@ td.them { color: var(--ink-2); }
    reaches the search box: only the newest rows, no add field or footer until the mouse goes to it */
 .hz.livep:not(:hover):not(:focus-within) .ccard .add, .hz.livep:not(:hover):not(:focus-within) .ccard > .more { display: none; }
 .hz.livep:not(:hover):not(:focus-within) .ccard .tasks > li:nth-child(n+4) { display: none; }
+
+/* ---------- v20 ---------- */
+/* tiles: light frames, so every logo reads clearly and the row stands off any background colour */
+.lt .ic, .lt .ic.fav, .lt.addt .ic, .lt.pchip .ic { background: color-mix(in srgb, #fff 93%, var(--tint)); border: 1px solid rgba(255,255,255,.7); color: #15171c; --darkfill: #15171c; box-shadow: 0 8px 22px rgba(0,0,0,.3); }
+.lt:hover .ic, .lt:hover .ic.fav, .lt:focus-visible .ic { background: #fff; }
+.lt .ic.fold { background: color-mix(in srgb, #fff 93%, var(--tint)); }
+.lt.back .ic { background: var(--tint); border-color: transparent; color: #0B0D12; }
+/* the planner switch: the same filled glass as the search box beside it, and a focus ring kept inside */
+.ptabs.g { background: rgba(255,255,255,.08); }
+.morph > button:focus-visible, .morph > span:focus-visible { outline-offset: -3px; border-radius: 999px; }
+/* the price card's tabs: a plain underline row running edge to edge of the card */
+.mtabs { margin-inline: calc(-1 * (var(--cp) + var(--cx))); padding: 0; gap: 0; border: 0; border-bottom: 1px solid var(--stroke); border-radius: 0; background: none; }
+.mtabs button { padding: 8px 0 9px; border-radius: 0; font-size: 14.5px; }
+.mtabs button[aria-selected="true"] { background: none; font-weight: 600; }
+.mtabs.morph > .mpill { top: auto !important; bottom: -1px; height: 2px !important; border-radius: 2px; background: var(--ink); box-shadow: none; }
 </style>
 </head>
 <body>
@@ -1958,7 +1973,7 @@ td.them { color: var(--ink-2); }
   // a favicon-sized mark: the brand's own glyph in its colour, or (until the real favicon loads) its letter on a small white square
   const fav = (name, letter, color) => {
     const b = BR[SLUG[name]];
-    if (b) return `<svg class="bm2" viewBox="0 0 24 24" aria-hidden="true"><path d="${b.p}" fill="${lum(b.h) < 0.22 ? "#F5F6F8" : b.h}"/></svg>`;
+    if (b) return `<svg class="bm2" viewBox="0 0 24 24" aria-hidden="true"><path d="${b.p}" ${lum(b.h) < 0.22 ? `style="fill:var(--darkfill, #F5F6F8)"` : `fill="${b.h}"`}/></svg>`;
     return `<span class="fl" style="--fc:${color};color:${color}">${letter}</span>`;
   };
   const paintIcons = (root = document) => root.querySelectorAll("[data-ico]").forEach((el) => { if (!el.firstChild) el.innerHTML = ICO[el.dataset.ico] || ""; });
