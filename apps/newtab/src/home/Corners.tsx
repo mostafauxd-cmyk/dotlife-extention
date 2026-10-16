@@ -210,7 +210,7 @@ export function NotesCard({
       </>
     );
   }
-  const notes = liveNotes().slice(0, 3);
+  const notes = liveNotes().slice(0, 2);
   const save = (): void => {
     const v = draft.trim();
     if (v === "") return;

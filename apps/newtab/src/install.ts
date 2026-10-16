@@ -2,8 +2,8 @@ import { load, save } from "./platform";
 
 /**
  * Links that send a phone to an app store. Each one goes through Noghte's own address, not straight
- * to Cafe Bazaar, so the server can count installs by where in Miz the code was shown:
- * `app` (noghte | paket), `src=miz`, `c` (the place, e.g. `signin`) and `r` (this install, an
+ * to Cafe Bazaar, so the server can count installs by where in the extension the code was shown:
+ * `app` (noghte | paket), `src=chrome`, `c` (the place, e.g. `signin`) and `r` (this install, an
  * anonymous id made once). The server answers with a redirect to the app's store page.
  */
 const GET_URL = "https://noghte.life/get";
@@ -27,7 +27,7 @@ export function installId(): Promise<string> {
 export function getLink(app: App, place: string, install: string): string {
   const u = new URL(GET_URL);
   u.searchParams.set("app", app);
-  u.searchParams.set("src", "miz");
+  u.searchParams.set("src", "chrome");
   u.searchParams.set("c", place);
   u.searchParams.set("r", install);
   return u.toString();

@@ -1,6 +1,6 @@
 /**
  * The painted side of the sign-in card, in Dia's manner: layered colour pushed about by a brush
- * filter, streaks and grain over it, a tilted browser window with میز inside, and نقطه's phone
+ * filter, streaks and grain over it, a tilted browser window with the new tab inside, and نقطه's phone
  * beside it. The edge toward the form dissolves into grain (`dissolve.png` as a mask).
  */
 

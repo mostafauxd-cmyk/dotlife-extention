@@ -12,7 +12,7 @@ export const API_BASE = (
 ).replace(/\/+$/, "");
 
 /** How this browser appears in «دستگاه‌ها» on the phone. */
-const DEVICE = "Chrome · میز";
+const DEVICE = "Chrome · افزونه‌ی نقطه";
 
 export type Session = {
   accountId: string;
