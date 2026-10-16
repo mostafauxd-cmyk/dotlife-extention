@@ -861,10 +861,10 @@ tr.grp td { background: rgba(255,255,255,.04); font-weight: 600; color: var(--in
 .s5 .s-pad { grid-template-columns: 270px minmax(0, 1fr) 290px; }
 .srcl { display: flex; flex-direction: column; gap: 4px; }
 .srcl .grp { font-size: 13px; color: var(--ink-3); margin-top: 6px; }
-.srow3 { display: flex; align-items: center; gap: 10px; padding: 6px 6px; border-radius: 12px; font-size: 15px; }
+.srow3 { display: flex; align-items: center; gap: 10px; padding: 6px 0; border-radius: 12px; font-size: 15px; }
 .srow3 .sl { width: 28px; height: 28px; border-radius: 9px; display: grid; place-items: center; color: #fff; font-size: 13px; font-weight: 700; flex: none; }
 .srow3 small { display: block; font-size: 12px; color: var(--ink-3); }
-.srow3 .sw2 { margin-inline-start: auto; transform: scale(.85); }
+.srow3 .sw2 { margin-inline-start: auto; transform: scale(.85); transform-origin: left center; }
 .addsrc { font: inherit; font-size: 14px; color: var(--ink-2); background: none; border: 1px dashed var(--stroke-hi); border-radius: 12px; padding: 7px 12px; cursor: pointer; margin-top: 6px; text-align: start; }
 .fcats { display: flex; gap: 6px; flex-wrap: wrap; flex: none; }
 .fcats button { font: inherit; font-size: 14px; border-radius: 999px; border: 1px solid var(--stroke); background: none; color: rgba(255,255,255,.8); padding: 3px 12px; cursor: pointer; }
@@ -1186,9 +1186,9 @@ td.them { color: var(--ink-2); }
    Every box inside a card sits --cp from the card's edge on all sides, and its corner is the card's
    corner minus that gap (--cr − --cp), so the two curves run parallel. Titles and plain text keep
    their own, deeper inset (--cp + --cx + --tx = 24px from the side, --cy from the top); everything else
-   runs 16px in. */
-:root { --cr: 32px; --cp: 8px; --cx: 8px; --tx: 8px; --cy: 12px; --ir: calc(var(--cr) - var(--cp)); }
-/* content (rows, lists, the calendar, toggles) runs --cp + --cx = 16px from the side; section titles get --tx more, 24px */
+   runs 14px in. */
+:root { --cr: 32px; --cp: 8px; --cx: 6px; --tx: 10px; --cy: 12px; --ir: calc(var(--cr) - var(--cp)); }
+/* content (rows, lists, the calendar, toggles) runs --cp + --cx = 14px from the side; section titles get --tx more, 24px */
 :is(.slide .card, .s3 .card, .ccard, .side2) :is(.card-h, .mh, .sec, .mini-h) { padding-inline: var(--tx); }
 .card, .ccard, .side2 { border-radius: var(--cr); }
 .slide .card, .s3 .card, .ccard, .side2 { padding: var(--cy) calc(var(--cp) + var(--cx)) var(--cp); }
@@ -1203,7 +1203,7 @@ td.them { color: var(--ink-2); }
 .slide .card > .nsearch:first-child, .slide .card > .feed-top:first-child { margin-top: calc(var(--cp) - var(--cy)); }
 .wxc, .nextp, .spcard, .spev, .prow, .ncard, .flist button, .tpl, .newf, .nitem, .addsrc, .fbig, .frow, .saved, .occl button, .side2 .bm, .mtabs { border-radius: var(--ir); }
 /* a one-line row is too short for the card's corner (it would turn into a pill): its highlight is a soft square */
-.prow, .flist button, .occl button, .side2 .bm, .nextp, .spcard, .newf, .addsrc { border-radius: 14px; }
+.prow, .flist button, .occl button, .side2 .bm, .nextp, .spcard, .newf, .addsrc, .nitem { border-radius: 14px; }
 .prow, .flist button, .nitem, .occl button, .side2 .bm { padding-inline: var(--cx); }
 .mtabs { padding: 3px; }
 .s5 .s-pad { grid-template-columns: 300px minmax(0, 1fr) 280px; }
