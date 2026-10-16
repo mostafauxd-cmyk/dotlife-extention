@@ -1154,6 +1154,8 @@ svg {
 .signin-cta {
   --qr: 128px;
   padding-top: 4px;
+  /* the card's own 8px plus this: the same 16px below as at the sides */
+  padding-bottom: var(--cx);
   display: flex;
   gap: 20px;
 }
