@@ -1186,6 +1186,26 @@ svg {
   font-size: 15px;
   color: var(--ink-2);
 }
+/* the app's install code, for someone who does not have نقطه on the phone yet */
+.signin-cta .getapp {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.04);
+  font-size: 13.5px;
+  line-height: 1.7;
+  color: var(--ink-2);
+}
+.signin-cta .getapp .qr {
+  width: 72px;
+  height: 72px;
+  flex: none;
+  padding: 3px;
+  border-radius: 10px;
+  background: #fff;
+}
 
 /* ---------- right edge: Chrome bookmarks and customisation ---------- */
 .edge {

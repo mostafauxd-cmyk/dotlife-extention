@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 
 import { useNow, useRecordsVersion, useSyncState } from "../hooks";
 import {
@@ -13,10 +13,12 @@ import {
   todayRows,
   toggleTask,
 } from "../noghte/model";
+import { getLink, installId } from "../install";
 import { todayInfo } from "../today";
 import { ago, fa } from "../ui/fa";
 import { Icon } from "../ui/Icon";
 import type { IconName } from "../ui/icons";
+import { Qr } from "../ui/Qr";
 
 /**
  * The four corners of the first view: a faint mark in each; the card slides in when the mouse
@@ -87,10 +89,28 @@ function SyncBadge() {
   );
 }
 
-function SignInHint({ what, onSignIn }: { what: string; onSignIn: () => void }) {
+function SignInHint({
+  what,
+  place,
+  onSignIn,
+}: {
+  what: string;
+  place: string;
+  onSignIn: () => void;
+}) {
+  const [install, setInstall] = useState<string | null>(null);
+  useEffect(() => {
+    void installId().then(setInstall);
+  }, []);
   return (
     <div className="signin-cta">
       {what} از اپ نقطه این‌جا می‌آیند و هر چه این‌جا بنویسی روی گوشی هم هست.
+      {install !== null && (
+        <div className="getapp">
+          <Qr text={getLink("noghte", place, install)} label="کد نصب نقطه از کافه‌بازار" />
+          <span>نقطه را روی گوشی نداری؟ با دوربین گوشی اسکن کن تا در کافه‌بازار باز شود.</span>
+        </div>
+      )}
       <button type="button" className="cta" onClick={onSignIn}>
         ورود به نقطه
       </button>
@@ -120,7 +140,7 @@ export function TasksCard({
     return (
       <>
         <h3>کارهای امروز</h3>
-        <SignInHint what="کارهای امروزت" onSignIn={onSignIn} />
+        <SignInHint what="کارهای امروزت" place="tasks" onSignIn={onSignIn} />
       </>
     );
   }
@@ -207,7 +227,7 @@ export function NotesCard({
     return (
       <>
         <h3>یادداشت‌ها</h3>
-        <SignInHint what="یادداشت‌هایت" onSignIn={onSignIn} />
+        <SignInHint what="یادداشت‌هایت" place="notes" onSignIn={onSignIn} />
       </>
     );
   }
