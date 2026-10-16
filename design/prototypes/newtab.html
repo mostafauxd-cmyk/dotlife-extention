@@ -1558,6 +1558,40 @@ td.them { color: var(--ink-2); }
 .socrow .mv button { width: 30px; height: 30px; border-radius: 50%; border: 0; background: rgba(255,255,255,.06); color: var(--ink-2); display: grid; place-items: center; cursor: pointer; }
 .socrow .mv button:disabled { opacity: .3; cursor: default; }
 .socrow .mv svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+/* onboarding: one account for Noghte and Paket — phone, then the SMS code */
+.onb .chg { font: inherit; font-size: inherit; background: none; border: 0; padding: 0; color: var(--ink); text-decoration: underline; text-underline-offset: 4px; cursor: pointer; }
+.onb .otp { display: flex; gap: 10px; justify-content: flex-end; }
+.onb .otp input { width: 56px; height: 64px; border-radius: 14px; border: 1px solid rgba(255,255,255,.16); background: #111; color: var(--ink); font: inherit; font-size: 26px; text-align: center; outline: none; }
+.onb .otp input:focus { border-color: rgba(255,255,255,.45); }
+.onb .resend { align-self: flex-start; font: inherit; font-size: 14px; background: none; border: 0; padding: 0; color: var(--ink-2); text-decoration: underline; text-underline-offset: 4px; cursor: pointer; }
+.onb .resend:disabled { color: var(--ink-3); text-decoration: none; cursor: default; }
+.onb .opts.one { grid-template-columns: minmax(0, 1fr); }
+.lnk { display: block; margin-top: 6px; direction: ltr; text-align: right; font-size: 11.5px; color: var(--ink-3); font-family: ui-monospace, Menlo, monospace; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+/* Paket with nothing in it: the money corner and the money slide ask for the app instead */
+.pke-mini, .pk-empty { display: none; }
+body.pk0 .ccard.money > :not(h3):not(.pke-mini) { display: none; }
+body.pk0 .ccard.money .pke-mini { display: flex; gap: 14px; align-items: center; margin-inline: calc(-1 * var(--cx)); padding: 12px; border-radius: var(--ir); background: rgba(0,0,0,.18); border: 1px solid var(--stroke); }
+.onb .or > div:last-child, .pke-mini > div { flex: 1; min-width: 0; }
+.pke-mini .qr { width: 96px; height: 96px; flex: none; padding: 6px; border-radius: 12px; background: #fff; }
+.pke-mini .qr svg, .pke-qr .qr svg { width: 100%; height: 100%; display: block; }
+.pke-mini b { display: block; font-size: 15px; font-weight: 600; }
+.pke-mini span { display: block; font-size: 13px; color: var(--ink-2); line-height: 1.8; }
+body.pk0 .s3 .card.mc:not(.mkt) { display: none; }
+body.pk0 .s3 .pk-empty { display: grid; grid-column: 1 / 3; grid-row: 2; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 32px; padding: 32px 40px; }
+.pke-copy { display: flex; flex-direction: column; gap: 12px; }
+.pke-lg { width: 56px; height: 56px; border-radius: 18px; display: grid; place-items: center; background: #3FA98A; color: #fff; font-size: 26px; font-weight: 700; }
+.pk-empty h2 { margin: 0; font-size: 30px; font-weight: 700; }
+.pk-empty p { margin: 0; font-size: 16px; color: var(--ink-2); line-height: 1.9; max-width: 46ch; }
+.pk-empty ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; font-size: 15px; }
+.pk-empty li::before { content: ""; display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: #3FA98A; margin-inline-end: 10px; vertical-align: middle; }
+.pke-qr { display: flex; flex-direction: column; align-items: center; gap: 6px; text-align: center; padding: 18px; border-radius: var(--ir); background: rgba(0,0,0,.22); border: 1px solid var(--stroke); width: 240px; }
+.pke-qr .qr { width: 176px; height: 176px; padding: 10px; border-radius: 16px; background: #fff; margin-bottom: 6px; }
+.pke-qr b { font-size: 15px; } .pke-qr small { font-size: 13px; color: var(--ink-2); } .pke-qr .lnk { max-width: 100%; text-align: center; }
+/* the gear's icon pinned to the middle of its circle, however a browser lays out a button */
+.gear > span[data-ico] { position: absolute; inset: 0; margin: auto; width: 20px; height: 20px; line-height: 0; }
+/* corner cards open above the slide rail: the scroller makes no stacking layer of its own */
+.scroller { z-index: auto; }
 </style>
 </head>
 <body>
@@ -1650,6 +1684,7 @@ td.them { color: var(--ink-2); }
               <span class="cmk" data-ico="activity" title="پول"></span><span class="cl">پول</span>
               <div class="ccard g money" id="money">
                 <h3>پول من <button id="eye" class="more" aria-label="پنهان کردن مبالغ"><svg viewBox="0 0 24 24"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></button></h3>
+                <div class="pke-mini"><div class="qr" id="pkeQrMini"></div><div><b>پاکت هنوز چیزی ندارد</b><span>پاکت را روی گوشی نصب کن؛ خرج‌ها از پیامک بانک خودشان ثبت می‌شوند و این‌جا می‌آیند.</span><small class="lnk" id="pkeLnkMini"></small></div></div>
                 <div><div class="lbl">خرج امروز</div><div class="big"><span class="amt" id="cSpent">۴۸۵٬۰۰۰</span><small>تومان</small></div></div>
                 <div class="bud"><div class="track"><b></b></div><div class="row"><span>بودجه‌ی مهر</span><span class="amt">۸٫۴ از ۱۲ میلیون</span></div></div>
                 <div id="cTx"></div>
@@ -1739,6 +1774,16 @@ td.them { color: var(--ink-2); }
           <section class="slide s3" id="s3" aria-label="پول">
             <div class="s-pad" id="moneyPad">
               <div class="ticker" aria-label="قیمت جهانی و رمزارز"><span class="tk-h"><i></i>جهانی و رمزارز</span><div class="tk-vp"><div class="tk-track" id="tkTrack"></div></div><span class="tk-src">نمونه · gold-api، نوبیتکس</span></div>
+              <!-- Paket has nothing yet: one panel in place of balances and spending, to get the app -->
+              <div class="card g pk-empty">
+                <div class="pke-copy">
+                  <span class="pke-lg">پ</span>
+                  <h2>پول‌هایت را هم سر میز ببین</h2>
+                  <p>هنوز چیزی در پاکت ثبت نشده. پاکت را روی گوشی نصب کن؛ با همین حساب وارد می‌شوی و موجودی، خرج‌ها، بودجه و قبض‌هایت همین‌جا دیده می‌شوند.</p>
+                  <ul><li>خرج‌ها از پیامک بانک، خودکار ثبت می‌شوند</li><li>بودجه‌ی ماه و پیش‌بینی آخر ماه</li><li>قبض و قسط را پیش از موعد یادت می‌اندازد</li></ul>
+                </div>
+                <div class="pke-qr"><div class="qr" id="pkeQr"></div><b>با دوربین گوشی اسکن کن</b><small>دانلود از کافه‌بازار</small><span class="lnk" id="pkeLnk"></span></div>
+              </div>
               <!-- balances (Copilot-style: one header, stats, aligned rows) -->
               <div class="card g mc">
                 <div class="mh"><h2>موجودی</h2><button class="more" id="eye2" aria-label="پنهان کردن مبالغ"><span data-ico="activity" hidden></span>پنهان کردن</button><a class="ml">حساب‌ها ←</a></div>
@@ -1982,7 +2027,7 @@ td.them { color: var(--ink-2); }
     <div class="ctl"><button class="chip" id="ctlCust" aria-pressed="false">شخصی‌سازی و پس‌زمینه</button><button class="chip" id="ctlOnb" aria-pressed="false">دیدن آنبوردینگ</button><button class="chip" id="ctlEnter" aria-pressed="false">دیدن افکت ورود</button></div>
     <div class="ctl">
       <button class="chip ad" id="adsBtn" aria-pressed="false">نمایش جایگاه‌های تبلیغ</button>
-      <button class="chip" id="phoneBtn" aria-pressed="false">کار تازه از گوشی</button><button class="chip" id="noteBtn" aria-pressed="false">یادداشت تازه از گوشی</button><button class="chip" id="smsBtn" aria-pressed="false">پیامک بانکی در پاکت</button>
+      <button class="chip" id="phoneBtn" aria-pressed="false">کار تازه از گوشی</button><button class="chip" id="noteBtn" aria-pressed="false">یادداشت تازه از گوشی</button><button class="chip" id="pk0Btn" aria-pressed="false">پاکت بدون داده</button><button class="chip" id="smsBtn" aria-pressed="false">پیامک بانکی در پاکت</button>
       <button class="chip" id="fsBtn" aria-pressed="false">اندازه‌ی واقعی</button>
     </div>
   </div>
@@ -3316,8 +3361,8 @@ td.them { color: var(--ink-2); }
     ["social", "شبکه‌ها", "تلگرام، اینستاگرام، واتس‌اپ", "میز"], ["launcher", "دسترسی سریع", "ردیف زیر سرچ با پوشه‌های شغل تو", "میز"],
     ["bookmarks", "بوکمارک‌های کروم", "در لبه‌ی راست صفحه", "میز"], ["today", "امروز", "تاریخ، مناسبت و اذان بعدی", "نقطه"],
   ];
-  const onbSt = { step: 0, mods: new Set(MODS.map((m) => m[0])), persona: "designer", paket: false };
-  const stepsOf = () => ["hello", "login", "mods", "persona", ...(onbSt.mods.has("money") ? ["paket"] : []), "wall"];
+  const onbSt = { step: 0, mods: new Set(MODS.map((m) => m[0])), persona: "designer", paket: true };
+  const stepsOf = () => ["hello", "login", "code", "mods", "persona", ...(onbSt.mods.has("money") ? ["paket"] : []), "wall"];
   const PDESC = { designer: "فیگما، دریبل، فونت‌ها", dev: "گیت‌هاب، MDN، لیارا", acc: "مودیان، تأمین اجتماعی، کدال", student: "گلستان، اسکالر، فرادرس", seller: "باسلام، ترب، تیپاکس", manager: "جیمیل، تقویم، اسکای‌روم" };
   // a painted scene for each step: layered colour, pushed about by a brush filter, with canvas grain over it
   const SKIES = {
@@ -3360,31 +3405,48 @@ td.them { color: var(--ink-2); }
     return `<div class="scene" style="--sc:${sc}">${step === "login" ? '<div class="phone2"><i></i><i></i><i></i><i></i></div>' : ""}<div class="win"><span class="tab"></span><span class="bar"><i></i><i></i><i></i></span><div class="scr">${inner}</div></div></div>`;
   }
   const okTick = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
-  let onbPhone = "";
+  let onbPhone = "", onbCode = "", onbWait = 0, onbTimer = null;
+  // every link from Miz to a phone store goes through our own address, so each entry point can be counted:
+  // app = which app, c = where in Miz it was shown, r = this install (anonymous, made once)
+  const installId = (() => { try { let v = localStorage.getItem("miz-install"); if (!v) { v = Math.random().toString(36).slice(2, 10); localStorage.setItem("miz-install", v); } return v; } catch { return "demo"; } })();
+  const getLink = (app, c) => `noghte.life/get?app=${app}&src=miz&c=${c}&r=${installId}`;
+  const installBox = (app, c, seed, title, body) => `<div class="or inst"><div class="qr">${qrSvg(seed)}</div><div><b>${title}</b>${body}<span class="lnk">${getLink(app, c)}</span></div></div>`;
   function renderOnb() {
     const steps = stepsOf(), s = steps[onbSt.step], last = onbSt.step === steps.length - 1;
     $("onbBar").style.width = `${((onbSt.step + 1) / steps.length) * 100}%`;
     $("onbBack").hidden = onbSt.step === 0;
     const next = $("onbNext");
-    next.innerHTML = `${s === "hello" ? "شروع" : s === "login" ? "فرستادن کد" : last ? "ساختن میز" : "ادامه"} <span class="kbd">↵</span>`;
-    next.disabled = s === "login" && onbPhone.replace(/\D/g, "").length < 10;
+    next.innerHTML = `${s === "hello" ? "شروع" : s === "login" ? "فرستادن کد" : s === "code" ? "تأیید و ادامه" : last ? "ساختن میز" : "ادامه"} <span class="kbd">↵</span>`;
+    next.disabled = (s === "login" && onbPhone.replace(/\D/g, "").length < 10) || (s === "code" && onbCode.length < 6);
     $("onbLegal").innerHTML = s === "login" ? "با ادامه، <u>حریم خصوصی نقطه</u> را می‌پذیرم." : s === "paket" ? "میز فقط اجازه‌ی خواندن از پاکت می‌گیرد." : "";
     $("onbLegal").hidden = $("onbLegal").innerHTML === "";
     const B = $("onbBody");
     if (s === "hello") B.innerHTML = `<h2>میز،<br>صفحه‌ی اول کروم تو</h2><p class="lead">کارها، برنامه‌ها و یادداشت‌های نقطه، پول پاکت، و یک سرچ گوگل بزرگ. هر چیزی را که نخواهی، همین اول خاموش کن.</p>`;
-    if (s === "login") B.innerHTML = `<h2>شماره‌ات در نقطه چیست؟</h2><label class="fl">شماره‌ی موبایل<input class="ltr" id="onbPhone" placeholder="0912 000 0000" inputmode="tel" value="${onbPhone}"></label>
-      <div class="or"><div class="qr">${qrSvg(3)}</div><div><b>یا با اپ نقطه اسکن کن</b>تنظیمات ← پشتیبان و همگام‌سازی ← «اتصال میز»، بعد دوربین را روی این کد بگیر.</div></div>`;
+    if (s === "login") B.innerHTML = `<h2>با شماره‌ات وارد شو</h2><p class="lead">حساب نداری؟ با همین شماره ساخته می‌شود؛ یک حساب برای نقطه و پاکت.</p><label class="fl">شماره‌ی موبایل<input class="ltr" id="onbPhone" placeholder="0912 000 0000" inputmode="tel" value="${onbPhone}"></label>
+      ${installBox("noghte", "onboarding", 3, "نقطه را روی گوشی هم داشته باش", "با دوربین گوشی اسکن کن تا نقطه در کافه‌بازار باز شود. با همین شماره وارد شو؛ کارها و یادداشت‌ها همگام می‌شوند.")}`;
+    if (s === "code") B.innerHTML = `<h2>کد را بنویس</h2><p class="lead">کد ۶ رقمی به <b class="ltr">${fa(onbPhone || "0912 000 0000")}</b> پیامک شد. <button class="chg" data-chg>شماره را عوض کن</button></p>
+      <div class="otp" dir="ltr">${[0, 1, 2, 3, 4, 5].map((i) => `<input inputmode="numeric" maxlength="1" aria-label="رقم ${fa(i + 1)}" value="${onbCode[i] || ""}">`).join("")}</div>
+      <button class="resend" data-resend ${onbWait > 0 ? "disabled" : ""}>${onbWait > 0 ? `کد تازه تا ${fa(onbWait)} ثانیه` : "کد تازه بفرست"}</button>`;
     if (s === "mods") B.innerHTML = `<h2>چی‌ها روی میزت باشد؟</h2><div class="opts">${MODS.map(([k, n, dd, a]) => `<button class="opt" data-m="${k}" aria-pressed="${onbSt.mods.has(k)}"><i>${okTick}</i><span><b>${n}</b><small>${dd} · ${a}</small></span></button>`).join("")}</div>`;
     if (s === "persona") B.innerHTML = `<h2>کدام بیشتر شبیه توست؟</h2><p class="lead">ردیف دسترسی سریع زیر سرچ را با سایت‌های همان کار می‌چینیم. بعداً از شخصی‌سازی هم عوض می‌شود.</p><div class="opts big">${Object.entries(P).map(([k, v]) => `<button class="opt" data-p="${k}" aria-pressed="${onbSt.persona === k}"><i>${okTick}</i><span><b>${v.n}</b><small>${PDESC[k]}</small></span></button>`).join("")}</div>`;
-    if (s === "paket") B.innerHTML = `<h2>پاکت را هم وصل کن</h2><p class="lead">برای دیدن موجودی، خرج‌ها و قبض‌ها. قیمت روز و خبرها بدون ورود هم کار می‌کنند.</p>
-      <div class="pair"><label class="fl">نام کاربری پاکت<input class="ltr" autocomplete="off"></label><label class="fl">رمز<input class="ltr" type="password"></label></div>
-      <div class="or"><div class="qr">${qrSvg(11)}</div><div><b>یا با اپ پاکت اسکن کن</b>تنظیمات ← دستگاه‌ها ← «اتصال میز».</div></div>`;
+    if (s === "paket") B.innerHTML = `<h2>پاکت هم با همین حساب</h2><p class="lead">لازم نیست دوباره ثبت‌نام کنی؛ همان شماره، همان حساب. موجودی، خرج‌ها و قبض‌هایت این‌جا هم دیده می‌شوند.</p>
+      <div class="opts one"><button class="opt" data-pk aria-pressed="${onbSt.paket !== false}"><i>${okTick}</i><span><b>پول من روی میز</b><small>موجودی، خرج‌ها و قبض‌ها از پاکت</small></span></button></div>
+      ${installBox("paket", "onboarding", 11, "پاکت را نصب نکرده‌ای؟", "با دوربین گوشی اسکن کن تا پاکت را از کافه‌بازار نصب کنی. خرج‌هایی که آن‌جا ثبت شوند، همین‌جا هم می‌آیند.")}`;
     if (s === "wall") B.innerHTML = `<h2>یک رنگ برای میزت</h2><p class="lead">نقطه‌ی بالای سرچ هم همین رنگ را می‌گیرد.</p><div class="wpbig wps">${themeTiles()}</div>`;
-    $("onbArt").innerHTML = paint(s) + scene(s);
+    $("onbArt").innerHTML = paint(s === "code" ? "login" : s) + scene(s === "code" ? "login" : s);
     $("onbArt").style.setProperty("--tint", THEMES.find((x) => x.id === theme).tint);
     const ph = $("onbPhone");
     if (ph) { ph.addEventListener("input", () => { onbPhone = ph.value; next.disabled = onbPhone.replace(/\D/g, "").length < 10; }); setTimeout(() => ph.focus(), 0); }
+    const boxes = [...B.querySelectorAll(".otp input")];
+    boxes.forEach((inp, i) => {
+      inp.addEventListener("input", () => { inp.value = inp.value.replace(/[^0-9۰-۹]/g, "").slice(-1); onbCode = boxes.map((x) => x.value).join(""); next.disabled = onbCode.length < 6; if (inp.value && boxes[i + 1]) boxes[i + 1].focus(); });
+      inp.addEventListener("keydown", (e) => { if (e.key === "Backspace" && !inp.value && boxes[i - 1]) boxes[i - 1].focus(); });
+      inp.addEventListener("paste", (e) => { const t = (e.clipboardData.getData("text") || "").replace(/\D/g, "").slice(0, 6); if (!t) return; e.preventDefault(); boxes.forEach((x, j) => (x.value = t[j] || "")); onbCode = t; next.disabled = t.length < 6; boxes[Math.min(t.length, 5)].focus(); });
+    });
+    if (boxes.length) setTimeout(() => boxes[Math.min(onbCode.length, 5)].focus(), 0);
   }
+  // the code's resend clock, as the server gives it (a minute at first)
+  const startWait = (sec) => { onbWait = sec; clearInterval(onbTimer); onbTimer = setInterval(() => { onbWait--; const r = document.querySelector("#onbBody [data-resend]"); if (r) { r.disabled = onbWait > 0; r.textContent = onbWait > 0 ? `کد تازه تا ${fa(onbWait)} ثانیه` : "کد تازه بفرست"; } if (onbWait <= 0) clearInterval(onbTimer); }, 1000); };
   function finishOnb() {
     const m = onbSt.mods, on = (k) => m.has(k);
     offB.clear(); offS.clear();
@@ -3396,17 +3458,28 @@ td.them { color: var(--ink-2); }
     pills.querySelectorAll(".chip").forEach((x) => x.setAttribute("aria-pressed", String(x.dataset.k === onbSt.persona))); shelf(onbSt.persona);
     applyLayout(); applyTheme(); renderPlanner(); $("onb").hidden = true; scroller.scrollTop = 0; playEntry();
   }
+  $("pkeQr").innerHTML = qrSvg(19); $("pkeLnk").textContent = getLink("paket", "money-empty");
+  $("pkeQrMini").innerHTML = qrSvg(23); $("pkeLnkMini").textContent = getLink("paket", "corner-empty");
+  $("pk0Btn").addEventListener("click", (e) => { const on = document.body.classList.toggle("pk0"); e.currentTarget.setAttribute("aria-pressed", String(on)); });
   const openOnb = () => { onbSt.step = 0; $("cust").hidden = true; $("onb").hidden = false; renderOnb(); };
   $("ctlOnb").addEventListener("click", openOnb);
   $("custOnb").addEventListener("click", openOnb);
   $("onbSkip").addEventListener("click", () => ($("onb").hidden = true));
   $("onbBack").addEventListener("click", () => { onbSt.step = Math.max(0, onbSt.step - 1); renderOnb(); });
-  const onbNext = () => { if (onbSt.step >= stepsOf().length - 1) finishOnb(); else { onbSt.step++; renderOnb(); } };
+  const onbNext = () => {
+    const s = stepsOf()[onbSt.step];
+    if (s === "login") { onbCode = ""; startWait(60); }
+    if (s === "code") pulse("وارد شدی · اگر حساب نداشتی، همین حالا ساخته شد");
+    if (onbSt.step >= stepsOf().length - 1) finishOnb(); else { onbSt.step++; renderOnb(); }
+  };
   $("onbNext").addEventListener("click", onbNext);
   $("onbBody").addEventListener("keydown", (e) => { if (e.key === "Enter" && !$("onbNext").disabled) { e.preventDefault(); onbNext(); } });
   $("onbBody").addEventListener("click", (e) => {
     const md = e.target.closest("[data-m]"); if (md) { const k = md.dataset.m; onbSt.mods.has(k) ? onbSt.mods.delete(k) : onbSt.mods.add(k); renderOnb(); return; }
     const p = e.target.closest("[data-p]"); if (p) { onbSt.persona = p.dataset.p; renderOnb(); return; }
+    if (e.target.closest("[data-pk]")) { onbSt.paket = onbSt.paket === false; renderOnb(); return; }
+    if (e.target.closest("[data-chg]")) { onbSt.step = stepsOf().indexOf("login"); renderOnb(); return; }
+    if (e.target.closest("[data-resend]")) { startWait(120); pulse("کد تازه فرستاده شد"); return; }
     const th = e.target.closest(".th"); if (th) { theme = th.dataset.t; applyTheme(); renderOnb(); return; }
     if (e.target.closest("#pkLogin")) { onbSt.paket = true; renderOnb(); return; }
     if (e.target.closest("[data-next]")) onbNext();
