@@ -39,11 +39,11 @@
   --font: "Yekan Bakh", "Vazirmatn", Tahoma, system-ui, sans-serif;
   --ease: cubic-bezier(0.22, 1, 0.36, 1);
   /* concentric cards: boxes sit --cp from every edge, their corner is the card's minus that gap;
-     content runs --cp + --cx (16px) from the side; section titles get --tx more (24px) and --cy from the top */
+     content runs --cp + --cx (14px) from the side; section titles get --tx more (24px) and --cy from the top */
   --cr: 32px;
   --cp: 8px;
-  --cx: 8px;
-  --tx: 8px;
+  --cx: 6px;
+  --tx: 10px;
   --cy: 12px;
   --ir: calc(var(--cr) - var(--cp));
   /* a one-line row is too short for --ir (it would turn into a pill): a soft square instead */
