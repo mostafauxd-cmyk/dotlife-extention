@@ -5331,6 +5331,8 @@ a.ts-link {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  /* the icon's own edge sits inside the tile's, so no odd corner shows (Bale's is a bubble) */
+  transform: scale(1.08);
 }
 .sx-glyph.mk {
   position: absolute;

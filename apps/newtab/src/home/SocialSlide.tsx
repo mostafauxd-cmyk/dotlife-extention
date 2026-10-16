@@ -81,10 +81,10 @@ export const SERVICES: readonly Service[] = [
   },
   {
     id: "bale",
-    logo: "./brands/bale.png",
-    icon: true,
+    logo: "./brands/bale.svg",
+    icon: false,
     name: "بله",
-    color: "#20A776",
+    color: "#22B58A",
     letter: "ب",
     url: "https://web.bale.ai/",
     host: "web.bale.ai",
@@ -266,10 +266,6 @@ function Intro({ svc, onStart }: { svc: Service; onStart: () => void }) {
   return (
     <div className="sx-intro" style={{ "--sc": tone } as React.CSSProperties}>
       <div className="sx-copy">
-        <span className="sx-kicker">
-          <i />
-          شبکه‌ها · {svc.name}
-        </span>
         <h3>
           {svc.name}،
           <br />
@@ -397,7 +393,7 @@ function Arrange({ s, onClose }: { s: Settings; onClose: () => void }) {
 function Mark({ svc, className }: { svc: Service; className: string }) {
   if (svc.icon)
     return (
-      <span className={`${className} mk icon`}>
+      <span className={`${className} mk icon`} style={{ background: svc.color }}>
         <img src={svc.logo} alt="" />
       </span>
     );
