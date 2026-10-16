@@ -1212,6 +1212,44 @@ td.them { color: var(--ink-2); }
 .ptabs button { padding: 0 22px; font-size: 16px; color: rgba(255,255,255,.72); }
 .ptabs button[aria-selected="true"] { color: #0B0D12; }
 .ptabs button span { transition: background .3s; }
+
+/* ---------- v17: quick access tiles in one simple square frame, a little bigger ---------- */
+.launch { gap: 16px; min-height: 110px; }
+.lt { width: 84px; }
+.lt .ic, .lt .ic.fav { width: 66px; height: 66px; border-radius: 21px; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.13); box-shadow: inset 0 1px 0 rgba(255,255,255,.08), 0 10px 26px rgba(0,0,0,.22); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); }
+.lt:hover .ic, .lt:hover .ic.fav, .lt:focus-visible .ic { transform: translateY(-3px); background: rgba(255,255,255,.12); box-shadow: inset 0 1px 0 rgba(255,255,255,.1), 0 14px 30px rgba(0,0,0,.3); }
+.lt .ic.fav .bm2 { width: 34px; height: 34px; filter: none; }
+.lt .ic.fav .fl { width: 36px; height: 36px; border-radius: 10px; font-size: 17px; box-shadow: none; }
+.lt .ic svg { width: 24px; height: 24px; }
+.lt .ic.fold { padding: 11px; gap: 5px; }
+.lt .ic.fold i .bm2 { width: 17px; height: 17px; }
+.lt .ic.fold i .fl { width: 17px; height: 17px; border-radius: 5px; font-size: 10px; }
+.lt.back .ic { background: #fff; color: #0B0D12; }
+.lt.adt .tag { top: 78px; }
+.lt .sdot { top: -1px; inset-inline-end: 6px; }
+
+/* ---------- v17: entry light + the stroke as in the video ----------
+   A soft light swells behind the box the moment the page opens and fades; then two lines leave the
+   bottom middle, run along the bottom edge, up both sides, and meet at the top, their tails fading. */
+.sglow { position: absolute; z-index: -1; inset: -90px -140px; pointer-events: none; opacity: 0; border-radius: 50%;
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--tint) 55%, transparent), color-mix(in srgb, var(--tint) 18%, transparent) 55%, transparent); filter: blur(28px); }
+.nt.enter-bg .sglow { animation: sglow 2.8s cubic-bezier(.2,.7,.2,1) both; }
+@keyframes sglow { 0% { opacity: 0; transform: scale(.82); } 9% { opacity: .95; transform: scale(1); } 38% { opacity: .8; } 100% { opacity: 0; transform: scale(1.08); } }
+.sbox.tracing::before, .sbox.tracing::after { animation: none; }
+.trace { position: absolute; inset: -1.5px; pointer-events: none; overflow: visible; }
+.trace path { fill: none; stroke-linecap: round; }
+.trace .glo { stroke: var(--tint); stroke-width: 5; filter: blur(4px); opacity: .9; }
+.trace .core { stroke: #fff; stroke-width: 1.6; }
+.trace .mid { stroke: color-mix(in srgb, var(--tint) 70%, #fff); stroke-width: 1.5; opacity: .55; }
+.trace .far { stroke: var(--tint); stroke-width: 1.4; opacity: .22; }
+
+/* ---------- v17: the to-do bar on one line ---------- */
+.td-top { flex-wrap: nowrap; gap: 12px; }
+.td-f { flex: 1; min-width: 0; flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; -webkit-mask-image: linear-gradient(to left, #000 calc(100% - 24px), transparent); mask-image: linear-gradient(to left, #000 calc(100% - 24px), transparent); padding-inline-end: 20px; }
+.td-f button { flex: none; white-space: nowrap; }
+.td-add { flex: 0 0 236px; width: 236px; height: 34px; margin: 0; padding: 0 12px; gap: 8px; }
+.td-add input { font-size: 14px; }
+.td-add span[data-ico] svg { width: 16px; height: 16px; }
 </style>
 </head>
 <body>
@@ -1243,6 +1281,7 @@ td.them { color: var(--ink-2); }
             <div class="hero" id="hero">
               <div class="dotlogo" id="dotLogo" role="button" tabindex="0" aria-label="نقطه؛ برای کشیدن دوباره بزن"><svg viewBox="-2 -2 104 104" aria-hidden="true"><path id="dotPath" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
               <div class="search2" id="search">
+                <i class="sglow" aria-hidden="true"></i>
                 <form class="sbox" id="sform">
                   <div class="srow">
                     <span class="gmark" title="جستجو در گوگل" data-brand="google"></span>
@@ -1671,7 +1710,7 @@ td.them { color: var(--ink-2); }
         <li><b>پوشه:</b> کاشی پوشه چهار آیکون کوچک داخلش را نشان می‌دهد. با کلیک، محتوای پوشه در همان ردیف باز می‌شود و کاشی اول «بازگشت» با اسم پوشه است.</li>
         <li><b>شغل:</b> در ردیف دیده نمی‌شود؛ یک بار در آنبوردینگ انتخاب می‌شود و بعد از «شخصی‌سازی» عوض می‌شود. با عوض کردنش پوشه‌ها و سایت‌های ردیف عوض می‌شوند و سایت‌های مشترک می‌مانند.</li>
         <li><b>افزودن:</b> پنجره‌ی «افزودن به دسترسی سریع» دو بخش دارد: پیشنهادها (سایت‌های پربازدید کاربر از <code>chrome.topSites</code> به‌اضافه‌ی فهرست ما) و آدرس دلخواه (نام، آدرس، رنگ کاشی، پیش‌نمایش). در هر دو می‌شود انتخاب کرد که کاشی به ردیف اصلی برود یا داخل یکی از پوشه‌ها.</li>
-        <li><b>آیکون‌ها:</b> خود کاشی favicon سایت است، بدون قاب یا رنگ اضافه و بدون دستکاری؛ فقط هم‌اندازه می‌شود. افزونه آن را با مجوز <code>favicon</code> از خود کروم می‌گیرد (<code>chrome-extension://…/_favicon/?pageUrl=…&amp;size=64</code>)، پس آیکون هر سایتی که کاربر اضافه کند خودبه‌خود درست است. در ماک‌آپ برندهای جهانی از simple-icons آمده‌اند و سایت‌های ایرانی، که از این محیط در دسترس نبودند، با حرف اول روی رنگ برند نشان داده شده‌اند.</li>
+        <li><b>آیکون‌ها:</b> همه‌ی کاشی‌ها یک قاب مربعی ساده و یکسان دارند (۶۶ پیکسل، شیشه‌ای کم‌رنگ) و favicon سایت بدون دستکاری وسطش می‌نشیند، تا ردیف یکدست بماند. افزونه آن را با مجوز <code>favicon</code> از خود کروم می‌گیرد (<code>chrome-extension://…/_favicon/?pageUrl=…&amp;size=64</code>)، پس آیکون هر سایتی که کاربر اضافه کند خودبه‌خود درست است. در ماک‌آپ برندهای جهانی از simple-icons آمده‌اند و سایت‌های ایرانی، که از این محیط در دسترس نبودند، با حرف اول روی رنگ برند نشان داده شده‌اند.</li>
         <li><b>برداشتن:</b> با رفتن موس روی هر کاشی، دکمه‌ی کوچک برداشتن می‌آید. ردیف حداکثر ۹ کاشی خود کاربر دارد؛ بیشتر از آن باید در پوشه برود.</li>
       </ul>
     </section>
@@ -1681,7 +1720,7 @@ td.them { color: var(--ink-2); }
       <p>نسخه‌ی پیش‌فرض عکس ندارد؛ فقط چند رنگ تیره و آرام: نقطه، گرافیت، آسمان، کهربا، جنگل، شب بنفش و رز، به‌اضافه‌ی «تم روز» اسپانسری (جایگاه ۳). هر رنگ دو مقدار دارد: زمینه و یک رنگ روشن‌تر هم‌خانواده. زمینه یک هاله‌ی محو از همان رنگ روشن و کمی دانه (grain) دارد تا تخت و مرده دیده نشود.</p>
       <ul>
         <li><b>نقطه‌ی بالای سرچ</b> همان خط‌خطی نقطه‌ی اپ است (همان مولد seed‌دار <code>BrandMark.tsx</code>) و با رنگ روشن همان تم کشیده می‌شود، پس با هر زمینه یکی می‌شود؛ مثل لوگوی Dia که با رنگ پنجره عوض می‌شود. بعد از کشیده شدن ثابت می‌ماند و با کلیک روی نقطه دوباره با قلم کشیده می‌شود.</li>
-        <li><b>افکت ورود</b> (هر بار که تب باز می‌شود، کمتر از ۳ ثانیه)، مثل ورود Dia: رنگ زمینه یک‌باره و روشن‌تر از حالت عادی می‌آید و در یک و نیم ثانیه آرام می‌نشیند؛ هم‌زمان نقطه با قلم کشیده می‌شود، سرچ از کمی پایین‌تر بالا می‌آید، و بعد یک خط نازک نور از وسط لبه‌ی پایین کادر سرچ از دو طرف دورش می‌چرخد؛ سر خط سفید است و دنباله‌اش با رنگ تم کم‌کم محو می‌شود، و دو خط بالای کادر به هم می‌رسند و ناپدید می‌شوند. برای کسی که «کاهش حرکت» را در سیستم روشن کرده، همه‌چیز بی‌حرکت می‌آید.</li>
+        <li><b>افکت ورود</b> (هر بار که تب باز می‌شود، کمتر از ۳ ثانیه)، مثل ورود Dia: رنگ زمینه یک‌باره و روشن‌تر از حالت عادی می‌آید و در یک و نیم ثانیه آرام می‌نشیند؛ هم‌زمان نقطه با قلم کشیده می‌شود، سرچ از کمی پایین‌تر بالا می‌آید، و در همان لحظه یک نور نرم به رنگ تم پشت کادر سرچ روشن می‌شود و آرام خاموش می‌شود. بعد دو خط نازک نور از وسط لبه‌ی پایین کادر جدا می‌شوند، در طول لبه‌ی پایین به دو گوشه می‌روند، از دو طرف بالا می‌آیند و وسط لبه‌ی بالا به هم می‌رسند؛ سر هر خط سفید است و دنباله‌اش با رنگ تم کم‌کم محو می‌شود، و بعد از رسیدن به هم ناپدید می‌شوند. برای کسی که «کاهش حرکت» را در سیستم روشن کرده، همه‌چیز بی‌حرکت می‌آید.</li>
         <li>عکس‌ها و درخت زنده‌ی اپ بعداً به‌عنوان گزینه‌ی اختیاری می‌آیند، نه پیش‌فرض.</li>
         <li><b>کارت‌های هم‌مرکز:</b> مثل کارت تقویم اپ نقطه، هر جعبه‌ای که داخل کارت است (ردیف انتخاب‌شده، سرچ، کارت خبر، ویجت هوا، تب‌ها) از هر چهار طرف به یک اندازه (۱۶ پیکسل) با لبه‌ی کارت فاصله دارد و گوشه‌اش برابر گوشه‌ی کارت منهای همان فاصله است (۳۲ − ۱۶ = ۱۶)، پس دو منحنی موازی می‌مانند. تیتر سکشن‌ها و متن ساده استثنا هستند و ۸ پیکسل جلوتر از جعبه‌ها شروع می‌شوند.</li>
         <li><b>تب‌ها:</b> یک پیل زیر تب انتخاب‌شده است که با کلیک تا تب تازه کش می‌آید، لحظه‌ای روی هر دو می‌ماند و بعد در جای تازه جمع می‌شود (حدود نیم ثانیه، با «کاهش حرکت» بی‌انیمیشن). تب بالای صفحه‌ی برنامه هم‌قد و هم‌شکل کادر سرچ کنارش است.</li>
@@ -2169,9 +2208,28 @@ td.them { color: var(--ink-2); }
   let entryT = [];
   function traceBox(delay = 0) {
     if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    const box = $("sform"); box.classList.remove("tracing");
-    entryT.push(setTimeout(() => { void box.offsetWidth; box.classList.add("tracing"); }, delay));
-    entryT.push(setTimeout(() => box.classList.remove("tracing"), delay + 1600));
+    entryT.push(setTimeout(() => {
+      const box = $("sform"); box.querySelector(".trace")?.remove();
+      // two halves of the outline, both from the bottom middle to the top middle
+      const w = box.offsetWidth + 3, h = box.offsetHeight + 3, r = 27.5, e = 0.8, R = r - e, m = w / 2;
+      const half = (dir) => { const x0 = dir < 0 ? e : w - e, sx = dir < 0 ? 1 : 0, cx = (x) => (dir < 0 ? x : w - x);
+        return `M${m} ${h - e}H${cx(e + R)}A${R} ${R} 0 0 ${sx} ${x0} ${h - e - R}V${e + R}A${R} ${R} 0 0 ${sx} ${cx(e + R)} ${e}H${m}`; };
+      const svg = svgEl("svg", { class: "trace", width: w, height: h, viewBox: `0 0 ${w} ${h}`, "aria-hidden": "true" });
+      const layers = [["far", 1], ["mid", 0.42], ["glo", 0.2], ["core", 0.13]], parts = [];
+      for (const dir of [-1, 1]) for (const [cls, tail] of layers) { const p = svgEl("path", { d: half(dir), class: cls }); svg.append(p); parts.push([p, tail]); }
+      box.append(svg);
+      const L = parts[0][0].getTotalLength(), T = 1500, ease = (t) => 1 - Math.pow(1 - Math.min(1, Math.max(0, t)), 3);
+      let t0 = null;
+      const step = (now) => {
+        t0 ??= now; const k = (now - t0) / T, head = ease(k / 0.72) * L, fade = k < 0.72 ? 1 : Math.max(0, 1 - (k - 0.72) / 0.28);
+        for (const [p, tail] of parts) {
+          const from = Math.max(0, head - tail * L * (k < 0.72 ? 1 : 1 + (k - 0.72) * 2)), len = Math.max(0.01, head - from);
+          p.style.strokeDasharray = `${len} ${L * 3}`; p.style.strokeDashoffset = -from; p.style.opacity = fade * (p.classList.contains("far") ? 0.22 : p.classList.contains("mid") ? 0.55 : p.classList.contains("glo") ? 0.9 : 1);
+        }
+        if (k < 1) requestAnimationFrame(step); else svg.remove();
+      };
+      requestAnimationFrame(step);
+    }, delay));
   }
   function drawDot(delay = 0) {
     if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
