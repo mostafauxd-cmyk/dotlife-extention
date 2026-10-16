@@ -268,7 +268,7 @@ button { font: inherit; color: inherit; }
 .sample { font-size: 13px; color: var(--ink-3); }
 
 /* ---------- slide 3: news row ---------- */
-.s3 .s-pad { grid-template-rows: minmax(0,1fr) 258px; padding-block: 28px; gap: 18px; }
+.s3 .s-pad { grid-template-rows: minmax(0,1fr) 236px; padding-block: 24px; gap: 16px; }
 .s3 .card { gap: 8px; padding: 18px 24px; }
 .s3 .kpi .tot { font-size: 38px; }
 .s3 .px { padding: 3px 10px; }
@@ -908,15 +908,18 @@ tr.grp td { background: rgba(255,255,255,.04); font-weight: 600; color: var(--in
 .nt.enter-bg .wall { animation: bloom 1.6s cubic-bezier(.2,.7,.2,1) both; }
 
 /* v12: favicons in glass tiles */
-.lt .ic.fav, .sg .ic.fav { background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.12); box-shadow: inset 0 1px 0 rgba(255,255,255,.08), 0 10px 24px rgba(0,0,0,.25); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); }
-.ic.fav .bm2 { width: 26px; height: 26px; }
+.lt .ic.fav, .sg .ic.fav { background: none; border: 0; box-shadow: none; backdrop-filter: none; -webkit-backdrop-filter: none; }
+.lt:hover .ic.fav { transform: translateY(-3px) scale(1.04); box-shadow: none; }
+.ic.fav .bm2 { width: 46px; height: 46px; filter: drop-shadow(0 6px 14px rgba(0,0,0,.35)); }
+.sg .ic.fav .bm2 { width: 40px; height: 40px; }
 .bm2, .bm2 path { stroke: none; }
 .gline { fill: none; stroke: currentColor; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; }
-.ic.fav .fl { width: 26px; height: 26px; border-radius: 7px; background: #fff; display: grid; place-items: center; font-weight: 800; font-size: 15px; line-height: 1; }
+.ic.fav .fl { width: 48px; height: 48px; border-radius: 13px; background: var(--fc, #fff); color: #fff !important; display: grid; place-items: center; font-weight: 800; font-size: 22px; line-height: 1; box-shadow: 0 8px 18px rgba(0,0,0,.3); }
+.sg .ic.fav .fl { width: 42px; height: 42px; font-size: 19px; }
 .lt .ic.fold i { background: none; }
 .lt .ic.fold i .bm2 { width: 13px; height: 13px; }
-.lt .ic.fold i .fl { width: 13px; height: 13px; border-radius: 4px; background: #fff; display: grid; place-items: center; font-size: 8px; font-weight: 800; }
-.lt.adt .ic.fav { border-color: rgba(242,201,76,.35); }
+.lt .ic.fold i .fl { width: 13px; height: 13px; border-radius: 4px; background: var(--fc, #fff); color: #fff !important; box-shadow: none; display: grid; place-items: center; font-size: 8px; font-weight: 800; }
+
 /* the G: a plain glyph in the text colour */
 .gmark { width: 22px; height: 22px; flex: none; color: var(--ink-2); display: grid; place-items: center; }
 .gmark svg { width: 20px; height: 20px; }
@@ -924,8 +927,16 @@ tr.grp td { background: rgba(255,255,255,.04); font-weight: 600; color: var(--in
 .hz .ccard.g, .edge .side2.g { background: color-mix(in srgb, color-mix(in srgb, var(--bgc) 86%, #fff) 96%, transparent); border: 1px solid rgba(255,255,255,.10); backdrop-filter: blur(30px) saturate(140%); -webkit-backdrop-filter: blur(30px) saturate(140%); box-shadow: inset 0 1px 0 rgba(255,255,255,.07), 0 30px 80px rgba(0,0,0,.5); }
 .hz .ccard .note, .hz .ccard .add, .hz .ccard .nextp { background: rgba(0,0,0,.18); }
 /* search: one row */
-.sbox { flex-direction: row; align-items: center; padding: 10px 12px 10px 16px; gap: 6px; }
-.sbox .srow { flex: 1; min-width: 0; height: 52px; }
+.sbox .srow { height: auto; min-height: 46px; align-items: flex-start; padding-top: 8px; }
+.sbox .gmark { margin-top: 4px; }
+.srow textarea { flex: 1; min-width: 0; resize: none; background: none; border: 0; outline: 0; color: var(--ink); font: inherit; font-size: 21px; line-height: 1.6; max-height: 150px; overflow-y: auto; padding: 0; scrollbar-width: thin; }
+.srow textarea::placeholder { color: rgba(255,255,255,.5); }
+.act { font: inherit; font-size: 15px; height: 34px; padding: 0 12px 0 14px; border-radius: 999px; border: 1px solid rgba(255,255,255,.12); background: none; color: var(--ink-2); cursor: pointer; display: inline-flex; align-items: center; gap: 7px; white-space: nowrap; }
+.act:hover { color: var(--ink); background: rgba(255,255,255,.06); }
+.act span[data-ico] svg { width: 17px; height: 17px; display: block; }
+.act:disabled { opacity: .45; cursor: default; }
+.hintk { font-size: 12px; color: var(--ink-3); margin-inline-end: 6px; opacity: 0; transition: opacity .2s; }
+.sbox:focus-within .hintk { opacity: 1; }
 .dhd { font-size: 13px; color: var(--ink-3); padding: 8px 16px 2px; display: flex; align-items: center; gap: 8px; }
 .dhd .k2 { margin-inline-start: auto; font-size: 12px; }
 /* entry trace: a thin comet with a fading tail, from the bottom middle round both sides */
@@ -939,6 +950,84 @@ tr.grp td { background: rgba(255,255,255,.04); font-weight: 600; color: var(--in
 .sbox.tracing::after { animation: trb 1.5s cubic-bezier(.45,0,.25,1) both; }
 @keyframes tra { 0% { --ta: 180deg; opacity: 0; } 15% { opacity: 1; } 70% { opacity: 1; } 100% { --ta: 360deg; opacity: 0; } }
 @keyframes trb { 0% { --tb: 180deg; opacity: 0; } 15% { opacity: 1; } 70% { opacity: 1; } 100% { --tb: 0deg; opacity: 0; } }
+
+/* v13 */
+.wx { display: inline-flex; align-items: center; gap: 6px; color: var(--ink-2); }
+.wx b { color: var(--ink); font-weight: 500; }
+.wxc { display: flex; align-items: center; gap: 12px; padding: 8px 14px; border-radius: 16px; background: rgba(0,0,0,.18); }
+.wxc span:not(.hl) { display: flex; flex-direction: column; line-height: 1.4; }
+.wxc b { font-size: 24px; font-weight: 400; }
+.wxc small { font-size: 13px; color: var(--ink-2); }
+.wxc .hl { margin-inline-start: auto; font-size: 13px; color: var(--ink-2); }
+.jobs { display: flex; gap: 6px; flex-wrap: wrap; }
+.jobs .chip { font-size: 15px; padding: 4px 14px; }
+.mc { gap: 10px !important; }
+.mh { display: flex; align-items: center; gap: 10px; }
+.mh h2 { margin: 0; font-size: 18px; font-weight: 600; }
+.mh h3 { margin: 0; font-size: 15px; font-weight: 600; color: var(--ink-2); }
+.mh .ml { margin-inline-start: auto; font-size: 14px; color: var(--ink-3); cursor: pointer; }
+.mh .ml:hover { color: var(--ink-2); }
+.mh .more { margin-inline-start: 0; }
+.mh.sub2 { margin-top: 6px; padding-top: 10px; border-top: 1px solid var(--stroke); }
+.stats { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.stats > div, .hero2 { display: flex; flex-direction: column; align-items: center; gap: 4px; text-align: center; }
+.hero2.l { align-items: flex-start; text-align: start; }
+.sl2 { font-size: 14px; color: var(--ink-2); }
+.hn { font-size: 30px; font-weight: 400; line-height: 1.2; font-variant-numeric: tabular-nums; letter-spacing: -.01em; }
+.hn small { font-size: 15px; color: var(--ink-2); font-weight: 400; margin-inline-start: 5px; }
+.hn.big { font-size: 38px; font-weight: 300; }
+.pill { font-size: 13px; line-height: 22px; padding: 0 9px; border-radius: 7px; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.pill.up { color: #8ADD88; background: rgba(138,221,136,.13); }
+.pill.dn { color: #F0817A; background: rgba(240,129,122,.13); }
+.pill.mut { color: var(--ink-2); background: rgba(255,255,255,.07); }
+.rows { display: flex; flex-direction: column; }
+.rw { display: grid; grid-template-columns: 28px minmax(0,1fr) auto; align-items: center; gap: 10px; min-height: 36px; font-size: 15px; border-radius: 10px; }
+.rw .nm { min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.rw .nm small { font-size: 12px; color: var(--ink-3); margin-inline-start: 6px; }
+.rw .am { font-variant-numeric: tabular-nums; text-align: left; }
+.rw .bk { width: 26px; height: 26px; border-radius: 8px; display: grid; place-items: center; font-style: normal; font-size: 12px; font-weight: 700; color: #fff; }
+.rw.up2 { grid-template-columns: 54px minmax(0,1fr) auto 104px; }
+.rw .dt { font-size: 13px; color: var(--ink-3); }
+.rw .tg { font-size: 12px; line-height: 20px; padding: 0 8px; border-radius: 6px; color: var(--c); background: color-mix(in srgb, var(--c) 15%, transparent); }
+.rw.cat2 { grid-template-columns: 10px minmax(0,1fr) 46px 92px 40px; }
+.rw .cd { width: 8px; height: 8px; border-radius: 50%; }
+.rw .bar { height: 6px; border-radius: 6px; background: rgba(255,255,255,.08); overflow: hidden; }
+.rw .bar b { display: block; height: 100%; border-radius: 6px; }
+.rw .bd { font-size: 13px; color: var(--ink-3); text-align: left; }
+.rw.px2 { font: inherit; color: inherit; background: none; border: 0; text-align: start; cursor: pointer; padding: 0 8px; grid-template-columns: minmax(0,1fr) 48px 96px 58px; gap: 8px; min-height: 32px; }
+.rw.px2:hover { background: rgba(255,255,255,.05); }
+.rw.px2.on { background: rgba(255,255,255,.08); }
+.rw.px2 svg { width: 48px; height: 18px; }
+.rw.px2 .pill, .rw.spx .pill { text-align: center; }
+.rw.spx { grid-template-columns: minmax(0,1fr) 48px 96px 58px; gap: 8px; padding: 0 8px; min-height: 32px; }
+.seg2 { display: flex; justify-content: center; gap: 4px; }
+.seg2 button { font: inherit; font-size: 13px; color: var(--ink-3); background: none; border: 0; border-radius: 8px; padding: 2px 12px; cursor: pointer; }
+.seg2 button[aria-pressed="true"] { color: var(--ink); background: rgba(255,255,255,.08); }
+.mine2 { display: grid; grid-template-columns: minmax(0,1fr) auto auto; align-items: center; gap: 10px; padding: 7px 14px; border-radius: 14px; background: rgba(0,0,0,.2); font-size: 15px; }
+.mine2 small { display: block; font-size: 12px; color: var(--ink-3); }
+.mine2 b { font-size: 18px; font-weight: 500; font-variant-numeric: tabular-nums; }
+.mc .chart .tipbox { font-size: 13px; }
+.ef { display: flex; flex-direction: column; gap: 14px; }
+.ef .when { display: flex; align-items: center; gap: 10px; font-size: 16px; color: var(--ink-2); flex-wrap: wrap; }
+.ef .when b { color: var(--ink); font-weight: 500; font-variant-numeric: tabular-nums; }
+.ef .when span[data-ico] svg { width: 20px; height: 20px; display: block; }
+.ef input.big { height: 52px; border-radius: 14px; border: 1px solid var(--stroke-hi); background: rgba(0,0,0,.3); color: var(--ink); font: inherit; font-size: 20px; padding: 0 16px; outline: none; }
+.ef input.big:focus { border-color: var(--noghte); }
+.lchips { display: flex; gap: 8px; flex-wrap: wrap; }
+.lchips button { font: inherit; font-size: 15px; display: inline-flex; align-items: center; gap: 8px; padding: 5px 14px; border-radius: 999px; border: 1px solid var(--stroke-hi); background: none; color: var(--ink); cursor: pointer; }
+.lchips button i { width: 9px; height: 9px; border-radius: 50%; }
+.lchips button[aria-pressed="true"] { background: #fff; color: #0B0D12; border-color: #fff; }
+.modal.sm { width: 580px; }
+.danger { background: #E5534B !important; color: #fff !important; }
+.cta:disabled { opacity: .4; cursor: default; }
+.copyname { display: inline-flex; align-items: center; gap: 8px; padding: 4px 6px 4px 12px; border-radius: 10px; background: rgba(255,255,255,.07); font-weight: 600; color: var(--ink); }
+.copyname button { font: inherit; font-size: 13px; color: var(--ink-2); background: rgba(255,255,255,.08); border: 0; border-radius: 7px; padding: 2px 10px; cursor: pointer; }
+.flist button .fdel { margin-inline-start: auto; width: 26px; height: 26px; border-radius: 8px; display: none; place-items: center; color: var(--ink-3); }
+.flist button:hover .fdel { display: grid; }
+.flist button:hover .fdel + span { margin-inline-start: 6px; }
+.flist button .fdel:hover { color: #F0817A; background: rgba(240,129,122,.12); }
+.flist button .fdel svg { width: 16px; height: 16px; }
+.modal .rbtn.sm span[data-ico] svg { width: 18px; height: 18px; display: block; }
 
 /* ad-slot overlay */
 [data-slot] { position: relative; }
@@ -1022,10 +1111,16 @@ td.them { color: var(--ink-2); }
                 <form class="sbox" id="sform">
                   <div class="srow">
                     <span class="gmark" title="جستجو در گوگل" data-brand="google"></span>
-                    <input id="q" placeholder="در گوگل جستجو کن یا آدرس بنویس…" autocomplete="off" aria-label="جستجو در گوگل">
+                    <textarea id="q" rows="1" placeholder="در گوگل جستجو کن یا آدرس بنویس…" autocomplete="off" aria-label="جستجو در گوگل"></textarea>
                   </div>
-                  <button type="button" class="ibtn" aria-label="جستجوی صوتی"><span data-ico="voice"></span></button>
-                  <button type="submit" class="ibtn go" aria-label="جستجو در گوگل"><span data-ico="arrow-up"></span></button>
+                  <div class="srow2">
+                    <button type="button" class="act" id="toTask" title="متن را به‌جای جستجو، به کارهای امروز اضافه کن"><span data-ico="tick-square"></span>به کارها</button>
+                    <button type="button" class="act" id="toNote" title="متن را به‌عنوان یادداشت تازه ذخیره کن"><span data-ico="sticker-note"></span>به یادداشت‌ها</button>
+                    <span class="grow"></span>
+                    <span class="hintk" id="hintk">Enter جستجو · Shift+Enter خط تازه</span>
+                    <button type="button" class="ibtn" aria-label="جستجوی صوتی"><span data-ico="voice"></span></button>
+                    <button type="submit" class="ibtn go" aria-label="جستجو در گوگل"><span data-ico="arrow-up"></span></button>
+                  </div>
                 </form>
                 <div class="drop g" id="drop" hidden>
                   <div class="dhd">گوگل</div>
@@ -1039,7 +1134,7 @@ td.them { color: var(--ink-2); }
 </div>
               </div>
               <div class="launch" id="launch" data-blk="launcher"></div>
-              <div class="dateline" data-blk="dateline"><span id="clock">۱۵:۳۰</span><i></i>جمعه ۲۴ مهر ۱۴۰۵<i></i>روز جهانی غذا</div>
+              <div class="dateline" data-blk="dateline"><span id="clock">۱۵:۳۰</span><i></i>جمعه ۲۴ مهر ۱۴۰۵<i></i><span class="wx" title="تهران · نیمه‌ابری"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"> <path fill-rule="evenodd" clip-rule="evenodd" d="M12.0176 4.5275C12.4876 4.5275 12.8676 4.1465 12.8676 3.6775V3.6475C12.8676 3.1785 12.4876 2.8125 12.0176 2.8125C11.5476 2.8125 11.1676 3.2085 11.1676 3.6775C11.1676 4.1465 11.5476 4.5275 12.0176 4.5275Z" fill="#F5F6F8"/> <path fill-rule="evenodd" clip-rule="evenodd" d="M3.05962 13.4977C3.52962 13.4977 3.88462 13.1167 3.88462 12.6477C3.88462 12.1787 3.48062 11.7977 3.01062 11.7977C2.54062 11.7977 2.16162 12.1787 2.16162 12.6477C2.16162 13.1167 2.54062 13.4977 3.01062 13.4977H3.05962Z" fill="#F5F6F8"/> <path fill-rule="evenodd" clip-rule="evenodd" d="M5.69243 7.15779C5.89943 7.15779 6.10643 7.08279 6.27043 6.93079C6.61443 6.61179 6.63443 6.07479 6.31543 5.72979L6.29643 5.70979C5.97743 5.36579 5.44843 5.35479 5.10543 5.67479C4.76043 5.99279 4.75043 6.54079 5.06943 6.88579C5.23643 7.06579 5.46343 7.15779 5.69243 7.15779Z" fill="#F5F6F8"/> <path fill-rule="evenodd" clip-rule="evenodd" d="M18.9766 18.401C18.6646 18.052 18.1496 18.047 17.7986 18.359C17.4496 18.672 17.4416 19.234 17.7536 19.584C17.9216 19.772 18.1546 19.868 18.3876 19.868C18.5896 19.868 18.7916 19.797 18.9546 19.651C19.3036 19.339 19.3336 18.801 19.0216 18.451L18.9766 18.401Z" fill="#F5F6F8"/> <path fill-rule="evenodd" clip-rule="evenodd" d="M20.9678 11.7975C20.4978 11.7975 20.1178 12.1785 20.1178 12.6475C20.1178 13.1165 20.4978 13.4975 20.9678 13.4975H21.0108C21.4808 13.4975 21.8388 13.1165 21.8388 12.6475C21.8388 12.1785 21.4378 11.7975 20.9678 11.7975Z" fill="#F5F6F8"/> <path fill-rule="evenodd" clip-rule="evenodd" d="M17.7539 5.69103L17.7089 5.74103C17.3969 6.09103 17.4489 6.60403 17.7989 6.91703C17.9549 7.05503 18.1509 7.12203 18.3499 7.12203C18.5979 7.12203 18.8479 7.01803 19.0219 6.82403C19.3339 6.47403 19.3039 5.93603 18.9539 5.62403C18.6059 5.31103 18.0669 5.34003 17.7539 5.69103Z" fill="#F5F6F8"/> <path fill-rule="evenodd" clip-rule="evenodd" d="M10.8496 7.32922C8.74588 7.7963 7.19956 9.43488 6.73598 11.4052C6.68512 11.6214 6.8941 11.7996 7.11097 11.7519C7.44355 11.6787 7.7983 11.6372 8.17861 11.6372C10.5132 11.6372 11.9609 13.0896 12.6019 14.6259C12.6346 14.7041 12.697 14.766 12.7751 14.7987C13.7077 15.1898 14.4373 15.8898 14.8771 16.7901C14.9617 16.9633 15.1803 17.0325 15.3322 16.9138C16.9293 15.6658 17.7692 13.5743 17.3086 11.4712C16.6696 8.55022 13.7786 6.69022 10.8496 7.32922Z" fill="#F5F6F8"/> <path fill-rule="evenodd" clip-rule="evenodd" d="M11.287 16.4653C11.1233 16.4468 10.9907 16.3143 10.9686 16.151C10.835 15.1631 10.0539 13.6376 8.1788 13.6376C6.30284 13.6376 5.52166 15.1631 5.38801 16.151C5.36592 16.3143 5.23332 16.4468 5.06959 16.4654C3.90735 16.5972 3.0108 17.4527 3.0108 18.8276C3.0108 19.7876 3.5848 20.6176 4.4098 20.9976C4.7568 21.1376 5.1028 21.1876 5.3648 21.1876H10.9878C11.2508 21.1876 11.5968 21.1376 11.9488 20.9976C12.7738 20.6176 13.3448 19.7876 13.3448 18.8276C13.3448 17.4526 12.4499 16.5971 11.287 16.4653Z" fill="#F5F6F8"/> </svg>نیمه‌ابری <b>۲۱°</b></span><i></i>روز جهانی غذا</div>
             </div>
             <div class="coach" id="coach" hidden>موس را به گوشه‌ها و لبه‌ی راست ببر؛ کارها، یادداشت‌ها، پول و دسترسی سریع آن‌جاست.</div>
 
@@ -1083,6 +1178,7 @@ td.them { color: var(--ink-2); }
                 <div class="tday"><b>جمعه ۲۴ مهر</b><span>۱۶ اکتبر ۲۰۲۶ · ۴ جمادی‌الاول ۱۴۴۸</span></div>
                 <div class="occs"><span>روز جهانی غذا</span></div>
                 <div class="occsp2" data-slot="۵">شام امشب با ۲۰٪ تخفیف<span class="tag">معرفی‌شده</span></div>
+                <div class="wxc"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"> <path fill-rule="evenodd" clip-rule="evenodd" d="M12.0176 4.5275C12.4876 4.5275 12.8676 4.1465 12.8676 3.6775V3.6475C12.8676 3.1785 12.4876 2.8125 12.0176 2.8125C11.5476 2.8125 11.1676 3.2085 11.1676 3.6775C11.1676 4.1465 11.5476 4.5275 12.0176 4.5275Z" fill="#F5F6F8"/> <path fill-rule="evenodd" clip-rule="evenodd" d="M3.05962 13.4977C3.52962 13.4977 3.88462 13.1167 3.88462 12.6477C3.88462 12.1787 3.48062 11.7977 3.01062 11.7977C2.54062 11.7977 2.16162 12.1787 2.16162 12.6477C2.16162 13.1167 2.54062 13.4977 3.01062 13.4977H3.05962Z" fill="#F5F6F8"/> <path fill-rule="evenodd" clip-rule="evenodd" d="M5.69243 7.15779C5.89943 7.15779 6.10643 7.08279 6.27043 6.93079C6.61443 6.61179 6.63443 6.07479 6.31543 5.72979L6.29643 5.70979C5.97743 5.36579 5.44843 5.35479 5.10543 5.67479C4.76043 5.99279 4.75043 6.54079 5.06943 6.88579C5.23643 7.06579 5.46343 7.15779 5.69243 7.15779Z" fill="#F5F6F8"/> <path fill-rule="evenodd" clip-rule="evenodd" d="M18.9766 18.401C18.6646 18.052 18.1496 18.047 17.7986 18.359C17.4496 18.672 17.4416 19.234 17.7536 19.584C17.9216 19.772 18.1546 19.868 18.3876 19.868C18.5896 19.868 18.7916 19.797 18.9546 19.651C19.3036 19.339 19.3336 18.801 19.0216 18.451L18.9766 18.401Z" fill="#F5F6F8"/> <path fill-rule="evenodd" clip-rule="evenodd" d="M20.9678 11.7975C20.4978 11.7975 20.1178 12.1785 20.1178 12.6475C20.1178 13.1165 20.4978 13.4975 20.9678 13.4975H21.0108C21.4808 13.4975 21.8388 13.1165 21.8388 12.6475C21.8388 12.1785 21.4378 11.7975 20.9678 11.7975Z" fill="#F5F6F8"/> <path fill-rule="evenodd" clip-rule="evenodd" d="M17.7539 5.69103L17.7089 5.74103C17.3969 6.09103 17.4489 6.60403 17.7989 6.91703C17.9549 7.05503 18.1509 7.12203 18.3499 7.12203C18.5979 7.12203 18.8479 7.01803 19.0219 6.82403C19.3339 6.47403 19.3039 5.93603 18.9539 5.62403C18.6059 5.31103 18.0669 5.34003 17.7539 5.69103Z" fill="#F5F6F8"/> <path fill-rule="evenodd" clip-rule="evenodd" d="M10.8496 7.32922C8.74588 7.7963 7.19956 9.43488 6.73598 11.4052C6.68512 11.6214 6.8941 11.7996 7.11097 11.7519C7.44355 11.6787 7.7983 11.6372 8.17861 11.6372C10.5132 11.6372 11.9609 13.0896 12.6019 14.6259C12.6346 14.7041 12.697 14.766 12.7751 14.7987C13.7077 15.1898 14.4373 15.8898 14.8771 16.7901C14.9617 16.9633 15.1803 17.0325 15.3322 16.9138C16.9293 15.6658 17.7692 13.5743 17.3086 11.4712C16.6696 8.55022 13.7786 6.69022 10.8496 7.32922Z" fill="#F5F6F8"/> <path fill-rule="evenodd" clip-rule="evenodd" d="M11.287 16.4653C11.1233 16.4468 10.9907 16.3143 10.9686 16.151C10.835 15.1631 10.0539 13.6376 8.1788 13.6376C6.30284 13.6376 5.52166 15.1631 5.38801 16.151C5.36592 16.3143 5.23332 16.4468 5.06959 16.4654C3.90735 16.5972 3.0108 17.4527 3.0108 18.8276C3.0108 19.7876 3.5848 20.6176 4.4098 20.9976C4.7568 21.1376 5.1028 21.1876 5.3648 21.1876H10.9878C11.2508 21.1876 11.5968 21.1376 11.9488 20.9976C12.7738 20.6176 13.3448 19.7876 13.3448 18.8276C13.3448 17.4526 12.4499 16.5971 11.287 16.4653Z" fill="#F5F6F8"/> </svg><span><b>۲۱°</b><small>نیمه‌ابری · تهران</small></span><span class="hl">بیشینه ۲۴° · کمینه ۱۲°</span></div>
                 <div class="nextp"><span>اذان مغرب</span><b>۱۷:۴۵</b></div>
                 <button class="more" data-go="s2">برنامه‌های امروز ↓</button>
               </div>
@@ -1147,45 +1243,46 @@ td.them { color: var(--ink-2); }
           <!-- ============ SLIDE 3 · MONEY ============ -->
           <section class="slide s3" id="s3" aria-label="پول">
             <div class="s-pad" id="moneyPad">
-              <!-- my money -->
-              <div class="card g">
-                <div class="card-h"><h2>موجودی من</h2><span class="app p" style="font-size:14px;color:var(--ink-2);display:flex;gap:6px;align-items:center"><i style="width:8px;height:8px;border-radius:50%;background:var(--paket);display:block"></i>پاکت</span>
-                  <button class="more" id="eye2" aria-label="پنهان کردن مبالغ"><svg viewBox="0 0 24 24"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>پنهان کردن</button></div>
-                <div><div class="sec">جمع ۳ حساب</div><div class="tot"><span class="amt">۱۸۴٬۶۲۰٬۰۰۰</span><small>تومان</small></div></div>
-                <div class="acc">
-                  <div><i style="background:#C1272D">م</i><span>ملت <span class="c">••۴۲۱۸</span></span><span class="v amt">۹۶٬۲۰۰٬۰۰۰</span></div>
-                  <div><i style="background:#1F5FAD">س</i><span>سامان <span class="c">••۷۷۰۱</span></span><span class="v amt">۶۱٬۴۲۰٬۰۰۰</span></div>
-                  <div><i style="background:#3B3E48">ن</i><span>نقدی</span><span class="v amt">۲۷٬۰۰۰٬۰۰۰</span></div>
+              <!-- balances (Copilot-style: one header, stats, aligned rows) -->
+              <div class="card g mc">
+                <div class="mh"><h2>موجودی</h2><button class="more" id="eye2" aria-label="پنهان کردن مبالغ"><span data-ico="activity" hidden></span>پنهان کردن</button><a class="ml">حساب‌ها ←</a></div>
+                <div class="stats">
+                  <div><span class="sl2">جمع ۳ حساب</span><b class="hn amt">۱۸۴٫۶<small>م</small></b><span class="pill up">↑ ۲٫۱٪ این ماه</span></div>
+                  <div><span class="sl2">بدهی و طلب</span><b class="hn amt">+۱٫۷<small>م</small></b><span class="pill mut">۲ مورد باز</span></div>
                 </div>
-                <div class="hr"></div>
-                <div class="sec">خرج‌های پیش رو</div>
-                <div class="mlist">
-                  <div>قبض برق <span class="d">۲ روز دیگر</span><span class="v amt">۳۱۲٬۰۰۰</span></div>
-                  <div>اجاره <span class="d">۱ آبان</span><span class="v amt">۱۸٬۰۰۰٬۰۰۰</span></div>
-                  <div>طلب از علی <span class="d mut">بدهی و طلب</span><span class="v amt up">۲٬۵۰۰٬۰۰۰</span></div>
+                <div class="rows">
+                  <div class="rw"><i class="bk" style="background:#C1272D">م</i><span class="nm">ملت<small>••۴۲۱۸</small></span><span class="am amt">۹۶٬۲۰۰٬۰۰۰</span></div>
+                  <div class="rw"><i class="bk" style="background:#1F5FAD">س</i><span class="nm">سامان<small>••۷۷۰۱</small></span><span class="am amt">۶۱٬۴۲۰٬۰۰۰</span></div>
+                  <div class="rw"><i class="bk" style="background:#3B3E48">ن</i><span class="nm">نقدی</span><span class="am amt">۲۷٬۰۰۰٬۰۰۰</span></div>
+                </div>
+                <div class="mh sub2"><h3>۱۴ روز آینده</h3><a class="ml">خرج‌های پیش رو ←</a></div>
+                <div class="rows">
+                  <div class="rw up2"><span class="dt">یکشنبه</span><span class="nm">قبض برق</span><span class="tg" style="--c:#F2C94C">قبض</span><span class="am amt">۳۱۲٬۰۰۰</span></div>
+                  <div class="rw up2"><span class="dt">۱ آبان</span><span class="nm">اجاره</span><span class="tg" style="--c:#CDB7FF">خانه</span><span class="am amt">۱۸٬۰۰۰٬۰۰۰</span></div>
+                  <div class="rw up2"><span class="dt">۵ آبان</span><span class="nm">قسط وام</span><span class="tg" style="--c:#5AB0FF">وام</span><span class="am amt">۴٬۲۰۰٬۰۰۰</span></div>
                 </div>
                 <div class="pend" style="margin-top:auto"><b>۳</b> پیامک بانکی منتظر تأیید در پاکت</div>
               </div>
 
-              <!-- spending chart -->
-              <div class="card g">
-                <div class="card-h"><h2>خرج مهر</h2><span class="sub">تا امروز، ۲۴ مهر</span><span class="ok-pill" style="margin-inline-start:auto">روزانه تا <span class="amt">۵۹۶</span> هزار تومان جا دارید</span></div>
-                <div class="kpi"><div class="tot"><span class="amt">۸٬۴۲۰٬۰۰۰</span></div><div class="of">از بودجه‌ی <span class="amt">۱۲٬۰۰۰٬۰۰۰</span> تومان</div></div>
-                <div class="legend"><span><i style="border-color:var(--paket)"></i>خرج تجمعی</span><span><i style="border-color:var(--paket);border-top-style:dashed"></i>پیش‌بینی پاکت</span><span><i style="border-color:rgba(255,255,255,.45);border-top-style:dotted"></i>مسیر بودجه</span></div>
+              <!-- monthly spending -->
+              <div class="card g mc">
+                <div class="mh"><h2>خرج مهر</h2><a class="ml">تراکنش‌ها ←</a></div>
+                <div class="hero2"><b class="hn big amt">۸٬۴۲۰٬۰۰۰<small>تومان</small></b><span class="sl2"><span class="amt">۳٬۵۸۰٬۰۰۰</span> تا سقف بودجه · روزی <span class="amt">۵۹۶</span> هزار جا دارید</span></div>
                 <div class="chart" id="spendChart"></div>
-                <div class="cats" id="cats"></div>
+                <div class="mh sub2"><h3>دسته‌های پرخرج</h3><a class="ml">بودجه‌ها ←</a></div>
+                <div class="rows" id="cats"></div>
               </div>
 
               <!-- market -->
-              <div class="card g">
-                <div class="card-h"><h2>قیمت روز</h2><span class="sample">نمونه</span>
-                  <div class="chips2" id="period"><button aria-pressed="false" data-p="7">هفته</button><button aria-pressed="true" data-p="30">ماه</button><button aria-pressed="false" data-p="365">سال</button></div></div>
-                <div class="pxh"><div class="l1"><span id="pxName" class="sec">طلای ۱۸ عیار · گرم</span><span id="pxChg" class="chg dn">−۰٫۴۱٪</span></div><div class="px-head"><b id="pxVal">۲۶٬۲۲۷٬۰۰۰</b><span id="pxUnit" class="sec">تومان</span></div></div>
+              <div class="card g mc">
+                <div class="mh"><h2>قیمت روز</h2><span class="sample">نمونه · ۱۲:۳۰</span><a class="ml">دارایی‌ها ←</a></div>
+                <div class="hero2 l"><span class="sl2" id="pxName">طلای ۱۸ عیار · گرم</span><b class="hn amt"><span id="pxVal">۲۶٬۲۲۷٬۰۰۰</span><small id="pxUnit">تومان</small></b><span class="pill" id="pxChg">−۰٫۴۱٪</span></div>
                 <div class="chart" id="pxChart"></div>
-                <div class="prices" id="prices"></div>
-                <div class="px spx" data-slot="۱۱"><span>صندوق طلا<span class="tag">نماد معرفی‌شده</span></span><span></span><span class="v">۴۸٬۲۰۰</span><span class="c up">+۰٫۹۰٪</span></div>
-                <div class="mine" style="margin-top:auto" title="۱۲ گرم طلا، ۲ سکه، ۵۰۰ دلار"><span>دارایی‌های من</span><span style="margin-inline-start:auto;white-space:nowrap"><b class="amt">۹۹۳٫۶ میلیون</b> <span class="up" style="font-size:14px">+۰٫۳۵٪</span></span></div>
-                <div class="partner" data-slot="۱۰"><b>خرید طلای آب‌شده</b> از ۱۰۰ هزار تومان<span class="tag">معرفی‌شده</span></div>
+                <div class="seg2" id="period"><button aria-pressed="false" data-p="7">هفته</button><button aria-pressed="true" data-p="30">ماه</button><button aria-pressed="false" data-p="365">سال</button></div>
+                <div class="rows" id="prices"></div>
+                <div class="rw spx" data-slot="۱۱"><span class="nm">صندوق طلا <span class="tag">معرفی‌شده</span></span><span></span><span class="am">۴۸٬۲۰۰</span><span class="pill up">+۰٫۹۰٪</span></div>
+                <div class="mine2" style="margin-top:auto"><span>دارایی‌های من<small>۱۲ گرم طلا · ۲ سکه · ۵۰۰ دلار</small></span><b class="amt">۹۹۳٫۶ م</b><span class="pill up">+۰٫۳۵٪</span></div>
+                <div class="partner" data-slot="۱۰" style="padding:6px 14px"><b>خرید طلای آب‌شده</b> از ۱۰۰ هزار تومان<span class="tag">معرفی‌شده</span></div>
               </div>
 
               <!-- news -->
@@ -1277,6 +1374,9 @@ td.them { color: var(--ink-2); }
             <h3>صفحه‌ی اول</h3>
             <div class="chint">صفحه‌ی اول فقط نقطه و سرچ است؛ بقیه در گوشه‌ها و لبه منتظرند.</div>
             <div class="tgrid" id="tBlocks"></div>
+            <h3>شغل</h3>
+            <div class="chint">ردیف دسترسی سریع زیر سرچ از روی همین چیده می‌شود.</div>
+            <div class="jobs" id="jobs"></div>
             <h3>اسلایدها</h3>
             <div class="tgrid" id="tSlides"></div>
             <h3>رنگ پس‌زمینه</h3>
@@ -1306,6 +1406,35 @@ td.them { color: var(--ink-2); }
               </div>
               <label class="where">اضافه کن به<select id="qmWhere" aria-label="کجا اضافه شود"></select></label>
               <div class="mfoot"><span class="cnt" id="qmCount"></span><span class="warn" id="qmWarn"></span><button class="ghost" id="qmCancel">بستن</button><button class="cta" id="qmAdd">افزودن</button></div>
+            </div>
+          </div>
+
+          <!-- new event: details before it is saved -->
+          <div class="modal-bg" id="evModal" hidden>
+            <div class="modal sm" role="dialog" aria-modal="true" aria-labelledby="evTitle">
+              <div class="card-h"><h2 id="evTitle">برنامه‌ی تازه</h2><button class="rbtn sm" id="evClose" aria-label="بستن" style="margin-inline-start:auto"><span data-ico="close"></span></button></div>
+              <div class="ef">
+                <div class="when"><span data-ico="time-circle"></span><span id="evWhen"></span></div>
+                <input class="big" id="evName" placeholder="عنوان برنامه" maxlength="80" aria-label="عنوان برنامه" autocomplete="off">
+                <div class="sec">دسته</div>
+                <div class="lchips" id="evLists"></div>
+                <div class="sec">کجا ذخیره شود</div>
+                <div class="lchips" id="evDest"><button data-dest="n" aria-pressed="true"><i style="background:#8C9EFF"></i>کار در نقطه</button><button data-dest="gp" aria-pressed="false"><i style="background:#CDB7FF"></i>تقویم گوگل · شخصی</button><button data-dest="gw" aria-pressed="false"><i style="background:#5AB0FF"></i>تقویم گوگل · کار</button></div>
+              </div>
+              <div class="mfoot"><span class="cnt">روی گوشی هم همین‌جا می‌نشیند</span><button class="ghost" id="evCancel">انصراف</button><button class="cta" id="evSave" disabled>ساختن</button></div>
+            </div>
+          </div>
+
+          <!-- delete a «دسته»: type its name to confirm -->
+          <div class="modal-bg" id="delModal" hidden>
+            <div class="modal sm" role="dialog" aria-modal="true" aria-labelledby="delTitle">
+              <div class="card-h"><h2 id="delTitle">حذف دسته</h2><button class="rbtn sm" id="delClose" aria-label="بستن" style="margin-inline-start:auto"><span data-ico="close"></span></button></div>
+              <p style="margin:0;font-size:16px;line-height:1.9;color:var(--ink-2)" id="delText"></p>
+              <div class="ef">
+                <div class="when">برای تأیید، اسم دسته را بنویس: <span class="copyname"><span id="delName"></span><button id="delCopy" type="button">کپی</button></span></div>
+                <input class="big" id="delInput" placeholder="اسم دسته" autocomplete="off" aria-label="اسم دسته برای تأیید">
+              </div>
+              <div class="mfoot"><span class="warn" id="delWarn"></span><button class="ghost" id="delCancel">انصراف</button><button class="cta danger" id="delGo" disabled>حذف برای همیشه</button></div>
             </div>
           </div>
 
@@ -1351,7 +1480,7 @@ td.them { color: var(--ink-2); }
       <div class="tbl"><table>
         <thead><tr><th>اسلاید</th><th>چه چیزی</th><th>داده از</th></tr></thead>
         <tbody>
-          <tr><td>۱ · خانه</td><td>نقطه‌ی نقطه (به رنگ پس‌زمینه) بالای یک سرچ بزرگ گوگل، زیرش یک ردیف دسترسی سریع (سایت‌های مشترک، پوشه‌ها و سایت‌های شغل کاربر) و یک خط آرام تاریخ. چهار گوشه با آیکون: کارها، یادداشت‌ها، پول، امروز. لبه‌ی راست: بوکمارک‌های خود کروم و شخصی‌سازی</td><td>نقطه، پاکت، <code>chrome.topSites</code>، <code>chrome.bookmarks</code>، <code>chrome.search</code></td></tr>
+          <tr><td>۱ · خانه</td><td>نقطه‌ی نقطه (به رنگ پس‌زمینه) بالای یک سرچ بزرگ گوگل، زیرش یک ردیف دسترسی سریع (سایت‌های مشترک، پوشه‌ها و سایت‌های شغل کاربر) و یک خط آرام ساعت، تاریخ، هوا (آیکون و وضعیت و دما، با همان آیکون‌ها و داده‌ی بخش هوای اپ نقطه) و مناسبت. چهار گوشه با آیکون: کارها، یادداشت‌ها، پول، امروز. لبه‌ی راست: بوکمارک‌های خود کروم و شخصی‌سازی</td><td>نقطه، پاکت، <code>chrome.topSites</code>، <code>chrome.bookmarks</code>، <code>chrome.search</code></td></tr>
           <tr><td>۲ · برنامه‌ها</td><td>نمای هفته به سبک تقویم گوگل، مثل بخش «برنامه‌ها»ی اپ: ستون هر روز با ساعت‌ها، ردیف «تمام‌روز» با مناسبت‌ها و قبض‌ها و کارهای بی‌ساعت، خط اذان صبح و ظهر و مغرب، خط «الان». با کشیدن روی ساعت‌ها برنامه ساخته می‌شود و در تقویم گوگل هم می‌نشیند. کنارش تقویم ماه کوچک با نقطه‌ی مناسبت، فهرست مناسبت‌های پیش رو و کلید روشن/خاموش هر تقویم. بالای صفحه سرچ که برنامه‌ها، مناسبت‌ها و یادداشت‌ها را با هم می‌گردد</td><td><code>calendar-core</code>، <code>event-data</code>، <code>prayer-times</code>، <code>tasks</code>، Google Calendar API از راه relay، قبض‌های پاکت</td></tr>
           <tr><td>۳ · پول</td><td>موجودی حساب‌ها، خرج‌های پیش رو، نمودار خرج تجمعی ماه با مسیر بودجه و پیش‌بینی پاکت، خرج بر اساس دسته، قیمت روز طلا و سکه و ارز و کریپتو با نمودار، ارزش دارایی‌های خود کاربر، و ردیف «خبر و پیشنهاد» با همان خبرهایی که تیم در اپ پاکت می‌گذارد</td><td>پاکت (حساب‌ها، <code>category_period_aggregates</code>، <code>expense_predictions</code>، <code>upcoming_expenses</code>، <code>investments.positions</code>، <code>/v1/news</code>) و منبع قیمت</td></tr>
           <tr><td>۴ · یادداشت‌ها</td><td>مثل یادداشت‌های اپ: پوشه‌ها، فهرست با سنجاق‌شده‌ها و سرچ، و ویرایشگر کامل با تیتر، متن، چک‌لیست، فهرست و یادداشت صوتی (موج صدا و متن آن). یادداشتی که به یک روز یا یک کار وصل است، برچسبش را نشان می‌دهد. هر تغییر چند ثانیه بعد روی گوشی است</td><td><code>packages/notes</code> (تازه)، <code>@dotlife/sync</code></td></tr>
@@ -1389,16 +1518,16 @@ td.them { color: var(--ink-2); }
         <li>همه‌ی این انتخاب‌ها در شخصی‌سازی نقطه (بخش تازه‌ی <code>newtab</code>) سینک می‌شود.</li>
       </ul>
       <h3>سرچ گوگل</h3>
-      <p>سرچ بزرگ‌ترین چیز صفحه است و یک خط بیشتر نیست: نشانه‌ی ساده‌ی G (بدون پس‌زمینه، هم‌رنگ متن)، متن راهنمای «در گوگل جستجو کن»، میکروفون و فلش. Enter همیشه در گوگل جستجو می‌کند.</p>
+      <p>سرچ بزرگ‌ترین چیز صفحه است: یک کادر دوخطی مثل Dia. خط اول متن است (نشانه‌ی ساده‌ی G، هم‌رنگ متن)، و با متن طولانی تا چند خط بزرگ می‌شود، چون گوگل هم تا ۲۰۴۸ نویسه می‌پذیرد. Enter جستجو می‌کند و Shift+Enter خط تازه می‌زند. خط دوم کاربردی است: «به کارها» و «به یادداشت‌ها» همان متن را به‌جای جستجو در نقطه ذخیره می‌کنند (و گوشه‌ی مربوط باز می‌شود و نشانش می‌دهد)، و کنارشان میکروفون و فلش جستجو.</p>
       <p><b>کارها و یادداشت‌های خود کاربر در همان سرچ:</b> وقتی کاربر تایپ می‌کند، فهرست پیشنهادها دو بخش دارد. بالا «گوگل» (جستجو در گوگل و پیشنهادهای آن) و پایین «در نقطه‌ی تو»، یعنی کارها و یادداشت‌هایی که آن کلمه را دارند. این بخش دوم روی خود دستگاه گشته می‌شود: کارها و یادداشت‌ها از قبل با سینک در IndexedDB افزونه هستند و افزونه همان‌جا در آن‌ها می‌گردد، پس چیزی از این جستجو به سرور ما یا به گوگل نمی‌رود. با کلیک روی یک کار یا یادداشت، همان در اسلاید خودش باز می‌شود. اگر چیزی پیدا نشود، این بخش اصلاً نشان داده نمی‌شود؛ کلید جدایی لازم نیست و در شخصی‌سازی می‌شود کلاً خاموشش کرد.</p>
       <p>ارسال با <code>chrome.search.query</code> انجام می‌شود که موتور پیش‌فرض کروم را صدا می‌زند (برای بیشتر کاربران گوگل)؛ اگر موتور پیش‌فرض کسی گوگل نباشد، نشانه و متن راهنما اسم همان موتور را نشان می‌دهند تا قول نادرستی نداده باشیم و سیاست استور هم رعایت شود.</p>
       <h3>ردیف دسترسی سریع</h3>
       <p>دسترسی سریع و بوکمارک‌های شغلی یکی شده‌اند: یک ردیف زیر سرچ. اولش چند سایت مشترک برای همه (یوتیوب، جیمیل، دیجی‌کالا)، بعد پوشه‌ها و سایت‌های همان شغلی که کاربر انتخاب کرده، بعد کاشی اسپانسری و «افزودن». کاشی‌ها فقط آیکون‌اند و اسمشان با رفتن موس می‌آید تا ردیف شلوغ نشود.</p>
       <ul>
         <li><b>پوشه:</b> کاشی پوشه چهار آیکون کوچک داخلش را نشان می‌دهد. با کلیک، محتوای پوشه در همان ردیف باز می‌شود و کاشی اول «بازگشت» با اسم پوشه است.</li>
-        <li><b>شغل:</b> اولین کاشی ردیف، شغل فعلی است (مثلاً «طراح ▾»). با کلیک یک فهرست کوچک باز می‌شود و با عوض کردن شغل، پوشه‌ها و سایت‌های ردیف عوض می‌شوند؛ سایت‌های مشترک می‌مانند.</li>
+        <li><b>شغل:</b> در ردیف دیده نمی‌شود؛ یک بار در آنبوردینگ انتخاب می‌شود و بعد از «شخصی‌سازی» عوض می‌شود. با عوض کردنش پوشه‌ها و سایت‌های ردیف عوض می‌شوند و سایت‌های مشترک می‌مانند.</li>
         <li><b>افزودن:</b> پنجره‌ی «افزودن به دسترسی سریع» دو بخش دارد: پیشنهادها (سایت‌های پربازدید کاربر از <code>chrome.topSites</code> به‌اضافه‌ی فهرست ما) و آدرس دلخواه (نام، آدرس، رنگ کاشی، پیش‌نمایش). در هر دو می‌شود انتخاب کرد که کاشی به ردیف اصلی برود یا داخل یکی از پوشه‌ها.</li>
-        <li><b>آیکون‌ها:</b> هر کاشی favicon واقعی همان سایت است، وسط یک کاشی شیشه‌ای ثابت تا همه هم‌اندازه دیده شوند. افزونه آن را با مجوز <code>favicon</code> از خود کروم می‌گیرد (<code>chrome-extension://…/_favicon/?pageUrl=…&amp;size=64</code>)، پس آیکون هر سایتی که کاربر اضافه کند خودبه‌خود درست است و ما آیکونی دستی نمی‌کشیم. در ماک‌آپ برندهای جهانی از simple-icons آمده‌اند و سایت‌های ایرانی، که از این محیط در دسترس نبودند، فعلاً حرف اولشان را روی یک مربع سفید کوچک دارند.</li>
+        <li><b>آیکون‌ها:</b> خود کاشی favicon سایت است، بدون قاب یا رنگ اضافه و بدون دستکاری؛ فقط هم‌اندازه می‌شود. افزونه آن را با مجوز <code>favicon</code> از خود کروم می‌گیرد (<code>chrome-extension://…/_favicon/?pageUrl=…&amp;size=64</code>)، پس آیکون هر سایتی که کاربر اضافه کند خودبه‌خود درست است. در ماک‌آپ برندهای جهانی از simple-icons آمده‌اند و سایت‌های ایرانی، که از این محیط در دسترس نبودند، با حرف اول روی رنگ برند نشان داده شده‌اند.</li>
         <li><b>برداشتن:</b> با رفتن موس روی هر کاشی، دکمه‌ی کوچک برداشتن می‌آید. ردیف حداکثر ۹ کاشی خود کاربر دارد؛ بیشتر از آن باید در پوشه برود.</li>
       </ul>
     </section>
@@ -1508,6 +1637,8 @@ td.them { color: var(--ink-2); }
       <p>در اپ نقطه «دسته‌ها» یک مجموعه‌اند: لیست‌های کار همان پوشه‌های یادداشت‌اند (<code>TaskList</code> با نام و رنگ؛ صفحه‌ی <code>profile/lists</code> برای هر دسته هم کارها و هم یادداشت‌ها را می‌شمارد). این مجموعه در سینک موجودیت <code>list</code> است. نیوتب هیچ دسته‌ی جدایی نمی‌سازد و همه‌جا همان را نشان می‌دهد:</p>
       <ul>
         <li><b>کارها</b> (گوشه‌ی صفحه‌ی اول و برنامه‌ها) نقطه‌ی رنگ دسته‌شان را دارند و رنگ بلوکشان در جدول هفته همان رنگ دسته است.</li>
+        <li><b>ساختن برنامه:</b> کشیدن روی ساعت‌ها فقط بازه را مشخص می‌کند و چیزی ذخیره نمی‌شود. یک پنجره باز می‌شود با زمان، عنوان، دسته (همان دسته‌های اپ) و جای ذخیره (کار در نقطه، یا تقویم گوگل شخصی یا کار)؛ «ساختن» تا عنوان نوشته نشود فعال نیست و «انصراف» یا Esc همه‌چیز را پاک می‌کند، مثل اپ موبایل.</li>
+        <li><b>حذف یک دسته:</b> چون دسته روی گوشی هم حذف می‌شود و کارها و یادداشت‌هایش را هم می‌برد، پنجره‌ی حذف تعدادشان را می‌گوید و تا کاربر اسم دسته را دوباره ننویسد دکمه‌ی حذف فعال نمی‌شود. کنار اسم یک دکمه‌ی «کپی» هست. دسته‌ی پیش‌فرض «شخصی» حذف نمی‌شود.</li>
         <li><b>برنامه‌ها:</b> فهرست «تقویم‌ها» سه گروه دارد: دسته‌های نقطه (هر کدام کلید روشن و خاموش)، تقویم‌های گوگل، و مناسبت‌ها و قبض‌ها و اوقات شرعی.</li>
         <li><b>یادداشت‌ها:</b> ستون پوشه‌ها همان دسته‌هاست با همان رنگ‌ها، و هر یادداشت برچسب دسته‌اش را دارد.</li>
         <li><b>یک کانال:</b> ساختن، تغییر نام، رنگ یا حذف یک دسته در نیوتب یک تغییر <code>list</code> است که از همان <code>/sync/push</code> می‌رود؛ گوشی آن را مثل هر تغییر دیگری می‌گیرد و برعکس. ترتیب و رنگ‌ها از خود رکورد می‌آید، نه از تنظیمات نیوتب.</li>
@@ -1601,7 +1732,7 @@ td.them { color: var(--ink-2); }
   const fav = (name, letter, color) => {
     const b = BR[SLUG[name]];
     if (b) return `<svg class="bm2" viewBox="0 0 24 24" aria-hidden="true"><path d="${b.p}" fill="${lum(b.h) < 0.22 ? "#F5F6F8" : b.h}"/></svg>`;
-    return `<span class="fl" style="color:${color}">${letter}</span>`;
+    return `<span class="fl" style="--fc:${color};color:${color}">${letter}</span>`;
   };
   const paintIcons = (root = document) => root.querySelectorAll("[data-ico]").forEach((el) => { if (!el.firstChild) el.innerHTML = ICO[el.dataset.ico] || ""; });
   paintIcons();
@@ -1661,8 +1792,7 @@ td.them { color: var(--ink-2); }
     : `<button class="lt${s.ad ? " adt" : ""}" ${s.ad ? 'data-slot="۲"' : ""} data-i="${i}" ${attrs} aria-label="${s.n}"><span class="ic fav">${fav(s.n, s.l, s.c)}</span><span class="lb">${s.n}</span>${s.ad ? '<span class="tag">معرفی‌شده</span>' : `<span class="x" data-rm="${i}" role="button" aria-label="برداشتن">${xSvg}</span>`}</button>`;
   function renderLaunch(anim) {
     const L = $("launch"), items = rowItems();
-    let h = `<div class="pwrap"><button class="lt pchip" id="pchip" aria-haspopup="true"><span class="ic">${'<svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>'}</span><span class="lb">${P[persona].n} ▾</span></button>
-      <div class="ppop g" id="ppop" hidden>${Object.entries(P).map(([k, v]) => `<button data-p="${k}" aria-pressed="${k === persona}">${v.n}</button>`).join("")}</div></div><span class="lsep"></span>`;
+    let h = "";
     if (openF !== null && items[openF]?.folder) {
       const f = items[openF];
       h += `<button class="lt back" id="lback" aria-label="بازگشت"><span class="ic"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span><span class="lb">${f.n}</span></button>`
@@ -1676,12 +1806,10 @@ td.them { color: var(--ink-2); }
     L.innerHTML = h;
     if (anim) L.querySelectorAll(".lt:not(.pchip)").forEach((el, k) => { el.style.animationDelay = `${k * 28}ms`; el.classList.add("tin"); });
   }
-  function shelf(k) { persona = k; openF = null; renderLaunch(true); pills.querySelectorAll?.(".chip").forEach((x) => x.setAttribute("aria-pressed", String(x.dataset.k === k))); }
+  function shelf(k) { persona = k; openF = null; renderLaunch(true); if ($("jobs")) $("jobs").innerHTML = Object.entries(P).map(([q2, v]) => `<button class="chip" data-job="${q2}" aria-pressed="${q2 === k}">${v.n}</button>`).join(""); pills.querySelectorAll?.(".chip").forEach((x) => x.setAttribute("aria-pressed", String(x.dataset.k === k))); }
   $("launch").addEventListener("click", (e) => {
     const rm = e.target.closest("[data-rm]");
     if (rm) { e.stopPropagation(); removed.add(rowItems()[+rm.dataset.rm].n); renderLaunch(); return; }
-    if (e.target.closest("#pchip")) { $("ppop").hidden = !$("ppop").hidden; return; }
-    const pp = e.target.closest("[data-p]"); if (pp) { shelf(pp.dataset.p); return; }
     if (e.target.closest("#lback")) { openF = null; renderLaunch(true); return; }
     if (e.target.closest("#qAdd")) { openQ(null); return; }
     if (e.target.closest("#lAddIn")) { openQ(openF); return; }
@@ -1821,7 +1949,6 @@ td.them { color: var(--ink-2); }
     $("dqNote").hidden = !n; if (n) $("dqn").textContent = `یادداشت: ${n.title}`;
     $("drop").querySelector(".sep").hidden = $("drop").querySelectorAll(".dhd")[1].hidden = !t && !n;
   });
-  q.addEventListener("keydown", (e) => { if (e.key === "Enter") e.preventDefault(); });
 
   /* ---------- money eye ---------- */
   $("eye").addEventListener("click", () => {
@@ -1910,6 +2037,18 @@ td.them { color: var(--ink-2); }
 
   // search: Google, plus the user's own tasks and notes
   $("sform").addEventListener("submit", (e) => { e.preventDefault(); });
+  // the box grows with long text (Google takes up to 2,048 characters); Enter searches, Shift+Enter breaks the line
+  const grow = () => { q.style.height = "auto"; q.style.height = Math.min(q.scrollHeight, 150) + "px"; const has = !!q.value.trim(); $("toTask").disabled = $("toNote").disabled = !has; };
+  q.addEventListener("input", grow); grow();
+  q.addEventListener("keydown", (e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); $("sform").requestSubmit(); } });
+  const saveAs = (kind) => {
+    const v = q.value.trim(); if (!v) return;
+    if (kind === "task") { tasks.unshift({ t: v.split("\n")[0].slice(0, 80), m: "", l: "personal", isNew: true }); tasks = tasks.slice(0, 5); renderTasks(); peekCorner("tasks", "از سرچ · همین حالا"); }
+    else { $("cNote").innerHTML = `<div class="fresh"><div class="nt-title">${v.split("\n")[0].slice(0, 40)}</div>${v.includes("\n") ? `<div class="meta">${v.split("\n").slice(1).join(" ").slice(0, 60)}</div>` : ""}</div>`; peekCorner("notes", "از سرچ · همین حالا"); }
+    pulse("ذخیره شد · روی گوشی هم هست"); q.value = ""; grow(); $("drop").hidden = true;
+  };
+  $("toTask").addEventListener("click", () => saveAs("task"));
+  $("toNote").addEventListener("click", () => saveAs("note"));
   // Google's G as a plain outline glyph in the text colour (no badge, no brand colours)
   document.querySelectorAll("[data-brand=google]").forEach((el) => { el.innerHTML = `<svg class="gline" viewBox="0 0 24 24" aria-hidden="true"><path d="M19.5 12a7.5 7.5 0 1 1-2.2-5.3"/><path d="M19.5 12H12.5"/></svg>`; });
 
@@ -2030,7 +2169,7 @@ td.them { color: var(--ink-2); }
         if (e.d !== d || off.has(e.c) || (e.c === "n" && off.has("l:" + e.l))) return;
         const a = toMin(e.s), b = toMin(e.e), col = e.c === "n" ? LST[e.l].c : CALS[e.c].color;
         g += `<div class="ev${e.done ? " done" : ""}${e.editing ? " editing" : ""}" data-i="${i}" style="top:${(a / 60) * HOUR + 1}px;height:${((b - a) / 60) * HOUR - 2}px;background:${alpha(col, 0.2)};border-color:${col}">
-          ${e.editing ? `<input data-i="${i}" placeholder="برنامه‌ی جدید" maxlength="60">` : `<b>${e.t}</b>`}${b - a >= 45 ? `<small>${ICO["time-circle"]}<bdi>${hhmm(a)}</bdi> تا <bdi>${hhmm(b)}</bdi></small>` : ""}</div>`;
+          <b>${e.t}</b>${b - a >= 45 ? `<small>${ICO["time-circle"]}<bdi>${hhmm(a)}</bdi> تا <bdi>${hhmm(b)}</bdi></small>` : ""}</div>`;
       });
       if (d === TODAY) { const n = new Date(), m = n.getHours() * 60 + n.getMinutes(); g += `<div class="nowl" style="top:${(m / 60) * HOUR}px"></div>`; }
       g += `</div>`;
@@ -2041,8 +2180,6 @@ td.them { color: var(--ink-2); }
       const p = document.createElement("span"); p.className = "nowp"; p.style.top = (m / 60) * HOUR + "px"; p.textContent = hhmm(m);
       $("pgrid").querySelector(".gut").append(p);
     }
-    const inp = $("pgrid").querySelector(".ev input");
-    if (inp) { inp.focus({ preventScroll: true }); inp.addEventListener("keydown", (e) => { if (e.key === "Enter") inp.blur(); }); inp.addEventListener("blur", () => commitNew(+inp.dataset.i, inp.value)); }
   }
   function renderPlanner() { renderMini(); renderOcc(); renderCals(); renderWeek(); }
   function setWeek(d) { ws = d - colOf(d); renderMini(); renderWeek(); }
@@ -2074,19 +2211,38 @@ td.them { color: var(--ink-2); }
     drag.ghost.innerHTML = `<small>${ICO["time-circle"]}<bdi>${hhmm(a)}</bdi> تا <bdi>${hhmm(drag.b)}</bdi></small>`; drag.start = a;
   });
   pg.addEventListener("pointerup", () => {
-    if (!drag) return; const { col, b } = drag; const a = drag.start ?? drag.a; drag = null;
-    const end = b - a < 30 ? a + 60 : b;
-    EVENTS.forEach((x) => delete x.editing);
-    EVENTS.push({ d: +col.dataset.d, s: String(Math.floor(a / 60)).padStart(2, "0") + ":" + String(a % 60).padStart(2, "0"), e: String(Math.floor(Math.min(end, 1439) / 60)).padStart(2, "0") + ":" + String(Math.min(end, 1439) % 60).padStart(2, "0"), t: "", c: "gp", editing: true });
-    off.delete("gp"); renderPlanner();
+    if (!drag) return; const { col, b, ghost } = drag; const a = drag.start ?? drag.a; drag = null;
+    const end = Math.min(b - a < 30 ? a + 60 : b, 1439);
+    ghost.style.height = ((end - a) / 60) * HOUR + "px"; ghost.classList.add("editing");
+    openEv({ d: +col.dataset.d, a, end, ghost });
   });
-  function commitNew(i, v) {
-    const e = EVENTS[i]; if (!e || !e.editing) return;
-    delete e.editing; e.t = v.trim() || "برنامه‌ی جدید"; renderWeek();
-    toast(`ساخته شد · در تقویم گوگل (شخصی) هم ذخیره شد`);
+  // nothing is saved on drag: a sheet asks for the title, the «دسته» and where it goes, like the app
+  let evDraft = null, evList = "personal", evDest = "n";
+  const hm = (m) => String(Math.floor(m / 60)).padStart(2, "0") + ":" + String(m % 60).padStart(2, "0");
+  function openEv(draft) {
+    evDraft = draft; $("evName").value = ""; $("evSave").disabled = true;
+    $("evWhen").innerHTML = `${WD[colOf(draft.d)]} ${dayName(draft.d)} · <b>${hhmm(draft.a)}</b> تا <b>${hhmm(draft.end)}</b>`;
+    $("evLists").innerHTML = LISTS.filter((l) => !l.shop).map((l) => `<button data-l="${l.id}" aria-pressed="${l.id === evList}"><i style="background:${l.c}"></i>${l.n}</button>`).join("");
+    $("evModal").hidden = false; paintIcons($("evModal")); setTimeout(() => $("evName").focus(), 0);
   }
+  function closeEv(save) {
+    if (!evDraft) return; const dft = evDraft; evDraft = null; $("evModal").hidden = true; dft.ghost.remove();
+    if (!save) return;
+    EVENTS.push({ d: dft.d, s: hm(dft.a), e: hm(dft.end), t: $("evName").value.trim(), c: evDest, l: evList });
+    off.delete(evDest); off.delete("l:" + evList); renderPlanner();
+    toast(evDest === "n" ? "ساخته شد · در کارهای نقطه و روی گوشی" : `ساخته شد · در تقویم گوگل (${evDest === "gp" ? "شخصی" : "کار"})`);
+  }
+  $("evName").addEventListener("input", () => ($("evSave").disabled = !$("evName").value.trim()));
+  $("evName").addEventListener("keydown", (e) => { if (e.key === "Enter" && $("evName").value.trim()) closeEv(true); });
+  $("evLists").addEventListener("click", (e) => { const b = e.target.closest("[data-l]"); if (!b) return; evList = b.dataset.l; $("evLists").querySelectorAll("button").forEach((x) => x.setAttribute("aria-pressed", String(x === b))); });
+  $("evDest").addEventListener("click", (e) => { const b = e.target.closest("[data-dest]"); if (!b) return; evDest = b.dataset.dest; $("evDest").querySelectorAll("button").forEach((x) => x.setAttribute("aria-pressed", String(x === b))); });
+  $("evSave").addEventListener("click", () => closeEv(true));
+  $("evCancel").addEventListener("click", () => closeEv(false));
+  $("evClose").addEventListener("click", () => closeEv(false));
+  $("evModal").addEventListener("click", (e) => { if (e.target === $("evModal")) closeEv(false); });
+  document.addEventListener("keydown", (e) => { if (e.key === "Escape" && evDraft) closeEv(false); });
   let toastT;
-  function toast(msg) { const t = $("ptoast"); t.innerHTML = `<b>G</b>${msg}`; t.hidden = false; clearTimeout(toastT); toastT = setTimeout(() => (t.hidden = true), 2800); }
+  function toast(msg) { const t = $("ptoast"); t.innerHTML = `<b>✓</b>${msg}`; t.hidden = false; clearTimeout(toastT); toastT = setTimeout(() => (t.hidden = true), 2800); }
 
   // search: events, occasions and notes together
   const pq = $("pq"), pdrop = $("pdrop");
@@ -2157,6 +2313,7 @@ td.them { color: var(--ink-2); }
   function renderFolders() {
     $("flist").innerHTML = FOLDERS.map(([k, n]) => `<button data-f="${k}" aria-pressed="${folder === k}">${k === "all" ? ICON.all : `<span class="fdot" style="background:${LST[k].c}"></span>`}${n}<span>${fa(k === "all" ? NOTES.length : NOTES.filter((x) => x.f === k).length)}</span></button>`).join("")
       + `<div class="fsep"></div><button data-f="trash" aria-pressed="false">${ICON.trash}حذف‌شده‌ها<span>۰</span></button>`;
+    $("flist").querySelectorAll("button[data-f]").forEach((b) => { const k = b.dataset.f; if (k === "all" || k === "trash" || k === "personal") return; b.querySelector("span:last-child").insertAdjacentHTML("beforebegin", `<span class="fdel" data-del="${k}" role="button" aria-label="حذف دسته">${ICON.trash}</span>`); });
   }
   function renderNoteList() {
     const q = $("nq").value.trim();
@@ -2188,7 +2345,33 @@ td.them { color: var(--ink-2); }
   }
   function selectNote(i) { curNote = i; if (folder !== "all" && NOTES[i].f !== folder) folder = "all"; renderFolders(); renderNoteList(); renderEditor(); }
   renderFolders(); renderNoteList(); renderEditor();
-  $("flist").addEventListener("click", (e) => { const b = e.target.closest("button"); if (!b || b.dataset.f === "trash") return; folder = b.dataset.f; const first = NOTES.findIndex((n) => folder === "all" || n.f === folder); if (first >= 0) curNote = first; renderFolders(); renderNoteList(); renderEditor(); });
+  $("flist").addEventListener("click", (e) => { const dl = e.target.closest("[data-del]"); if (dl) { e.stopPropagation(); openDel(dl.dataset.del); return; } const b = e.target.closest("button"); if (!b || b.dataset.f === "trash") return; folder = b.dataset.f; const first = NOTES.findIndex((n) => folder === "all" || n.f === folder); if (first >= 0) curNote = first; renderFolders(); renderNoteList(); renderEditor(); });
+  // deleting a «دسته» needs its name typed back; it is the same list on the phone
+  let delKey = null;
+  function openDel(k) {
+    delKey = k; const l = LST[k], nn = NOTES.filter((x) => x.f === k).length, tt = tasks.filter((x) => x.l === k).length + EVENTS.filter((x) => x.c === "n" && x.l === k).length;
+    $("delTitle").textContent = `حذف دسته‌ی «${l.n}»`;
+    $("delText").innerHTML = `${fa(nn)} یادداشت و ${fa(tt)} کار داخل این دسته هم حذف می‌شوند و به «حذف‌شده‌ها» می‌روند. چون دسته‌ها با اپ نقطه یکی‌اند، روی گوشی هم حذف می‌شود.`;
+    $("delName").textContent = l.n; $("delInput").value = ""; $("delGo").disabled = true;
+    $("delModal").hidden = false; paintIcons($("delModal")); setTimeout(() => $("delInput").focus(), 0);
+  }
+  const closeDel = () => { $("delModal").hidden = true; delKey = null; };
+  const norm = (t) => t.replace(/‌/g, "").replace(/ي/g, "ی").replace(/ك/g, "ک").replace(/\s+/g, " ").trim();
+  $("delInput").addEventListener("input", () => { $("delGo").disabled = norm($("delInput").value) !== norm(LST[delKey].n); });
+  $("delInput").addEventListener("keydown", (e) => { if (e.key === "Enter" && !$("delGo").disabled) $("delGo").click(); });
+  $("delCopy").addEventListener("click", () => {
+    const t = LST[delKey].n;
+    (navigator.clipboard ? navigator.clipboard.writeText(t) : Promise.reject()).then(() => { $("delCopy").textContent = "کپی شد"; setTimeout(() => ($("delCopy").textContent = "کپی"), 1500); })
+      .catch(() => { const r = document.createRange(); r.selectNodeContents($("delName")); const sel = getSelection(); sel.removeAllRanges(); sel.addRange(r); });
+  });
+  $("delGo").addEventListener("click", () => {
+    const k = delKey; LISTS.splice(LISTS.findIndex((l) => l.id === k), 1); FOLDERS.splice(FOLDERS.findIndex((f) => f[0] === k), 1);
+    for (let i2 = NOTES.length - 1; i2 >= 0; i2--) if (NOTES[i2].f === k) NOTES.splice(i2, 1);
+    if (folder === k) folder = "all"; curNote = Math.max(0, Math.min(curNote, NOTES.length - 1));
+    closeDel(); renderFolders(); renderNoteList(); renderEditor(); renderCals();
+  });
+  $("delCancel").addEventListener("click", closeDel); $("delClose").addEventListener("click", closeDel);
+  $("delModal").addEventListener("click", (e) => { if (e.target === $("delModal")) closeDel(); });
   $("nitems").addEventListener("click", (e) => { const b = e.target.closest(".nitem"); if (b) selectNote(+b.dataset.i); });
   $("nq").addEventListener("input", renderNoteList);
   let saveT;
@@ -2223,52 +2406,62 @@ td.them { color: var(--ink-2); }
   const DAILY = [520, 140, 380, 90, 260, 410, 1250, 120, 330, 200, 75, 640, 310, 180, 95, 420, 260, 150, 380, 1030, 140, 230, 325, 485];
   const cum = DAILY.reduce((a, v) => (a.push((a.at(-1) || 0) + v), a), []);
   const BUDGET = 12000, FORECAST = 10500;
+  const mil = (k) => fa((k / 1000).toFixed(1).replace(".0", "").replace(".", "٫")) + "م";
+  // a label that sits on the chart, like Copilot's «$2,136 under»
+  const tagAt = (s, x, y, text, fill, ink, start = false) => {
+    const r = svgEl("rect", { y: y - 11, height: 22, rx: 7, fill }), t = svgEl("text", { y: y + 4.5, fill: ink, "font-size": 12.5, "text-anchor": "end", "font-weight": 600 });
+    t.textContent = text; s.append(r, t);
+    requestAnimationFrame(() => { const w = t.getComputedTextLength() + 16, x0 = start ? x : x - w; r.setAttribute("x", x0); r.setAttribute("width", w); t.setAttribute("x", x0 + w - 8); });
+  };
   (function spendChart() {
-    const W = 430, H = 168, L = 38, R = 12, T = 14, B = 30;
+    const W = 440, H = 170, L = 8, R = 8, T = 18, B = 26;
     const x = (d) => L + ((d - 1) / 29) * (W - L - R);
     const y = (v) => T + (1 - v / 13000) * (H - T - B);
-    const s = svgEl("svg", { viewBox: `0 0 ${W} ${H}`, role: "img", "aria-label": "نمودار خرج تجمعی مهر" });
+    const s = svgEl("svg", { viewBox: `0 0 ${W} ${H}`, role: "img", "aria-label": "خرج تجمعی مهر در برابر بودجه" });
     s.setAttribute("direction", "ltr");
-    for (const v of [0, 4000, 8000, 12000]) {
-      s.append(svgEl("line", { x1: L, x2: W - R, y1: y(v), y2: y(v), stroke: GRID, "stroke-width": 1 }));
-      const t = svgEl("text", { x: L - 8, y: y(v) + 4, fill: AXIS, "font-size": 14, "text-anchor": "end" }); t.textContent = v ? fa(v / 1000) + "م" : "۰"; s.append(t);
-    }
-    for (const d of [1, 10, 20, 30]) { const t = svgEl("text", { x: x(d), y: H - 8, fill: AXIS, "font-size": 14, "text-anchor": "middle" }); t.textContent = fa(d) + " مهر"; s.append(t); }
-    const defs = svgEl("defs", {}); const g = svgEl("linearGradient", { id: "sg", x1: 0, x2: 0, y1: 0, y2: 1 });
-    g.append(svgEl("stop", { offset: "0", "stop-color": LINE, "stop-opacity": ".32" }), svgEl("stop", { offset: "1", "stop-color": LINE, "stop-opacity": "0" }));
+    s.append(svgEl("line", { x1: L, x2: W - R, y1: y(0), y2: y(0), stroke: GRID }));
+    for (const [d, lb] of [[1, "۱ مهر"], [15, "۱۵"], [30, "۳۰ مهر"]]) { const t = svgEl("text", { x: x(d), y: H - 6, fill: AXIS, "font-size": 12, "text-anchor": d === 1 ? "start" : d === 30 ? "end" : "middle" }); t.textContent = lb; s.append(t); }
+    // budget pace: a quiet dotted diagonal to the month's ceiling
+    s.append(svgEl("line", { x1: x(1), y1: y(0), x2: x(30), y2: y(BUDGET), stroke: "rgba(255,255,255,.28)", "stroke-width": 1.4, "stroke-dasharray": "1.5 4", "stroke-linecap": "round" }));
+    const defs = svgEl("defs", {}), g = svgEl("linearGradient", { id: "sg", x1: 0, x2: 0, y1: 0, y2: 1 });
+    g.append(svgEl("stop", { offset: "0", "stop-color": LINE, "stop-opacity": ".22" }), svgEl("stop", { offset: "1", "stop-color": LINE, "stop-opacity": "0" }));
     defs.append(g); s.append(defs);
-    s.append(svgEl("line", { x1: x(1), y1: y(BUDGET / 30), x2: x(30), y2: y(BUDGET), stroke: "rgba(255,255,255,.45)", "stroke-width": 1.5, "stroke-dasharray": "2 4", fill: "none" }));
-    const pts = cum.map((v, i) => `${x(i + 1)},${y(v)}`).join(" ");
-    s.append(svgEl("polygon", { points: `${x(1)},${y(0)} ${pts} ${x(24)},${y(0)}`, fill: "url(#sg)", stroke: "none" }));
-    s.append(svgEl("polyline", { points: pts, fill: "none", stroke: LINE, "stroke-width": 2.2 }));
-    s.append(svgEl("line", { x1: x(24), y1: y(cum[23]), x2: x(30), y2: y(FORECAST), stroke: LINE, "stroke-width": 2, "stroke-dasharray": "6 5", fill: "none" }));
-    s.append(svgEl("circle", { cx: x(30), cy: y(FORECAST), r: 4, fill: "#0c1022", stroke: LINE, "stroke-width": 2 }));
-    const ft = svgEl("text", { x: x(30) - 8, y: y(FORECAST) - 10, fill: "#F5F6F8", "font-size": 15, "text-anchor": "end" }); ft.textContent = "پیش‌بینی ۱۰٫۵م"; s.append(ft);
-    s.append(svgEl("circle", { cx: x(24), cy: y(cum[23]), r: 5, fill: LINE, stroke: "#0c1022", "stroke-width": 2 }));
-    const cross = svgEl("line", { y1: T, y2: H - B, stroke: "rgba(255,255,255,.35)", "stroke-width": 1, visibility: "hidden" });
-    const dot = svgEl("circle", { r: 5, fill: LINE, stroke: "#0c1022", "stroke-width": 2, visibility: "hidden" });
+    // a stepped line like Copilot's: the total jumps on the day money goes out
+    let d = `M${x(1)} ${y(0)}`; cum.forEach((v, i) => { d += `H${x(i + 1)}V${y(v)}`; });
+    s.append(svgEl("path", { d: d + `V${y(0)}Z`, fill: "url(#sg)", stroke: "none" }));
+    s.append(svgEl("path", { d, fill: "none", stroke: LINE, "stroke-width": 2, "stroke-linejoin": "round" }));
+    s.append(svgEl("line", { x1: x(24), y1: y(cum[23]), x2: x(30), y2: y(FORECAST), stroke: LINE, "stroke-width": 1.6, "stroke-dasharray": "4 4", opacity: .7 }));
+    s.append(svgEl("circle", { cx: x(24), cy: y(cum[23]), r: 4.5, fill: "#0f1116", stroke: LINE, "stroke-width": 2 }));
+    // the labels sit in the empty top-left, out of the lines' way; the ends they name carry a dot
+    tagAt(s, x(1), T + 2, "پیش‌بینی آخر ماه ۱۰٫۵م", "rgba(138,221,136,.16)", "#8ADD88", true);
+    tagAt(s, x(1), T + 30, "سقف بودجه ۱۲م", "rgba(255,255,255,.08)", "#A7A7A7", true);
+    s.append(svgEl("circle", { cx: x(30), cy: y(FORECAST), r: 3.5, fill: LINE }), svgEl("circle", { cx: x(30), cy: y(BUDGET), r: 3, fill: "rgba(255,255,255,.45)" }));
+    const cross = svgEl("line", { y1: T, y2: H - B, stroke: "rgba(255,255,255,.3)", visibility: "hidden" });
+    const dot = svgEl("circle", { r: 4, fill: LINE, visibility: "hidden" });
     s.append(cross, dot);
     const hit = svgEl("rect", { x: L, y: 0, width: W - L - R, height: H - B, fill: "transparent" }); s.append(hit);
     const box = $("spendChart"); box.append(s);
     const tip = document.createElement("div"); tip.className = "tipbox"; tip.hidden = true; box.append(tip);
     hit.addEventListener("mousemove", (e) => {
-      const r = s.getBoundingClientRect(); const px = ((e.clientX - r.left) / r.width) * W;
-      const d = Math.max(1, Math.min(24, Math.round(((px - L) / (W - L - R)) * 29 + 1)));
-      cross.setAttribute("x1", x(d)); cross.setAttribute("x2", x(d)); dot.setAttribute("cx", x(d)); dot.setAttribute("cy", y(cum[d - 1]));
-      cross.setAttribute("visibility", "visible"); dot.setAttribute("visibility", "visible");
-      tip.hidden = false; tip.innerHTML = `${fa(d)} مهر · خرج روز ${fmt(DAILY[d - 1])} هزار<br>تا اینجا ${fmt(cum[d - 1])} هزار تومان`;
-      tip.style.left = (x(d) / W) * box.offsetWidth + "px"; tip.style.top = (y(cum[d - 1]) / H) * box.offsetHeight + "px";
+      const r = s.getBoundingClientRect(), px = ((e.clientX - r.left) / r.width) * W;
+      const dd = Math.max(1, Math.min(24, Math.round(((px - L) / (W - L - R)) * 29 + 1)));
+      for (const el of [cross]) { el.setAttribute("x1", x(dd)); el.setAttribute("x2", x(dd)); el.setAttribute("visibility", "visible"); }
+      dot.setAttribute("cx", x(dd)); dot.setAttribute("cy", y(cum[dd - 1])); dot.setAttribute("visibility", "visible");
+      tip.hidden = false; tip.innerHTML = `${fa(dd)} مهر · ${fmt(DAILY[dd - 1])} هزار<br><span style="color:var(--ink-2)">تا اینجا ${mil(cum[dd - 1])}</span>`;
+      tip.style.left = (x(dd) / W) * box.offsetWidth + "px"; tip.style.top = (y(cum[dd - 1]) / H) * box.offsetHeight + "px";
     });
     hit.addEventListener("mouseleave", () => { tip.hidden = true; cross.setAttribute("visibility", "hidden"); dot.setAttribute("visibility", "hidden"); });
   })();
 
-  const CATS = [["خوراک", 2900], ["خرید", 1800], ["حمل‌ونقل", 1400], ["قبض و شارژ", 1100], ["تفریح", 700], ["سایر", 520]];
-  $("cats").innerHTML = CATS.map(([n, v]) => `<div class="cat"><span>${n}</span><span class="tr"><b style="width:${(v / 2900) * 100}%"></b></span><span class="v amt">${fa((v / 1000).toFixed(2).replace(/0$/, "").replace(".", "٫"))} م</span></div>`).join("");
+  // category: spent vs its budget (thousand toman)
+  const CATS = [["خوراک", "#F2A65A", 2900, 3000], ["خرید", "#CDB7FF", 1800, 1500], ["حمل‌ونقل", "#5AB0FF", 1400, 2000], ["قبض و شارژ", "#F2C94C", 1100, 1200]];
+  $("cats").innerHTML = CATS.map(([n, c, v, b]) => `<div class="rw cat2"><i class="cd" style="background:${c}"></i><span class="nm">${n}</span>
+    <span class="am amt">${mil(v)}</span><span class="bar"><b style="width:${Math.min(100, (v / b) * 100)}%;background:${v > b ? "#F0817A" : "#8ADD88"}"></b></span><span class="bd amt">${mil(b)}</span></div>`).join("");
 
   // market prices (sample values)
   const ASSETS = [
     ["طلای ۱۸ عیار", "گرم", 26227000, -0.41, "تومان"], ["سکه امامی", "", 274500000, 0.8, "تومان"],
-    ["دلار", "آزاد", 259800, 0.3, "تومان"], ["یورو", "آزاد", 302400, 0.12, "تومان"], ["تتر", "USDT", 261600, 0.05, "تومان"],
+    ["دلار", "آزاد", 259800, 0.3, "تومان"], ["تتر", "USDT", 261600, 0.05, "تومان"],
     ["بیت‌کوین", "BTC", 82007, -1.2, "دلار"],
   ];
   function series(seed, n, end, drift) {
@@ -2281,25 +2474,23 @@ td.them { color: var(--ink-2); }
     const mn = Math.min(...vals), mx = Math.max(...vals);
     return vals.map((v, i) => `${pad + (i / (vals.length - 1)) * (w - 2 * pad)},${pad + (1 - (v - mn) / (mx - mn || 1)) * (h - 2 * pad)}`).join(" ");
   }
+  const UP = "#8ADD88", DN = "#F0817A";
   function buildPrices() {
-    $("prices").innerHTML = ASSETS.map(([n, u, v, c, cur], i) => {
-      const pts = sparkPath(series(i + 3, 24, v, c / 10), 64, 22, 2);
-      return `<button class="px${i === selA ? " on" : ""}" data-i="${i}"><span>${n} <span class="sample">${u}</span></span>
-        <svg viewBox="0 0 64 22" aria-hidden="true"><polyline points="${pts}" fill="none" stroke="${c >= 0 ? "#8ADD88" : "#F0817A"}" stroke-width="1.6"/></svg>
-        <span class="v">${cur === "دلار" ? "$" : ""}${fmt(v)}</span><span class="c ${c >= 0 ? "up" : "dn"}">${pct(c)}</span></button>`;
-    }).join("");
-    const [n, u, v, c, cur] = ASSETS[selA];
+    $("prices").innerHTML = ASSETS.map(([n, u, v, c, cur], i) => `<button class="rw px2${i === selA ? " on" : ""}" data-i="${i}"><span class="nm">${n}</span>
+      <svg viewBox="0 0 56 20" aria-hidden="true"><polyline points="${sparkPath(series(i + 3, 24, v, c / 10), 56, 20, 2)}" fill="none" stroke="${c >= 0 ? UP : DN}" stroke-width="1.5"/></svg>
+      <span class="am">${cur === "دلار" ? "$" : ""}${fmt(v)}</span><span class="pill ${c >= 0 ? "up" : "dn"}">${pct(c)}</span></button>`).join("");
+    const [n, u, v, , cur] = ASSETS[selA];
     $("pxName").textContent = u ? `${n} · ${u}` : n;
     $("pxVal").textContent = (cur === "دلار" ? "$" : "") + fmt(v); $("pxUnit").textContent = cur === "دلار" ? "" : "تومان";
-    const W = 400, H = 50, vals = series(selA + 11 + period, period === 365 ? 52 : period, v, period === 365 ? 0.9 : period === 30 ? 0.08 : 0.02);
-    const pc = (vals.at(-1) / vals[0] - 1) * 100;
-    $("pxChg").textContent = pct(pc) + (period === 7 ? " هفته" : period === 30 ? " ماه" : " سال"); $("pxChg").className = "chg " + (pc >= 0 ? "up" : "dn");
-    const pts = sparkPath(vals, W, H, 4), col = pc >= 0 ? "#8ADD88" : "#F0817A";
-    $("pxChart").innerHTML = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="نمودار ${n}"><defs><linearGradient id="pg" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="${col}" stop-opacity=".28"/><stop offset="1" stop-color="${col}" stop-opacity="0"/></linearGradient></defs>
-      <line x1="4" x2="${W - 4}" y1="${H / 2}" y2="${H / 2}" stroke="${GRID}"/><polygon points="4,${H} ${pts} ${W - 4},${H}" fill="url(#pg)" stroke="none"/><polyline points="${pts}" fill="none" stroke="${col}" stroke-width="2"/>
-      <circle cx="${W - 4}" cy="${pts.split(" ").at(-1).split(",")[1]}" r="4" fill="${col}" stroke="#0c1022" stroke-width="2"/></svg>`;
+    const W = 440, H = 78, vals = series(selA + 11 + period, period === 365 ? 52 : period, v, period === 365 ? 0.9 : period === 30 ? 0.08 : 0.02);
+    const pc = (vals.at(-1) / vals[0] - 1) * 100, col = pc >= 0 ? UP : DN;
+    $("pxChg").textContent = `${pc >= 0 ? "↑" : "↓"} ${pct(Math.abs(pc)).replace("+", "")} ${period === 7 ? "این هفته" : period === 30 ? "این ماه" : "امسال"}`; $("pxChg").className = "pill " + (pc >= 0 ? "up" : "dn");
+    const pts = sparkPath(vals, W, H, 6), last = pts.split(" ").at(-1).split(",");
+    $("pxChart").innerHTML = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="نمودار ${n}" direction="ltr"><defs><linearGradient id="pg" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="${col}" stop-opacity=".2"/><stop offset="1" stop-color="${col}" stop-opacity="0"/></linearGradient></defs>
+      <polygon points="6,${H} ${pts} ${W - 6},${H}" fill="url(#pg)" stroke="none"/><polyline points="${pts}" fill="none" stroke="${col}" stroke-width="1.8" stroke-linejoin="round"/>
+      <circle cx="${last[0]}" cy="${last[1]}" r="4" fill="#0f1116" stroke="${col}" stroke-width="2"/></svg>`;
   }
-  $("prices").addEventListener("click", (e) => { const b = e.target.closest(".px"); if (!b) return; selA = +b.dataset.i; buildPrices(); });
+  $("prices").addEventListener("click", (e) => { const b = e.target.closest(".px2"); if (!b) return; selA = +b.dataset.i; buildPrices(); });
   $("period").addEventListener("click", (e) => {
     const b = e.target.closest("button"); if (!b) return; period = +b.dataset.p;
     $("period").querySelectorAll("button").forEach((x) => x.setAttribute("aria-pressed", String(x === b))); buildPrices();
@@ -2353,6 +2544,7 @@ td.them { color: var(--ink-2); }
   $("ctlCust").addEventListener("click", openCust);
   $("custClose").addEventListener("click", () => ($("cust").hidden = true));
   $("cust").addEventListener("click", (e) => {
+    const jb = e.target.closest("[data-job]"); if (jb) { shelf(jb.dataset.job); return; }
     const sw = e.target.closest(".sw2");
     if (sw) { const set = sw.dataset.b ? offB : offS, k = sw.dataset.b || sw.dataset.sl; set.has(k) ? set.delete(k) : set.add(k); applyLayout(); return; }
     const th = e.target.closest(".th");
