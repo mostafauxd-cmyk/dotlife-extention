@@ -1211,6 +1211,12 @@ td.them { color: var(--ink-2); }
   padding-inline: calc(var(--cx) + var(--cp) - var(--hx));
 }
 .prow { padding-block: 6px; }
+/* a rank number sits centred in its own slot: the same gap to the highlight's edge as to the headline */
+.rank button { grid-template-columns: 16px minmax(0, 1fr); column-gap: 12px; }
+.rank button em { text-align: center; }
+/* «خبر و پیشنهاد»: bigger boxes, narrower gaps, more room inside */
+.news .ncards { gap: 6px; }
+.news .ncard { padding: 18px 20px; }
 /* a line of plain text closing a card keeps the side gap from the bottom too, not the boxes' 8px */
 .pend { margin-bottom: var(--cx); }
 /* the same line for the small group labels, and for a note row whose 1px border would push it in */
