@@ -48,13 +48,16 @@ type Look = { tint: string; letter: boolean };
 const looks = new Map<string, Look>();
 
 /** The tile's tint (the icon's main colour) and whether to show a letter instead of the globe. */
-function useLook(src: string): Look | undefined {
-  const [look, setLook] = useState(() => looks.get(src));
+function useLook(src: string | null): Look | undefined {
+  const [look, setLook] = useState(() => (src === null ? undefined : looks.get(src)));
   useEffect(() => {
+    if (src === null) return;
+    setLook(looks.get(src));
     if (looks.has(src)) return;
     globe ??= pixels(faviconUrl("https://no-icon.invalid/", 64));
+    let live = true;
     void Promise.all([pixels(src), globe]).then(([d, g]) => {
-      if (d === null) return;
+      if (d === null || !live) return;
       let r = 0;
       let gr = 0;
       let b = 0;
@@ -78,8 +81,11 @@ function useLook(src: string): Look | undefined {
       looks.set(src, l);
       setLook(l);
     });
+    return () => {
+      live = false;
+    };
   }, [src]);
-  return look;
+  return src === null ? undefined : look;
 }
 
 /** The first letter of a name, as one grapheme (an emoji or a joined letter stays whole). */
@@ -163,6 +169,59 @@ export function Launcher() {
   );
 }
 
+/** A typed address as a full URL, or null when it is not one yet. */
+function typedUrl(raw: string): URL | null {
+  const t = raw.trim();
+  if (t === "") return null;
+  try {
+    const u = new URL(/^https?:\/\//i.test(t) ? t : `https://${t}`);
+    return u.hostname.includes(".") ? u : null;
+  } catch {
+    return null;
+  }
+}
+
+/** The tile as it will look: نقطه's dot until the typed site's own icon arrives. */
+function Preview({ url, title }: { url: string; title: string }) {
+  // wait for a pause in typing, so every keystroke does not fetch an icon
+  const [settled, setSettled] = useState<URL | null>(null);
+  useEffect(() => {
+    const t = setTimeout(() => {
+      setSettled(typedUrl(url));
+    }, 400);
+    return () => {
+      clearTimeout(t);
+    };
+  }, [url]);
+  const src = settled === null ? null : faviconUrl(settled.href, 64);
+  const look = useLook(src);
+  // shown once the icon has loaded; Chrome's grey globe (no icon for this site) keeps the dot
+  const [loaded, setLoaded] = useState<string | null>(null);
+  const real = src !== null && loaded === src && look?.letter !== true;
+  const name = title.trim() || (settled === null ? "" : siteName(settled.href));
+  return (
+    <div className="lt preview" aria-hidden="true">
+      <span
+        className="ic"
+        style={real && look ? ({ "--bc": look.tint } as React.CSSProperties) : undefined}
+      >
+        <img key={real ? src : "dot"} src={real ? src : "./icons/dot.svg"} alt="" />
+        {src !== null && !real && (
+          <img
+            hidden
+            src={src}
+            alt=""
+            onLoad={() => {
+              setLoaded(src);
+            }}
+          />
+        )}
+      </span>
+      <span className="lb">{name || "سایت تازه"}</span>
+    </div>
+  );
+}
+
 /** Pick from the most visited sites, or type an address and a name. */
 function AddSite({ have, onClose }: { have: readonly QuickSite[]; onClose: () => void }) {
   const [top, setTop] = useState<Site[]>([]);
@@ -196,16 +255,9 @@ function AddSite({ have, onClose }: { have: readonly QuickSite[]; onClose: () =>
   };
 
   const addTyped = (): void => {
-    const raw = url.trim();
-    if (raw === "") return;
-    let u: URL;
-    try {
-      u = new URL(/^https?:\/\//i.test(raw) ? raw : `https://${raw}`);
-    } catch {
-      setErr("این آدرس درست نیست.");
-      return;
-    }
-    if (!u.hostname.includes(".")) {
+    if (url.trim() === "") return;
+    const u = typedUrl(url);
+    if (u === null) {
       setErr("این آدرس درست نیست.");
       return;
     }
@@ -250,6 +302,7 @@ function AddSite({ have, onClose }: { have: readonly QuickSite[]; onClose: () =>
             </div>
           </>
         )}
+        <Preview url={url} title={title} />
         <form
           className="form2"
           onSubmit={(e) => {

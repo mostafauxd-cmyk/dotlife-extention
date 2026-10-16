@@ -1614,6 +1614,23 @@ svg {
   grid-template-columns: repeat(auto-fill, minmax(84px, 1fr));
   max-height: 220px;
 }
+/* the add panel's tile: the dot until the typed site's icon arrives, the name always showing */
+.lt.preview {
+  align-self: center;
+  cursor: default;
+  width: auto;
+}
+.lt.preview .lb {
+  opacity: 1;
+  transform: none;
+  max-width: 220px;
+}
+.lt.preview:hover .ic {
+  transform: none;
+}
+.lt.preview .ic img {
+  animation: fade 0.25s ease both;
+}
 .cta.block:disabled {
   opacity: 0.3;
 }
