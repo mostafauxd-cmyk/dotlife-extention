@@ -41,12 +41,7 @@ export function Customize({ onClose, onSignIn }: { onClose: () => void; onSignIn
           <button type="button" className="ghost" onClick={() => void syncNow()}>
             همگام‌سازی
           </button>
-          <button
-            type="button"
-            className="ghost"
-            style={{ marginInlineStart: 0 }}
-            onClick={() => void signOut()}
-          >
+          <button type="button" className="ghost" onClick={() => void signOut()}>
             خروج
           </button>
         </div>

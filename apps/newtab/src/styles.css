@@ -1568,6 +1568,10 @@ svg {
 .acct .ghost {
   margin-inline-start: auto;
 }
+/* «همگام‌سازی» and «خروج» sit together, closer than the row's own gap */
+.acct .ghost + .ghost {
+  margin-inline-start: -6px;
+}
 
 /* ---------- modals: add a site, sign in ---------- */
 .modal-bg {
