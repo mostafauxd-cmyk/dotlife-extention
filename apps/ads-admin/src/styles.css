@@ -216,19 +216,29 @@ svg {
   justify-self: start;
 }
 .brand b {
-  font-size: 20px;
+  font-size: 19px;
   font-weight: 700;
+  line-height: 1;
 }
 .brand small {
   color: var(--ink-3);
   font-size: 13px;
 }
-.brand-dot {
-  width: 14px;
-  height: 14px;
-  border-radius: 50%;
-  background: var(--noghte);
-  box-shadow: 0 0 18px rgba(140, 158, 255, 0.7);
+.brand {
+  direction: ltr;
+}
+.nx-mark {
+  display: block;
+  color: #fff;
+}
+.brand-sep {
+  width: 1px;
+  height: 18px;
+  background: var(--stroke-hi);
+}
+.brand b {
+  font-family: var(--font);
+  letter-spacing: 0.01em;
 }
 .store-chip {
   justify-self: end;

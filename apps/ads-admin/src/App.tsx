@@ -13,6 +13,7 @@ import { Dashboard } from "./pages/Dashboard";
 import { Publish } from "./pages/Publish";
 import { Slots } from "./pages/Slots";
 import { num } from "./data/labels";
+import { NxStudioMark } from "./ui/NxStudioMark";
 import { Tabs } from "./ui/Tabs";
 
 type Page = "slots" | "campaigns" | "ads" | "publish" | "dashboard";
@@ -34,9 +35,9 @@ function Shell() {
     <div className="shell">
       <header className="top">
         <a className="brand" href="#/slots">
-          <span className="brand-dot" />
-          <b>NX Ads</b>
-          <small>تبلیغات نقطه، پاکت و بقیه</small>
+          <NxStudioMark width={76} />
+          <span className="brand-sep" aria-hidden="true" />
+          <b>Ads</b>
         </a>
         <Tabs<Page>
           label="بخش‌های پنل"
