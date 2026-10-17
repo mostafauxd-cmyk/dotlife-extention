@@ -37,10 +37,11 @@ export function dismissAd(id: string): void {
  */
 export function useAd(slot: number, over: Partial<AdContext> = {}): Ad | null {
   const s = useSettings();
-  const [, tick] = useState(0);
+  // bumped by `setAds` and `dismissAd`, so a bundle that arrives later is drawn too
+  const [version, bump] = useState(0);
   useEffect(() => {
     const l = (): void => {
-      tick((t) => t + 1);
+      bump((t) => t + 1);
     };
     listeners.add(l);
     return () => {
@@ -70,7 +71,7 @@ export function useAd(slot: number, over: Partial<AdContext> = {}): Ad | null {
       }
     }
     return best;
-  }, [slot, s.persona, s.city, s.topics, s.off, key, tick]);
+  }, [slot, s.persona, s.city, s.topics, s.off, key, version]);
 }
 
 /** The label every ad carries. */

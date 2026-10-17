@@ -6,6 +6,12 @@
       "runtimeExecutable": "pnpm",
       "runtimeArgs": ["--filter", "@dotlife/ads-admin", "dev"],
       "port": 5190
+    },
+    {
+      "name": "newtab-with-ads",
+      "runtimeExecutable": "env",
+      "runtimeArgs": ["VITE_ADS_URL=http://localhost:5190", "pnpm", "--filter", "@dotlife/newtab", "dev"],
+      "port": 8098
     }
   ]
 }

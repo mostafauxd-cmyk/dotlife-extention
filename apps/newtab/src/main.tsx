@@ -1,5 +1,6 @@
 import { createRoot } from "react-dom/client";
 
+import { startAdsFeed } from "./adsFeed";
 import { App } from "./App";
 import { loadGoogle } from "./google";
 import { loadPaket } from "./paket";
@@ -14,6 +15,7 @@ async function start(): Promise<void> {
   await startSync();
   await loadGoogle();
   await loadPaket();
+  startAdsFeed();
   const root = document.getElementById("root");
   if (root !== null) createRoot(root).render(<App />);
   installMorph();

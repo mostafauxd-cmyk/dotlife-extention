@@ -63,15 +63,19 @@ export type LocalAdsStoreOptions = {
   seed?: readonly Ad[];
   /** Campaigns (and their creatives) to start with when none have been saved yet. */
   seedCampaigns?: { campaigns: readonly Campaign[]; ads: readonly Ad[] };
+  /** Also hands each published bundle on (in development, to the dev bundle route). */
+  mirror?: (bundle: Bundle) => Promise<void>;
 };
 
 /** Keeps ads in the browser's localStorage. The panel's only store until a server exists. */
 export class LocalAdsStore implements AdsStore {
   private readonly storage: KeyValueStorage;
   private readonly listeners = new Set<() => void>();
+  private readonly mirror: ((bundle: Bundle) => Promise<void>) | undefined;
 
-  constructor({ storage = localStorage, seed, seedCampaigns }: LocalAdsStoreOptions = {}) {
+  constructor({ storage = localStorage, seed, seedCampaigns, mirror }: LocalAdsStoreOptions = {}) {
     this.storage = storage;
+    this.mirror = mirror;
     if (seed !== undefined && this.storage.getItem(ADS_KEY) === null) this.write([...seed]);
     if (seedCampaigns !== undefined && this.storage.getItem(CAMPAIGNS_KEY) === null) {
       this.writeCampaigns([...seedCampaigns.campaigns]);
@@ -208,6 +212,7 @@ export class LocalAdsStore implements AdsStore {
     const bundle = buildBundle(this.read(), previous?.version ?? 0, now, this.readCampaigns());
     this.storage.setItem(BUNDLE_KEY, JSON.stringify(bundle));
     this.emit();
+    if (this.mirror !== undefined) await this.mirror(bundle);
     return bundle;
   }
 

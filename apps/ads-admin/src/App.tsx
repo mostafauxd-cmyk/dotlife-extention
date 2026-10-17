@@ -1,4 +1,4 @@
-import { SAMPLE_ADS } from "@dotlife/ads";
+import { SAMPLE_ADS, type Bundle } from "@dotlife/ads";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { Ctx, go, useAds, useCampaigns, useRoute, type AppContext } from "./context";
@@ -15,6 +15,16 @@ import { Slots } from "./pages/Slots";
 import { num } from "./data/labels";
 import { NxStudioMark } from "./ui/NxStudioMark";
 import { Tabs } from "./ui/Tabs";
+
+/** In development, a published bundle also goes to the dev server's bundle route (vite.config.ts). */
+async function postToDevRoute(bundle: Bundle): Promise<void> {
+  const r = await fetch("/v1/ads/bundle", {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify(bundle),
+  });
+  if (!r.ok) throw new Error(`bundle route: ${String(r.status)}`);
+}
 
 type Page = "slots" | "campaigns" | "ads" | "publish" | "dashboard";
 
@@ -97,6 +107,7 @@ export function App() {
       ads: new LocalAdsStore({
         seed: SAMPLE_ADS,
         seedCampaigns: { campaigns: SAMPLE_CAMPAIGNS, ads: SAMPLE_CREATIVES },
+        ...(import.meta.env.DEV ? { mirror: postToDevRoute } : {}),
       }),
       events: new LocalEventsStore(),
       toast,

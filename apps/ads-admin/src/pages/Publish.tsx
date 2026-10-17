@@ -205,7 +205,11 @@ export function Publish() {
     store.publish().then(
       (b) => {
         setBusy(false);
-        toast(`نسخه‌ی ${num(b.version)} منتشر شد.`);
+        toast(
+          import.meta.env.DEV
+            ? `نسخه‌ی ${num(b.version)} منتشر شد و به نیوتبِ در حال توسعه رسید.`
+            : `نسخه‌ی ${num(b.version)} منتشر شد.`,
+        );
       },
       () => {
         setBusy(false);
