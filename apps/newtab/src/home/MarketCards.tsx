@@ -1,4 +1,4 @@
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 
 import { localNow } from "@dotlife/tasks";
 
@@ -306,6 +306,29 @@ export function MarketCard({
       ? ((vals.at(-1) ?? first) / first - 1) * 100
       : null;
 
+  // each row's icon sits as far from the row's start as from its top and bottom, whatever height
+  // the rows grow to in this window
+  const list = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const el = list.current;
+    if (el === null) return;
+    const fit = (): void => {
+      const row = el.querySelector<HTMLElement>(".prow");
+      const icon = row?.querySelector<HTMLElement>(".ai");
+      if (row === null || icon === null || icon === undefined) return;
+      el.style.setProperty(
+        "--rg",
+        `${String(Math.max(6, (row.offsetHeight - icon.offsetHeight) / 2))}px`,
+      );
+    };
+    fit();
+    const watch = new ResizeObserver(fit);
+    watch.observe(el);
+    return () => {
+      watch.disconnect();
+    };
+  }, [rows.length]);
+
   return (
     <div className="card g mc mkt">
       <div className="mh">
@@ -375,7 +398,7 @@ export function MarketCard({
               { id: "mine" as const, label: "دارایی‌های من" },
             ]}
           />
-          <div className="plist">
+          <div className="plist" ref={list}>
             {rows.map((it) => (
               <Row
                 key={it.id}

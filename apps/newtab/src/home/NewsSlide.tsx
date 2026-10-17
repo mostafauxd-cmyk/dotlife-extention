@@ -1,8 +1,9 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 
 import { AD_LABEL, useAd } from "../ads";
 import { useRecordsVersion, useSettings } from "../hooks";
 import {
+  articleImage,
   categoryName,
   checkOwnFeed,
   coverage,
@@ -65,33 +66,47 @@ function Badge({ source }: { source: NewsSource | undefined }) {
   );
 }
 
-/** A story's picture, or its outlet's colour when there is none (or it does not load). */
-function Pic({
-  story,
-  source,
-  className,
-}: {
-  story: Story;
-  source: NewsSource | undefined;
-  className: string;
-}) {
+/**
+ * A story's picture. A feed without one: the story's own page is asked for its picture once the card
+ * comes into view; until then (or when it has none) a neutral glass ground with a faint newspaper.
+ */
+function Pic({ story, className }: { story: Story; className: string }) {
+  const [found, setFound] = useState<string | null>(null);
   const [broken, setBroken] = useState(false);
+  const ph = useRef<HTMLSpanElement>(null);
+  const src = story.image ?? found;
   useEffect(() => {
     setBroken(false);
-  }, [story.image]);
-  if (story.image === null || broken) {
+  }, [src]);
+  useEffect(() => {
+    setFound(null);
+    const el = ph.current;
+    if (story.image !== null || el === null) return;
+    let live = true;
+    const seen = new IntersectionObserver((entries) => {
+      if (!entries.some((e) => e.isIntersecting)) return;
+      seen.disconnect();
+      void articleImage(story.url).then((u) => {
+        if (live) setFound(u);
+      });
+    });
+    seen.observe(el);
+    return () => {
+      live = false;
+      seen.disconnect();
+    };
+  }, [story.image, story.url]);
+  if (src === null || broken) {
     return (
-      <span
-        className={`${className} none`}
-        style={{ "--sc": source?.color ?? "#6d6d6d" } as React.CSSProperties}
-        aria-hidden="true"
-      />
+      <span ref={ph} className={`${className} none`} aria-hidden="true">
+        <Icon name="newspaper" />
+      </span>
     );
   }
   return (
     <img
       className={className}
-      src={story.image}
+      src={src}
       alt=""
       loading="lazy"
       referrerPolicy="no-referrer"
@@ -114,6 +129,19 @@ export function NewsSlide() {
   const [cat, setCat] = useState<NewsCategory | "all">("all");
   const [q, setQ] = useState("");
   const ad = useAd(12);
+  const head = useRef<HTMLDivElement>(null);
+  const [headH, setHeadH] = useState(140);
+  useLayoutEffect(() => {
+    const el = head.current;
+    if (el === null) return;
+    const fit = new ResizeObserver(() => {
+      setHeadH(el.offsetHeight);
+    });
+    fit.observe(el);
+    return () => {
+      fit.disconnect();
+    };
+  }, []);
   const src = (id: string): NewsSource | undefined => all.find((x) => x.id === id);
 
   const shown = useMemo(() => {
@@ -140,7 +168,7 @@ export function NewsSlide() {
           markRead(x.id);
         }}
       >
-        <Pic story={x} source={src(x.source)} className="nw-pic" />
+        <Pic story={x} className="nw-pic" />
         <span className="nw-body">
           <Meta story={x} source={src(x.source)} />
           <b>{x.title}</b>
@@ -157,55 +185,62 @@ export function NewsSlide() {
     <div className="s-pad news-s">
       <Sources all={all} off={s.newsOff} />
 
-      <section className="card g nw-feed" aria-label="خبرها">
-        <div className="nw-bar">
-          <Tabs
-            label="ترتیب خبرها"
-            size="sm"
-            value={mode}
-            onChange={setMode}
-            items={[
-              { id: "you", label: "برای تو" },
-              { id: "latest", label: "تازه‌ترین" },
-            ]}
-          />
-          <label className="nw-search">
-            <Icon name="search" />
-            <input
-              value={q}
-              placeholder="جستجو در خبرها…"
-              aria-label="جستجو در خبرها"
-              onChange={(e) => {
-                setQ(e.target.value);
-              }}
+      <section
+        className="card g nw-feed"
+        aria-label="خبرها"
+        style={{ "--nwh": `${String(headH)}px` } as React.CSSProperties}
+      >
+        {/* the bar and the chips float over the stories, which pass under them blurred */}
+        <div className="nw-head" ref={head}>
+          <div className="nw-bar">
+            <Tabs
+              label="ترتیب خبرها"
+              size="sm"
+              value={mode}
+              onChange={setMode}
+              items={[
+                { id: "you", label: "برای تو" },
+                { id: "latest", label: "تازه‌ترین" },
+              ]}
             />
-          </label>
-          <button
-            type="button"
-            className="rbtn sm"
-            aria-label="خبر تازه بگیر"
-            title="خبر تازه بگیر"
-            disabled={loading}
-            onClick={refresh}
-          >
-            <Icon name="refresh" />
-          </button>
-        </div>
-        <div className="nw-chips" role="tablist" aria-label="دسته‌ی خبر">
-          {NEWS_CATEGORIES.map(([id, name]) => (
+            <label className="nw-search">
+              <Icon name="search" />
+              <input
+                value={q}
+                placeholder="جستجو در خبرها…"
+                aria-label="جستجو در خبرها"
+                onChange={(e) => {
+                  setQ(e.target.value);
+                }}
+              />
+            </label>
             <button
-              key={id}
               type="button"
-              role="tab"
-              className="chip"
-              aria-selected={cat === id}
-              onClick={() => {
-                setCat(id);
-              }}
+              className="rbtn sm"
+              aria-label="خبر تازه بگیر"
+              title="خبر تازه بگیر"
+              disabled={loading}
+              onClick={refresh}
             >
-              {name}
+              <Icon name="refresh" />
             </button>
-          ))}
+          </div>
+          <div className="nw-chips" role="tablist" aria-label="دسته‌ی خبر">
+            {NEWS_CATEGORIES.map(([id, name]) => (
+              <button
+                key={id}
+                type="button"
+                role="tab"
+                className="chip"
+                aria-selected={cat === id}
+                onClick={() => {
+                  setCat(id);
+                }}
+              >
+                {name}
+              </button>
+            ))}
+          </div>
         </div>
 
         <div className="nw-scroll">
@@ -239,7 +274,7 @@ export function NewsSlide() {
                     markRead(top.id);
                   }}
                 >
-                  <Pic story={top} source={src(top.source)} className="nw-himg" />
+                  <Pic story={top} className="nw-himg" />
                   <span className="nw-htx">
                     <Meta story={top} source={src(top.source)} big />
                     <b>{top.title}</b>
@@ -263,21 +298,23 @@ export function NewsSlide() {
                 <div key={x.id} className="nw-slot">
                   {card(x)}
                   {i === 2 && ad !== null && (
-                    <a className="nw-card nw-ad" href={ad.url} target="_blank" rel="noreferrer">
-                      <span
-                        className="nw-pic none"
-                        style={{ "--sc": ad.tint ?? "#8C9EFF" } as React.CSSProperties}
-                        aria-hidden="true"
-                      />
-                      <span className="nw-body">
-                        <span className="nw-meta">
-                          <span className="chip">{AD_LABEL}</span>
-                          <small>{ad.line}</small>
+                    <div className="nw-card nw-ad">
+                      <a href={ad.url} target="_blank" rel="noreferrer">
+                        <span className="nw-pic none" aria-hidden="true">
+                          <i className="nw-b" style={{ background: ad.tint ?? "#8C9EFF" }}>
+                            {ad.glyph ?? ad.title.slice(0, 1)}
+                          </i>
                         </span>
-                        <b>{ad.title}</b>
-                        {ad.cta !== undefined && <span className="nw-sum">{ad.cta} ←</span>}
-                      </span>
-                    </a>
+                        <span className="nw-body">
+                          <span className="nw-meta">
+                            <span className="chip">{AD_LABEL}</span>
+                            <small>{ad.line}</small>
+                          </span>
+                          <b>{ad.title}</b>
+                          {ad.cta !== undefined && <span className="nw-sum">{ad.cta} ←</span>}
+                        </span>
+                      </a>
+                    </div>
                   )}
                 </div>
               ))}
