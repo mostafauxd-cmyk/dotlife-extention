@@ -69,17 +69,14 @@ export const SLOTS: readonly Slot[] = [
 ];
 
 /**
- * Noghte's phone app: the places a native card can sit beside the app's own boxes, never inside
- * notes, tasks or the planner (apps/mobile in the Dotlife repo). 101 and 102 are where its
- * `promo` cards already go.
+ * Noghte's phone app: only the two places its sponsor card (`promo`, Dotlife repo
+ * packages/shared/src/promo.ts) already has on the calendar page — above the day's boxes and after
+ * them. The app shows the first live card of a place with no targeting, so neither may be aimed;
+ * more places join when the app gets them.
  */
 export const NOGHTE_SLOTS: readonly Slot[] = [
-  { id: 101, inventory: 50000, product: "noghte", slide: "تقویم", name: "کارت بالای داشبورد", shape: "یک کارت هم‌شکل جعبه‌های داشبورد تقویم، بالای آن‌ها (جای promo «top»)", cap: "۱", targets: ["city", "season", "occasion"], model: "daily-sponsor", house: true },
-  { id: 102, inventory: 30000, product: "noghte", slide: "تقویم", name: "کارت پایان داشبورد", shape: "یک کارت در انتهای داشبورد تقویم (جای promo «end»)", cap: "۱", targets: ["city", "season", "topic"], model: "per-thousand", house: true },
-  { id: 103, inventory: 12000, product: "noghte", slide: "مناسبت‌ها", name: "ردیف زیر مناسبت", shape: "یک ردیف هم‌شکل مناسبت‌ها، زیر مناسبت مرتبط", cap: "۱ در فهرست", targets: ["occasion"], model: "occasion-sponsor", house: false },
-  { id: 104, inventory: 25000, product: "noghte", slide: "تقویم", name: "ردیف رویدادهای امروز", shape: "یک ردیف در کارت رویدادهای فرهنگی و رسمی امروز", cap: "۱", targets: ["occasion", "city"], model: "per-click", house: false },
-  { id: 105, inventory: 15000, product: "noghte", slide: "آب‌وهوا", name: "کارت زیر پیش‌بینی", shape: "یک کارت بعد از پیش‌بینی چندروزه", cap: "۱", targets: ["city", "season", "weekend"], model: "per-thousand", house: false },
-  { id: 106, inventory: 6000, product: "noghte", slide: "پروفایل", name: "ردیف پیشنهاد در پروفایل", shape: "یک ردیف هم‌شکل کارت‌های پروفایل", cap: "۱", targets: ["topic", "city"], model: "per-signup", house: true },
+  { id: 101, inventory: 50000, product: "noghte", slide: "تقویم", name: "کارت بالای تقویم", shape: "کارت حامی (promo) بالای جعبه‌های روز در صفحه‌ی تقویم، با ظاهر خود اپ", cap: "۱", targets: [], model: "daily-sponsor", house: true },
+  { id: 102, inventory: 30000, product: "noghte", slide: "تقویم", name: "کارت پایین تقویم", shape: "کارت حامی (promo) بعد از جعبه‌های روز در صفحه‌ی تقویم", cap: "۱", targets: [], model: "daily-sponsor", house: true },
 ];
 
 /**

@@ -64,6 +64,10 @@ describe("catalog across products", () => {
     expect(PAKET_SLOTS.every((s) => s.product === "paket")).toBe(true);
     expect(PRODUCTS.every((p) => PLACEMENTS.some((s) => s.product === p))).toBe(true);
   });
+  it("offers Noghte only its two promo places, unaimed", () => {
+    expect(NOGHTE_SLOTS.map((s) => s.id)).toEqual([101, 102]);
+    for (const s of NOGHTE_SLOTS) expect(s.targets).toEqual([]);
+  });
   it("never aims Paket by persona or anything of a person's money", () => {
     for (const s of PAKET_SLOTS) expect(s.targets).not.toContain("persona");
   });
@@ -156,17 +160,18 @@ describe("allocate", () => {
     const multi = campaign({
       products: [
         { product: "newtab", slots: [6], targeting: { city: ["مشهد"] } },
-        { product: "noghte", slots: [105], targeting: { city: ["مشهد"], weekend: true } },
+        { product: "noghte", slots: [102], targeting: {} },
         { product: "paket", slots: [201], targeting: { topic: ["سفر"] } },
       ],
     });
     const f = allocate([multi], NOW);
     expect(f.places.map((p) => [p.slot, p.product])).toEqual([
       [6, "newtab"],
-      [105, "noghte"],
+      [102, "noghte"],
       [201, "paket"],
     ]);
-    expect(line(f, "c1", 105)?.reach).toBeCloseTo(0.08 * (2 / 7));
+    // the app's promo places cannot be aimed, so they reach everyone
+    expect(line(f, "c1", 102)?.reach).toBe(1);
   });
   it("leaves out campaigns that are paused or outside their days", () => {
     expect(allocate([campaign({ status: "paused" })], NOW).places).toEqual([]);

@@ -23,6 +23,8 @@ export type ExtraField = {
   suggestions?: readonly string[];
   hint?: string;
   placeholder?: string;
+  /** The longest the value may be. */
+  max?: number;
 };
 
 export type SlotForm = {
@@ -30,6 +32,8 @@ export type SlotForm = {
   /** The longest title the slot's box can hold. */
   titleMax: number;
   lineLabel?: string;
+  lineMax?: number;
+  ctaMax?: number;
   ctaLabel?: string;
   ctaPlaceholder?: string;
   glyph?: boolean;
@@ -37,6 +41,48 @@ export type SlotForm = {
   tint?: "optional" | "required";
   image?: boolean;
   extra: readonly ExtraField[];
+};
+
+/** Noghte's `promo` card: a title, a text, a button, a footer line, a picture, a look. */
+export const PROMO_LOOK_LABEL = {
+  compact: "متن‌محور (عکس کوچک کنار متن)",
+  picture: "عکس‌محور (عکس کل کارت)",
+} as const;
+const NOGHTE_PROMO: SlotForm = {
+  titleLabel: "عنوان کارت",
+  titleMax: 60,
+  lineLabel: "متن کارت",
+  lineMax: 160,
+  ctaLabel: "متن دکمه",
+  ctaPlaceholder: "مشاهده",
+  ctaMax: 24,
+  tint: "optional",
+  image: true,
+  extra: [
+    {
+      key: "look",
+      label: "شکل کارت",
+      kind: "select",
+      required: true,
+      options: Object.values(PROMO_LOOK_LABEL),
+      hint: "کارت عکس‌محور بی عکس، متن‌محور کشیده می‌شود.",
+    },
+    {
+      key: "label",
+      label: "خط پایین کارت",
+      kind: "text",
+      placeholder: "با همراهی …",
+      max: 40,
+      hint: "خالی یعنی «با همراهی» و نام آگهی‌دهنده.",
+    },
+    {
+      key: "imageWidth",
+      label: "پهنای عکس (پیکسل)",
+      kind: "number",
+      hint: "اپ برای جا دادن عکس اندازه‌اش را لازم دارد.",
+    },
+    { key: "imageHeight", label: "بلندی عکس (پیکسل)", kind: "number" },
+  ],
 };
 
 const EVENT_KINDS = ["کنسرت", "تئاتر", "نمایشگاه", "سینما", "ورزش", "جشنواره"] as const;
@@ -180,51 +226,9 @@ export const SLOT_FORM: Record<number, SlotForm> = {
     image: true,
     extra: [],
   },
-  // Noghte's phone app
-  101: {
-    titleLabel: "عنوان کارت",
-    titleMax: 60,
-    lineLabel: "متن کارت",
-    ctaLabel: "متن دکمه",
-    ctaPlaceholder: "ببین",
-    glyph: true,
-    tint: "optional",
-    image: true,
-    extra: [],
-  },
-  102: {
-    titleLabel: "عنوان کارت",
-    titleMax: 60,
-    lineLabel: "متن کارت",
-    ctaLabel: "متن دکمه",
-    ctaPlaceholder: "ببین",
-    glyph: true,
-    tint: "optional",
-    image: true,
-    extra: [],
-  },
-  103: { titleLabel: "متن ردیف", titleMax: 50, extra: [] },
-  104: { titleLabel: "متن ردیف", titleMax: 60, lineLabel: "توضیح کوتاه", extra: [] },
-  105: {
-    titleLabel: "عنوان کارت",
-    titleMax: 60,
-    lineLabel: "توضیح",
-    ctaLabel: "متن دکمه",
-    ctaPlaceholder: "ببین",
-    glyph: true,
-    tint: "optional",
-    extra: [],
-  },
-  106: {
-    titleLabel: "عنوان ردیف",
-    titleMax: 50,
-    lineLabel: "توضیح کوتاه",
-    ctaLabel: "متن دکمه",
-    ctaPlaceholder: "عضویت",
-    glyph: true,
-    tint: "optional",
-    extra: [],
-  },
+  // Noghte's phone app: its sponsor card (`promo`), which has these fields and limits
+  101: NOGHTE_PROMO,
+  102: NOGHTE_PROMO,
   // Paket's phone app
   201: {
     titleLabel: "عنوان کارت",

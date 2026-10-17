@@ -3,6 +3,7 @@ import type { Ad } from "@dotlife/ads";
 import { PRODUCT_INFO, slotById } from "@dotlife/ads";
 
 import { firstLetter, num } from "../data/labels";
+import { PROMO_LOOK_LABEL } from "../data/slotForm";
 import { Icon } from "./Icon";
 
 /**
@@ -329,99 +330,55 @@ function Mock({ ad }: { ad: PreviewAd }) {
           </div>
         </div>
       );
-    // Noghte's phone app
+    // Noghte's phone app: its sponsor card (`promo`), compact or picture-led
     case 101:
-    case 102:
-      return (
-        <div className="pv-phone">
-          {ad.slot === 102 && <div className="pv-box ghost">آب‌وهوا · ۱۸°</div>}
-          <div className="pv-box own">
-            <span className="pv-boxhead">
-              {ad.glyph !== undefined || ad.image !== undefined ? <Mark ad={ad} /> : null}
-              <b>{title}</b>
-              <Tag />
-            </span>
-            {line !== undefined && <span className="pv-sub">{line}</span>}
-            {cta !== undefined && (
-              <button type="button" className="pv-btn" tabIndex={-1}>
-                {cta}
-              </button>
-            )}
-          </div>
-          {ad.slot === 101 && <div className="pv-box ghost">رویدادهای امروز</div>}
-        </div>
+    case 102: {
+      const picture = ad.extra?.["look"] === PROMO_LOOK_LABEL.picture && ad.image !== undefined;
+      const foot = ad.extra?.["label"] ?? `با همراهی ${ad.advertiser === "" ? "…" : ad.advertiser}`;
+      const btn = (
+        <button
+          type="button"
+          className="pv-btn"
+          tabIndex={-1}
+          style={ad.tint === undefined ? undefined : { background: ad.tint, color: "#fff" }}
+        >
+          {cta ?? "مشاهده"}
+        </button>
       );
-    case 103:
-      return (
-        <div className="pv-phone">
-          <div className="pv-list">
-            <div className="pv-row">
-              <span className="pv-day">{num(25)}</span>
-              <Ghost>روز ملی کتاب‌خوانی</Ghost>
-            </div>
-            <div className="pv-row sub own">
-              <span>{title}</span>
-              <Tag />
-            </div>
-            <div className="pv-row">
-              <span className="pv-day">{num(29)}</span>
-              <Ghost>روز صادرات</Ghost>
-            </div>
+      const card = picture ? (
+        <div className="pv-promo pic" style={{ backgroundImage: `url("${ad.image ?? ""}")` }}>
+          <div className="pv-promo-foot">
+            <b>{title}</b>
+            {line !== undefined && <span>{line}</span>}
+            {btn}
+            <small>{foot}</small>
           </div>
         </div>
-      );
-    case 104:
-      return (
-        <div className="pv-phone">
-          <div className="pv-box">
-            <small>رویدادهای امروز</small>
-            <div className="pv-list">
-              <div className="pv-row">
-                <Ghost>زادروز سعدی</Ghost>
-              </div>
-              <div className="pv-row own">
-                <i className="pv-sdot" />
-                <span>{title}</span>
-                <Tag />
-              </div>
-            </div>
-            {line !== undefined && <span className="pv-sub">{line}</span>}
+      ) : (
+        <div className="pv-promo">
+          <div className="pv-promo-words">
+            <b>{title}</b>
+            {line !== undefined && <span>{line}</span>}
+            {btn}
           </div>
+          {ad.image !== undefined && <img src={ad.image} alt="" />}
+          <small className="pv-promo-label">{foot}</small>
         </div>
       );
-    case 105:
       return (
         <div className="pv-phone">
-          <div className="pv-forecast">
-            {["ش", "ی", "د", "س", "چ"].map((d, i) => (
-              <span key={d}>
-                {d}
-                <b>{num(18 - i)}°</b>
-              </span>
-            ))}
-          </div>
-          <div className="pv-event own">
-            <Mark ad={ad} />
-            <div>
-              <b>{title}</b>
-              <span>
-                {line === undefined ? "" : `${line} · `}
-                {LABEL}
-              </span>
-            </div>
-            <button type="button" tabIndex={-1}>
-              {cta ?? "ببین"}
-            </button>
-          </div>
+          {ad.slot === 102 && <div className="pv-box ghost">اوقات شرعی و رویدادهای امروز</div>}
+          {card}
+          {ad.slot === 101 && <div className="pv-box ghost">اوقات شرعی و رویدادهای امروز</div>}
         </div>
       );
-    case 106:
+    }
     case 206:
       return (
         <div className="pv-phone">
           <div className="pv-list">
             <div className="pv-row">
-              <Ghost>{ad.slot === 106 ? "شهر و اوقات شرعی" : "اشتراک پلاس"}</Ghost>
+              <Ghost>اشتراک پلاس</Ghost>
             </div>
             <div className="pv-row own price">
               <Mark ad={ad} />

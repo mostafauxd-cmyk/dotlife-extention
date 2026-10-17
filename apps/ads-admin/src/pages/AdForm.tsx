@@ -301,7 +301,7 @@ function FormBody({
           <div className="error-sum" role="alert">
             <Icon name="alert" />
             <div>
-              <b>این تبلیغ هنوز ذخیره نشد</b>
+              <b>این آگهی هنوز ذخیره نشد</b>
               <ul>
                 {errorList.map((m) => (
                   <li key={m}>{m}</li>
@@ -808,9 +808,9 @@ export function AdForm({
         <div>
           <a className="crumb" href={adsHash({})}>
             <Icon name="back" size={14} />
-            تبلیغ‌ها
+            آگهی‌ها
           </a>
-          <h1>{isNew ? "تبلیغ تازه" : "ویرایش تبلیغ"}</h1>
+          <h1>{isNew ? "آگهی تازه" : "ویرایش آگهی"}</h1>
         </div>
       </section>
       {state.kind === "loading" && <p className="loading">در حال خواندن…</p>}

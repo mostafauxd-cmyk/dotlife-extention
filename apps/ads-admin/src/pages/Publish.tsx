@@ -1,4 +1,4 @@
-import type { Bundle } from "@dotlife/ads";
+import type { Ad, Bundle } from "@dotlife/ads";
 import { useEffect, useRef, useState } from "react";
 
 import { useApp, useAds, useCampaigns, useLastBundle } from "../context";
@@ -17,6 +17,7 @@ import {
   type ImportResult,
 } from "../data/logic";
 import { Icon } from "../ui/Icon";
+import { toNoghtePromos } from "../data/noghtePromo";
 
 /** The bundle as clients receive it; the signature is the server's, so it shows as a placeholder here. */
 const shown = (b: Bundle): string =>
@@ -160,6 +161,71 @@ function Importer() {
             درون‌ریزی
           </button>
         </div>
+      )}
+    </section>
+  );
+}
+
+/** What the ads of places 101 and 102 become in Noghte's own sponsor-card list. */
+function NoghtePromos({ ads }: { ads: readonly Ad[] }) {
+  const { toast } = useApp();
+  const writes = toNoghtePromos(ads);
+  const text = JSON.stringify(writes, null, 2);
+  return (
+    <section className="card">
+      <h2>
+        اپ نقطه · کارت‌های حامی
+        <small> {num(writes.length)} کارت</small>
+      </h2>
+      <p className="note">
+        اپ نقطه هنوز بسته‌ی NX Ads را نمی‌خواند؛ آگهی‌های جایگاه ۱۰۱ (بالای تقویم) و ۱۰۲ (پایین
+        تقویم) به شکل کارت‌های promo خودش در می‌آیند. هر کارت با{" "}
+        <code>PUT /admin/api/promos/:id</code> در پنل نقطه نوشته می‌شود. اپ در هر جا اولین کارت زنده
+        را نشان می‌دهد، پس ترتیب از روی سهم است و هدف‌گیری ندارد.
+      </p>
+      {writes.length === 0 ? (
+        <p className="note">آگهی زنده‌ای برای این دو جایگاه نیست.</p>
+      ) : (
+        <>
+          <ol className="toplist">
+            {writes.map((w) => (
+              <li key={w.id}>
+                <span className="num">{w.card.place === "top" ? "۱۰۱" : "۱۰۲"}</span>
+                <b>{w.card.title}</b>
+                <small dir="ltr">{w.id}</small>
+              </li>
+            ))}
+          </ol>
+          <div className="btn-row">
+            <button
+              type="button"
+              className="btn ghost sm"
+              onClick={() => {
+                download("noghte-promos.json", text);
+              }}
+            >
+              <Icon name="download" size={15} />
+              دانلود برای پنل نقطه
+            </button>
+            <button
+              type="button"
+              className="btn ghost sm"
+              onClick={() => {
+                void navigator.clipboard.writeText(text).then(
+                  () => {
+                    toast("کارت‌ها کپی شد.");
+                  },
+                  () => {
+                    toast("کپی نشد.");
+                  },
+                );
+              }}
+            >
+              <Icon name="copy" size={15} />
+              کپی
+            </button>
+          </div>
+        </>
       )}
     </section>
   );
@@ -393,6 +459,8 @@ export function Publish() {
           </>
         )}
       </section>
+
+      <NoghtePromos ads={next.ads} />
 
       <Importer />
     </>

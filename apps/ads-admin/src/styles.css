@@ -2080,3 +2080,55 @@ ol.toplist small {
     grid-template-columns: repeat(2, 1fr);
   }
 }
+
+/* Noghte's sponsor card (promo), compact or picture-led */
+.pv-promo {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 10px;
+  padding: 14px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.1);
+}
+.pv-promo img {
+  width: 64px;
+  height: 64px;
+  border-radius: 14px;
+  object-fit: cover;
+}
+.pv-promo-words,
+.pv-promo-foot {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 13px;
+}
+.pv-promo-words span,
+.pv-promo-foot span {
+  color: var(--ink-2);
+  font-size: 12.5px;
+}
+.pv-promo-label {
+  grid-column: 1 / -1;
+  color: var(--ink-3);
+  font-size: 11px;
+}
+.pv-promo.pic {
+  display: flex;
+  align-items: flex-end;
+  min-height: 190px;
+  padding: 0;
+  overflow: hidden;
+  background-size: cover;
+  background-position: center;
+}
+.pv-promo.pic .pv-promo-foot {
+  width: 100%;
+  padding: 40px 14px 12px;
+  background: linear-gradient(transparent, rgba(0, 0, 0, 0.78));
+}
+.pv-promo.pic small {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 11px;
+}

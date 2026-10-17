@@ -84,6 +84,8 @@ const DAY = /^\d{4}-\d{2}-\d{2}$/;
 type Loose = {
   slot: number;
   title?: string | undefined;
+  line?: string | undefined;
+  cta?: string | undefined;
   url?: string | undefined;
   image?: string | undefined;
   tint?: string | undefined;
@@ -106,6 +108,8 @@ function loose(input: unknown): Loose | undefined {
   return {
     slot,
     title: str(o["title"]),
+    line: str(o["line"]),
+    cta: str(o["cta"]),
     url: str(o["url"]),
     image: str(o["image"]),
     tint: str(o["tint"]),
@@ -137,6 +141,14 @@ function slotRules(ad: Loose, errors: Record<string, string>): void {
 
   if (ad.title !== undefined && graphemes(ad.title).length > form.titleMax)
     put("title", `${form.titleLabel} در این جایگاه بیش از ${num(form.titleMax)} نویسه جا نمی‌شود.`);
+  if (
+    form.lineMax !== undefined &&
+    ad.line !== undefined &&
+    graphemes(ad.line).length > form.lineMax
+  )
+    put("line", `${form.lineLabel ?? "توضیح"} بیش از ${num(form.lineMax)} نویسه جا نمی‌شود.`);
+  if (form.ctaMax !== undefined && ad.cta !== undefined && graphemes(ad.cta).length > form.ctaMax)
+    put("cta", `متن دکمه بیش از ${num(form.ctaMax)} نویسه جا نمی‌شود.`);
   if (form.tint === "required" && ad.tint === undefined)
     put("tint", "این جایگاه رنگ برند می‌خواهد.");
   if (ad.url?.startsWith("http://") === true) put("url", "نشانی مقصد باید با https شروع شود.");
@@ -152,9 +164,16 @@ function slotRules(ad: Loose, errors: Record<string, string>): void {
       continue;
     }
     if (f.kind === "number" && !Number.isFinite(Number(v))) put(at, `${f.label} باید عدد باشد.`);
+    if (f.max !== undefined && graphemes(v).length > f.max)
+      put(at, `${f.label} بیش از ${num(f.max)} نویسه جا نمی‌شود.`);
     if (f.kind === "date" && !DAY.test(v)) put(at, `${f.label} را به شکل ۲۰۲۶-۱۰-۲۳ وارد کن.`);
     if (f.kind === "select" && f.options?.includes(v) !== true)
       put(at, `${f.label}: یکی از گزینه‌ها را بردار.`);
+  }
+  // a promo picture needs its size, for the app to give it room
+  if ((ad.slot === 101 || ad.slot === 102) && ad.image !== undefined) {
+    for (const k of ["imageWidth", "imageHeight"])
+      if (ad.extra?.[k] === undefined) put(`extra.${k}`, "اندازه‌ی عکس لازم است.");
   }
   const day = ad.extra?.["occasionDay"];
   if (day !== undefined && Number.isFinite(Number(day)) && (Number(day) < 1 || Number(day) > 31))
