@@ -1,0 +1,187 @@
+/* The ads panel, in the new tab's own look (apps/newtab/src/styles.css): dark, Yekan Bakh, soft glass cards. */
+
+@font-face {
+  font-family: "Yekan Bakh";
+  font-weight: 300;
+  src: url("/fonts/Yekan_Bakh_Fanum_Light.TTF") format("truetype");
+}
+@font-face {
+  font-family: "Yekan Bakh";
+  font-weight: 400;
+  src: url("/fonts/Yekan_Bakh_Fanum_Regular.TTF") format("truetype");
+}
+@font-face {
+  font-family: "Yekan Bakh";
+  font-weight: 500;
+  src: url("/fonts/Yekan_Bakh_Fanum_Medium.TTF") format("truetype");
+}
+@font-face {
+  font-family: "Yekan Bakh";
+  font-weight: 600;
+  src: url("/fonts/Yekan_Bakh_Fanum_Semi_Bold.TTF") format("truetype");
+}
+@font-face {
+  font-family: "Yekan Bakh";
+  font-weight: 700;
+  src: url("/fonts/Yekan_Bakh_Fanum_Bold.TTF") format("truetype");
+}
+@font-face {
+  font-family: "Yekan Bakh";
+  font-weight: 800;
+  src: url("/fonts/Yekan_Bakh_Fanum_Extra_Bold.TTF") format("truetype");
+}
+
+:root {
+  color-scheme: dark;
+  --ink: #f5f6f8;
+  --ink-2: #a7a7a7;
+  --ink-3: #6d6d6d;
+  --stroke: rgba(255, 255, 255, 0.1);
+  --stroke-hi: rgba(255, 255, 255, 0.18);
+  --card: rgba(255, 255, 255, 0.04);
+  --card-hi: rgba(255, 255, 255, 0.07);
+  --noghte: #8c9eff;
+  --coral: #ff6b57;
+  --amber: #f2c94c;
+  --green: #8add88;
+  --font: "Yekan Bakh", "Vazirmatn", Tahoma, system-ui, sans-serif;
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --cr: 28px;
+  --cp: 8px;
+  --ir: calc(var(--cr) - var(--cp));
+  --row-r: 14px;
+}
+* {
+  box-sizing: border-box;
+}
+[hidden] {
+  display: none !important;
+}
+html,
+body,
+#root {
+  min-height: 100%;
+  margin: 0;
+}
+body {
+  background:
+    radial-gradient(900px 620px at 50% 0%, rgba(140, 158, 255, 0.1), transparent 70%),
+    radial-gradient(1400px 900px at 50% 125%, rgba(140, 158, 255, 0.07), transparent 70%), #14161d;
+  background-attachment: fixed;
+  color: var(--ink);
+  font-family: var(--font);
+  font-size: 15px;
+  line-height: 1.8;
+  -webkit-font-smoothing: antialiased;
+}
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+:focus-visible {
+  outline: 2px solid var(--noghte);
+  outline-offset: 3px;
+}
+svg {
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* ---------- the tab bar (ui/Tabs.tsx), as in the new tab ---------- */
+.tabs {
+  display: flex;
+  align-items: stretch;
+  gap: 2px;
+  height: 52px;
+  padding: 5px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(30px) saturate(1.5);
+}
+.tabs button {
+  font-size: 16px;
+  font-weight: 500;
+  padding: 0 22px;
+  border: 0;
+  border-radius: 999px;
+  background: none;
+  color: rgba(255, 255, 255, 0.72);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  white-space: nowrap;
+  transition:
+    background 0.25s var(--ease),
+    color 0.25s;
+}
+.tabs button:hover {
+  color: #fff;
+}
+.tabs button[aria-selected="true"] {
+  background: rgba(255, 255, 255, 0.16);
+  color: #fff;
+}
+.tabs button .n {
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  font-size: 12px;
+  background: rgba(255, 255, 255, 0.12);
+}
+.tabs button[aria-selected="true"] .n {
+  background: rgba(255, 255, 255, 0.18);
+}
+.tabs.sm {
+  height: 40px;
+  padding: 4px;
+}
+.tabs.sm button {
+  font-size: 14px;
+  padding: 0 14px;
+}
+.tabs.block button {
+  flex: 1;
+  padding: 0;
+}
+
+/* the morphing tab pill (ui/morph.ts): the bar's own ::before, under the chosen item */
+.morph {
+  position: relative;
+  isolation: isolate;
+}
+.morph::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  top: var(--mt, 0);
+  left: var(--ml, 0);
+  width: var(--mw, 0);
+  height: var(--mh, 0);
+  opacity: var(--mo, 0);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.16);
+  pointer-events: none;
+  transition: opacity 0.2s;
+}
+.morph > [aria-selected="true"],
+.morph > [aria-pressed="true"],
+.morph > [aria-checked="true"] {
+  background: transparent !important;
+  border-color: transparent !important;
+  color: #fff !important;
+}
+.morph > * {
+  transition: color 0.3s ease;
+}
+.morph:has(> :focus-visible)::before {
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--noghte) 65%, transparent);
+}

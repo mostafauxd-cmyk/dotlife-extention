@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "ads-admin",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["--filter", "@dotlife/ads-admin", "dev"],
+      "port": 5190
+    }
+  ]
+}
