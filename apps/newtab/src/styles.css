@@ -6509,10 +6509,15 @@ a.ts-link {
 /* a few pixels of the card's own edge stay round the highlight; the figures keep their place */
 .mkt .plist {
   margin-inline: -10px;
+  gap: 4px;
 }
+/* concentric with the card's corner (32px less the 6px inset), a gap between neighbours */
 .mkt .prow {
   padding-inline: 18px;
-  border-radius: 14px;
+  border-radius: 26px;
+}
+.mkt {
+  padding-bottom: 6px;
 }
 /* the market's groups as a line under the active word, as in the design */
 .tabs.line {
