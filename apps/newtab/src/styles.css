@@ -6897,7 +6897,8 @@ a.ts-link {
   color: #f0817a;
 }
 
-.nw-feed {
+/* (.card.g's own padding would push the stories in past the bar's edge) */
+.card.g.nw-feed {
   position: relative;
   padding: 0;
   min-height: 0;
