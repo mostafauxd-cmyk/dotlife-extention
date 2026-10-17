@@ -2955,7 +2955,6 @@ svg {
 .seg button[aria-checked="true"] {
   background: rgba(255, 255, 255, 0.16);
   color: #fff;
-  font-weight: 500;
 }
 
 .side {
@@ -3970,7 +3969,6 @@ svg {
 .ts-seg button[aria-checked="true"] {
   background: rgba(255, 255, 255, 0.14);
   color: var(--ink);
-  font-weight: 600;
 }
 .ts-line {
   display: flex;
@@ -4484,6 +4482,7 @@ a.ts-link {
 .stabs button {
   font: inherit;
   font-size: 16px;
+  font-weight: 500;
   color: rgba(255, 255, 255, 0.8);
   background: none;
   border: 0;
@@ -4501,7 +4500,6 @@ a.ts-link {
 .stabs button[aria-selected="true"] {
   background: rgba(255, 255, 255, 0.16);
   color: #fff;
-  font-weight: 600;
 }
 .lg {
   flex: none;
@@ -5804,7 +5802,6 @@ a.ts-link {
 .mtabs button[aria-selected="true"] {
   background: rgba(255, 255, 255, 0.1);
   color: var(--ink);
-  font-weight: 600;
 }
 .plist {
   display: flex;
