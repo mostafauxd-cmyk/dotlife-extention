@@ -1,4 +1,5 @@
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 
 import { localNow } from "@dotlife/tasks";
 
@@ -13,9 +14,11 @@ import {
   type TickerItem,
 } from "../market";
 import { TIME_ZONE } from "../noghte/model";
-import { toman } from "../paket";
+import { toman, usePaketLinked } from "../paket";
 import { fa } from "../ui/fa";
+import { Icon } from "../ui/Icon";
 import { Tabs } from "../ui/Tabs";
+import { PaketSync } from "./PaketSync";
 
 /**
  * The market half of the money slide, from Paket's public prices — it needs no link: the strip of
@@ -289,6 +292,7 @@ export function MarketCard({
   setPeriod: (p: Period) => void;
 }) {
   const [group, setGroup] = useState<"gold" | "fx">("gold");
+  const [invite, setInvite] = useState(false);
   const [sel, setSel] = useState<string | null>(null);
   const items = prices?.items ?? [];
   const groups = GROUPS.filter(([g]) => items.some((i) => i.group === g));
@@ -352,20 +356,26 @@ export function MarketCard({
             stepDays={prices?.history?.stepDays ?? 1}
             label={`نمودار ${cur.name}`}
           />
-          {groups.length > 1 && (
-            <Tabs
-              label="گروه قیمت"
-              size="sm"
-              block
-              line
-              value={here}
-              onChange={(g) => {
-                setGroup(g);
-                setSel(null);
-              }}
-              items={groups.map(([id, label]) => ({ id, label }))}
-            />
-          )}
+          <Tabs
+            label="گروه قیمت"
+            size="sm"
+            block
+            line
+            value={here}
+            onChange={(g) => {
+              // «دارایی‌های من» is not a list of prices: it opens its invitation and the list stays
+              if (g === "mine") {
+                setInvite(true);
+                return;
+              }
+              setGroup(g);
+              setSel(null);
+            }}
+            items={[
+              ...groups.map(([id, label]) => ({ id, label })),
+              { id: "mine" as const, label: "دارایی‌های من" },
+            ]}
+          />
           <div className="plist">
             {rows.map((it) => (
               <Row
@@ -381,6 +391,13 @@ export function MarketCard({
             <SponsoredRow />
           </div>
         </>
+      )}
+      {invite && (
+        <PortfolioInvite
+          onClose={() => {
+            setInvite(false);
+          }}
+        />
       )}
     </div>
   );
@@ -414,5 +431,63 @@ function SponsoredRow() {
         )}
       </span>
     </a>
+  );
+}
+
+/**
+ * «دارایی‌های من»: what the person holds (gold, coins, dollars) is kept in Paket, which does not hold
+ * it yet — so the tab asks them in. Not linked: the way to link Paket; linked: where to record it.
+ */
+function PortfolioInvite({ onClose }: { onClose: () => void }) {
+  const linked = usePaketLinked();
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent): void => {
+      if (e.key === "Escape") onClose();
+    };
+    addEventListener("keydown", onKey);
+    return () => {
+      removeEventListener("keydown", onKey);
+    };
+  }, [onClose]);
+  return createPortal(
+    <div
+      className="modal-bg"
+      onMouseDown={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
+    >
+      <div
+        className="modal wide pf-invite"
+        role="dialog"
+        aria-modal="true"
+        aria-label="دارایی‌های من"
+      >
+        <div className="card-h">
+          <h2>دارایی‌های من</h2>
+          <button type="button" className="rbtn sm" aria-label="بستن" onClick={onClose}>
+            <Icon name="close" />
+          </button>
+        </div>
+        {linked ? (
+          <div className="pf-body">
+            <p>
+              هنوز دارایی‌ای در پاکت ثبت نشده. طلا، سکه یا ارزی که داری را آن‌جا بنویس؛ این‌جا هر
+              لحظه با قیمت روز ارزش‌شان و تغییر امروزشان را می‌بینی.
+            </p>
+            <a
+              className="cta"
+              href="https://paket.life/?src=chrome&c=money-assets"
+              target="_blank"
+              rel="noreferrer"
+            >
+              باز کردن پاکت
+            </a>
+          </div>
+        ) : (
+          <PaketSync />
+        )}
+      </div>
+    </div>,
+    document.body,
   );
 }
