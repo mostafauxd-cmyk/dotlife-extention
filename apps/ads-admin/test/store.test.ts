@@ -42,7 +42,7 @@ describe("LocalAdsStore", () => {
   it("refuses an invalid ad and writes nothing", async () => {
     const { store } = fresh();
     await store.put(makeAd({ id: "a" }));
-    const bad = { ...makeAd({ id: "b" }), slot: 99 };
+    const bad = { ...makeAd({ id: "b" }), slot: 1000 };
     await expect(store.putMany([makeAd({ id: "c" }), bad])).rejects.toThrow();
     expect((await store.list()).map((a) => a.id)).toEqual(["a"]);
   });

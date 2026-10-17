@@ -14,10 +14,32 @@ export type AdStatus = (typeof AD_STATUS)[number];
 const color = z.string().regex(/^#[0-9a-fA-F]{6}$/);
 const day = z.string().regex(/^\d{4}-\d{2}-\d{2}$/);
 
+/** Who and when an ad is for. An empty list means everyone on that dimension. */
+export const targetingSchema = z
+  .object({
+    persona: z.array(z.string()).default([]),
+    city: z.array(z.string()).default([]),
+    season: z.array(z.string()).default([]),
+    occasion: z.array(z.string()).default([]),
+    keyword: z.array(z.string()).default([]),
+    topic: z.array(z.string()).default([]),
+    weekend: z.boolean().default(false),
+  })
+  .default({
+    persona: [],
+    city: [],
+    season: [],
+    occasion: [],
+    keyword: [],
+    topic: [],
+    weekend: false,
+  });
+export type Targeting = z.infer<typeof targetingSchema>;
+
 export const adSchema = z.object({
   id: z.string().min(1),
-  /** Which of the fifteen places (`SLOTS`). */
-  slot: z.number().int().min(1).max(15),
+  /** Which place (`PLACEMENTS`): 1–15 in the new tab, 101… in Noghte, 201… in Paket. */
+  slot: z.number().int().min(1).max(999),
   /** Which product's clients may draw it. */
   products: z.array(z.enum(PRODUCTS)).min(1),
   status: z.enum(AD_STATUS),
@@ -34,17 +56,7 @@ export const adSchema = z.object({
   image: z.url().optional(),
   /** Slot-specific extras: the folder a tile goes in, a template's body, a symbol's price. */
   extra: z.record(z.string(), z.string()).optional(),
-  targeting: z
-    .object({
-      persona: z.array(z.string()).default([]),
-      city: z.array(z.string()).default([]),
-      season: z.array(z.string()).default([]),
-      occasion: z.array(z.string()).default([]),
-      keyword: z.array(z.string()).default([]),
-      topic: z.array(z.string()).default([]),
-      weekend: z.boolean().default(false),
-    })
-    .default({ persona: [], city: [], season: [], occasion: [], keyword: [], topic: [], weekend: false }),
+  targeting: targetingSchema,
   /** First and last day shown (Tehran days, inclusive). */
   from: day.optional(),
   until: day.optional(),
@@ -55,6 +67,13 @@ export const adSchema = z.object({
   price: z.number().nonnegative().optional(),
   /** Daily cap on showings across all people; the server stops sending the ad when reached. */
   dailyCap: z.number().int().positive().optional(),
+  /** The campaign this ad is a creative of; its targeting, days and price come from there. */
+  campaign: z.string().optional(),
+  /**
+   * The chance this ad is drawn for a person it fits, worked out from bids and budgets when the
+   * bundle is made (`allocate`). Absent on ads outside a campaign, which go by `weight` alone.
+   */
+  share: z.number().min(0).max(1).optional(),
 });
 export type Ad = z.infer<typeof adSchema>;
 

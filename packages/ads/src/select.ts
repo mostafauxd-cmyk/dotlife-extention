@@ -21,6 +21,8 @@ export type AdContext = {
   consent: boolean;
   /** Ads closed or already counted for the day, by id. */
   dismissed?: ReadonlySet<string>;
+  /** A number in [0, 1) for drawing among campaign ads by share; `Math.random` when absent. */
+  rand?: () => number;
 };
 
 /** The Tehran calendar day of a moment, as `YYYY-MM-DD`. */
@@ -69,9 +71,22 @@ export function pickAd(ads: readonly Ad[], slot: number, c: AdContext): Ad | nul
       fits(a, c),
   );
   if (pool.length === 0) return null;
+  // campaign ads are drawn by their share (bids and budgets, `allocate`); what is left of the draw
+  // goes to ads outside a campaign, then to nothing (the product's own promotion)
+  const shared = pool.filter((a) => a.share !== undefined).sort((a, b) => a.id.localeCompare(b.id));
+  if (shared.length > 0) {
+    const total = shared.reduce((s, a) => s + (a.share ?? 0), 0);
+    let r = (c.rand ?? Math.random)() * Math.max(1, total);
+    for (const a of shared) {
+      r -= a.share ?? 0;
+      if (r < 0) return a;
+    }
+  }
+  const plain = pool.filter((a) => a.share === undefined);
+  if (plain.length === 0) return null;
   // the heaviest first; the day decides among equals, so a person sees a steady one all day
   const day = Number(tehranDay(c.now).replaceAll("-", ""));
-  return [...pool].sort((a, b) => b.weight - a.weight || (hashId(a.id) + day) % 7 - (hashId(b.id) + day) % 7)[0] ?? null;
+  return [...plain].sort((a, b) => b.weight - a.weight || (hashId(a.id) + day) % 7 - (hashId(b.id) + day) % 7)[0] ?? null;
 }
 
 function hashId(id: string): number {
