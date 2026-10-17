@@ -2913,7 +2913,7 @@ svg {
   grid-column: 1 / -1;
   display: flex;
   align-items: center;
-  gap: 18px;
+  gap: 10px;
   min-height: 58px;
 }
 /* a fixed width, so the bar beside it stays where it is whatever the subtitle says */
@@ -2936,7 +2936,7 @@ svg {
   margin-inline-start: auto;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
 }
 /* every control of the bar is as tall as the tabs and the search beside them */
 .ptools .rbtn.sm {
