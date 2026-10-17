@@ -148,3 +148,15 @@ export function siteName(url: string): string {
     return url;
   }
 }
+
+/**
+ * A service's own page in a small window of its own, phone-shaped: the way in that always works,
+ * since nothing is framed (sites that refuse a frame, or a sign-in that needs its own page).
+ */
+export function openWindow(url: string): void {
+  if (inExtension) {
+    void chrome.windows.create({ url, type: "popup", width: 460, height: 820 });
+    return;
+  }
+  window.open(url, "_blank", "popup,width=460,height=820");
+}

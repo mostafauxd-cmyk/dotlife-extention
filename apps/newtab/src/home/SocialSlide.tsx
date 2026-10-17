@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
 import { useSettings } from "../hooks";
-import { inExtension } from "../platform";
+import { inExtension, openWindow } from "../platform";
 import { updateSettings, type Settings } from "../settings";
 import { fa } from "../ui/fa";
 import { Icon } from "../ui/Icon";
@@ -188,6 +188,16 @@ export function SocialSlide() {
               <b>{svc.name}</b>
               <span className="url">{svc.host}</span>
               <span className="grow" />
+              <button
+                type="button"
+                className="chip"
+                title="اگر صفحه در قاب خالی ماند یا ورود گیر کرد"
+                onClick={() => {
+                  openWindow(svc.url);
+                }}
+              >
+                در پنجره‌ی جدا
+              </button>
               <a
                 className="rbtn sm"
                 href={svc.url}
@@ -230,9 +240,15 @@ export function SocialSlide() {
                         صفحه‌ی ورود {svc.name} فقط در افزونه‌ی نصب‌شده داخل این قاب باز می‌شود؛ خود
                         سرویس اجازه‌ی قاب شدن در یک سایت معمولی را نمی‌دهد.
                       </p>
-                      <a className="cta" href={svc.url} target="_blank" rel="noreferrer">
-                        باز کردن {svc.name} در تب جدا
-                      </a>
+                      <button
+                        type="button"
+                        className="cta"
+                        onClick={() => {
+                          openWindow(svc.url);
+                        }}
+                      >
+                        باز کردن {svc.name} در پنجره‌ی جدا
+                      </button>
                     </div>
                   )}
             </div>
