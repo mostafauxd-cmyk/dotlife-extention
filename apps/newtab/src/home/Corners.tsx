@@ -13,6 +13,7 @@ import {
   todayRows,
   toggleTask,
 } from "../noghte/model";
+import { AD_LABEL, useAd } from "../ads";
 import { getLink, installId } from "../install";
 import { todayInfo } from "../today";
 import { ago, fa } from "../ui/fa";
@@ -329,6 +330,7 @@ export function NotesCard({
 export function TodayCard() {
   const now = useNow(30_000);
   const t = todayInfo(now);
+  const ad = useAd(5);
   return (
     <>
       <div className="tday">
@@ -347,6 +349,12 @@ export function TodayCard() {
             </span>
           ))}
         </div>
+      )}
+      {t.occasions.length > 0 && ad !== null && (
+        <a className="occsp" href={ad.url} target="_blank" rel="noreferrer">
+          {ad.title}
+          <span className="tag">{AD_LABEL}</span>
+        </a>
       )}
       {t.next !== null && (
         <div className="nextp">

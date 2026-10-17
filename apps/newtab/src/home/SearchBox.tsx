@@ -11,10 +11,12 @@ import {
   noteTitle,
   today,
 } from "../noghte/model";
+import { AD_LABEL, useAd } from "../ads";
 import { search, suggest } from "../platform";
 import { addDays } from "@dotlife/tasks";
 import { ago } from "../ui/fa";
 import { GMark, Icon } from "../ui/Icon";
+import { Tabs } from "../ui/Tabs";
 import { openNote } from "./openNote";
 import { openEditor } from "./TaskEditor";
 
@@ -147,6 +149,8 @@ export function SearchBox({
     };
   }, [text, mode]);
   const showSugg = mode === "google" && focused && sugg.length > 0 && text.trim() !== "";
+  // slot 4: one row among the suggestions, aimed only by the word being typed
+  const sponsored = useAd(4, { keyword: text });
 
   // the box grows with long text (Google takes up to 2,048 characters)
   useLayoutEffect(() => {
@@ -362,6 +366,23 @@ export function SearchBox({
               </li>
             );
           })}
+          {sponsored !== null && (
+            <li
+              role="option"
+              aria-selected={false}
+              className="spons"
+              onClick={() => {
+                location.href = sponsored.url;
+              }}
+            >
+              <Icon name="search" />
+              <span>
+                {sponsored.title}
+                {sponsored.line !== undefined && ` · ${sponsored.line}`}
+              </span>
+              <span className="tag">{AD_LABEL}</span>
+            </li>
+          )}
         </ul>
       )}
 
@@ -400,27 +421,18 @@ export function SearchBox({
           ) : (
             <div className="qp-sec">
               <span className="qp-k">کی؟</span>
-              <div className="ts-seg morph" role="radiogroup" aria-label="زمان">
-                {(
-                  [
-                    ["today", "امروز"],
-                    ["tomorrow", "فردا"],
-                    ["none", "بدون تاریخ"],
-                  ] as const
-                ).map(([k, n]) => (
-                  <button
-                    key={k}
-                    type="button"
-                    role="radio"
-                    aria-checked={when === k}
-                    onClick={() => {
-                      setWhen(k);
-                    }}
-                  >
-                    {n}
-                  </button>
-                ))}
-              </div>
+              <Tabs
+                label="زمان"
+                size="sm"
+                block
+                value={when}
+                onChange={setWhen}
+                items={[
+                  { id: "today", label: "امروز" },
+                  { id: "tomorrow", label: "فردا" },
+                  { id: "none", label: "بدون تاریخ" },
+                ]}
+              />
             </div>
           )}
           {lists.length > 0 && (

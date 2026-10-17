@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 
+import { AD_LABEL, useAd } from "../ads";
 import { useSettings } from "../hooks";
 import { inExtension, openWindow } from "../platform";
 import { updateSettings, type Settings } from "../settings";
@@ -25,6 +26,12 @@ type Service = {
   logo: string;
   /** True when `logo` is the full app icon (drawn as it is), false for a glyph on the colour. */
   icon: boolean;
+  /**
+   * False when the service's own page cannot run inside a frame (tested in a real Chromium with this
+   * extension loaded): Rubika's script reads its parent window's storage and stops. It opens in a
+   * small window of its own instead.
+   */
+  framed?: boolean;
   url: string;
   host: string;
   what: string;
@@ -99,6 +106,7 @@ export const SERVICES: readonly Service[] = [
     name: "روبیکا",
     color: "#7B3FE4",
     letter: "ر",
+    framed: false,
     url: "https://web.rubika.ir/",
     host: "web.rubika.ir",
     what: "پیام‌ها، کانال‌ها و ویترین روبیکا",
@@ -154,6 +162,7 @@ export function SocialSlide() {
             icon: <Mark svc={t} className="lg" />,
           }))}
         />
+        <ChannelCard />
         <button
           type="button"
           className="rbtn sm"
@@ -218,11 +227,28 @@ export function SocialSlide() {
                   }}
                 />
               )}
+              {inExtension && seen && svc.framed === false && (
+                <div className="tb-empty">
+                  <p>
+                    {svc.name} نمی‌گذارد صفحه‌اش داخل قاب باز شود (کدش به پنجره‌ی بیرونی دست می‌زند
+                    و می‌ایستد)؛ در یک پنجره‌ی کوچک جدا باز می‌شود و ورودت همان‌جا می‌ماند.
+                  </p>
+                  <button
+                    type="button"
+                    className="cta"
+                    onClick={() => {
+                      openWindow(svc.url);
+                    }}
+                  >
+                    باز کردن {svc.name} در پنجره‌ی جدا
+                  </button>
+                </div>
+              )}
               {/* the frames opened so far stay alive behind each other */}
               {inExtension
                 ? opened.map((id) => {
                     const v = byId.get(id);
-                    if (v === undefined) return null;
+                    if (v === undefined || v.framed === false) return null;
                     return (
                       <iframe
                         key={id}
@@ -420,5 +446,28 @@ function Mark({ svc, className }: { svc: Service; className: string }) {
       className={`${className} mk glyph`}
       style={{ "--mc": svc.color, "--logo": `url("${svc.logo}")` } as React.CSSProperties}
     />
+  );
+}
+
+/** Slot 15: a channel or page to follow, above the frames — never inside a service's own page. */
+function ChannelCard() {
+  const ad = useAd(15);
+  if (ad === null) return null;
+  return (
+    <div className="spev chan">
+      <span className="pst" style={{ background: ad.tint ?? "#2AABEE" }}>
+        {ad.glyph ?? "کانال"}
+      </span>
+      <div>
+        <b>{ad.title}</b>
+        <span>
+          {ad.line}
+          <span className="tag">{AD_LABEL}</span>
+        </span>
+      </div>
+      <a className="btn" href={ad.url} target="_blank" rel="noreferrer">
+        {ad.cta ?? "عضویت"}
+      </a>
+    </div>
   );
 }

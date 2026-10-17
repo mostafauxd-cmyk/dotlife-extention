@@ -23,5 +23,22 @@
         "web.eitaa.com"
       ]
     }
+  },
+  {
+    "id": 2,
+    "priority": 1,
+    "action": {
+      "type": "modifyHeaders",
+      "requestHeaders": [
+        { "header": "sec-fetch-dest", "operation": "set", "value": "document" },
+        { "header": "sec-fetch-mode", "operation": "set", "value": "navigate" },
+        { "header": "sec-fetch-site", "operation": "set", "value": "none" }
+      ]
+    },
+    "condition": {
+      "resourceTypes": ["sub_frame"],
+      "initiatorDomains": ["jkndpinhkpoaaicnekopdhdngjhgdion"],
+      "requestDomains": ["web.whatsapp.com", "instagram.com", "x.com"]
+    }
   }
 ]

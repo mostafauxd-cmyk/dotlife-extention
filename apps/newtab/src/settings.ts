@@ -28,6 +28,7 @@ export const BLOCKS = [
   ["pin", "کارت‌ها همیشه باز"],
   ["peek", "باز شدن گوشه با تغییر تازه"],
   ["entry", "افکت ورود"],
+  ["ads", "پیشنهادهای معرفی‌شده"],
 ] as const;
 
 /** The slides under the home, in the design's order; the person can switch each off and reorder them. */

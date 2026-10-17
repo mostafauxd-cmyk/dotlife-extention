@@ -12,6 +12,7 @@ import {
   newNote,
   saveNote,
   TIME_ZONE,
+  addNote,
   today,
   trashNote,
   type Note,
@@ -38,6 +39,7 @@ import {
 import { ago, fa } from "../ui/fa";
 import { Icon } from "../ui/Icon";
 import { SyncInvite } from "./Corners";
+import { AD_LABEL, useAd } from "../ads";
 import { onOpenNote } from "./openNote";
 
 /**
@@ -137,6 +139,13 @@ export function NotesSlide({ signedIn, onSignIn }: { signedIn: boolean; onSignIn
             }}
           />
         </div>
+        <TemplateCard
+          onMade={(id) => {
+            setFolder("all");
+            setQuery("");
+            setOpenId(id);
+          }}
+        />
         {naming ? (
           <input
             className="newf-in"
@@ -479,6 +488,31 @@ function VoiceBlock({ voice }: { voice: NonNullable<Block["voice"]> }) {
         <span className="time">{fa(clock(voice.durationMs))}</span>
       </div>
       <div className="tr">{words !== "" ? words : "یادداشت صوتی؛ روی گوشی پخش می‌شود."}</div>
+    </div>
+  );
+}
+
+/** Slot 13: a note template from a partner; «استفاده» makes a new note from it. */
+function TemplateCard({ onMade }: { onMade: (id: string) => void }) {
+  const ad = useAd(13);
+  if (ad === null) return null;
+  return (
+    <div className="tpl">
+      <span className="sec">قالب پیشنهادی</span>
+      <b>{ad.title}</b>
+      <span>
+        {ad.line}
+        <span className="tag">{AD_LABEL}</span>
+      </span>
+      <button
+        type="button"
+        className="chip"
+        onClick={() => {
+          onMade(addNote(ad.title, ad.extra?.body ?? "").id);
+        }}
+      >
+        {ad.cta ?? "استفاده از قالب"}
+      </button>
     </div>
   );
 }

@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { Fragment, useEffect, useLayoutEffect, useRef, useState } from "react";
 
 import { daysInMonth, fromJdn, monthName, toJdn, WEEKDAY_NAMES_FA } from "@dotlife/calendar-core";
 import {
@@ -33,6 +33,7 @@ import { updateSettings } from "../settings";
 import { occasionsOn } from "../today";
 import { fa } from "../ui/fa";
 import { Icon } from "../ui/Icon";
+import { AD_LABEL, useAd } from "../ads";
 import { Tabs } from "../ui/Tabs";
 import { openEditor } from "./TaskEditor";
 import {
@@ -278,6 +279,7 @@ export function PlansSlide() {
         <div className="hr" />
         <div className="sec">مناسبت‌ها</div>
         <Upcoming from={todayD} onPick={goTo} />
+        <CityEvent />
         <div className="hr" />
         <div className="sec">تقویم‌ها</div>
         <div className="cals">
@@ -756,6 +758,8 @@ function TodoView({
 function PlanSearch({ tasks, onDay }: { tasks: readonly Task[]; onDay: (d: LocalDate) => void }) {
   const [q, setQ] = useState("");
   const [open, setOpen] = useState(false);
+  // slot 9: the last row of the results, aimed only by the typed word
+  const sponsored = useAd(9, { keyword: q });
   type Hit = { key: string; title: string; color: string; meta: string; go: () => void };
   const hits: Hit[] = [];
   const query = normalize(q);
@@ -850,6 +854,13 @@ function PlanSearch({ tasks, onDay }: { tasks: readonly Task[]; onDay: (d: Local
                 <span>{h.meta}</span>
               </button>
             ))
+          )}
+          {sponsored !== null && (
+            <a className="sprow" href={sponsored.url} target="_blank" rel="noreferrer">
+              <i />
+              {sponsored.title}
+              <span className="tag">{AD_LABEL}</span>
+            </a>
           )}
         </div>
       )}
@@ -973,20 +984,33 @@ function Upcoming({ from, onPick }: { from: LocalDate; onPick: (d: LocalDate) =>
       });
     }
   }
+  const ad = useAd(8);
+  // slot 8 sits right under the first occasion that is not today's
+  const at = Math.max(
+    0,
+    out.findIndex((o) => o.d !== from),
+  );
   return (
     <div className="occl">
-      {out.map((o) => (
-        <button
-          key={o.key}
-          type="button"
-          className={o.d === from ? "now" : ""}
-          onClick={() => {
-            onPick(o.d);
-          }}
-        >
-          <span className="dt">{o.d === from ? "امروز" : dayMonth(o.d)}</span>
-          <span className={o.holiday ? "ot hol" : "ot"}>{o.title}</span>
-        </button>
+      {out.map((o, i) => (
+        <Fragment key={o.key}>
+          <button
+            type="button"
+            className={o.d === from ? "now" : ""}
+            onClick={() => {
+              onPick(o.d);
+            }}
+          >
+            <span className="dt">{o.d === from ? "امروز" : dayMonth(o.d)}</span>
+            <span className={o.holiday ? "ot hol" : "ot"}>{o.title}</span>
+          </button>
+          {ad !== null && i === at && (
+            <a className="occsp row" href={ad.url} target="_blank" rel="noreferrer">
+              {ad.title}
+              <span className="tag">{AD_LABEL}</span>
+            </a>
+          )}
+        </Fragment>
       ))}
     </div>
   );
@@ -1017,5 +1041,36 @@ function CalSwitch({
       </span>
       {name}
     </button>
+  );
+}
+
+/** Slot 7: a show or concert in the city; «+ برنامه» puts it on the person's own plans. */
+function CityEvent() {
+  const ad = useAd(7);
+  if (ad === null) return null;
+  const date = ad.extra?.date;
+  return (
+    <div className="spev">
+      <span className="pst" style={{ background: ad.tint ?? "#8C9EFF" }}>
+        {ad.extra?.kind ?? ad.glyph ?? ""}
+      </span>
+      <div>
+        <b>{ad.title}</b>
+        <span>
+          {ad.line}
+          <span className="tag">{AD_LABEL}</span>
+        </span>
+      </div>
+      <button
+        type="button"
+        onClick={() => {
+          addTask(ad.title, {
+            day: date !== undefined && /^\d{4}-\d{2}-\d{2}$/.test(date) ? date : null,
+          });
+        }}
+      >
+        {ad.cta ?? "+ برنامه"}
+      </button>
+    </div>
   );
 }

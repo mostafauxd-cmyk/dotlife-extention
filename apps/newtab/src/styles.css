@@ -4604,7 +4604,8 @@ a.ts-link {
 
 /* ---------- the money slide: Paket's summary, read-only ---------- */
 .money-s {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  /* the design's proportions: accounts, spending, and the wider market */
+  grid-template-columns: minmax(0, 0.76fr) minmax(0, 0.82fr) minmax(0, 1fr);
   grid-template-rows: auto auto minmax(0, 1fr) auto;
   gap: 14px 18px;
   padding-top: 28px;
@@ -5351,6 +5352,7 @@ a.ts-link {
 }
 
 .personas {
+  flex: none;
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 8px;
@@ -5845,4 +5847,384 @@ a.ts-link {
 }
 .tabs button .lg {
   flex: none;
+}
+
+/* ads: the label every one carries, and the news row's kinds */
+.tag {
+  display: inline-block;
+  margin-inline-start: 6px;
+  padding: 0 8px;
+  border-radius: 999px;
+  border: 1px solid var(--stroke-hi);
+  font-size: 11px;
+  font-weight: 400;
+  line-height: 18px;
+  color: var(--ink-3);
+  white-space: nowrap;
+}
+.tk-i.ad {
+  color: var(--amber);
+  text-decoration: none;
+  cursor: pointer;
+}
+.tk-i.ad b {
+  font-weight: 600;
+}
+.tk-i.ad .tag {
+  color: rgba(242, 201, 76, 0.8);
+  border-color: rgba(242, 201, 76, 0.35);
+}
+.prow.spx {
+  text-decoration: none;
+}
+.mh .ml {
+  margin-inline-start: auto;
+  font-size: 13px;
+  color: var(--ink-3);
+  text-decoration: none;
+}
+.mh .ml:hover {
+  color: var(--ink);
+}
+.mh h2 + .ml {
+  margin-inline-start: auto;
+}
+.news .card-h {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+.news .card-h .ml {
+  margin-inline-start: auto;
+  font-size: 14px;
+  color: var(--ink-2);
+  text-decoration: none;
+}
+.ncards {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+.ncard {
+  gap: 8px;
+}
+.ncard .kh {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 24px;
+}
+.ncard .pn {
+  width: 16px;
+  height: 16px;
+  color: var(--ink-3);
+}
+.kind {
+  padding: 0 10px;
+  border-radius: 8px;
+  font-size: 12px;
+  line-height: 22px;
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--ink-2);
+}
+.kind.amber {
+  color: var(--amber);
+  background: rgba(242, 201, 76, 0.13);
+}
+.kind.green {
+  color: #8add88;
+  background: rgba(138, 221, 136, 0.13);
+}
+.kind.blue {
+  color: #7fb4ff;
+  background: rgba(90, 176, 255, 0.14);
+}
+.kind.violet {
+  color: #cdb7ff;
+  background: rgba(205, 183, 255, 0.14);
+}
+.kind.ad {
+  color: var(--ink-3);
+  background: rgba(255, 255, 255, 0.06);
+}
+.ncard .nf {
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.ncard .nf em {
+  margin: 0;
+}
+.ncard .nf small {
+  font-size: 12px;
+  color: var(--ink-3);
+  white-space: nowrap;
+}
+.ncard.adcard {
+  background: transparent;
+  border: 1px dashed var(--stroke-hi);
+}
+/* the month's spending: forecast and ceiling named on the chart, the days under it */
+.chart.spend {
+  padding-top: 26px;
+}
+.chart .legend {
+  position: absolute;
+  top: 0;
+  inset-inline-end: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  align-items: flex-end;
+  z-index: 1;
+}
+.chart .legend span {
+  padding: 0 10px;
+  border-radius: 8px;
+  font-size: 12px;
+  line-height: 22px;
+  color: var(--ink-2);
+  background: rgba(255, 255, 255, 0.08);
+}
+.chart .legend .lg-f {
+  color: #8add88;
+  background: rgba(138, 221, 136, 0.13);
+}
+.chart .axis {
+  display: flex;
+  justify-content: space-between;
+  padding-top: 4px;
+}
+.chart .axis small {
+  font-size: 12px;
+  color: var(--ink-3);
+}
+.rw.cat2 {
+  grid-template-columns: 10px minmax(0, 1fr) auto 64px 36px;
+}
+.rw.cat2 .bd {
+  font-size: 12px;
+  color: var(--ink-3);
+  text-align: start;
+}
+
+/* ads in the home: tiles, the occasion line, the edge card, a search row */
+.lt.adt .tag {
+  margin: 0;
+  position: absolute;
+  top: 70px;
+}
+.lt.adt .sdot {
+  position: absolute;
+  top: -2px;
+  inset-inline-end: 6px;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--amber);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--bgc) 80%, transparent);
+}
+.lt.adt:hover .lb {
+  opacity: 1;
+  transform: none;
+}
+.occsp {
+  display: block;
+  margin-top: 6px;
+  padding: 6px 10px;
+  border-radius: 10px;
+  font-size: 13.5px;
+  line-height: 1.7;
+  color: var(--amber);
+  background: rgba(242, 201, 76, 0.1);
+  text-decoration: none;
+}
+.spcard {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  margin-top: auto;
+  padding: 12px 14px;
+  border-radius: 16px;
+  color: var(--ink);
+  text-decoration: none;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px dashed var(--stroke-hi);
+}
+.spcard b {
+  font-size: 14.5px;
+  font-weight: 600;
+  line-height: 1.6;
+}
+.spcard small {
+  font-size: 12.5px;
+  color: var(--ink-2);
+}
+.spcard .tag {
+  align-self: flex-start;
+  margin: 4px 0 0;
+}
+.sugg-list li.spons {
+  color: var(--ink-2);
+}
+.sugg-list li.spons .tag {
+  margin-inline-start: auto;
+  flex: none;
+  overflow: visible;
+  font-size: 11px;
+  color: var(--ink-3);
+}
+
+/* a partner's event or channel card (slots 7 and 15) and note template (13) */
+.spev {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 10px;
+  border-radius: 16px;
+  background: rgba(0, 0, 0, 0.22);
+  border: 1px solid var(--stroke);
+}
+.spev .pst {
+  width: 44px;
+  height: 44px;
+  flex: none;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  font-size: 12px;
+  font-weight: 700;
+  color: #fff;
+}
+.spev > div {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.5;
+  min-width: 0;
+}
+.spev b {
+  font-size: 15px;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.spev span {
+  font-size: 13px;
+  color: var(--ink-2);
+}
+.spev button,
+.spev .btn {
+  margin-inline-start: auto;
+  font-size: 13px;
+  border-radius: 999px;
+  border: 1px solid var(--stroke-hi);
+  background: none;
+  color: var(--ink);
+  padding: 2px 12px;
+  cursor: pointer;
+  white-space: nowrap;
+  text-decoration: none;
+}
+.spev.chan {
+  margin-inline-start: auto;
+}
+.occsp.row {
+  margin: -2px 0 2px;
+  margin-inline-start: 58px;
+  padding: 2px 10px 2px 8px;
+  background: none;
+  color: var(--ink-2);
+  font-size: 13px;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  white-space: nowrap;
+}
+.pdrop .sprow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 14px;
+  border-top: 1px solid var(--stroke);
+  font-size: 14.5px;
+  color: var(--ink-2);
+  text-decoration: none;
+}
+.pdrop .sprow i {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--amber);
+}
+.pdrop .sprow .tag {
+  margin-inline-start: auto;
+}
+.tpl {
+  margin-top: auto;
+  border-radius: 18px;
+  padding: 12px 14px;
+  background: rgba(0, 0, 0, 0.22);
+  border: 1px solid var(--stroke);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.tpl .sec {
+  font-size: 13px;
+  color: var(--ink-3);
+}
+.tpl b {
+  font-size: 16px;
+  font-weight: 600;
+}
+.tpl > span:not(.sec) {
+  font-size: 13px;
+  color: var(--ink-2);
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.tpl .chip {
+  align-self: flex-start;
+  font-size: 14px;
+  padding: 3px 14px;
+  margin-top: 4px;
+}
+.tpl + .newf {
+  margin-top: 8px;
+}
+
+/* the quick panel's words, a size up so they read as the rest of the page's */
+.qpanel .qp-k {
+  width: 34px;
+  font-size: 15px;
+}
+.qpanel .tabs.sm {
+  flex: 1;
+  height: 44px;
+}
+.qpanel .tabs.sm button {
+  font-size: 16px;
+}
+.qpanel .ts-chips button {
+  height: 36px;
+  padding: 0 14px;
+  font-size: 15.5px;
+}
+.qpanel .qp-h {
+  font-size: 15px;
+}
+.qpanel .qt b {
+  font-size: 17px;
+}
+.qpanel .qt small {
+  font-size: 14px;
+}
+.qpanel .qp-none {
+  font-size: 15px;
+}
+.qpanel .ts-notes {
+  font-size: 16px;
 }
