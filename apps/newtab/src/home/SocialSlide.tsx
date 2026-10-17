@@ -5,6 +5,7 @@ import { inExtension } from "../platform";
 import { updateSettings, type Settings } from "../settings";
 import { fa } from "../ui/fa";
 import { Icon } from "../ui/Icon";
+import { Tabs } from "../ui/Tabs";
 
 /**
  * «شبکه‌ها»: a large tablet frame with a tab per service — Telegram, Instagram, WhatsApp, X, Bale,
@@ -143,22 +144,16 @@ export function SocialSlide() {
     <div className="s-pad social-s">
       <div className="soc-top">
         <h2>شبکه‌ها</h2>
-        <div className="stabs morph" role="tablist" aria-label="سرویس‌ها">
-          {tabs.map((t) => (
-            <button
-              key={t.id}
-              type="button"
-              role="tab"
-              aria-selected={t.id === svc?.id}
-              onClick={() => {
-                setCurrent(t.id);
-              }}
-            >
-              <Mark svc={t} className="lg" />
-              {t.name}
-            </button>
-          ))}
-        </div>
+        <Tabs
+          label="سرویس‌ها"
+          value={svc?.id}
+          onChange={setCurrent}
+          items={tabs.map((t) => ({
+            id: t.id,
+            label: t.name,
+            icon: <Mark svc={t} className="lg" />,
+          }))}
+        />
         <button
           type="button"
           className="rbtn sm"

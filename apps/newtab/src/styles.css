@@ -2260,15 +2260,14 @@ svg {
   position: absolute;
   inset: 0;
   overflow-y: auto;
-  scroll-snap-type: y mandatory;
+  /* paged by ui/paging.ts (a flick, eased), not by the browser's stiff scroll-snap */
+  overscroll-behavior: contain;
   scrollbar-width: none;
 }
 .slide {
   position: relative;
   height: 100%;
   overflow: hidden;
-  scroll-snap-align: start;
-  scroll-snap-stop: always;
 }
 
 /* the rail on the left edge: dots that say where you are, icons and names with the mouse over it */
@@ -2935,28 +2934,6 @@ svg {
   align-items: center;
   gap: 8px;
 }
-.seg {
-  display: flex;
-  padding: 4px;
-  border-radius: 999px;
-  background: rgba(0, 0, 0, 0.25);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-}
-.seg button {
-  font: inherit;
-  font-size: 15px;
-  padding: 3px 16px;
-  border-radius: 999px;
-  border: 0;
-  background: none;
-  color: var(--ink-2);
-  cursor: pointer;
-}
-.seg button[aria-checked="true"] {
-  background: rgba(255, 255, 255, 0.16);
-  color: #fff;
-}
-
 .side {
   gap: 7px;
   overflow-y: auto;
@@ -3410,51 +3387,7 @@ svg {
   pointer-events: none;
 }
 
-/* plans: the view tabs, the search over plans, occasions and notes */
-.ptabs {
-  display: flex;
-  align-items: stretch;
-  height: 52px;
-  padding: 5px;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(30px) saturate(1.5);
-}
-.ptabs button {
-  font: inherit;
-  font-size: 16px;
-  font-weight: 500;
-  padding: 0 22px;
-  border: 0;
-  border-radius: 999px;
-  background: none;
-  color: rgba(255, 255, 255, 0.72);
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  transition:
-    background 0.25s var(--ease),
-    color 0.25s;
-}
-.ptabs button[aria-selected="true"] {
-  background: rgba(255, 255, 255, 0.16);
-  color: #fff;
-}
-.ptabs button span {
-  min-width: 20px;
-  height: 20px;
-  padding: 0 6px;
-  border-radius: 999px;
-  display: grid;
-  place-items: center;
-  font-size: 12px;
-  background: rgba(255, 255, 255, 0.12);
-}
-.ptabs button[aria-selected="true"] span {
-  background: rgba(255, 255, 255, 0.18);
-}
+/* plans: the search over plans, occasions and notes */
 .psearch {
   position: relative;
   z-index: 10;
@@ -3817,10 +3750,8 @@ svg {
   padding: 12px;
   color: var(--ink-3);
 }
-.seg button,
 .ptitle b,
-.ptitle span,
-.ptabs button {
+.ptitle span {
   white-space: nowrap;
 }
 .ed-top .st {
@@ -4470,37 +4401,6 @@ a.ts-link {
   font-size: 30px;
   font-weight: 600;
 }
-.stabs {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  padding: 5px;
-  border-radius: 999px;
-  background: rgba(0, 0, 0, 0.25);
-  border: 1px solid var(--stroke);
-}
-.stabs button {
-  font: inherit;
-  font-size: 16px;
-  font-weight: 500;
-  color: rgba(255, 255, 255, 0.8);
-  background: none;
-  border: 0;
-  border-radius: 999px;
-  padding: 6px 14px 6px 10px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  cursor: pointer;
-  white-space: nowrap;
-}
-.stabs button:hover {
-  background: rgba(255, 255, 255, 0.06);
-}
-.stabs button[aria-selected="true"] {
-  background: rgba(255, 255, 255, 0.16);
-  color: #fff;
-}
 .lg {
   flex: none;
   width: 26px;
@@ -5003,13 +4903,15 @@ a.ts-link {
 }
 .pke-form input {
   flex: 1;
-  height: 50px;
-  border-radius: 14px;
+  min-width: 0;
+  height: 42px;
+  padding-inline: 20px;
+  border-radius: 999px;
   border: 1px solid var(--stroke-hi);
   background: rgba(0, 0, 0, 0.3);
   color: var(--ink);
   font: inherit;
-  font-size: 20px;
+  font-size: 17px;
   letter-spacing: 0.12em;
   text-align: center;
   direction: ltr;
@@ -5019,8 +4921,10 @@ a.ts-link {
   border-color: #5db35c;
 }
 .pke-form .cta {
-  height: 50px;
-  min-width: 130px;
+  height: 42px;
+  padding: 0 22px;
+  min-width: 112px;
+  font-size: 15px;
 }
 .pke-err {
   margin: 0;
@@ -5695,23 +5599,6 @@ a.ts-link {
   font-size: 16px;
   font-weight: 600;
 }
-.seg2 {
-  display: flex;
-  gap: 4px;
-}
-.seg2 button {
-  font-size: 13px;
-  color: var(--ink-3);
-  background: none;
-  border: 0;
-  border-radius: 8px;
-  padding: 2px 12px;
-  cursor: pointer;
-}
-.seg2 button[aria-pressed="true"] {
-  color: var(--ink);
-  background: rgba(255, 255, 255, 0.08);
-}
 .pxv {
   display: flex;
   flex-wrap: wrap;
@@ -5780,27 +5667,6 @@ a.ts-link {
 }
 .chart .tipbox span {
   color: var(--ink-2);
-}
-.mtabs {
-  display: flex;
-  gap: 2px;
-  padding: 4px;
-  border-radius: 999px;
-  background: rgba(0, 0, 0, 0.25);
-  border: 1px solid var(--stroke);
-}
-.mtabs button {
-  flex: 1;
-  font-size: 14px;
-  color: var(--ink-2);
-  background: none;
-  border: 0;
-  border-radius: 999px;
-  padding: 3px 0;
-  cursor: pointer;
-}
-.mtabs button[aria-selected="true"] {
-  color: var(--ink);
 }
 .plist {
   display: flex;
@@ -5920,4 +5786,75 @@ a.ts-link {
 }
 .tk-i.stale {
   opacity: 0.55;
+}
+
+/* ---------- the one tab bar (ui/Tabs.tsx) ---------- */
+.tabs {
+  display: flex;
+  align-items: stretch;
+  gap: 2px;
+  height: 52px;
+  padding: 5px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(30px) saturate(1.5);
+}
+.tabs button {
+  font: inherit;
+  font-size: 16px;
+  font-weight: 500;
+  padding: 0 22px;
+  border: 0;
+  border-radius: 999px;
+  background: none;
+  color: rgba(255, 255, 255, 0.72);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  white-space: nowrap;
+  transition:
+    background 0.25s var(--ease),
+    color 0.25s;
+}
+.tabs button:hover {
+  color: #fff;
+}
+.tabs button[aria-selected="true"] {
+  background: rgba(255, 255, 255, 0.16);
+  color: #fff;
+}
+.tabs button .n {
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  font-size: 12px;
+  background: rgba(255, 255, 255, 0.12);
+}
+.tabs button[aria-selected="true"] .n {
+  background: rgba(255, 255, 255, 0.18);
+}
+/* inside a card */
+.tabs.sm {
+  height: 40px;
+  padding: 4px;
+  backdrop-filter: none;
+  background: rgba(0, 0, 0, 0.22);
+}
+.tabs.sm button {
+  font-size: 14px;
+  padding: 0 14px;
+}
+/* sharing the card's whole width */
+.tabs.block button {
+  flex: 1;
+  padding: 0;
+}
+.tabs button .lg {
+  flex: none;
 }

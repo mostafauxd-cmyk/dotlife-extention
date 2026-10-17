@@ -33,6 +33,7 @@ import { updateSettings } from "../settings";
 import { occasionsOn } from "../today";
 import { fa } from "../ui/fa";
 import { Icon } from "../ui/Icon";
+import { Tabs } from "../ui/Tabs";
 import { openEditor } from "./TaskEditor";
 import {
   connectGoogle,
@@ -193,28 +194,15 @@ export function PlansSlide() {
           </b>
           <span>{sub}</span>
         </div>
-        <div className="ptabs morph" role="tablist" aria-label="نما">
-          <button
-            type="button"
-            role="tab"
-            aria-selected={view === "cal"}
-            onClick={() => {
-              setView("cal");
-            }}
-          >
-            تقویم
-          </button>
-          <button
-            type="button"
-            role="tab"
-            aria-selected={view === "todo"}
-            onClick={() => {
-              setView("todo");
-            }}
-          >
-            کارها <span>{fa(String(openCount))}</span>
-          </button>
-        </div>
+        <Tabs
+          label="نما"
+          value={view}
+          onChange={setView}
+          items={[
+            { id: "cal", label: "تقویم" },
+            { id: "todo", label: "کارها", count: fa(String(openCount)) },
+          ]}
+        />
         <PlanSearch tasks={allTasks} onDay={goTo} />
         {google.status !== "unavailable" && (
           <button
@@ -235,21 +223,17 @@ export function PlansSlide() {
         )}
         {view === "cal" && (
           <div className="ptools">
-            <div className="seg morph" role="radiogroup" aria-label="چند روز">
-              {([1, 3, 7] as const).map((n) => (
-                <button
-                  key={n}
-                  type="button"
-                  role="radio"
-                  aria-checked={span === n}
-                  onClick={() => {
-                    setSpan(n);
-                  }}
-                >
-                  {n === 1 ? "روز" : n === 3 ? "۳ روز" : "هفته"}
-                </button>
-              ))}
-            </div>
+            <Tabs
+              label="چند روز"
+              size="sm"
+              value={span}
+              onChange={setSpan}
+              items={[
+                { id: 1, label: "روز" },
+                { id: 3, label: "۳ روز" },
+                { id: 7, label: "هفته" },
+              ]}
+            />
             <button
               type="button"
               className="rbtn sm"

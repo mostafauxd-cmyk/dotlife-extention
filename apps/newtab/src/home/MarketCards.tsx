@@ -13,6 +13,7 @@ import {
 import { TIME_ZONE } from "../noghte/model";
 import { toman } from "../paket";
 import { fa } from "../ui/fa";
+import { Tabs } from "../ui/Tabs";
 
 /**
  * The market half of the money slide, from Paket's public prices — it needs no link: the strip of
@@ -319,20 +320,13 @@ export function MarketCard({
               <b>{cur.name}</b>
               <small>{cur.sub}</small>
             </span>
-            <div className="seg2" role="group" aria-label="دوره‌ی نمودار">
-              {PERIODS.map(([p, name]) => (
-                <button
-                  key={p}
-                  type="button"
-                  aria-pressed={period === p}
-                  onClick={() => {
-                    setPeriod(p);
-                  }}
-                >
-                  {name}
-                </button>
-              ))}
-            </div>
+            <Tabs
+              label="دوره‌ی نمودار"
+              size="sm"
+              value={period}
+              onChange={setPeriod}
+              items={PERIODS.map(([id, label]) => ({ id, label }))}
+            />
           </div>
           <div className="pxv">
             <b className="hn">{toman(String(Math.round(cur.price)))}</b>
@@ -349,22 +343,17 @@ export function MarketCard({
             label={`نمودار ${cur.name}`}
           />
           {groups.length > 1 && (
-            <div className="mtabs morph" role="tablist" aria-label="گروه قیمت">
-              {groups.map(([g, name]) => (
-                <button
-                  key={g}
-                  type="button"
-                  role="tab"
-                  aria-selected={here === g}
-                  onClick={() => {
-                    setGroup(g);
-                    setSel(null);
-                  }}
-                >
-                  {name}
-                </button>
-              ))}
-            </div>
+            <Tabs
+              label="گروه قیمت"
+              size="sm"
+              block
+              value={here}
+              onChange={(g) => {
+                setGroup(g);
+                setSel(null);
+              }}
+              items={groups.map(([id, label]) => ({ id, label }))}
+            />
           )}
           <div className="plist">
             {rows.map((it) => (

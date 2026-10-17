@@ -19,6 +19,7 @@ import { onArrival } from "./noghte/sync";
 import { isOn, orderedSlides, SLIDES, themeOf, updateSettings, type SlideId } from "./settings";
 import { Icon } from "./ui/Icon";
 import type { IconName } from "./ui/icons";
+import { installPaging } from "./ui/paging";
 
 type Corners = "tasks" | "notes";
 
@@ -113,6 +114,10 @@ export function App() {
   }, []); // only on opening the tab
   const cls = ["nt", entering ? "enter" : "", hinting ? "hinting" : ""].filter(Boolean).join(" ");
   const scroller = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const el = scroller.current;
+    return el === null ? undefined : installPaging(el);
+  }, []);
   // the slides in the person's order; each one that is switched on and built gets a screen
   const SLIDE_UI: Partial<Record<SlideId, { icon: IconName; node: React.ReactNode }>> = {
     "s-plans": { icon: "calendar-face", node: <PlansSlide /> },
