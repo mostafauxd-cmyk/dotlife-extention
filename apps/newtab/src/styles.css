@@ -30,6 +30,14 @@
   font-weight: 800;
   src: url("/fonts/Yekan_Bakh_Fanum_Extra_Bold.TTF") format("truetype");
 }
+/* Inter (Google Fonts, bundled — an extension page loads nothing remote): the ticker's Latin digits, which Yekan Bakh would draw as Persian ones */
+@font-face {
+  font-family: "Inter";
+  font-weight: 400 700;
+  font-display: swap;
+  src: url("/fonts/Inter-latin.woff2") format("woff2");
+  unicode-range: U+0020-007E;
+}
 
 :root {
   color-scheme: dark;
@@ -1256,10 +1264,10 @@ svg {
   background: #fff;
 }
 
-/* ---------- right edge: Chrome bookmarks and customisation ---------- */
+/* ---------- left edge: Chrome bookmarks and customisation ---------- */
 .edge {
   position: absolute;
-  right: 0;
+  left: 0;
   top: 170px;
   bottom: 170px;
   width: 28px;
@@ -1273,7 +1281,7 @@ svg {
 }
 .em {
   position: absolute;
-  right: 10px;
+  left: 10px;
   top: 50%;
   width: 4px;
   height: 56px;
@@ -1284,7 +1292,7 @@ svg {
 }
 .side2 {
   position: absolute;
-  right: 14px;
+  left: 14px;
   top: 50%;
   width: 330px;
   max-height: min(660px, calc((100vh / var(--z)) - 40px));
@@ -1300,7 +1308,7 @@ svg {
   box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5);
   opacity: 0;
   pointer-events: none;
-  transform: translate(110%, -50%);
+  transform: translate(-110%, -50%);
   transition:
     transform 0.45s var(--ease) 0.22s,
     opacity 0.25s ease 0.22s;
@@ -2285,7 +2293,7 @@ svg {
 .rail {
   position: absolute;
   z-index: 9;
-  left: 18px;
+  right: 18px;
   top: 50%;
   transform: translateY(-50%);
   display: flex;
@@ -2330,7 +2338,7 @@ svg {
 }
 .rail .tip {
   position: absolute;
-  left: 62px;
+  right: 62px;
   white-space: nowrap;
   font-size: 15px;
   padding: 2px 12px;
@@ -2359,7 +2367,7 @@ svg {
 }
 .rail:not(:hover):not(:focus-within) .tip {
   opacity: 0;
-  left: 22px;
+  right: 22px;
   background: none;
   padding: 0;
   font-size: 14px;
@@ -2375,7 +2383,7 @@ svg {
   height: 100%;
   display: grid;
   gap: 20px;
-  padding: 48px 64px 48px 110px;
+  padding: 48px 110px 48px 64px;
   max-width: 1720px;
   margin: 0 auto;
 }
@@ -5561,8 +5569,14 @@ a.ts-link {
 .tk-i .n {
   color: var(--ink-2);
 }
+.tk-i .v,
+.tk-i .c,
+.tk-src {
+  font-family: "Inter", "Yekan Bakh", system-ui, sans-serif;
+}
 .tk-i .v {
   font-variant-numeric: tabular-nums;
+  font-weight: 500;
 }
 .tk-i .v small {
   font-size: 11.5px;
@@ -6610,14 +6624,19 @@ a.ts-link {
   font: inherit;
   font-size: 17px;
 }
+/* the colours on one sideways line that scrolls, as in the app's list sheet */
 .cat-colors {
   display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
+  gap: 8px;
+  margin-inline: -30px;
+  padding: 4px 30px;
+  overflow-x: auto;
+  scrollbar-width: none;
 }
 .cat-colors button {
-  width: 34px;
-  height: 34px;
+  flex: none;
+  width: 38px;
+  height: 38px;
   border-radius: 50%;
   border: 0;
   cursor: pointer;
@@ -6628,6 +6647,13 @@ a.ts-link {
   box-shadow:
     0 0 0 3px color-mix(in srgb, var(--bgc) 90%, #000),
     0 0 0 5px #fff;
+}
+.cat-colors button.used {
+  opacity: 0.18;
+  cursor: default;
+}
+.modal.cat .card-h .rbtn {
+  margin-inline-start: auto;
 }
 .modal.cat .cta {
   height: 48px;
@@ -6706,4 +6732,167 @@ a.ts-link {
 
 .pf-invite .card-h .rbtn {
   margin-inline-start: auto;
+}
+
+/* ---------- the news slide: headlines on one side, the chosen story on the other ---------- */
+.news-s {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: 16px 18px;
+  padding-top: 28px;
+  padding-bottom: 32px;
+}
+.nw-top {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+.nw-top h2 {
+  margin: 0;
+  font-size: 30px;
+  font-weight: 600;
+}
+.nw-feed {
+  padding: 10px;
+}
+.nw-list {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  scrollbar-width: none;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.nw-row {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 10px 14px 10px 10px;
+  border: 0;
+  border-radius: 26px;
+  background: none;
+  color: var(--ink);
+  text-align: start;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.nw-row:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+.nw-row[aria-current="true"] {
+  background: rgba(255, 255, 255, 0.14);
+}
+.nw-th {
+  flex: none;
+  width: 76px;
+  height: 76px;
+  border-radius: 18px;
+  object-fit: cover;
+  background: rgba(255, 255, 255, 0.08);
+}
+.nw-th.none {
+  display: grid;
+  place-items: center;
+  color: var(--ink-3);
+}
+.nw-th.none .ico {
+  width: 28px;
+  height: 28px;
+}
+.nw-tx {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.nw-tx b {
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.55;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.nw-tx small {
+  font-size: 13px;
+  color: var(--ink-3);
+}
+.nw-row.read b {
+  color: var(--ink-2);
+  font-weight: 400;
+}
+.nw-read {
+  padding: 14px;
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+.nw-read article {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.nw-hero {
+  width: 100%;
+  aspect-ratio: 16 / 8;
+  border-radius: 22px;
+  object-fit: cover;
+  background: rgba(255, 255, 255, 0.08);
+}
+.nw-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-inline: 6px;
+  font-size: 13px;
+  color: var(--ink-3);
+}
+.nw-read h3 {
+  margin: 0;
+  padding-inline: 6px;
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 1.6;
+}
+.nw-read p {
+  margin: 0;
+  padding-inline: 6px;
+  font-size: 16px;
+  line-height: 1.9;
+  color: var(--ink-2);
+}
+.nw-acts {
+  display: flex;
+  gap: 10px;
+  padding-inline: 6px;
+  margin-top: 4px;
+}
+.nw-acts .cta,
+.nw-acts .ghost {
+  height: 48px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding-inline: 22px;
+  text-decoration: none;
+}
+.nw-none {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  color: var(--ink-3);
+}
+.nw-none p {
+  margin: 0;
+}
+.nw-cat {
+  margin-inline-start: 10px;
+  color: var(--ink-3);
+  font-size: 13px;
 }

@@ -2,7 +2,8 @@ import { useEffect, useState } from "react";
 
 import type { TaskList } from "@dotlife/tasks";
 
-import { addFolder } from "../noghte/model";
+import { availableListColors, LIST_COLORS } from "../listColors";
+import { addFolder, liveLists } from "../noghte/model";
 import { Icon } from "../ui/Icon";
 
 /**
@@ -10,19 +11,6 @@ import { Icon } from "../ui/Icon";
  * folders, the tasks' lists and the plans' calendars are, and the phone's — so one made here is
  * there at the next sync, and it can be made from any of those places with this one sheet.
  */
-
-export const CATEGORY_COLORS = [
-  "#8C9EFF",
-  "#5AB0FF",
-  "#4CC3B0",
-  "#8ADD88",
-  "#F2C94C",
-  "#F2A65A",
-  "#F0817A",
-  "#E59AAA",
-  "#B79CF0",
-  "#9AA7B5",
-] as const;
 
 type Ask = { onCreated?: (list: TaskList) => void };
 let current: Ask | null = null;
@@ -62,7 +50,14 @@ export function NewCategoryHost() {
 
 function Sheet({ ask, onClose }: { ask: Ask; onClose: () => void }) {
   const [name, setName] = useState("");
-  const [color, setColor] = useState<string>(CATEGORY_COLORS[0]);
+  // one sideways line, like the app's list sheet: the free colours in wheel order, then the ones
+  // other lists use, faded and disabled
+  const [taken] = useState(() => liveLists().map((l) => l.color.toLowerCase()));
+  const free = availableListColors(taken);
+  const palette = [...free, ...LIST_COLORS.filter((c) => taken.includes(c.toLowerCase()))].filter(
+    (c, i, all) => all.indexOf(c) === i,
+  );
+  const [color, setColor] = useState<string>(free[0] ?? LIST_COLORS[0] ?? "#6FB6F2");
   const ok = name.trim() !== "";
   useEffect(() => {
     const onKey = (e: KeyboardEvent): void => {
@@ -120,19 +115,24 @@ function Sheet({ ask, onClose }: { ask: Ask; onClose: () => void }) {
           />
         </label>
         <div className="cat-colors" role="radiogroup" aria-label="رنگ">
-          {CATEGORY_COLORS.map((c) => (
-            <button
-              key={c}
-              type="button"
-              role="radio"
-              aria-checked={color === c}
-              aria-label={c}
-              style={{ background: c }}
-              onClick={() => {
-                setColor(c);
-              }}
-            />
-          ))}
+          {palette.map((c) => {
+            const used = taken.includes(c.toLowerCase());
+            return (
+              <button
+                key={c}
+                type="button"
+                role="radio"
+                aria-checked={color === c}
+                aria-label={used ? `رنگ ${c}، برای دسته‌ی دیگری است` : `رنگ ${c}`}
+                disabled={used}
+                className={used ? "used" : undefined}
+                style={{ background: c }}
+                onClick={() => {
+                  setColor(c);
+                }}
+              />
+            );
+          })}
         </div>
         <button type="submit" className="cta" disabled={!ok}>
           ساختن

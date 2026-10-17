@@ -35,6 +35,7 @@ export const BLOCKS = [
 export const SLIDES = [
   ["s-plans", "برنامه‌ها"],
   ["s-money", "پول"],
+  ["s-news", "خبر"],
   ["s-notes", "یادداشت‌ها"],
   ["s-social", "شبکه‌ها"],
 ] as const;
@@ -73,6 +74,8 @@ export type Settings = {
   social: { order: string[]; shown: string[]; seen: string[] };
   /** Money amounts hidden on the money slide (one tap shows them). */
   hideMoney: boolean;
+  /** News sources the person switched off (every other source of `NEWS_SOURCES` is read). */
+  newsOff: string[];
   /**
    * What the person chose to say about themself, only to be offered better «معرفی‌شده» boxes: a
    * city and topics they follow. It stays on this device; nothing is sent anywhere.
@@ -104,6 +107,7 @@ export const DEFAULTS: Settings = {
     seen: [],
   },
   hideMoney: false,
+  newsOff: [],
   city: null,
   topics: [],
 };

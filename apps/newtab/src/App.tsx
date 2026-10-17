@@ -6,6 +6,7 @@ import { DateLine } from "./home/DateLine";
 import { Dot } from "./home/Dot";
 import { Edge } from "./home/Edge";
 import { Launcher } from "./home/Launcher";
+import { NewsSlide } from "./home/NewsSlide";
 import { MoneySlide } from "./home/MoneySlide";
 import { NotesSlide } from "./home/NotesSlide";
 import { PlansSlide } from "./home/PlansSlide";
@@ -123,6 +124,7 @@ export function App() {
   const SLIDE_UI: Partial<Record<SlideId, { icon: IconName; node: React.ReactNode }>> = {
     "s-plans": { icon: "calendar-face", node: <PlansSlide /> },
     "s-money": { icon: "activity", node: <MoneySlide /> },
+    "s-news": { icon: "newspaper", node: <NewsSlide /> },
     "s-social": { icon: "chat", node: <SocialSlide /> },
     "s-notes": {
       icon: "sticker-note",

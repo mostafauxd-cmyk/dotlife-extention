@@ -5,7 +5,7 @@ import { bookmarksBar, faviconUrl, type Bookmark } from "../platform";
 import { Icon } from "../ui/Icon";
 
 /**
- * The right edge: a short line; with the mouse on it a panel slides in with Chrome's own bookmarks
+ * The left edge: a short line; with the mouse on it a panel slides in with Chrome's own bookmarks
  * bar (folders open in place) and «شخصی‌سازی».
  */
 export function Edge({

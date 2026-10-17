@@ -4,7 +4,7 @@ import { Icon } from "../ui/Icon";
 import type { IconName } from "../ui/icons";
 
 /**
- * The slides' rail on the left edge, like the app's bottom bar: a few dots that say which slide is
+ * The slides' rail on the right edge, like the app's bottom bar: a few dots that say which slide is
  * in view; with the mouse over it, icons and names, and a click goes to that slide.
  */
 

@@ -28,20 +28,21 @@ import { PaketLogo, PaketSync } from "./PaketSync";
 const UP = "#8add88";
 const DN = "#f0817a";
 
-const clockOf = (iso: string | null): string =>
-  iso === null ? "" : fa(localNow(TIME_ZONE, new Date(iso)).time);
+const clockOf = (iso: string | null, persian = true): string => {
+  if (iso === null) return "";
+  const t = localNow(TIME_ZONE, new Date(iso)).time;
+  return persian ? fa(t) : t;
+};
 
 /** «▲ ۰٫۴۱٪» */
 const change = (pct: number): string =>
   `${pct >= 0 ? "▲" : "▼"} ${fa(Math.abs(pct).toFixed(2)).replace(".", "٫")}٪`;
 
+/** «▲ 0.41%» — the strip's numbers are Latin digits, as on an exchange */
+const changeLatin = (pct: number): string => `${pct >= 0 ? "▲" : "▼"} ${Math.abs(pct).toFixed(2)}%`;
+
 const usd = (n: number): string =>
-  fa(
-    n
-      .toLocaleString("en-US", { maximumFractionDigits: n < 1 ? 3 : n < 1000 ? 2 : 1 })
-      .replace(/,/g, "٬")
-      .replace(".", "٫"),
-  );
+  n.toLocaleString("en-US", { maximumFractionDigits: n < 1 ? 3 : n < 1000 ? 2 : 1 });
 
 /** An asset's icon in its colour on a tint of it. */
 function Mark({ id, className }: { id: string; className: string }) {
@@ -70,13 +71,13 @@ function TickerCell({ t }: { t: TickerItem }) {
           `$${usd(t.price)}`
         ) : (
           <>
-            {toman(String(Math.round(t.price)))}
+            {Math.round(t.price).toLocaleString("en-US")}
             <small>تومان</small>
           </>
         )}
       </span>
       {t.changePct !== null && (
-        <span className={t.changePct >= 0 ? "c up" : "c dn"}>{change(t.changePct)}</span>
+        <span className={t.changePct >= 0 ? "c up" : "c dn"}>{changeLatin(t.changePct)}</span>
       )}
     </span>
   );
@@ -121,7 +122,7 @@ export function TickerStrip({ ticker }: { ticker: Ticker | null }) {
       </div>
       <span className="tk-src">
         {ticker?.lastUpdated !== undefined && ticker.lastUpdated !== null
-          ? `به‌روز شده ${clockOf(ticker.lastUpdated)}`
+          ? `به‌روز شده ${clockOf(ticker.lastUpdated, false)}`
           : ""}
       </span>
     </div>
