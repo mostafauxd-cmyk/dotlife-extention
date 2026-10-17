@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 
-import { Corner, NotesCard, TasksCard, TodayCard, type Peek } from "./home/Corners";
+import { Corner, NotesCard, PaketCard, TasksCard, TodayCard, type Peek } from "./home/Corners";
 import { Customize } from "./home/Customize";
 import { DateLine } from "./home/DateLine";
 import { Dot } from "./home/Dot";
@@ -16,6 +16,7 @@ import { SignIn } from "./home/SignIn";
 import { SocialSlide } from "./home/SocialSlide";
 import { NewCategoryHost } from "./home/NewCategory";
 import { PaketPairHost } from "./home/PaketPair";
+import { PaketLogo } from "./home/PaketSync";
 import { TaskEditorHost } from "./home/TaskEditor";
 import { useSession, useSettings } from "./hooks";
 import { onArrival } from "./noghte/sync";
@@ -199,6 +200,20 @@ export function App() {
               dot={false}
             >
               <TodayCard />
+            </Corner>
+          )}
+
+          {isOn(s, "paket") && (
+            <Corner
+              pos="br"
+              icon="activity"
+              mark={<PaketLogo size={22} />}
+              label="پاکت"
+              pinned={pinned}
+              peek={null}
+              dot={false}
+            >
+              <PaketCard />
             </Corner>
           )}
 

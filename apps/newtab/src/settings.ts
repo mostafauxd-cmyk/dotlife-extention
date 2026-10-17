@@ -22,6 +22,7 @@ export const BLOCKS = [
   ["tasks", "کارها"],
   ["notes", "یادداشت‌ها"],
   ["today", "امروز"],
+  ["paket", "پاکت"],
   ["launcher", "ردیف دسترسی سریع"],
   ["bookmarks", "بوکمارک‌های کروم"],
   ["dateline", "تاریخ زیر سرچ"],
@@ -109,8 +110,7 @@ export const DEFAULTS: Settings = {
     seen: [],
   },
   hideMoney: false,
-  // the outlets read from the person's own connection start off (see `NEWS_OFF_AT_FIRST`)
-  newsOff: ["bbc", "dw", "euronews"],
+  newsOff: [],
   newsOwn: [],
   city: null,
   topics: [],

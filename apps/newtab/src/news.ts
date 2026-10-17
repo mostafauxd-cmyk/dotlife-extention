@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import { usePaketNews, type NewsItem } from "./paket";
-import { inExtension, load, save } from "./platform";
+import { faviconUrl, inExtension, load, save } from "./platform";
 
 /**
  * The news slide's stories, read straight from the outlets' public RSS feeds by the page itself (the
@@ -12,7 +12,15 @@ import { inExtension, load, save } from "./platform";
  * rest. When news is managed on a server, `loadStories` is what changes.
  */
 
-export type NewsCategory = "economy" | "tech" | "sport" | "culture" | "society" | "health";
+export type NewsCategory =
+  | "economy"
+  | "tech"
+  | "sport"
+  | "culture"
+  | "society"
+  | "health"
+  /** A front page's story that fits none of the chips (politics, the world): shown under «همه». */
+  | "general";
 
 /** The chips: everything, then each category. */
 export const NEWS_CATEGORIES: readonly (readonly [NewsCategory | "all", string])[] = [
@@ -26,80 +34,134 @@ export const NEWS_CATEGORIES: readonly (readonly [NewsCategory | "all", string])
 ];
 
 export const categoryName = (c: NewsCategory): string =>
-  NEWS_CATEGORIES.find(([id]) => id === c)?.[1] ?? "";
+  c === "general" ? "عمومی" : (NEWS_CATEGORIES.find(([id]) => id === c)?.[1] ?? "");
+
+export type NewsFeed = {
+  /** The feed, at its final address (a redirect would need a permission of its own). */
+  url: string;
+  /** What every story of it is (a section's own feed), or null to tell from the story. */
+  category: NewsCategory | null;
+};
 
 export type NewsSource = {
   id: string;
   name: string;
-  /** What every story of it is, or null to tell from the story itself. */
-  category: NewsCategory | null;
-  /** The feed, at its final address (a redirect would need a permission of its own). */
-  feed: string;
-  /** The origin the manifest has to allow. */
-  host: string;
-  /** The badge's colour. */
+  /**
+   * Its feeds: a big agency's sections first (so every category has stories, and a story keeps the
+   * section it came from), its front page last.
+   */
+  feeds: readonly NewsFeed[];
+  /** The site's icon, bundled (`public/news`), or null to use the letter on `color`. */
+  icon: string | null;
+  /** The badge's colour, behind the letter when there is no icon. */
   color: string;
-  group: "domestic" | "foreign" | "paket" | "own";
+  group: "domestic" | "paket" | "own";
 };
 
-const web = (
-  id: string,
-  name: string,
-  category: NewsCategory | null,
-  feed: string,
-  color: string,
-  group: NewsSource["group"] = "domestic",
-): NewsSource => ({ id, name, category, feed, host: `${new URL(feed).origin}/*`, color, group });
+const feed = (url: string, category: NewsCategory | null = null): NewsFeed => ({ url, category });
+
+/** A Nastooh (Saba) newsroom: its sections are `/rss/tp/<id>`. */
+const sections = (origin: string, tp: Partial<Record<NewsCategory, number>>): NewsFeed[] => [
+  ...Object.entries(tp).map(([cat, id]) =>
+    feed(`${origin}/rss/tp/${String(id)}`, cat as NewsCategory),
+  ),
+  feed(`${origin}/rss`),
+];
 
 export const PAKET_SOURCE: NewsSource = {
   id: "paket",
   name: "تیم پاکت",
-  category: "economy",
-  feed: "",
-  host: "",
+  feeds: [],
+  icon: "/brands/paket.svg",
   color: "#2FB59A",
   group: "paket",
 };
 
+const domestic = (
+  id: string,
+  name: string,
+  feeds: readonly NewsFeed[],
+  color: string,
+): NewsSource => ({ id, name, feeds, icon: `/news/${id}.png`, color, group: "domestic" });
+
+/**
+ * The sources. The four big newsrooms are read section by section (checked 2026-10-17: each section
+ * feed answers with 30 stories and their pictures), the specialised outlets by their one feed.
+ */
 export const NEWS_SOURCES: readonly NewsSource[] = [
-  web("isna", "ایسنا", null, "https://www.isna.ir/rss", "#3A6EA5"),
-  web("khabaronline", "خبرآنلاین", null, "https://www.khabaronline.ir/rss", "#C0462F"),
-  web("hamshahri", "همشهری", null, "https://www.hamshahrionline.ir/rss", "#B8862B"),
-  web("yjc", "باشگاه خبرنگاران", null, "https://www.yjc.ir/fa/rss/allnews", "#7A5BC4"),
-  web("donya", "دنیای اقتصاد", "economy", "https://donya-e-eqtesad.com/feeds", "#C79A1E"),
-  web(
+  // ISNA's own icon is only 16px (its site answers bots with a challenge): its letter on its blue
+  {
+    ...domestic(
+      "isna",
+      "ایسنا",
+      sections("https://www.isna.ir", {
+        society: 9,
+        health: 50,
+        culture: 20,
+        tech: 41,
+        sport: 24,
+        economy: 34,
+      }),
+      "#2B4E9E",
+    ),
+    icon: null,
+  },
+  domestic(
+    "mehr",
+    "مهر",
+    sections("https://www.mehrnews.com", {
+      society: 6,
+      health: 550,
+      culture: 2,
+      tech: 5,
+      sport: 9,
+      economy: 25,
+    }),
+    "#1E6FB8",
+  ),
+  domestic(
+    "khabaronline",
+    "خبرآنلاین",
+    sections("https://www.khabaronline.ir", {
+      society: 4,
+      health: 46,
+      culture: 3,
+      tech: 7,
+      sport: 6,
+      economy: 2,
+    }),
+    "#C0462F",
+  ),
+  domestic(
+    "hamshahri",
+    "همشهری",
+    sections("https://www.hamshahrionline.ir", {
+      society: 5,
+      health: 702,
+      culture: 26,
+      tech: 20,
+      sport: 9,
+      economy: 10,
+    }),
+    "#B8862B",
+  ),
+  domestic("yjc", "باشگاه خبرنگاران", [feed("https://www.yjc.ir/fa/rss/allnews")], "#7A5BC4"),
+  domestic(
+    "donya",
+    "دنیای اقتصاد",
+    [feed("https://donya-e-eqtesad.com/feeds", "economy")],
+    "#C79A1E",
+  ),
+  domestic(
     "eghtesadonline",
     "اقتصادآنلاین",
-    "economy",
-    "https://www.eghtesadonline.com/fa/updates/allnews",
+    [feed("https://www.eghtesadonline.com/fa/updates/allnews", "economy")],
     "#2E8B6A",
   ),
-  web("digiato", "دیجیاتو", "tech", "https://digiato.com/feed", "#3F51B5"),
-  web("varzesh3", "ورزش۳", "sport", "https://www.varzesh3.com/rss/all", "#2E9B4E"),
-  web(
-    "bbc",
-    "بی‌بی‌سی فارسی",
-    null,
-    "https://feeds.bbci.co.uk/persian/rss.xml",
-    "#B71C1C",
-    "foreign",
-  ),
-  web("dw", "دویچه‌وله فارسی", null, "https://rss.dw.com/xml/rss-per-all", "#1565C0", "foreign"),
-  web(
-    "euronews",
-    "یورونیوز فارسی",
-    null,
-    "https://parsi.euronews.com/rss?format=mrss",
-    "#0277BD",
-    "foreign",
-  ),
+  domestic("digiato", "دیجیاتو", [feed("https://digiato.com/feed", "tech")], "#3F51B5"),
+  domestic("varzesh3", "ورزش۳", [feed("https://www.varzesh3.com/rss/all", "sport")], "#2E9B4E"),
   PAKET_SOURCE,
 ];
-
-/** Off until the person turns them on: they are read from their own connection, which may not reach them (the same ids as `DEFAULTS.newsOff`). */
-export const NEWS_OFF_AT_FIRST: readonly string[] = NEWS_SOURCES.filter(
-  (s) => s.group === "foreign",
-).map((s) => s.id);
 
 /** A source the person added by its RSS address. */
 export type OwnSource = { id: string; name: string; feed: string };
@@ -107,9 +169,8 @@ export type OwnSource = { id: string; name: string; feed: string };
 export const ownToSource = (o: OwnSource): NewsSource => ({
   id: o.id,
   name: o.name,
-  category: null,
-  feed: o.feed,
-  host: `${new URL(o.feed).origin}/*`,
+  feeds: [feed(o.feed)],
+  icon: faviconUrl(o.feed, 64),
   color: colorOf(o.id),
   group: "own",
 });
@@ -246,11 +307,31 @@ const WORDS: readonly (readonly [NewsCategory, readonly string[]])[] = [
   ],
 ];
 
-/** The story's category: the source's own, or the first whose words the headline (or the feed's tags) uses. */
-export function categorize(text: string, fallback: NewsCategory | null): NewsCategory {
+/** A section named in a feed's own tags («اجتماعی > سلامت») says the most; the deeper part first. */
+const TAGS: readonly (readonly [NewsCategory, RegExp])[] = [
+  ["health", /سلامت|بهداشت|درمان|پزشکی/],
+  ["sport", /ورزش|فوتبال|کشتی/],
+  ["tech", /فناوری|دانش|علمی|ارتباطات|هوش مصنوعی/],
+  ["culture", /فرهنگ|هنر|سینما|ادب|کتاب|موسیقی|تئاتر/],
+  ["economy", /اقتصاد|بازار|بورس|انرژی/],
+  ["society", /اجتماعی|جامعه|حوادث|شهری|آموزش|محیط زیست|خانواده/],
+];
+
+/**
+ * The story's category: the feed's own (a section feed), else the section its tags name, else the
+ * first whose words the headline uses, else «general».
+ */
+export function categorize(
+  title: string,
+  tags: string,
+  fallback: NewsCategory | null,
+): NewsCategory {
   if (fallback !== null) return fallback;
-  for (const [cat, words] of WORDS) if (words.some((w) => text.includes(w))) return cat;
-  return "society";
+  for (const part of tags.split(/[>،,]/).reverse()) {
+    for (const [cat, re] of TAGS) if (re.test(part)) return cat;
+  }
+  for (const [cat, words] of WORDS) if (words.some((w) => title.includes(w))) return cat;
+  return "general";
 }
 
 // ---- reading a feed (a tolerant reader: feeds with a stray `&` still count) ----
@@ -331,7 +412,11 @@ export const feedTitle = (xml: string): string | null => {
 };
 
 /** The stories of one RSS feed's text. Items without a title or a link are left out. */
-export function parseFeed(xml: string, source: NewsSource): Story[] {
+export function parseFeed(
+  xml: string,
+  source: NewsSource,
+  category: NewsCategory | null = null,
+): Story[] {
   const out: Story[] = [];
   for (const m of xml.matchAll(/<item\b[^>]*>([\s\S]*?)<\/item>/gi)) {
     const item = m[1] ?? "";
@@ -349,7 +434,7 @@ export function parseFeed(xml: string, source: NewsSource): Story[] {
       summary: summary === title ? "" : summary,
       image: httpsOnly(imageOf(item)),
       source: source.id,
-      category: categorize(`${title} ${tags}`, source.category),
+      category: categorize(title, tags, category),
       at: new Date(Number.isNaN(when) ? Date.now() : when).toISOString(),
       url,
     });
@@ -365,7 +450,7 @@ export function paketStories(items: readonly NewsItem[]): Story[] {
     summary: n.summary,
     image: httpsOnly(n.thumbnailUrl),
     source: PAKET_SOURCE.id,
-    category: PAKET_SOURCE.category ?? "economy",
+    category: "economy",
     at: n.publishedAt,
     url: n.ctaUrl ?? "https://paket.life/?src=chrome&c=news",
   }));
@@ -441,14 +526,18 @@ async function fetchText(feed: string): Promise<string | null> {
   }
 }
 
-async function fetchSource(src: NewsSource): Promise<Story[]> {
-  const xml = await fetchText(src.feed);
-  return xml === null ? [] : parseFeed(xml, src);
+async function fetchFeed(src: NewsSource, f: NewsFeed): Promise<Story[]> {
+  const xml = await fetchText(f.url);
+  return xml === null ? [] : parseFeed(xml, src, f.category);
 }
 
-/** The stories of the given web sources, fresh from the outlets. */
+/**
+ * The stories of the given web sources, fresh from the outlets: every feed of each, a dozen newest
+ * from each feed, a section's copy of a story kept over the front page's.
+ */
 export async function loadStories(sources: readonly NewsSource[]): Promise<Story[]> {
-  return mergeStories(await Promise.all(sources.map(fetchSource)));
+  const lists = await Promise.all(sources.flatMap((s) => s.feeds.map((f) => fetchFeed(s, f))));
+  return mergeStories(lists, 12);
 }
 
 /**
@@ -484,7 +573,7 @@ export async function checkOwnFeed(
   };
 }
 
-const CACHE = "news.v2";
+const CACHE = "news.v3";
 const FRESH_MS = 10 * 60_000;
 type Cached = { at: number; sources: string[]; stories: Story[] };
 
@@ -553,7 +642,9 @@ export function useNews(sources: readonly NewsSource[]): {
     };
   }, [pull, key]);
 
-  const stories = withPaket ? mergeStories([fetched, paketStories(paket)], 40) : fetched;
+  const stories = withPaket
+    ? mergeStories([fetched, paketStories(paket)], Number.POSITIVE_INFINITY)
+    : fetched;
   return {
     stories,
     loading,

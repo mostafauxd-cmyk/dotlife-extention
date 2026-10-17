@@ -34,7 +34,6 @@ import { openNote } from "./openNote";
 
 const GROUPS: readonly (readonly [NewsSource["group"], string])[] = [
   ["domestic", "داخلی"],
-  ["foreign", "برون‌مرزی"],
   ["paket", "پاکت"],
   ["own", "منبع‌های خودت"],
 ];
@@ -42,7 +41,23 @@ const GROUPS: readonly (readonly [NewsSource["group"], string])[] = [
 const norm = (s: string): string =>
   s.replace(/[يى]/g, "ی").replace(/ك/g, "ک").replace(/‌/g, " ").toLowerCase();
 
+/** The outlet's own icon, or its first letter on its colour (also when the icon does not load). */
 function Badge({ source }: { source: NewsSource | undefined }) {
+  const [broken, setBroken] = useState(false);
+  const icon = source?.icon ?? null;
+  if (icon !== null && !broken) {
+    return (
+      <img
+        className="nw-b"
+        src={icon}
+        alt=""
+        draggable={false}
+        onError={() => {
+          setBroken(true);
+        }}
+      />
+    );
+  }
   return (
     <i className="nw-b" style={{ background: source?.color ?? "#6d6d6d" }} aria-hidden="true">
       {source?.name.slice(0, 1) ?? "؟"}
@@ -407,10 +422,7 @@ function Sources({ all, off }: { all: readonly NewsSource[]; off: readonly strin
                     }}
                   >
                     <Badge source={x} />
-                    <span>
-                      {x.name}
-                      {x.group === "foreign" && <small>از اتصال خود تو خوانده می‌شود</small>}
-                    </span>
+                    <span>{x.name}</span>
                     <span className="sw" />
                   </button>
                   {x.group === "own" && (

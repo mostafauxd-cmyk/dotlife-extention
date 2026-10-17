@@ -15,11 +15,14 @@ import {
 } from "../noghte/model";
 import { AD_LABEL, useAd } from "../ads";
 import { getLink, installId } from "../install";
+import { usePaketLinked } from "../paket";
 import { todayInfo } from "../today";
 import { ago, fa } from "../ui/fa";
 import { Icon } from "../ui/Icon";
 import type { IconName } from "../ui/icons";
 import { Qr } from "../ui/Qr";
+import { openPaketPair } from "./PaketPair";
+import { PaketLogo } from "./PaketSync";
 import { openEditor } from "./TaskEditor";
 
 /**
@@ -368,5 +371,46 @@ export function TodayCard() {
         </div>
       )}
     </>
+  );
+}
+
+/**
+ * The Paket corner: not linked, what linking gives and the button that opens the pair sheet; linked,
+ * that it is and the way into Paket.
+ */
+export function PaketCard() {
+  const linked = usePaketLinked();
+  return (
+    <div className="pk-card">
+      <PaketLogo size={36} />
+      <div className="sc-text">
+        <b>{linked ? "پاکت وصل است" : "پولت را هم ببین"}</b>
+        <p>
+          {linked
+            ? "موجودی و خرج ماهت در صفحه‌ی «پول» است."
+            : "پاکت را وصل کن تا موجودی، خرج ماه و دارایی‌هایت را همین‌جا ببینی؛ فقط خواندنی است."}
+        </p>
+        {linked ? (
+          <a
+            className="cta"
+            href="https://paket.life/?src=chrome&c=corner"
+            target="_blank"
+            rel="noreferrer"
+          >
+            باز کردن پاکت
+          </a>
+        ) : (
+          <button
+            type="button"
+            className="cta"
+            onClick={() => {
+              openPaketPair();
+            }}
+          >
+            ورود به پاکت
+          </button>
+        )}
+      </div>
+    </div>
   );
 }

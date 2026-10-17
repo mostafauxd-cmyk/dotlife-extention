@@ -4933,8 +4933,6 @@ a.ts-link {
 }
 .pk-logo {
   display: block;
-  border-radius: 16px;
-  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.12);
 }
 .pke-copy h2 {
   margin: 0;
@@ -6752,6 +6750,8 @@ a.ts-link {
   width: 22px;
   height: 22px;
   border-radius: 7px;
+  object-fit: cover;
+  background: #fff;
   display: grid;
   place-items: center;
   color: #fff;
@@ -7254,4 +7254,23 @@ a.ts-link {
   flex: none;
   width: 20px;
   height: 20px;
+}
+
+/* the Paket corner's card */
+.pk-card {
+  display: flex;
+  gap: 14px;
+  padding: 4px 0 var(--cx);
+}
+.pk-card .pk-logo {
+  flex: none;
+}
+.pk-card .sc-text {
+  min-height: 0;
+}
+.pk-card .sc-text .cta {
+  margin-top: 12px;
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
 }

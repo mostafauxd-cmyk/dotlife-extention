@@ -50,9 +50,13 @@ describe("parseFeed", () => {
     });
   });
 
-  it("takes the category from the feed's tags when the source has none of its own", () => {
+  it("takes the category from the feed's tags when the feed has none of its own", () => {
     expect(stories[0]?.category).toBe("economy");
-    expect(stories[1]?.category).toBe("society");
+    expect(stories[1]?.category).toBe("general");
+  });
+
+  it("a section's feed gives every story its section", () => {
+    expect(parseFeed(FEED, src, "health").map((s) => s.category)).toEqual(["health", "health"]);
   });
 
   it("opens CDATA, takes the item's own image, and drops a feed's «The post …» footer", () => {
@@ -71,11 +75,13 @@ describe("plain", () => {
 });
 
 describe("categorize", () => {
-  it("keeps a source's own category, else goes by the words", () => {
-    expect(categorize("هر چیزی", "tech")).toBe("tech");
-    expect(categorize("پرسپولیس برد", null)).toBe("sport");
-    expect(categorize("قیمت دلار امروز", null)).toBe("economy");
-    expect(categorize("هوا ابری است", null)).toBe("society");
+  it("keeps a feed's own category, then the tags' deepest section, then the headline's words", () => {
+    expect(categorize("هر چیزی", "", "tech")).toBe("tech");
+    expect(categorize("هر چیزی", "اجتماعی > سلامت", null)).toBe("health");
+    expect(categorize("هر چیزی", "اجتماعی > حوادث", null)).toBe("society");
+    expect(categorize("پرسپولیس برد", "", null)).toBe("sport");
+    expect(categorize("قیمت دلار امروز", "", null)).toBe("economy");
+    expect(categorize("دیدار وزیران خارجه", "سیاسی > دولت", null)).toBe("general");
   });
 });
 
