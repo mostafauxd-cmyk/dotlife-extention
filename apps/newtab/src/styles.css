@@ -581,7 +581,9 @@ svg {
   align-items: flex-start;
   justify-content: center;
   flex-wrap: wrap;
-  gap: 16px;
+  /* as wide as the box above, tiles close enough that nine fit between its edges */
+  width: min(815px, 100%);
+  gap: 16px 6px;
   min-height: 110px;
   position: relative;
   z-index: 6;
