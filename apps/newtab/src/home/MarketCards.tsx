@@ -40,30 +40,27 @@ const usd = (n: number): string =>
       .replace(".", "٫"),
   );
 
-function Badge({ id, small }: { id: string; small?: boolean }) {
-  const b = BADGE[id] ?? { glyph: "؟", bg: "#3a3d48" };
+/** An asset's icon in its colour on a tint of it. */
+function Mark({ id, className }: { id: string; className: string }) {
+  const b = BADGE[id] ?? { icon: "coins", color: "#9AA7B5" };
   return (
     <i
-      className={small ? "ai sm" : "ai"}
-      style={{ background: b.bg, color: b.dark === true ? "#3a2a05" : undefined }}
-    >
-      {b.glyph}
-    </i>
+      className={`${className} mk2`}
+      style={{ "--mc": b.color, "--logo": `url("/market/${b.icon}.svg")` } as React.CSSProperties}
+    />
   );
+}
+
+function Badge({ id, small }: { id: string; small?: boolean }) {
+  return <Mark id={id} className={small ? "ai sm" : "ai"} />;
 }
 
 // ---- the strip ----
 
 function TickerCell({ t }: { t: TickerItem }) {
-  const b = BADGE[t.id];
   return (
     <span className={t.live ? "tk-i" : "tk-i stale"}>
-      <i
-        className="g"
-        style={{ background: b?.bg ?? "#3a3d48", color: b?.dark === true ? "#3a2a05" : undefined }}
-      >
-        {t.glyph}
-      </i>
+      <Mark id={t.id} className="g" />
       <span className="n">{t.name}</span>
       <span className="v">
         {t.unit === "USD" ? (
@@ -360,6 +357,7 @@ export function MarketCard({
               label="گروه قیمت"
               size="sm"
               block
+              line
               value={here}
               onChange={(g) => {
                 setGroup(g);

@@ -25,6 +25,7 @@ export function Tabs<T extends string | number>({
   size = "md",
   block = false,
   width,
+  line = false,
 }: {
   items: readonly TabItem<T>[];
   value: T | undefined;
@@ -38,10 +39,12 @@ export function Tabs<T extends string | number>({
    * labels change (a count growing), so what sits beside it does not move.
    */
   width?: number;
+  /** A line under the active word instead of a pill (the market card's groups). */
+  line?: boolean;
 }) {
   const cls = [
     "tabs",
-    "morph",
+    line ? "line" : "morph",
     size === "sm" ? "sm" : "",
     block || width !== undefined ? "block" : "",
   ]
