@@ -9,6 +9,7 @@
     "typecheck": "tsc -p tsconfig.json"
   },
   "dependencies": {
+    "@dotlife/ads": "workspace:*",
     "@dotlife/calendar-core": "workspace:*",
     "@dotlife/event-data": "workspace:*",
     "@dotlife/prayer-times": "workspace:*",

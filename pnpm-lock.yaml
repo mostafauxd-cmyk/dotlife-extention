@@ -38,6 +38,9 @@ importers:
 
   apps/newtab:
     dependencies:
+      '@dotlife/ads':
+        specifier: workspace:*
+        version: link:../../packages/ads
       '@dotlife/calendar-core':
         specifier: workspace:*
         version: link:../../packages/calendar-core
@@ -78,6 +81,12 @@ importers:
       vite:
         specifier: 8.3.2
         version: 8.3.2(@types/node@24.19.2)
+
+  packages/ads:
+    dependencies:
+      zod:
+        specifier: ^4.1.0
+        version: 4.6.7
 
   packages/calendar-core:
     dependencies:
