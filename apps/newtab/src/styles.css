@@ -1972,12 +1972,18 @@ svg {
   gap: 10px;
   transition:
     background 0.2s,
-    color 0.2s;
+    color 0.2s,
+    box-shadow 0.2s;
 }
+/* not yet: a dark, outlined button — nothing like the white one that is ready */
 .dia-foot .next:disabled {
-  background: #d9d9d9;
-  color: #6b6b6b;
-  cursor: default;
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.34);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12);
+  cursor: not-allowed;
+}
+.dia-foot .next:disabled .kbd {
+  opacity: 0.35;
 }
 .dia-foot .kbd {
   width: 20px;
