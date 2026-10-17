@@ -4974,7 +4974,6 @@ a.ts-link {
   border-radius: 999px;
   /* a soft white over the bar, the chosen label in white on it */
   background: rgba(255, 255, 255, 0.16);
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12);
   pointer-events: none;
   transition: opacity 0.2s;
 }
