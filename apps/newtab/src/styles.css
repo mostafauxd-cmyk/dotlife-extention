@@ -5784,9 +5784,9 @@ a.ts-link {
 .mtabs {
   display: flex;
   gap: 2px;
-  padding: 3px;
-  border-radius: 12px;
-  background: rgba(0, 0, 0, 0.22);
+  padding: 4px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.25);
   border: 1px solid var(--stroke);
 }
 .mtabs button {
@@ -5795,12 +5795,11 @@ a.ts-link {
   color: var(--ink-2);
   background: none;
   border: 0;
-  border-radius: 9px;
-  padding: 1px 0;
+  border-radius: 999px;
+  padding: 3px 0;
   cursor: pointer;
 }
 .mtabs button[aria-selected="true"] {
-  background: rgba(255, 255, 255, 0.1);
   color: var(--ink);
 }
 .plist {

@@ -1,4 +1,5 @@
 import type { PriceItem, Prices, Ticker, TickerItem } from "./market";
+import { load, save } from "./platform";
 
 /**
  * The market without Paket's server. Paket's own `/v1/market/*` is the way the extension is meant to
@@ -336,35 +337,61 @@ async function getJson(url: string, ms = 8000): Promise<unknown> {
   }
 }
 
-const closes = new Map<string, Promise<number[]>>();
-let currencies: Promise<Map<string, string>> | null = null;
+const HISTORY_KEY = "market.history.v1";
+/** The daily closes change once a day; the mirror rebuilds them daily, so six hours is plenty. */
+const HISTORY_TTL_MS = 6 * 60 * 60_000;
 
-async function history(symbol: string): Promise<number[]> {
-  currencies ??= getJson(`${MIRROR}/history/index.json`).then((j) => {
-    const m = new Map<string, string>();
-    if (isObj(j) && Array.isArray(j.data))
-      for (const e of j.data as unknown[])
-        if (isObj(e) && typeof e.symbol === "string" && typeof e.currency === "string")
-          m.set(e.symbol, e.currency);
-    return m;
-  });
-  const cur = (await currencies).get(symbol);
-  let p = closes.get(symbol);
-  if (p === undefined) {
-    p = getJson(`${MIRROR}/history/${symbol}.json`, 20_000).then((j) => parseCloses(j, cur));
-    closes.set(symbol, p);
-  }
-  return p;
+type Kept = { at: number; closes: Record<string, number[]> };
+let kept: Kept | null = null;
+let filling: Promise<void> | null = null;
+
+/** The last year of daily closes of every price that has a chart (toman, oldest first), from the store. */
+async function keptHistory(): Promise<Kept | null> {
+  kept ??= (await load<Kept>(HISTORY_KEY).catch(() => undefined)) ?? null;
+  return kept;
 }
 
 /**
- * Prices and the strip from the sources. `want` is the price the card shows a chart for: only its
- * history file is read (they are about a megabyte each), kept for as long as the tab lives.
+ * Reads every price's history file (about a megabyte each) a few at a time, and keeps only the last
+ * year of closes, so the files are read once in six hours instead of at every new tab.
  */
-export async function directMarket(
-  period: 7 | 30 | 365,
-  want: string | null,
-): Promise<{ prices: Prices | null; ticker: Ticker | null }> {
+function fillHistory(): Promise<void> {
+  filling ??= (async () => {
+    const idx = await getJson(`${MIRROR}/history/index.json`);
+    const cur = new Map<string, string>();
+    if (isObj(idx) && Array.isArray(idx.data))
+      for (const e of idx.data as unknown[])
+        if (isObj(e) && typeof e.symbol === "string" && typeof e.currency === "string")
+          cur.set(e.symbol, e.currency);
+    const out: Record<string, number[]> = { ...kept?.closes };
+    const todo = PRICE_ENTRIES.map((e) => e.symbol);
+    const worker = async (): Promise<void> => {
+      for (let s = todo.shift(); s !== undefined; s = todo.shift()) {
+        const c = parseCloses(await getJson(`${MIRROR}/history/${s}.json`, 25_000), cur.get(s));
+        if (c.length > 1) out[s] = c.slice(-400);
+      }
+    };
+    await Promise.all([worker(), worker(), worker()]);
+    if (Object.keys(out).length > 0) {
+      kept = { at: Date.now(), closes: out };
+      await save(HISTORY_KEY, kept).catch(() => undefined);
+    }
+  })().finally(() => {
+    filling = null;
+  });
+  return filling;
+}
+
+/**
+ * Prices and the strip from the sources, with every price's chart from the history kept in the
+ * store. When that is missing or six hours old, `later` settles once the files have been read again
+ * (the prices are not held up for it).
+ */
+export async function directMarket(period: 7 | 30 | 365): Promise<{
+  prices: Prices | null;
+  ticker: Ticker | null;
+  later: Promise<void> | null;
+}> {
   const now = new Date();
   const [latest, nob] = await Promise.all([
     getJson(`${MIRROR}/latest-toman.json`, 15_000),
@@ -411,18 +438,17 @@ export async function directMarket(
           items,
         };
 
+  let later: Promise<void> | null = null;
   if (prices !== null) {
-    const pick = items.find((i) => i.id === want) ?? items[0];
-    const entry = PRICE_ENTRIES.find((e) => e.id === pick?.id);
-    if (pick !== undefined && entry !== undefined) {
-      const c = await history(entry.symbol);
-      if (c.length > 1)
-        prices.history = {
-          days: period,
-          stepDays: period === 365 ? 7 : 1,
-          series: { [pick.id]: seriesOf(c, period, pick.price) },
-        };
+    const h = await keptHistory();
+    if (h === null || Date.now() - h.at > HISTORY_TTL_MS) later = fillHistory();
+    const series: Record<string, number[]> = {};
+    for (const i of items) {
+      const c = h?.closes[PRICE_ENTRIES.find((e) => e.id === i.id)?.symbol ?? ""];
+      if (c !== undefined && c.length > 1) series[i.id] = seriesOf(c, period, i.price);
     }
+    if (Object.keys(series).length > 0)
+      prices.history = { days: period, stepDays: period === 365 ? 7 : 1, series };
   }
 
   const tk: TickerItem[] = TICKER_ENTRIES.flatMap((e) => {
@@ -449,5 +475,5 @@ export async function directMarket(
           live: tk.every((i) => i.live),
           items: tk,
         };
-  return { prices, ticker };
+  return { prices, ticker, later };
 }

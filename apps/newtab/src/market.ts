@@ -91,7 +91,7 @@ type Market = {
  * Asked again every minute while the slide is in view (the server keeps each answer for half a
  * minute); `active` is false while it is scrolled away. Changing `period` asks for that history once; what was shown stays until it arrives.
  */
-export function useMarket(period: Period, active = true, want: string | null = null): Market {
+export function useMarket(period: Period, active = true): Market {
   const [prices, setPrices] = useState<Prices | null>(null);
   const [ticker, setTicker] = useState<Ticker | null>(null);
   const [offline, setOffline] = useState(false);
@@ -109,9 +109,13 @@ export function useMarket(period: Period, active = true, want: string | null = n
         let prices = p !== null && p.items.length > 0 ? p : null;
         let ticker = t !== null && t.items.length > 0 ? t : null;
         if (prices === null || ticker === null) {
-          const d = await directMarket(period, want).catch(() => null);
+          const d = await directMarket(period).catch(() => null);
           prices ??= d?.prices ?? null;
           ticker ??= d?.ticker ?? null;
+          // the charts arrive when their files have been read; then the card is filled again
+          void d?.later?.then(() => {
+            if (live) pull();
+          });
         }
         if (!live) return;
         if (prices !== null) setPrices(prices);
@@ -127,6 +131,6 @@ export function useMarket(period: Period, active = true, want: string | null = n
       clearInterval(t);
       document.removeEventListener("visibilitychange", pull);
     };
-  }, [period, active, want]);
+  }, [period, active]);
   return { prices, ticker, offline };
 }

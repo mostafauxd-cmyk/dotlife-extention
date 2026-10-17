@@ -242,21 +242,26 @@ function Row({
   );
 }
 
-/** A row's tiny line: the last stretch of the chosen period. */
+/** A row's small chart: the chosen period, as the big one but without the axes. */
 function Spark({ vals, up }: { vals: number[] | undefined; up: boolean }) {
   if (vals === undefined || vals.length < 2) return <span />;
-  const tail = vals.slice(-24);
-  const mn = Math.min(...tail);
-  const mx = Math.max(...tail);
-  const pts = tail
+  const mn = Math.min(...vals);
+  const mx = Math.max(...vals);
+  const pts = vals
     .map(
       (v, i) =>
-        `${(2 + (i / (tail.length - 1)) * 56).toFixed(1)},${(2 + (1 - (v - mn) / (mx - mn || 1)) * 18).toFixed(1)}`,
+        `${(2 + (i / (vals.length - 1)) * 56).toFixed(1)},${(2 + (1 - (v - mn) / (mx - mn || 1)) * 18).toFixed(1)}`,
     )
     .join(" ");
   return (
     <svg viewBox="0 0 60 22" aria-hidden="true">
-      <polyline points={pts} fill="none" stroke={up ? UP : DN} strokeWidth="1.5" />
+      <polyline
+        points={pts}
+        fill="none"
+        stroke={up ? UP : DN}
+        strokeWidth="1.5"
+        strokeLinejoin="round"
+      />
     </svg>
   );
 }
@@ -266,18 +271,14 @@ export function MarketCard({
   offline,
   period,
   setPeriod,
-  sel,
-  setSel,
 }: {
   prices: Prices | null;
   offline: boolean;
   period: Period;
   setPeriod: (p: Period) => void;
-  /** The price the chart is for; asked for here so a source with heavy history reads only that one. */
-  sel: string | null;
-  setSel: (id: string | null) => void;
 }) {
   const [group, setGroup] = useState<"gold" | "fx">("gold");
+  const [sel, setSel] = useState<string | null>(null);
   const items = prices?.items ?? [];
   const groups = GROUPS.filter(([g]) => items.some((i) => i.group === g));
   const here = groups.some(([g]) => g === group) ? group : (groups[0]?.[0] ?? group);
@@ -348,7 +349,7 @@ export function MarketCard({
             label={`نمودار ${cur.name}`}
           />
           {groups.length > 1 && (
-            <div className="mtabs" role="tablist" aria-label="گروه قیمت">
+            <div className="mtabs morph" role="tablist" aria-label="گروه قیمت">
               {groups.map(([g, name]) => (
                 <button
                   key={g}
@@ -357,7 +358,7 @@ export function MarketCard({
                   aria-selected={here === g}
                   onClick={() => {
                     setGroup(g);
-                    setSel(items.find((i) => i.group === g)?.id ?? null);
+                    setSel(null);
                   }}
                 >
                   {name}
