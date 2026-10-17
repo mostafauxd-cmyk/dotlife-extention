@@ -16,6 +16,7 @@ import { SignIn } from "./home/SignIn";
 import { SocialSlide } from "./home/SocialSlide";
 import { NewCategoryHost } from "./home/NewCategory";
 import { PaketPairHost } from "./home/PaketPair";
+import { SyncAvatar } from "./home/SyncAvatar";
 import { PaketLogo } from "./home/PaketSync";
 import { TaskEditorHost } from "./home/TaskEditor";
 import { useSession, useSettings } from "./hooks";
@@ -23,6 +24,7 @@ import { onArrival } from "./noghte/sync";
 import { isOn, orderedSlides, SLIDES, themeOf, updateSettings, type SlideId } from "./settings";
 import { Icon } from "./ui/Icon";
 import type { IconName } from "./ui/icons";
+import { warmMarket } from "./market";
 import { installPaging } from "./ui/paging";
 
 type Corners = "tasks" | "notes";
@@ -143,6 +145,25 @@ export function App() {
     })),
   ];
   const empty = new Set<string>();
+  // the money slide's numbers are asked for when the slide above it comes into view, not when it does
+  const above = slides[slides.findIndex((x) => x.id === "s-money") - 1]?.id;
+  useEffect(() => {
+    const root = scroller.current;
+    const el = above === undefined ? null : document.getElementById(above);
+    if (root === null || el === null) return;
+    const seen = new IntersectionObserver(
+      ([e]) => {
+        if (e?.isIntersecting !== true) return;
+        warmMarket();
+        seen.disconnect();
+      },
+      { root, threshold: 0.3 },
+    );
+    seen.observe(el);
+    return () => {
+      seen.disconnect();
+    };
+  }, [above]);
 
   return (
     <div className={cls} style={{ "--bgc": theme.bg, "--tint": theme.tint } as React.CSSProperties}>
@@ -225,6 +246,13 @@ export function App() {
             }}
           />
 
+          {/* the account, its ring saying whether this page is in step with the phone */}
+          <SyncAvatar
+            onSignIn={openSignIn}
+            onOpen={() => {
+              setCustOpen(true);
+            }}
+          />
           {/* always in sight: the one way into «شخصی‌سازی» that needs no hunting */}
           <button
             type="button"

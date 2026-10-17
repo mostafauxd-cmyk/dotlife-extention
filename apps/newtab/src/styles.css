@@ -1407,7 +1407,8 @@ svg {
   position: absolute;
   z-index: 6;
   bottom: 22px;
-  left: 50%;
+  /* the gear and the account side by side, the pair centred */
+  left: calc(50% - 26px);
   transform: translateX(-50%);
   width: 40px;
   height: 40px;
@@ -1873,7 +1874,56 @@ svg {
   background: linear-gradient(to left, var(--amber) 62%, transparent);
   transition: width 0.5s var(--ease);
 }
-.dia-top button,
+/* «بعداً» (×) and «برگشت»: quiet pill buttons with an icon, big enough to hit (the user, 2026-10-17:
+   the bare underlined words were too small) */
+.dia-top .later,
+.dia-foot .back {
+  height: 44px;
+  padding: 0 16px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border-radius: 99px;
+  border: 1px solid var(--stroke);
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.82);
+  font: inherit;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  transition:
+    background 0.2s,
+    border-color 0.2s,
+    color 0.2s;
+}
+/* only the close mark (the user, 2026-10-17): a round button, the word stays for screen readers */
+.dia-top .later {
+  margin-inline-start: auto;
+  width: 44px;
+  padding: 0;
+  justify-content: center;
+}
+.dia-top .later:hover,
+.dia-foot .back:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: var(--stroke-hi);
+  color: var(--ink);
+}
+.dia-top .later:focus-visible,
+.dia-foot .back:focus-visible {
+  outline: 2px solid rgba(255, 255, 255, 0.5);
+  outline-offset: 2px;
+}
+.dia-top .later .ic,
+.dia-foot .back .ic {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
 .dia .again {
   margin-inline-start: auto;
   padding: 0;
@@ -1949,16 +1999,18 @@ svg {
   align-items: stretch;
   gap: 12px;
 }
+/* «برگشت» beside the main button, as tall as it */
+.dia-actions {
+  display: flex;
+  gap: 10px;
+}
+.dia-actions .next {
+  flex: 1;
+}
 .dia-foot .back {
-  align-self: flex-start;
-  font-size: 15px;
-  background: none;
-  border: 0;
-  padding: 0;
-  color: rgba(255, 255, 255, 0.7);
-  cursor: pointer;
-  text-decoration: underline;
-  text-underline-offset: 5px;
+  height: 58px;
+  border-radius: 16px;
+  padding: 0 20px;
 }
 .dia-foot .legal {
   margin: 0;
@@ -4313,34 +4365,56 @@ label.ts-line {
 }
 
 /* Google: the connect button on the plans slide, the Meet line in the form */
+/* the same height, glass and rim as the search box beside it (the user, 2026-10-17: «تمیزتر، هم‌ارتفاع») */
 .gsync {
   flex: none;
+  height: 52px;
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 6px 14px 6px 10px;
+  gap: 10px;
+  padding: 0 20px;
   border-radius: 999px;
-  border: 1px solid var(--stroke-hi);
-  background: none;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(30px) saturate(1.5);
   color: var(--ink);
   font: inherit;
-  font-size: 15px;
+  font-size: 16px;
   white-space: nowrap;
   cursor: pointer;
+  transition: background 0.2s;
 }
-.gsync b {
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  background: #fff;
-  color: #0b0d12;
-  display: grid;
-  place-items: center;
+.gwrap {
+  position: relative;
+  flex: none;
+}
+.ghint {
+  position: absolute;
+  top: calc(100% + 8px);
+  inset-inline-end: 0;
+  z-index: 12;
+  width: max-content;
+  max-width: 280px;
+  padding: 10px 14px;
+  border-radius: 14px;
+  background: #1c1e24;
+  border: 1px solid var(--stroke-hi);
+  color: var(--ink-2);
   font-size: 14px;
-  font-weight: 700;
+  line-height: 1.7;
 }
-.gsync:not(.on):hover {
-  background: rgba(255, 255, 255, 0.07);
+.gsync .glogo {
+  width: 20px;
+  height: 20px;
+  flex: none;
+}
+.gsync:not(.on):not(.na):hover {
+  background: rgba(255, 255, 255, 0.13);
+}
+/* the preview outside Chrome: shown, but it cannot open Google's sign-in there */
+.gsync.na {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 .gsync.on {
   cursor: default;
@@ -7347,4 +7421,75 @@ a.ts-link {
   display: inline-flex;
   align-items: center;
   text-decoration: none;
+}
+
+/* the account beside the gear, as quiet as the gear; a small badge says whether this page is in
+   step with the phone: green live, grey offline (or not signed in) */
+.me {
+  position: absolute;
+  z-index: 6;
+  bottom: 22px;
+  left: calc(50% + 26px);
+  transform: translateX(-50%);
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  color: var(--ink-2);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  opacity: 0.8;
+  transition:
+    opacity 0.2s,
+    color 0.2s,
+    background 0.2s;
+}
+.me:hover,
+.me:focus-visible {
+  opacity: 1;
+  color: var(--ink);
+  background: rgba(255, 255, 255, 0.1);
+}
+.me-in {
+  display: contents;
+}
+.me svg {
+  width: 20px;
+  height: 20px;
+}
+.me::after {
+  content: "";
+  position: absolute;
+  bottom: 3px;
+  inset-inline-start: 3px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #7d828c;
+  /* a thin rim of the page's own ground, so the dot sits on the circle cleanly */
+  box-shadow: 0 0 0 1.5px var(--bgc);
+}
+.me.idle::after,
+.me.syncing::after {
+  background: #5ed39c;
+}
+/* while it syncs, the green breathes */
+.me.syncing::after {
+  animation: meLive 1.2s ease-in-out infinite;
+}
+@keyframes meLive {
+  50% {
+    opacity: 0.45;
+  }
+}
+.nt.enter .me {
+  animation: fade 0.4s ease 0.45s both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .me.syncing::after {
+    animation: none;
+  }
 }

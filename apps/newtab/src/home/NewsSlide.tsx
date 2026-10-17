@@ -1,7 +1,7 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 
 import { AD_LABEL, useAd } from "../ads";
-import { useRecordsVersion, useSettings } from "../hooks";
+import { useRecordsVersion, useSession, useSettings, useSyncState } from "../hooks";
 import {
   articleImage,
   categoryName,
@@ -119,6 +119,8 @@ function Pic({ story, className }: { story: Story; className: string }) {
 
 export function NewsSlide() {
   const s = useSettings();
+  const session = useSession();
+  const sync = useSyncState();
   useRecordsVersion();
   const all = useMemo(() => [...NEWS_SOURCES, ...s.newsOwn.map(ownToSource)], [s.newsOwn]);
   const active = useMemo(() => all.filter((x) => !s.newsOff.includes(x.id)), [all, s.newsOff]);
@@ -353,7 +355,13 @@ export function NewsSlide() {
         </div>
         <div className="card g nw-saved">
           <h3>{fa(saved.length)} خبر ذخیره‌شده</h3>
-          <p>برای بعد؛ روی گوشی هم در اپ نقطه هست.</p>
+          <p>
+            {session === null
+              ? "برای بعد؛ فقط روی همین مرورگر. با ورود به نقطه روی گوشی هم می‌آید."
+              : sync.status === "error" || sync.status === "offline"
+                ? "برای بعد؛ هنوز به گوشی نرسیده، وقتی همگام شد می‌رسد."
+                : "برای بعد؛ روی گوشی هم در یادداشت‌های نقطه هست."}
+          </p>
           {saved.slice(0, 3).map((n) => (
             <button
               key={n.id}

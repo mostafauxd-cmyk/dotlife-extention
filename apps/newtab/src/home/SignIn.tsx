@@ -22,7 +22,6 @@ const PERKS: readonly [IconName, string, string][] = [
   ["tick-square", "کارهای گوشی، روی هر تب تازه", "تیک بزنی، روی گوشی هم تیک می‌خورد."],
   ["sticker-note", "هر چه این‌جا بنویسی، روی گوشی هم هست", "از همین سرچ، بی‌آن‌که گوشی را برداری."],
   ["refresh", "چیزی گم نمی‌شود", "کروم پاک شود یا سیستم عوض شود، همه برمی‌گردد."],
-  ["profile", "یک حساب، بی‌رمز", "فقط شماره‌ی موبایل؛ رمزی نیست که یادت برود."],
 ];
 
 const REASONS: Record<string, string> = {
@@ -42,6 +41,12 @@ const reason = (e: unknown): string =>
   e instanceof ApiError
     ? (REASONS[e.code] ?? "مشکلی پیش آمد؛ دوباره امتحان کن.")
     : "مشکلی پیش آمد.";
+
+/** The wait before another code: seconds under a minute, else «۳۰:۴۱» (not «۱۸۴۱ ثانیه»). */
+function waitText(s: number): string {
+  if (s < 60) return `${fa(s)} ثانیه`;
+  return fa(`${String(Math.floor(s / 60))}:${String(s % 60).padStart(2, "0")}`);
+}
 
 export function SignIn({
   start = "phone",
@@ -141,11 +146,16 @@ export function SignIn({
             </span>
             <button
               type="button"
+              className="later"
+              aria-label="بعداً"
+              title="بعداً"
               onClick={() => {
                 onClose(false);
               }}
             >
-              بعداً
+              <svg className="ic" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M7 7l10 10M17 7 7 17" />
+              </svg>
             </button>
           </div>
           <div className="dia-body">
@@ -238,56 +248,71 @@ export function SignIn({
                   disabled={wait > 0 || busy}
                   onClick={() => void ask()}
                 >
-                  {wait > 0 ? `کد تازه تا ${fa(wait)} ثانیه` : "کد تازه بفرست"}
+                  {wait > 0 ? `کد تازه تا ${waitText(wait)}` : "کد تازه بفرست"}
                 </button>
               </>
             )}
-            {err !== "" && <span className="err">{err}</span>}
           </div>
           <div className="dia-foot">
-            {step === "code" && (
-              <button
-                type="button"
-                className="back"
-                onClick={() => {
-                  setStep("phone");
-                  setCode("");
-                  setErr("");
-                }}
-              >
-                برگشت
-              </button>
-            )}
-            {step === "persona" && (
-              <button
-                type="button"
-                className="back"
-                onClick={() => {
-                  setStep("hello");
-                }}
-              >
-                برگشت
-              </button>
+            {/* here, not in the scrolling body: under the QR box it was out of sight on a short window
+                and «too soon» looked like a dead button (2026-10-17) */}
+            {err !== "" && (
+              <span className="err" role="alert">
+                {err}
+                {step === "phone" && wait > 0 ? ` کد تازه تا ${waitText(wait)}.` : ""}
+              </span>
             )}
             {step === "hello" && <p className="legal">رایگان است و کمتر از یک دقیقه طول می‌کشد.</p>}
             {step === "phone" && <p className="legal">با ادامه، حریم خصوصی نقطه را می‌پذیرم.</p>}
-            <button
-              type="submit"
-              className="next"
-              disabled={busy || !ready}
-              autoFocus={step === "hello"}
-            >
-              {step === "hello"
-                ? "شروع"
-                : step === "persona"
-                  ? "ادامه"
-                  : step === "phone"
-                    ? "فرستادن کد"
-                    : "ورود"}{" "}
-              <svg className="kbd" viewBox="0 0 24 24" aria-hidden="true">
-                <path d="M19 6v5a3 3 0 0 1-3 3H6m0 0 4-4m-4 4 4 4" />
-              </svg>
-            </button>
+            <div className="dia-actions">
+              {step === "code" && (
+                <button
+                  type="button"
+                  className="back"
+                  onClick={() => {
+                    setStep("phone");
+                    setCode("");
+                    setErr("");
+                  }}
+                >
+                  <svg className="ic" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="m10 6 6 6-6 6" />
+                  </svg>
+                  برگشت
+                </button>
+              )}
+              {step === "persona" && (
+                <button
+                  type="button"
+                  className="back"
+                  onClick={() => {
+                    setStep("hello");
+                  }}
+                >
+                  <svg className="ic" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="m10 6 6 6-6 6" />
+                  </svg>
+                  برگشت
+                </button>
+              )}
+              <button
+                type="submit"
+                className="next"
+                disabled={busy || !ready}
+                autoFocus={step === "hello"}
+              >
+                {step === "hello"
+                  ? "شروع"
+                  : step === "persona"
+                    ? "ادامه"
+                    : step === "phone"
+                      ? "فرستادن کد"
+                      : "ورود"}{" "}
+                <svg className="kbd" viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M19 6v5a3 3 0 0 1-3 3H6m0 0 4-4m-4 4 4 4" />
+                </svg>
+              </button>
+            </div>
           </div>
         </form>
         <Painting step={step === "persona" ? "hello" : step} />
