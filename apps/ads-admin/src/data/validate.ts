@@ -27,6 +27,9 @@ const FIELD: Record<string, string> = {
   model: "مدل فروش",
   price: "قیمت",
   dailyCap: "سقف روزانه",
+  version: "نسخه",
+  generatedAt: "زمان ساخت",
+  ads: "فهرست تبلیغ‌ها",
 };
 
 export const issuePath = (path: readonly PropertyKey[]): string => path.map(String).join(".");

@@ -44,11 +44,11 @@ function Importer() {
   const plan = parsed?.ok === true ? planImport(ads, parsed.ads, mode) : undefined;
 
   const apply = (): void => {
-    if (plan === undefined) return;
+    if (plan === undefined || parsed?.ok !== true) return;
     const job = mode === "replace" ? store.replaceAll(plan.result) : store.putMany(plan.result);
     job.then(
       () => {
-        toast(`${num(plan.result.length)} تبلیغ درون‌ریزی شد.`);
+        toast(`${num(parsed.ads.length)} تبلیغ درون‌ریزی شد.`);
         setText("");
       },
       () => {
