@@ -93,9 +93,9 @@ export function PaketSync() {
       </div>
       {install !== null && (
         <div className="pke-qr">
-          <Qr text={getLink("paket", "money-slide", install)} label="کد نصب پاکت از کافه‌بازار" />
+          <Qr text={getLink("paket", "money-slide", install)} label="کد صفحه‌ی پاکت (paket.life)" />
           <b>پاکت را نداری؟</b>
-          <small>با دوربین گوشی اسکن کن تا از کافه‌بازار نصبش کنی.</small>
+          <small>با دوربین گوشی اسکن کن تا پاکت را ببینی و نصبش کنی.</small>
         </div>
       )}
     </div>

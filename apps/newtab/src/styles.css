@@ -5834,8 +5834,6 @@ a.ts-link {
 .tabs.sm {
   height: 40px;
   padding: 4px;
-  backdrop-filter: none;
-  background: rgba(0, 0, 0, 0.22);
 }
 .tabs.sm button {
   font-size: 14px;
