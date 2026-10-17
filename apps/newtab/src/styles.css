@@ -3829,7 +3829,7 @@ svg {
   flex: none;
   height: 32px;
   padding: 0 12px;
-  border-radius: 16px;
+  border-radius: 999px;
   border: 1px solid var(--stroke);
   background: rgba(255, 255, 255, 0.06);
   color: var(--ink-2);
@@ -6209,9 +6209,9 @@ a.ts-link {
   font-size: 16px;
 }
 .qpanel .ts-chips button {
-  height: 36px;
-  padding: 0 14px;
-  font-size: 15.5px;
+  height: 30px;
+  padding: 0 13px;
+  font-size: 14.5px;
 }
 .qpanel .qp-h {
   font-size: 15px;
