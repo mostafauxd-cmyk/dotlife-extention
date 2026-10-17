@@ -26,6 +26,12 @@ type Service = {
   logo: string;
   /** True when `logo` is the full app icon (drawn as it is), false for a glyph on the colour. */
   icon: boolean;
+  /**
+   * False when the service's own page cannot run inside a frame (tested in a real Chromium with this
+   * extension loaded): Rubika's script reads its parent window's storage and stops. It opens in a
+   * small window of its own instead.
+   */
+  framed?: boolean;
   url: string;
   host: string;
   what: string;
@@ -100,6 +106,7 @@ export const SERVICES: readonly Service[] = [
     name: "روبیکا",
     color: "#7B3FE4",
     letter: "ر",
+    framed: false,
     url: "https://web.rubika.ir/",
     host: "web.rubika.ir",
     what: "پیام‌ها، کانال‌ها و ویترین روبیکا",
@@ -220,11 +227,28 @@ export function SocialSlide() {
                   }}
                 />
               )}
+              {inExtension && seen && svc.framed === false && (
+                <div className="tb-empty">
+                  <p>
+                    {svc.name} نمی‌گذارد صفحه‌اش داخل قاب باز شود (کدش به پنجره‌ی بیرونی دست می‌زند
+                    و می‌ایستد)؛ در یک پنجره‌ی کوچک جدا باز می‌شود و ورودت همان‌جا می‌ماند.
+                  </p>
+                  <button
+                    type="button"
+                    className="cta"
+                    onClick={() => {
+                      openWindow(svc.url);
+                    }}
+                  >
+                    باز کردن {svc.name} در پنجره‌ی جدا
+                  </button>
+                </div>
+              )}
               {/* the frames opened so far stay alive behind each other */}
               {inExtension
                 ? opened.map((id) => {
                     const v = byId.get(id);
-                    if (v === undefined) return null;
+                    if (v === undefined || v.framed === false) return null;
                     return (
                       <iframe
                         key={id}
