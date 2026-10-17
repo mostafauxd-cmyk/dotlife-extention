@@ -3499,6 +3499,10 @@ svg {
 .todo-on .ptools {
   display: none;
 }
+/* with the day controls gone, the search reaches the card's far edge */
+.todo-on .psearch {
+  max-width: none;
+}
 .ev small {
   display: flex;
   align-items: center;
