@@ -13,7 +13,6 @@ import { PlansSlide } from "./home/PlansSlide";
 import { Rail, type SlideInfo } from "./home/Rail";
 import { SearchBox } from "./home/SearchBox";
 import { SignIn } from "./home/SignIn";
-import { SocialSlide } from "./home/SocialSlide";
 import { NewCategoryHost } from "./home/NewCategory";
 import { PaketPairHost } from "./home/PaketPair";
 import { SyncAvatar } from "./home/SyncAvatar";
@@ -128,7 +127,6 @@ export function App() {
     "s-plans": { icon: "calendar-face", node: <PlansSlide /> },
     "s-money": { icon: "activity", node: <MoneySlide /> },
     "s-news": { icon: "newspaper", node: <NewsSlide /> },
-    "s-social": { icon: "chat", node: <SocialSlide /> },
     "s-notes": {
       icon: "sticker-note",
       node: <NotesSlide signedIn={signedIn} onSignIn={openSignIn} />,

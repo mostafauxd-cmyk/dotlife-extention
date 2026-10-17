@@ -38,7 +38,6 @@ export const SLIDES = [
   ["s-money", "پول"],
   ["s-notes", "یادداشت‌ها"],
   ["s-news", "خبر"],
-  ["s-social", "شبکه‌ها"],
 ] as const;
 export type SlideId = (typeof SLIDES)[number][0];
 export type BlockId = (typeof BLOCKS)[number][0] | SlideId;
@@ -71,8 +70,6 @@ export type Settings = {
   hiddenCals: string[];
   /** The slides' order under the home (ids missing here follow in the design's order). */
   slideOrder: SlideId[];
-  /** The social networks slide: which services have a tab, in what order, and which were introduced. */
-  social: { order: string[]; shown: string[]; seen: string[] };
   /** Money amounts hidden on the money slide (one tap shows them). */
   hideMoney: boolean;
   /** News sources the person switched off (every other source of `NEWS_SOURCES` is read). */
@@ -104,11 +101,6 @@ export const DEFAULTS: Settings = {
   persona: null,
   hiddenCals: [],
   slideOrder: SLIDES.map(([id]) => id),
-  social: {
-    order: ["tg", "ig", "wa", "x", "bale", "rubika", "eitaa"],
-    shown: ["tg", "ig", "wa", "bale", "rubika"],
-    seen: [],
-  },
   hideMoney: false,
   newsOff: [],
   newsOwn: [],
