@@ -74,3 +74,10 @@ export function jalali(day: string): string {
 /** Letters people type two ways read as one, so a search finds both. */
 export const normalize = (s: string): string =>
   s.replaceAll("ي", "ی").replaceAll("ك", "ک").replaceAll("‌", " ").trim().toLowerCase();
+
+const segmenter = new Intl.Segmenter("fa", { granularity: "grapheme" });
+/** A text's letters as a person counts them (a letter with its marks is one). */
+export const graphemes = (s: string): string[] =>
+  Array.from(segmenter.segment(s), (x) => x.segment);
+/** The first letter, for a mark when no glyph was given. */
+export const firstLetter = (s: string): string => graphemes(s)[0] ?? "؟";

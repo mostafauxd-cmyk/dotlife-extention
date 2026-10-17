@@ -78,6 +78,13 @@ describe("validateAd", () => {
     );
   });
 
+  it("shows the slot's errors in the same pass as the schema's", () => {
+    const e = errorsOf(draft(7, { title: "", advertiser: "" }));
+    expect(e["title"]).toBe("عنوان لازم است.");
+    expect(e["extra.kind"]).toBeDefined();
+    expect(e["extra.date"]).toBeDefined();
+  });
+
   it("keeps only the targeting a slot allows", () => {
     // slot 4 is aimed by search word only; the persona typed earlier is dropped, not an error
     const d = draft(4, { persona: ["dev"], keyword: ["قطار"], weekend: true });
