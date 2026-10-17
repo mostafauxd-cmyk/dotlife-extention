@@ -41,7 +41,7 @@ type Service = {
 export const SERVICES: readonly Service[] = [
   {
     id: "tg",
-    logo: "./brands/telegram.svg",
+    logo: "/brands/telegram.svg",
     icon: false,
     name: "تلگرام",
     color: "#2AABEE",
@@ -53,7 +53,7 @@ export const SERVICES: readonly Service[] = [
   },
   {
     id: "ig",
-    logo: "./brands/instagram.svg",
+    logo: "/brands/instagram.svg",
     icon: false,
     name: "اینستاگرام",
     color: "#E1306C",
@@ -65,7 +65,7 @@ export const SERVICES: readonly Service[] = [
   },
   {
     id: "wa",
-    logo: "./brands/whatsapp.svg",
+    logo: "/brands/whatsapp.svg",
     icon: false,
     name: "واتس‌اپ",
     color: "#25D366",
@@ -77,7 +77,7 @@ export const SERVICES: readonly Service[] = [
   },
   {
     id: "x",
-    logo: "./brands/x.svg",
+    logo: "/brands/x.svg",
     icon: false,
     name: "ایکس",
     color: "#E7E9EA",
@@ -89,7 +89,7 @@ export const SERVICES: readonly Service[] = [
   },
   {
     id: "bale",
-    logo: "./brands/bale.svg",
+    logo: "/brands/bale.svg",
     icon: false,
     name: "بله",
     color: "#22B58A",
@@ -101,7 +101,7 @@ export const SERVICES: readonly Service[] = [
   },
   {
     id: "rubika",
-    logo: "./brands/rubika.jpg",
+    logo: "/brands/rubika.jpg",
     icon: true,
     name: "روبیکا",
     color: "#7B3FE4",
@@ -114,7 +114,7 @@ export const SERVICES: readonly Service[] = [
   },
   {
     id: "eitaa",
-    logo: "./brands/eitaa.png",
+    logo: "/brands/eitaa.png",
     icon: true,
     name: "ایتا",
     color: "#F08A24",

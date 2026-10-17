@@ -55,29 +55,31 @@ export type Ticker = {
 
 export type Period = 7 | 30 | 365;
 
-/** Each row's round badge: its letter and colour (the server sends the name, the look is ours). */
-const GOLD = "linear-gradient(135deg,#F6D98A,#B8862B)";
-export const BADGE: Record<string, { glyph: string; bg: string; dark?: boolean }> = {
-  gold18: { glyph: "۱۸", bg: GOLD, dark: true },
-  gold24: { glyph: "۲۴", bg: GOLD, dark: true },
-  mesghal: { glyph: "م", bg: GOLD, dark: true },
-  coin_emami: { glyph: "س", bg: GOLD, dark: true },
-  coin_half: { glyph: "ن", bg: GOLD, dark: true },
-  usd: { glyph: "$", bg: "#2F7D5B" },
-  eur: { glyph: "€", bg: "#2F5FAD" },
-  gbp: { glyph: "£", bg: "#6B3FA0" },
-  aed: { glyph: "د", bg: "#9A6A2E" },
-  usdt: { glyph: "₮", bg: "#26A17B" },
-  xau: { glyph: "Au", bg: GOLD, dark: true },
-  xag: { glyph: "Ag", bg: "linear-gradient(135deg,#E3E7EC,#8D96A0)", dark: true },
-  xpt: { glyph: "Pt", bg: "#7C8794" },
-  btc: { glyph: "₿", bg: "#F7931A" },
-  eth: { glyph: "Ξ", bg: "#627EEA" },
-  sol: { glyph: "S", bg: "#9945FF" },
-  ton: { glyph: "T", bg: "#0098EA" },
-  bnb: { glyph: "B", bg: "#E0A90E" },
-  trx: { glyph: "T", bg: "#EB0029" },
-  doge: { glyph: "D", bg: "#C2A633" },
+/**
+ * Each row's round badge: an Iconly Pro icon (public/market) drawn in the asset's own colour on a
+ * soft tint of it. The server sends the name; the look is ours.
+ */
+export const BADGE: Record<string, { icon: string; color: string }> = {
+  gold18: { icon: "gold", color: "#F2C94C" },
+  gold24: { icon: "gold", color: "#F2C94C" },
+  mesghal: { icon: "gold", color: "#F2C94C" },
+  coin_emami: { icon: "coins", color: "#F2C94C" },
+  coin_half: { icon: "coins", color: "#F2C94C" },
+  usd: { icon: "dollar", color: "#4CC38A" },
+  eur: { icon: "euro", color: "#6AA0FF" },
+  gbp: { icon: "pound", color: "#B58CFF" },
+  aed: { icon: "coins", color: "#E0A155" },
+  usdt: { icon: "tether", color: "#26A17B" },
+  xau: { icon: "gold", color: "#F2C94C" },
+  xag: { icon: "gold", color: "#C9D1DB" },
+  xpt: { icon: "gold", color: "#9AA7B5" },
+  btc: { icon: "bitcoin", color: "#F7931A" },
+  eth: { icon: "ethereum", color: "#8C9EFF" },
+  sol: { icon: "solana", color: "#B07BFF" },
+  ton: { icon: "coins", color: "#4CB2F5" },
+  bnb: { icon: "bnb", color: "#F0B90B" },
+  trx: { icon: "tron", color: "#FF5A5A" },
+  doge: { icon: "dogecoin", color: "#D8B24A" },
 };
 
 type Market = {

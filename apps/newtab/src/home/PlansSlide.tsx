@@ -35,6 +35,7 @@ import { fa } from "../ui/fa";
 import { Icon } from "../ui/Icon";
 import { AD_LABEL, useAd } from "../ads";
 import { Tabs } from "../ui/Tabs";
+import { openNewCategory } from "./NewCategory";
 import { openEditor } from "./TaskEditor";
 import {
   connectGoogle,
@@ -197,6 +198,7 @@ export function PlansSlide() {
         </div>
         <Tabs
           label="نما"
+          width={250}
           value={view}
           onChange={setView}
           items={[
@@ -226,7 +228,6 @@ export function PlansSlide() {
           <div className="ptools">
             <Tabs
               label="چند روز"
-              size="sm"
               value={span}
               onChange={setSpan}
               items={[
@@ -287,6 +288,10 @@ export function PlansSlide() {
           {lists.map((l) => (
             <CalSwitch key={l.id} id={l.id} name={l.name} color={l.color} hidden={hidden} />
           ))}
+          <button type="button" className="calnew" onClick={() => openNewCategory()}>
+            <Icon name="plus" />
+            دسته‌ی تازه
+          </button>
           {gcals.length > 0 && (
             <>
               <span className="cgrp">
@@ -669,6 +674,19 @@ function TodoView({
               {l.name} <small>{fa(String(openIn(l.id)))}</small>
             </button>
           ))}
+          <button
+            type="button"
+            className="tdnew"
+            aria-label="دسته‌ی تازه"
+            title="دسته‌ی تازه"
+            onClick={() => {
+              openNewCategory((l) => {
+                setOnly(l.id);
+              });
+            }}
+          >
+            <Icon name="plus" />
+          </button>
         </div>
         <form
           className="td-add"
@@ -897,13 +915,15 @@ function MiniMonth({
   return (
     <div className="mini">
       <div className="mini-h">
-        <b>
-          {monthName({ calendar: "solar-hijri", year, month, day: 1 })} {fa(String(year))}
-        </b>
-        <span>
-          {monthName(g0)}
-          {g0.month !== g1.month ? `–${monthName(g1)}` : ""} {fa(String(g1.year))}
-        </span>
+        <div className="mini-t">
+          <b>
+            {monthName({ calendar: "solar-hijri", year, month, day: 1 })} {fa(String(year))}
+          </b>
+          <span>
+            {monthName(g0)}
+            {g0.month !== g1.month ? ` – ${monthName(g1)}` : ""} {fa(String(g1.year))}
+          </span>
+        </div>
         <span className="mini-nav">
           <button
             type="button"

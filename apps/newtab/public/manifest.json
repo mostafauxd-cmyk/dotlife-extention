@@ -33,7 +33,19 @@
     "https://web.eitaa.com/*",
     "https://api.paket.app/*",
     "https://raw.githubusercontent.com/iran-market/*",
-    "https://api.nobitex.ir/*"
+    "https://api.nobitex.ir/*",
+    "https://www.isna.ir/*",
+    "https://www.mehrnews.com/*",
+    "https://www.khabaronline.ir/*",
+    "https://www.hamshahrionline.ir/*",
+    "https://www.yjc.ir/*",
+    "https://donya-e-eqtesad.com/*",
+    "https://www.eghtesadonline.com/*",
+    "https://digiato.com/*",
+    "https://www.varzesh3.com/*"
+  ],
+  "optional_host_permissions": [
+    "https://*/*"
   ],
   "icons": {
     "16": "icons/16.png",

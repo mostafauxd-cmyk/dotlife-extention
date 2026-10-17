@@ -30,6 +30,14 @@
   font-weight: 800;
   src: url("/fonts/Yekan_Bakh_Fanum_Extra_Bold.TTF") format("truetype");
 }
+/* Inter (Google Fonts, bundled — an extension page loads nothing remote): the ticker's Latin digits, which Yekan Bakh would draw as Persian ones */
+@font-face {
+  font-family: "Inter";
+  font-weight: 400 700;
+  font-display: swap;
+  src: url("/fonts/Inter-latin.woff2") format("woff2");
+  unicode-range: U+0020-007E;
+}
 
 :root {
   color-scheme: dark;
@@ -182,7 +190,8 @@ svg {
   position: relative;
   margin: 0;
   border-radius: 22px;
-  padding: 16px 16px 18px 14px;
+  /* the bottom row sits the same 14px from the left, right and bottom edges */
+  padding: 16px 14px 14px;
   display: flex;
   flex-direction: column;
   gap: 17px;
@@ -268,7 +277,7 @@ svg {
 }
 .act {
   font-size: 15px;
-  height: 38px;
+  height: 40px;
   padding: 0 14px 0 16px;
   border-radius: 999px;
   border: 1px solid rgba(255, 255, 255, 0.12);
@@ -581,7 +590,9 @@ svg {
   align-items: flex-start;
   justify-content: center;
   flex-wrap: wrap;
-  gap: 16px;
+  /* as wide as the box above, tiles close enough that nine fit between its edges */
+  width: min(815px, 100%);
+  gap: 16px 6px;
   min-height: 110px;
   position: relative;
   z-index: 6;
@@ -690,7 +701,9 @@ svg {
 }
 .dateline .clock {
   color: var(--ink);
-  font-variant-numeric: tabular-nums;
+  /* the digits at their own widths: tabular ones leave wide holes round a ۱ */
+  font-variant-numeric: normal;
+  letter-spacing: 0;
 }
 .dateline i {
   width: 4px;
@@ -1251,10 +1264,10 @@ svg {
   background: #fff;
 }
 
-/* ---------- right edge: Chrome bookmarks and customisation ---------- */
+/* ---------- left edge: Chrome bookmarks and customisation ---------- */
 .edge {
   position: absolute;
-  right: 0;
+  left: 0;
   top: 170px;
   bottom: 170px;
   width: 28px;
@@ -1268,7 +1281,7 @@ svg {
 }
 .em {
   position: absolute;
-  right: 10px;
+  left: 10px;
   top: 50%;
   width: 4px;
   height: 56px;
@@ -1279,7 +1292,7 @@ svg {
 }
 .side2 {
   position: absolute;
-  right: 14px;
+  left: 14px;
   top: 50%;
   width: 330px;
   max-height: min(660px, calc((100vh / var(--z)) - 40px));
@@ -1295,7 +1308,7 @@ svg {
   box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5);
   opacity: 0;
   pointer-events: none;
-  transform: translate(110%, -50%);
+  transform: translate(-110%, -50%);
   transition:
     transform 0.45s var(--ease) 0.22s,
     opacity 0.25s ease 0.22s;
@@ -1967,12 +1980,18 @@ svg {
   gap: 10px;
   transition:
     background 0.2s,
-    color 0.2s;
+    color 0.2s,
+    box-shadow 0.2s;
 }
+/* not yet: a dark, outlined button — nothing like the white one that is ready */
 .dia-foot .next:disabled {
-  background: #d9d9d9;
-  color: #6b6b6b;
-  cursor: default;
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.34);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12);
+  cursor: not-allowed;
+}
+.dia-foot .next:disabled .kbd {
+  opacity: 0.35;
 }
 .dia-foot .kbd {
   width: 20px;
@@ -2274,7 +2293,7 @@ svg {
 .rail {
   position: absolute;
   z-index: 9;
-  left: 18px;
+  right: 18px;
   top: 50%;
   transform: translateY(-50%);
   display: flex;
@@ -2319,7 +2338,7 @@ svg {
 }
 .rail .tip {
   position: absolute;
-  left: 62px;
+  right: 62px;
   white-space: nowrap;
   font-size: 15px;
   padding: 2px 12px;
@@ -2348,7 +2367,7 @@ svg {
 }
 .rail:not(:hover):not(:focus-within) .tip {
   opacity: 0;
-  left: 22px;
+  right: 22px;
   background: none;
   padding: 0;
   font-size: 14px;
@@ -2364,7 +2383,7 @@ svg {
   height: 100%;
   display: grid;
   gap: 20px;
-  padding: 48px 64px 48px 110px;
+  padding: 48px 110px 48px 64px;
   max-width: 1720px;
   margin: 0 auto;
 }
@@ -2444,7 +2463,6 @@ svg {
 .flist button[aria-pressed="true"] {
   background: #fff;
   color: #0b0d12;
-  font-weight: 600;
 }
 .flist button[aria-pressed="true"] .ico,
 .flist button[aria-pressed="true"] .fcount {
@@ -2504,21 +2522,24 @@ svg {
   margin-top: 4px;
   flex: none;
   border-radius: 999px;
-  background: rgba(0, 0, 0, 0.25);
-  border: 1px solid var(--stroke);
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 0 16px;
+  padding: 0 18px;
 }
 .nsearch .ico {
-  width: 19px;
-  height: 19px;
+  width: 20px;
+  height: 20px;
+  flex: none;
   color: var(--ink-2);
 }
 .nsearch input {
   flex: 1;
   min-width: 0;
+  padding: 0;
+  line-height: 1.4;
   background: none;
   border: 0;
   outline: 0;
@@ -2527,7 +2548,7 @@ svg {
   font-size: 17px;
 }
 .nsearch input::placeholder {
-  color: rgba(255, 255, 255, 0.5);
+  color: rgba(255, 255, 255, 0.55);
 }
 .nitems {
   flex: 1;
@@ -2914,8 +2935,15 @@ svg {
   grid-column: 1 / -1;
   display: flex;
   align-items: center;
-  gap: 18px;
+  gap: 10px;
   min-height: 58px;
+}
+/* a fixed width, so the bar beside it stays where it is whatever the subtitle says */
+.ptitle {
+  flex: none;
+  /* so the tab bar's middle falls on the middle of the gap between the cards below: the side card
+     (320px) plus half the grid gap, less half the bar (125px) and the bar's own gap (10px) */
+  width: calc(320px + 9px - 125px - 10px);
 }
 .ptitle b {
   display: block;
@@ -2932,7 +2960,22 @@ svg {
   margin-inline-start: auto;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
+}
+/* every control of the bar is as tall as the tabs and the search beside them */
+.ptools .rbtn.sm {
+  width: 52px;
+  height: 52px;
+}
+.ptools .rbtn.sm .ico {
+  width: 20px;
+  height: 20px;
+}
+.ptools .chip {
+  height: 52px;
+  padding: 0 22px;
+  font-size: 16px;
+  border-radius: 999px;
 }
 .side {
   gap: 7px;
@@ -2955,30 +2998,40 @@ svg {
 }
 .mini-h {
   display: flex;
-  align-items: baseline;
-  gap: 8px;
-  padding: 0 4px 6px;
+  align-items: center;
+  gap: 12px;
+  padding: 2px 6px 12px;
+}
+/* the month, and under it (a clear step down) the Gregorian months it covers */
+.mini-t {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
 }
 .mini-h b {
-  font-size: 19px;
+  font-size: 20px;
   font-weight: 600;
+  line-height: 1.3;
 }
-.mini-h > span:not(.mini-nav) {
-  font-size: 13px;
-  color: var(--ink-3);
+.mini-t > span {
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.4;
+  color: var(--ink-2);
 }
 .mini-nav {
   margin-inline-start: auto;
   display: flex;
-  gap: 2px;
+  gap: 4px;
 }
 .mini-nav button {
-  width: 28px;
-  height: 28px;
+  width: 32px;
+  height: 32px;
   padding: 0;
   border: 0;
-  border-radius: 8px;
-  background: none;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.06);
   color: var(--ink-2);
   display: grid;
   place-items: center;
@@ -3470,6 +3523,10 @@ svg {
 .todo-on .ptools {
   display: none;
 }
+/* with the day controls gone, the search reaches the card's far edge */
+.todo-on .psearch {
+  max-width: none;
+}
 .ev small {
   display: flex;
   align-items: center;
@@ -3560,9 +3617,9 @@ svg {
   border-radius: 50%;
 }
 .lchips button[aria-pressed="true"] {
-  background: #fff;
-  color: #0b0d12;
-  border-color: #fff;
+  background: rgba(255, 255, 255, 0.16);
+  color: #fff;
+  border-color: transparent;
 }
 .mfoot .cnt {
   font-size: 15px;
@@ -3613,21 +3670,26 @@ svg {
   background: rgba(255, 255, 255, 0.1);
   border-color: rgba(255, 255, 255, 0.18);
 }
+/* the add-task field is the search's own twin: the same height, glass and type */
 .td-add {
   flex: none;
-  width: 260px;
-  height: 34px;
+  width: 340px;
+  height: 52px;
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 0 12px;
+  gap: 10px;
+  padding: 0 18px;
   border-radius: 999px;
-  background: rgba(0, 0, 0, 0.25);
+  background: rgba(255, 255, 255, 0.08);
   border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(30px) saturate(1.5);
+}
+.td-add:focus-within {
+  border-color: rgba(255, 255, 255, 0.24);
 }
 .td-add .ico {
-  width: 16px;
-  height: 16px;
+  width: 20px;
+  height: 20px;
   color: var(--ink-2);
 }
 .td-add input {
@@ -3638,11 +3700,14 @@ svg {
   background: none;
   color: var(--ink);
   font: inherit;
-  font-size: 14px;
+  font-size: 17px;
+}
+.td-add input::placeholder {
+  color: rgba(255, 255, 255, 0.55);
 }
 .td-in {
   flex: none;
-  font-size: 12px;
+  font-size: 13px;
   color: var(--ink-3);
 }
 .td-list {
@@ -3829,7 +3894,7 @@ svg {
   flex: none;
   height: 32px;
   padding: 0 12px;
-  border-radius: 16px;
+  border-radius: 999px;
   border: 1px solid var(--stroke);
   background: rgba(255, 255, 255, 0.06);
   color: var(--ink-2);
@@ -3846,10 +3911,9 @@ svg {
   border-radius: 50%;
 }
 .ts-chips button[aria-pressed="true"] {
-  background: #fff;
-  border-color: #fff;
-  color: #0b0d12;
-  font-weight: 600;
+  background: rgba(255, 255, 255, 0.16);
+  border-color: transparent;
+  color: #fff;
 }
 .ts-chips button.add {
   padding: 0 10px;
@@ -4869,8 +4933,6 @@ a.ts-link {
 }
 .pk-logo {
   display: block;
-  border-radius: 16px;
-  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.12);
 }
 .pke-copy h2 {
   margin: 0;
@@ -4898,14 +4960,16 @@ a.ts-link {
 }
 .pke-form {
   display: flex;
-  gap: 10px;
+  align-items: stretch;
+  gap: 6px;
   align-self: stretch;
   margin-top: 4px;
 }
 .pke-form input {
   flex: 1;
   min-width: 0;
-  height: 42px;
+  height: auto;
+  min-height: 44px;
   padding-inline: 20px;
   border-radius: 999px;
   border: 1px solid var(--stroke-hi);
@@ -4922,7 +4986,7 @@ a.ts-link {
   border-color: #5db35c;
 }
 .pke-form .cta {
-  height: 42px;
+  height: auto;
   padding: 0 22px;
   min-width: 112px;
   font-size: 15px;
@@ -5324,6 +5388,11 @@ a.ts-link {
 .launch.infolder .lt.back {
   cursor: default;
 }
+.lt.back.target .ic {
+  outline: 2px solid #fff;
+  outline-offset: 3px;
+  transform: scale(1.06);
+}
 .lt.back .ic {
   background: var(--tint);
   border-color: transparent;
@@ -5498,8 +5567,14 @@ a.ts-link {
 .tk-i .n {
   color: var(--ink-2);
 }
+.tk-i .v,
+.tk-i .c,
+.tk-src {
+  font-family: "Inter", "Yekan Bakh", system-ui, sans-serif;
+}
 .tk-i .v {
   font-variant-numeric: tabular-nums;
+  font-weight: 500;
 }
 .tk-i .v small {
   font-size: 11.5px;
@@ -5786,7 +5861,7 @@ a.ts-link {
   align-items: stretch;
   gap: 2px;
   height: 52px;
-  padding: 5px;
+  padding: 2px;
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.08);
   border: 1px solid rgba(255, 255, 255, 0.1);
@@ -5796,7 +5871,7 @@ a.ts-link {
   font: inherit;
   font-size: 16px;
   font-weight: 500;
-  padding: 0 22px;
+  padding: 0 16px;
   border: 0;
   border-radius: 999px;
   background: none;
@@ -5834,7 +5909,7 @@ a.ts-link {
 /* inside a card */
 .tabs.sm {
   height: 40px;
-  padding: 4px;
+  padding: 2px;
 }
 .tabs.sm button {
   font-size: 14px;
@@ -6210,8 +6285,8 @@ a.ts-link {
 }
 .qpanel .ts-chips button {
   height: 36px;
-  padding: 0 14px;
-  font-size: 15.5px;
+  padding: 0 16px;
+  font-size: 15px;
 }
 .qpanel .qp-h {
   font-size: 15px;
@@ -6227,4 +6302,975 @@ a.ts-link {
 }
 .qpanel .ts-notes {
   font-size: 16px;
+}
+
+/* «شخصی‌سازی»: the city and topics the person may give, as small pills that wrap */
+.ab-chips {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+.ab-chips > span {
+  width: 52px;
+  font-size: 14px;
+  color: var(--ink-3);
+}
+.ab-chips button {
+  height: 36px;
+  padding: 0 16px;
+  border-radius: 999px;
+  border: 1px solid var(--stroke);
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--ink-2);
+  font: inherit;
+  font-size: 14px;
+  cursor: pointer;
+  transition:
+    background 0.2s,
+    color 0.2s;
+}
+.ab-chips button:hover {
+  color: var(--ink);
+}
+.ab-chips button[aria-pressed="true"] {
+  background: rgba(255, 255, 255, 0.16);
+  border-color: transparent;
+  color: #fff;
+}
+
+.qp-sec .ts-chips {
+  flex-wrap: wrap;
+}
+
+/* «شخصی‌سازی» in parts: the bar under the title, a scrolling body of sections */
+.cust {
+  gap: 14px;
+  overflow: hidden;
+}
+.cust-body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  scrollbar-width: none;
+  display: flex;
+  flex-direction: column;
+  gap: 26px;
+  padding-bottom: 8px;
+  animation: fade 0.25s ease both;
+}
+.cust-body > * {
+  flex-shrink: 0;
+}
+.cs {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.cs h3 {
+  margin: 0;
+  font-size: 16.5px;
+  font-weight: 600;
+  color: var(--ink);
+}
+.cs .chint {
+  margin: 0;
+  font-size: 13.5px;
+  line-height: 1.8;
+  color: var(--ink-3);
+}
+.cust .tabs.sm {
+  flex: none;
+}
+/* the city: a search field, a few quick picks, the matches */
+.cp {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.cp-field {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 44px;
+  padding-inline: 16px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--stroke);
+  color: var(--ink-3);
+}
+.cp-field:focus-within {
+  border-color: var(--stroke-hi);
+  color: var(--ink);
+}
+.cp-field .ico {
+  width: 18px;
+  height: 18px;
+  flex: none;
+}
+.cp-field input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  outline: 0;
+  background: none;
+  color: var(--ink);
+  font: inherit;
+  font-size: 15.5px;
+}
+.cp-list {
+  list-style: none;
+  margin: 0;
+  padding: 6px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--stroke);
+}
+.cp-list button {
+  width: 100%;
+  text-align: start;
+  padding: 8px 12px;
+  border: 0;
+  border-radius: 12px;
+  background: none;
+  color: var(--ink-2);
+  font: inherit;
+  font-size: 15px;
+  cursor: pointer;
+}
+.cp-list button:hover,
+.cp-list button:focus-visible {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--ink);
+  outline: none;
+}
+.cp-list .cp-own {
+  color: var(--tint);
+}
+.cp-chosen {
+  display: flex;
+}
+.cp-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 32px;
+  padding: 0 12px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.16);
+  color: #fff;
+  font-size: 14.5px;
+}
+.cp-chip button {
+  width: 18px;
+  height: 18px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 50%;
+  background: none;
+  color: inherit;
+  opacity: 0.55;
+  cursor: pointer;
+  padding: 0;
+}
+.cp-chip button:hover {
+  opacity: 1;
+}
+.cp-chip .ico {
+  width: 14px;
+  height: 14px;
+}
+.ab-chips > span {
+  display: none;
+}
+
+/* no title and no bar until Paket is linked: the strip is the first row */
+.money-s.nobar {
+  grid-template-rows: auto minmax(0, 1fr) auto;
+}
+.money-s.nobar .pk-empty,
+.money-s.nobar .pk-wait,
+.money-s.nobar .mkt {
+  grid-row: 2;
+}
+.money-s.nobar .news {
+  grid-row: 3;
+}
+.mbar .chip:first-of-type {
+  margin-inline-start: auto;
+}
+
+/* an asset's mark: its Iconly icon in its colour, on a soft tint of that colour */
+.mk2 {
+  position: relative;
+  background: color-mix(in srgb, var(--mc) 16%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--mc) 22%, transparent);
+}
+.mk2::before {
+  content: "";
+  position: absolute;
+  inset: 18%;
+  background: var(--mc);
+  mask: var(--logo) center / contain no-repeat;
+}
+.tk-i .g.mk2 {
+  background: color-mix(in srgb, var(--mc) 16%, transparent);
+}
+/* the rows' highlight runs to the card's edges; the figures stay where they were */
+/* a few pixels of the card's own edge stay round the highlight; the figures keep their place */
+.mkt .plist {
+  margin-inline: -10px;
+  gap: 4px;
+}
+/* concentric with the card's corner (32px less the 6px inset), a gap between neighbours */
+.mkt .prow {
+  padding-inline: 18px;
+  border-radius: 26px;
+}
+.card.g.mkt {
+  padding-bottom: 6px;
+}
+/* the list takes the card's height: its rows grow (to a limit) so the last one ends as near the
+   bottom edge as the rows are to the sides */
+.mkt .plist {
+  flex: 1;
+  min-height: 0;
+}
+.mkt .prow {
+  flex: 1 1 auto;
+  max-height: 84px;
+}
+/* the market's groups as a line under the active word, as in the design */
+.tabs.line {
+  /* the line runs the card's whole width */
+  margin-inline: -16px;
+  height: 44px;
+  padding: 0;
+  gap: 0;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  backdrop-filter: none;
+  border-bottom: 1px solid var(--stroke);
+}
+.tabs.line button {
+  flex: 1;
+  border-radius: 0;
+  padding: 0;
+  position: relative;
+  font-size: 16px;
+  color: var(--ink-3);
+}
+.tabs.line button[aria-selected="true"] {
+  background: none;
+  color: #fff;
+}
+.tabs.line button[aria-selected="true"]::after {
+  content: "";
+  position: absolute;
+  /* the section's whole width: three equal sections run edge to edge */
+  inset-inline: 0;
+  bottom: -1px;
+  height: 2px;
+  border-radius: 2px;
+  background: #aab4ff;
+}
+.tabs.line.morph::before {
+  display: none;
+}
+
+/* the shared «دسته‌ی تازه» sheet, and where it is asked for */
+.cat-bg {
+  z-index: 32;
+}
+.modal.cat {
+  width: min(420px, calc((100vw / var(--z)) - 32px));
+  gap: 14px;
+}
+.cat-hint {
+  margin: -6px 0 0;
+  font-size: 14px;
+  color: var(--ink-3);
+}
+.cat-field {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  height: 52px;
+  padding-inline: 18px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+.cat-field:focus-within {
+  border-color: rgba(255, 255, 255, 0.24);
+}
+.cat-field i {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  flex: none;
+}
+.cat-field input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  outline: 0;
+  background: none;
+  color: var(--ink);
+  font: inherit;
+  font-size: 17px;
+}
+/* the colours on one sideways line that scrolls, as in the app's list sheet */
+.cat-colors {
+  display: flex;
+  gap: 8px;
+  margin-inline: -30px;
+  padding: 4px 30px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.cat-colors button {
+  flex: none;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 0;
+  cursor: pointer;
+  padding: 0;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.18);
+}
+.cat-colors button[aria-checked="true"] {
+  box-shadow:
+    0 0 0 3px color-mix(in srgb, var(--bgc) 90%, #000),
+    0 0 0 5px #fff;
+}
+.cat-colors button.used {
+  opacity: 0.18;
+  cursor: default;
+}
+.modal.cat .card-h .rbtn {
+  margin-inline-start: auto;
+}
+.modal.cat .cta {
+  height: 48px;
+  font-size: 16px;
+}
+.calnew {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 2px;
+  border: 0;
+  background: none;
+  color: var(--ink-3);
+  font: inherit;
+  font-size: 14.5px;
+  cursor: pointer;
+}
+.calnew:hover {
+  color: var(--ink);
+}
+.calnew .ico {
+  width: 16px;
+  height: 16px;
+}
+.tdnew {
+  flex: none;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 1px dashed var(--stroke-hi);
+  background: none;
+  color: var(--ink-2);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  padding: 0;
+}
+.tdnew:hover {
+  color: var(--ink);
+  background: rgba(255, 255, 255, 0.06);
+}
+.tdnew .ico {
+  width: 16px;
+  height: 16px;
+}
+
+/* the «دارایی‌های من» invitation: Paket's link card, or a word and a button */
+.pf-invite {
+  gap: 14px;
+}
+.pf-invite .card.g.pk-empty {
+  grid-column: auto;
+  grid-row: auto;
+  width: auto;
+  padding: 8px 0 0;
+  background: none;
+  border: 0;
+  box-shadow: none;
+  backdrop-filter: none;
+}
+.pf-body {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 14px;
+}
+.pf-body p {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.9;
+  color: var(--ink-2);
+}
+.pf-body .cta {
+  text-decoration: none;
+}
+
+.pf-invite .card-h .rbtn {
+  margin-inline-start: auto;
+}
+
+/* ---------- the news slide: sources, the feed, today's hottest ---------- */
+.news-s {
+  grid-template-columns: minmax(0, 0.46fr) minmax(0, 1fr) minmax(0, 0.43fr);
+  grid-template-rows: minmax(0, 1fr);
+  gap: 18px;
+  padding-top: 28px;
+  padding-bottom: 32px;
+}
+.news-s h2 {
+  margin: 0;
+  font-size: 26px;
+  font-weight: 600;
+}
+.nw-b {
+  flex: none;
+  width: 22px;
+  height: 22px;
+  border-radius: 7px;
+  object-fit: cover;
+  background: #fff;
+  display: grid;
+  place-items: center;
+  color: #fff;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 700;
+}
+.nw-src {
+  padding: 24px 22px 18px;
+  gap: 8px;
+  min-height: 0;
+}
+.nw-lead {
+  margin: 0 0 8px;
+  font-size: 15px;
+  line-height: 1.9;
+  color: var(--ink-2);
+}
+.nw-groups {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  scrollbar-width: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.nw-group h4 {
+  margin: 10px 4px 4px;
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--ink-3);
+}
+.nw-srow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.nw-srow > button:first-child {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 8px 6px;
+  border: 0;
+  border-radius: 18px;
+  background: none;
+  color: var(--ink);
+  font-size: 17px;
+  text-align: start;
+  cursor: pointer;
+}
+.nw-srow > button:first-child:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+.nw-srow .nw-b {
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  font-size: 17px;
+}
+.nw-srow span:not(.sw) {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.nw-srow small {
+  font-size: 12.5px;
+  color: var(--ink-3);
+}
+.nw-srow button[aria-pressed="true"] .sw {
+  background: var(--tint);
+}
+.nw-srow button[aria-pressed="true"] .sw::after {
+  inset-inline-start: 19px;
+}
+.nw-x {
+  flex: none;
+  width: 32px;
+  height: 32px;
+  border: 0;
+  border-radius: 50%;
+  background: none;
+  color: var(--ink-3);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+}
+.nw-x:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--ink);
+}
+.nw-add {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 52px;
+  margin-top: 6px;
+  border: 1px dashed rgba(255, 255, 255, 0.2);
+  border-radius: 20px;
+  background: none;
+  color: var(--ink-2);
+  font-size: 15px;
+  cursor: pointer;
+}
+.nw-add:hover {
+  color: var(--ink);
+  border-color: rgba(255, 255, 255, 0.34);
+}
+.nw-add.open {
+  height: auto;
+  padding: 10px;
+  flex-wrap: wrap;
+  cursor: default;
+}
+.nw-add input {
+  flex: 1;
+  min-width: 0;
+  height: 40px;
+  padding-inline: 14px;
+  border: 0;
+  border-radius: 999px;
+  outline: 0;
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--ink);
+  font: inherit;
+  font-size: 14px;
+}
+.nw-add .cta {
+  height: 40px;
+  padding-inline: 18px;
+  font-size: 14px;
+}
+.nw-add p {
+  flex-basis: 100%;
+  margin: 0;
+  font-size: 13px;
+  color: #f0817a;
+}
+
+.nw-feed {
+  padding: 14px 14px 0;
+  min-height: 0;
+}
+.nw-bar {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.nw-search {
+  flex: 1;
+  min-width: 0;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-inline: 18px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--ink-2);
+}
+.nw-search:focus-within {
+  border-color: rgba(255, 255, 255, 0.24);
+}
+.nw-search .ico {
+  width: 20px;
+  height: 20px;
+}
+.nw-search input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  outline: 0;
+  background: none;
+  color: var(--ink);
+  font: inherit;
+  font-size: 17px;
+}
+.nw-chips {
+  flex: none;
+  display: flex;
+  gap: 8px;
+  margin: 14px 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.nw-chips .chip {
+  flex: none;
+  padding: 8px 18px;
+  font-size: 15px;
+  background: none;
+  border-color: rgba(255, 255, 255, 0.14);
+  color: var(--ink-2);
+}
+.nw-chips .chip[aria-selected="true"] {
+  background: rgba(255, 255, 255, 0.16);
+  border-color: transparent;
+  color: var(--ink);
+}
+.nw-scroll {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  scrollbar-width: none;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-bottom: 14px;
+}
+.nw-scroll > * {
+  flex: none;
+}
+.nw-top,
+.nw-card {
+  position: relative;
+  border-radius: 26px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  overflow: hidden;
+}
+.nw-top > a,
+.nw-card > a {
+  color: inherit;
+  text-decoration: none;
+}
+.nw-top > a {
+  display: block;
+}
+.nw-himg {
+  display: block;
+  width: 100%;
+  height: 250px;
+  object-fit: cover;
+}
+.nw-himg.none,
+.nw-pic.none {
+  background: linear-gradient(135deg, var(--sc), color-mix(in srgb, var(--sc) 35%, #000));
+}
+.nw-htx {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 18px 22px 16px;
+}
+.nw-htx > b {
+  font-size: 27px;
+  font-weight: 600;
+  line-height: 1.55;
+}
+.nw-sum {
+  font-size: 16px;
+  line-height: 1.85;
+  color: var(--ink-2);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.nw-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+}
+.nw-meta b {
+  font-size: 15px;
+  font-weight: 600;
+}
+.nw-meta small {
+  font-size: 14px;
+  color: var(--ink-3);
+}
+.nw-meta.big .nw-b {
+  width: 26px;
+  height: 26px;
+  border-radius: 8px;
+}
+.nw-meta.big b {
+  font-size: 17px;
+}
+.nw-twins {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  padding: 0 22px 16px;
+  font-size: 14px;
+  color: var(--ink-3);
+}
+.nw-twins .chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 12px 4px 6px;
+  font-size: 14px;
+  text-decoration: none;
+}
+.nw-twins .nw-b {
+  width: 20px;
+  height: 20px;
+  font-size: 11px;
+}
+.nw-card > a {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px;
+}
+.nw-pic {
+  flex: none;
+  width: 180px;
+  height: 124px;
+  border-radius: 18px;
+  object-fit: cover;
+}
+.nw-body {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  padding-inline-end: 34px;
+}
+.nw-body > b {
+  font-size: 19px;
+  font-weight: 600;
+  line-height: 1.6;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.nw-body .nw-sum {
+  font-size: 15px;
+  line-height: 1.75;
+}
+.nw-top:hover,
+.nw-card:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+.nw-top.read b,
+.nw-card.read b {
+  color: var(--ink-2);
+  font-weight: 500;
+}
+.nw-ad {
+  border-style: dashed;
+  border-color: rgba(255, 255, 255, 0.18);
+}
+.nw-ad .nw-meta .chip {
+  padding: 2px 12px;
+  font-size: 13px;
+  cursor: default;
+}
+.nw-save {
+  position: absolute;
+  top: 12px;
+  inset-inline-end: 12px;
+  width: 36px;
+  height: 36px;
+  border: 0;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: rgba(0, 0, 0, 0.32);
+  color: #fff;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.nw-top .nw-save {
+  opacity: 1;
+}
+.nw-card:hover .nw-save,
+.nw-save:focus-visible,
+.nw-save.on {
+  opacity: 1;
+}
+.nw-save .ico {
+  width: 18px;
+  height: 18px;
+}
+.nw-save.on {
+  background: #fff;
+  color: #0b0d12;
+}
+.nw-none {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  color: var(--ink-3);
+  text-align: center;
+}
+.nw-none p {
+  margin: 0;
+}
+
+.nw-side {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  min-height: 0;
+}
+.nw-hot {
+  flex: 1;
+  min-height: 0;
+  padding: 24px 22px 12px;
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+.nw-hot ol {
+  margin: 14px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.nw-hot li a {
+  display: flex;
+  gap: 14px;
+  padding: 12px 0;
+  color: inherit;
+  text-decoration: none;
+}
+.nw-hot li + li a {
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+}
+.nw-hot em {
+  flex: none;
+  width: 30px;
+  font-size: 24px;
+  font-style: normal;
+  font-weight: 600;
+  color: var(--ink-3);
+}
+.nw-hot li span {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+.nw-hot li b {
+  font-size: 17px;
+  font-weight: 500;
+  line-height: 1.65;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.nw-hot li small {
+  font-size: 14px;
+  color: var(--ink-3);
+}
+.nw-hot li a:hover b {
+  color: #fff;
+}
+.nw-empty {
+  margin: 14px 0 0;
+  color: var(--ink-3);
+}
+.nw-saved {
+  flex: none;
+  padding: 18px 22px;
+  gap: 6px;
+}
+.nw-saved h3 {
+  margin: 0;
+  font-size: 21px;
+  font-weight: 600;
+}
+.nw-saved p {
+  margin: 0 0 4px;
+  font-size: 15px;
+  line-height: 1.8;
+  color: var(--ink-2);
+}
+.nw-saved button {
+  border: 0;
+  background: none;
+  padding: 4px 0;
+  color: var(--ink);
+  font-size: 15px;
+  text-align: start;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: pointer;
+}
+.nw-saved button:hover {
+  text-decoration: underline;
+}
+.nw-add .ico {
+  flex: none;
+  width: 20px;
+  height: 20px;
+}
+
+/* the Paket corner's card */
+.pk-card {
+  display: flex;
+  gap: 14px;
+  padding: 4px 0 var(--cx);
+}
+.pk-card .pk-logo {
+  flex: none;
+}
+.pk-card .sc-text {
+  min-height: 0;
+}
+.pk-card .sc-text .cta {
+  margin-top: 12px;
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
 }

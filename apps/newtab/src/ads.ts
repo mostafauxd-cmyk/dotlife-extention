@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 
 import { pickAd, SAMPLE_ADS, type Ad, type AdContext } from "@dotlife/ads";
 
+import { traitsOf } from "./adTraits";
 import { useSettings } from "./hooks";
 import { isOn } from "./settings";
 
@@ -47,18 +48,29 @@ export function useAd(slot: number, over: Partial<AdContext> = {}): Ad | null {
     };
   }, []);
   const key = JSON.stringify(over);
-  return useMemo(
-    () =>
-      pickAd(bundle, slot, {
-        product: "newtab",
-        now: new Date(),
-        persona: s.persona,
-        consent: isOn(s, "ads"),
-        dismissed,
-        ...over,
-      }),
-    [slot, s.persona, s.off, key, tick],
-  );
+  return useMemo(() => {
+    const tr = traitsOf(s);
+    const base: AdContext = {
+      product: "newtab",
+      now: new Date(),
+      persona: tr.persona,
+      city: tr.city,
+      season: tr.season,
+      weekend: tr.weekend,
+      consent: isOn(s, "ads"),
+      dismissed,
+      ...over,
+    };
+    // each topic the person follows and each occasion today is a way to match; the heaviest ad wins
+    let best: Ad | null = null;
+    for (const topic of [...tr.topics, null]) {
+      for (const occasion of [...tr.occasions, null]) {
+        const ad = pickAd(bundle, slot, { ...base, topic, occasion });
+        if (ad !== null && (best === null || ad.weight > best.weight)) best = ad;
+      }
+    }
+    return best;
+  }, [slot, s.persona, s.city, s.topics, s.off, key, tick]);
 }
 
 /** The label every ad carries. */

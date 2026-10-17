@@ -16,6 +16,7 @@ import { TIME_ZONE } from "../noghte/model";
 import { toman } from "../paket";
 import { fa } from "../ui/fa";
 import { Tabs } from "../ui/Tabs";
+import { PaketPairModal } from "./PaketPair";
 
 /**
  * The market half of the money slide, from Paket's public prices — it needs no link: the strip of
@@ -25,58 +26,56 @@ import { Tabs } from "../ui/Tabs";
 const UP = "#8add88";
 const DN = "#f0817a";
 
-const clockOf = (iso: string | null): string =>
-  iso === null ? "" : fa(localNow(TIME_ZONE, new Date(iso)).time);
+const clockOf = (iso: string | null, persian = true): string => {
+  if (iso === null) return "";
+  const t = localNow(TIME_ZONE, new Date(iso)).time;
+  return persian ? fa(t) : t;
+};
 
 /** «▲ ۰٫۴۱٪» */
 const change = (pct: number): string =>
   `${pct >= 0 ? "▲" : "▼"} ${fa(Math.abs(pct).toFixed(2)).replace(".", "٫")}٪`;
 
-const usd = (n: number): string =>
-  fa(
-    n
-      .toLocaleString("en-US", { maximumFractionDigits: n < 1 ? 3 : n < 1000 ? 2 : 1 })
-      .replace(/,/g, "٬")
-      .replace(".", "٫"),
-  );
+/** «▲ 0.41%» — the strip's numbers are Latin digits, as on an exchange */
+const changeLatin = (pct: number): string => `${pct >= 0 ? "▲" : "▼"} ${Math.abs(pct).toFixed(2)}%`;
 
-function Badge({ id, small }: { id: string; small?: boolean }) {
-  const b = BADGE[id] ?? { glyph: "؟", bg: "#3a3d48" };
+const usd = (n: number): string =>
+  n.toLocaleString("en-US", { maximumFractionDigits: n < 1 ? 3 : n < 1000 ? 2 : 1 });
+
+/** An asset's icon in its colour on a tint of it. */
+function Mark({ id, className }: { id: string; className: string }) {
+  const b = BADGE[id] ?? { icon: "coins", color: "#9AA7B5" };
   return (
     <i
-      className={small ? "ai sm" : "ai"}
-      style={{ background: b.bg, color: b.dark === true ? "#3a2a05" : undefined }}
-    >
-      {b.glyph}
-    </i>
+      className={`${className} mk2`}
+      style={{ "--mc": b.color, "--logo": `url("/market/${b.icon}.svg")` } as React.CSSProperties}
+    />
   );
+}
+
+function Badge({ id, small }: { id: string; small?: boolean }) {
+  return <Mark id={id} className={small ? "ai sm" : "ai"} />;
 }
 
 // ---- the strip ----
 
 function TickerCell({ t }: { t: TickerItem }) {
-  const b = BADGE[t.id];
   return (
     <span className={t.live ? "tk-i" : "tk-i stale"}>
-      <i
-        className="g"
-        style={{ background: b?.bg ?? "#3a3d48", color: b?.dark === true ? "#3a2a05" : undefined }}
-      >
-        {t.glyph}
-      </i>
+      <Mark id={t.id} className="g" />
       <span className="n">{t.name}</span>
       <span className="v">
         {t.unit === "USD" ? (
           `$${usd(t.price)}`
         ) : (
           <>
-            {toman(String(Math.round(t.price)))}
+            {Math.round(t.price).toLocaleString("en-US")}
             <small>تومان</small>
           </>
         )}
       </span>
       {t.changePct !== null && (
-        <span className={t.changePct >= 0 ? "c up" : "c dn"}>{change(t.changePct)}</span>
+        <span className={t.changePct >= 0 ? "c up" : "c dn"}>{changeLatin(t.changePct)}</span>
       )}
     </span>
   );
@@ -121,7 +120,7 @@ export function TickerStrip({ ticker }: { ticker: Ticker | null }) {
       </div>
       <span className="tk-src">
         {ticker?.lastUpdated !== undefined && ticker.lastUpdated !== null
-          ? `به‌روز شده ${clockOf(ticker.lastUpdated)}`
+          ? `به‌روز شده ${clockOf(ticker.lastUpdated, false)}`
           : ""}
       </span>
     </div>
@@ -292,6 +291,7 @@ export function MarketCard({
   setPeriod: (p: Period) => void;
 }) {
   const [group, setGroup] = useState<"gold" | "fx">("gold");
+  const [invite, setInvite] = useState(false);
   const [sel, setSel] = useState<string | null>(null);
   const items = prices?.items ?? [];
   const groups = GROUPS.filter(([g]) => items.some((i) => i.group === g));
@@ -355,19 +355,26 @@ export function MarketCard({
             stepDays={prices?.history?.stepDays ?? 1}
             label={`نمودار ${cur.name}`}
           />
-          {groups.length > 1 && (
-            <Tabs
-              label="گروه قیمت"
-              size="sm"
-              block
-              value={here}
-              onChange={(g) => {
-                setGroup(g);
-                setSel(null);
-              }}
-              items={groups.map(([id, label]) => ({ id, label }))}
-            />
-          )}
+          <Tabs
+            label="گروه قیمت"
+            size="sm"
+            block
+            line
+            value={here}
+            onChange={(g) => {
+              // «دارایی‌های من» is not a list of prices: it opens its invitation and the list stays
+              if (g === "mine") {
+                setInvite(true);
+                return;
+              }
+              setGroup(g);
+              setSel(null);
+            }}
+            items={[
+              ...groups.map(([id, label]) => ({ id, label })),
+              { id: "mine" as const, label: "دارایی‌های من" },
+            ]}
+          />
           <div className="plist">
             {rows.map((it) => (
               <Row
@@ -383,6 +390,13 @@ export function MarketCard({
             <SponsoredRow />
           </div>
         </>
+      )}
+      {invite && (
+        <PortfolioInvite
+          onClose={() => {
+            setInvite(false);
+          }}
+        />
       )}
     </div>
   );
@@ -416,5 +430,35 @@ function SponsoredRow() {
         )}
       </span>
     </a>
+  );
+}
+
+/**
+ * «دارایی‌های من»: what the person holds (gold, coins, dollars) is kept in Paket, which does not hold
+ * it yet — so the tab asks them in. Not linked: the way to link Paket; linked: where to record it.
+ */
+function PortfolioInvite({ onClose }: { onClose: () => void }) {
+  return (
+    <PaketPairModal
+      title="دارایی‌هایت را هم همین‌جا ببین"
+      lead="پاکت را به این صفحه وصل کن تا دارایی‌هایت (طلا، سکه، ارز) را با قیمت روز و تغییر امروزشان همین‌جا ببینی. فقط خواندنی است؛ از این‌جا چیزی در پاکت عوض نمی‌شود."
+      linked={
+        <div className="pf-body">
+          <p>
+            هنوز دارایی‌ای در پاکت ثبت نشده. طلا، سکه یا ارزی که داری را آن‌جا بنویس؛ این‌جا هر لحظه
+            با قیمت روز ارزش‌شان و تغییر امروزشان را می‌بینی.
+          </p>
+          <a
+            className="cta"
+            href="https://paket.life/?src=chrome&c=money-assets"
+            target="_blank"
+            rel="noreferrer"
+          >
+            باز کردن پاکت
+          </a>
+        </div>
+      }
+      onClose={onClose}
+    />
   );
 }

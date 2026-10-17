@@ -93,34 +93,31 @@ export function MoneySlide() {
   const news = usePaketNews();
   const hide = s.hideMoney;
   return (
-    <div className="s-pad money-s" ref={root}>
-      <div className="mbar">
-        <h2>پول</h2>
-        {linked && data !== null && (
-          <span className="msrc">
-            <i className={error === null ? "" : "off"} />
-            {error === null ? "از پاکت" : "آخرین خلاصه‌ی پاکت"} ·{" "}
-            {fa(localNow(TIME_ZONE, new Date(data.generatedAt)).time)}
-          </span>
-        )}
-        {linked && (
-          <>
-            <button
-              type="button"
-              className="chip"
-              aria-pressed={hide}
-              onClick={() => {
-                updateSettings({ hideMoney: !hide });
-              }}
-            >
-              {hide ? "نمایش مبالغ" : "پنهان کردن مبالغ"}
-            </button>
-            <button type="button" className="chip" onClick={() => void unlinkPaket()}>
-              قطع اتصال
-            </button>
-          </>
-        )}
-      </div>
+    <div className={linked ? "s-pad money-s" : "s-pad money-s nobar"} ref={root}>
+      {linked && (
+        <div className="mbar">
+          {data !== null && (
+            <span className="msrc">
+              <i className={error === null ? "" : "off"} />
+              {error === null ? "از پاکت" : "آخرین خلاصه‌ی پاکت"} ·{" "}
+              {fa(localNow(TIME_ZONE, new Date(data.generatedAt)).time)}
+            </span>
+          )}
+          <button
+            type="button"
+            className="chip"
+            aria-pressed={hide}
+            onClick={() => {
+              updateSettings({ hideMoney: !hide });
+            }}
+          >
+            {hide ? "نمایش مبالغ" : "پنهان کردن مبالغ"}
+          </button>
+          <button type="button" className="chip" onClick={() => void unlinkPaket()}>
+            قطع اتصال
+          </button>
+        </div>
+      )}
 
       <TickerStrip ticker={ticker} />
 
@@ -504,7 +501,6 @@ function News({ items }: { items: ReturnType<typeof usePaketNews> }) {
     <div className="card g news">
       <div className="card-h">
         <h2>خبر و پیشنهاد</h2>
-        <span className="sub">از تیم پاکت · همان خبرهای صفحه‌ی خانه‌ی اپ</span>
         <More place="news">همه‌ی خبرها</More>
       </div>
       <div className="ncards">

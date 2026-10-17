@@ -16,7 +16,7 @@ import { search, suggest } from "../platform";
 import { addDays } from "@dotlife/tasks";
 import { ago } from "../ui/fa";
 import { GMark, Icon } from "../ui/Icon";
-import { Tabs } from "../ui/Tabs";
+import { openNewCategory } from "./NewCategory";
 import { openNote } from "./openNote";
 import { openEditor } from "./TaskEditor";
 
@@ -421,18 +421,26 @@ export function SearchBox({
           ) : (
             <div className="qp-sec">
               <span className="qp-k">کی؟</span>
-              <Tabs
-                label="زمان"
-                size="sm"
-                block
-                value={when}
-                onChange={setWhen}
-                items={[
-                  { id: "today", label: "امروز" },
-                  { id: "tomorrow", label: "فردا" },
-                  { id: "none", label: "بدون تاریخ" },
-                ]}
-              />
+              <div className="ts-chips" role="group" aria-label="زمان">
+                {(
+                  [
+                    ["today", "امروز"],
+                    ["tomorrow", "فردا"],
+                    ["none", "بدون تاریخ"],
+                  ] as const
+                ).map(([k, n]) => (
+                  <button
+                    key={k}
+                    type="button"
+                    aria-pressed={when === k}
+                    onClick={() => {
+                      setWhen(k);
+                    }}
+                  >
+                    {n}
+                  </button>
+                ))}
+              </div>
             </div>
           )}
           {lists.length > 0 && (
@@ -452,6 +460,18 @@ export function SearchBox({
                     {l.name}
                   </button>
                 ))}
+                <button
+                  type="button"
+                  className="add"
+                  onClick={() => {
+                    openNewCategory((l) => {
+                      setListId(l.id);
+                    });
+                  }}
+                >
+                  <Icon name="plus" />
+                  دسته
+                </button>
               </div>
             </div>
           )}

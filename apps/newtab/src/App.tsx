@@ -1,11 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 
-import { Corner, NotesCard, TasksCard, TodayCard, type Peek } from "./home/Corners";
+import { Corner, NotesCard, PaketCard, TasksCard, TodayCard, type Peek } from "./home/Corners";
 import { Customize } from "./home/Customize";
 import { DateLine } from "./home/DateLine";
 import { Dot } from "./home/Dot";
 import { Edge } from "./home/Edge";
 import { Launcher } from "./home/Launcher";
+import { NewsSlide } from "./home/NewsSlide";
 import { MoneySlide } from "./home/MoneySlide";
 import { NotesSlide } from "./home/NotesSlide";
 import { PlansSlide } from "./home/PlansSlide";
@@ -13,6 +14,9 @@ import { Rail, type SlideInfo } from "./home/Rail";
 import { SearchBox } from "./home/SearchBox";
 import { SignIn } from "./home/SignIn";
 import { SocialSlide } from "./home/SocialSlide";
+import { NewCategoryHost } from "./home/NewCategory";
+import { PaketPairHost } from "./home/PaketPair";
+import { PaketLogo } from "./home/PaketSync";
 import { TaskEditorHost } from "./home/TaskEditor";
 import { useSession, useSettings } from "./hooks";
 import { onArrival } from "./noghte/sync";
@@ -122,6 +126,7 @@ export function App() {
   const SLIDE_UI: Partial<Record<SlideId, { icon: IconName; node: React.ReactNode }>> = {
     "s-plans": { icon: "calendar-face", node: <PlansSlide /> },
     "s-money": { icon: "activity", node: <MoneySlide /> },
+    "s-news": { icon: "newspaper", node: <NewsSlide /> },
     "s-social": { icon: "chat", node: <SocialSlide /> },
     "s-notes": {
       icon: "sticker-note",
@@ -198,6 +203,20 @@ export function App() {
             </Corner>
           )}
 
+          {isOn(s, "paket") && (
+            <Corner
+              pos="br"
+              icon="activity"
+              mark={<PaketLogo size={22} />}
+              label="پاکت"
+              pinned={pinned}
+              peek={null}
+              dot={false}
+            >
+              <PaketCard />
+            </Corner>
+          )}
+
           <Edge
             showBookmarks={isOn(s, "bookmarks")}
             pinned={false}
@@ -256,6 +275,8 @@ export function App() {
         />
       )}
       <TaskEditorHost />
+      <NewCategoryHost />
+      <PaketPairHost />
       {toast !== null && <div className="toast">{toast}</div>}
     </div>
   );

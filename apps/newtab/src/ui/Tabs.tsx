@@ -24,6 +24,8 @@ export function Tabs<T extends string | number>({
   label,
   size = "md",
   block = false,
+  width,
+  line = false,
 }: {
   items: readonly TabItem<T>[];
   value: T | undefined;
@@ -32,12 +34,29 @@ export function Tabs<T extends string | number>({
   label: string;
   size?: "md" | "sm";
   block?: boolean;
+  /**
+   * A fixed width in pixels, the items sharing it equally: the bar then keeps its size however the
+   * labels change (a count growing), so what sits beside it does not move.
+   */
+  width?: number;
+  /** A line under the active word instead of a pill (the market card's groups). */
+  line?: boolean;
 }) {
-  const cls = ["tabs", "morph", size === "sm" ? "sm" : "", block ? "block" : ""]
+  const cls = [
+    "tabs",
+    line ? "line" : "morph",
+    size === "sm" ? "sm" : "",
+    block || width !== undefined ? "block" : "",
+  ]
     .filter(Boolean)
     .join(" ");
   return (
-    <div className={cls} role="tablist" aria-label={label}>
+    <div
+      className={cls}
+      role="tablist"
+      aria-label={label}
+      style={width === undefined ? undefined : { width, flex: "none" }}
+    >
       {items.map((t) => (
         <button
           key={t.id}
