@@ -31,7 +31,7 @@ export default tseslint.config(
     },
   },
   {
-    files: ["apps/newtab/src/**/*.{ts,tsx}", "apps/ads-admin/src/**/*.{ts,tsx}"],
+    files: ["apps/newtab/src/**/*.{ts,tsx}"],
     languageOptions: { globals: { ...globals.browser } },
   },
   {
