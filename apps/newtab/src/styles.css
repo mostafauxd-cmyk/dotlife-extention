@@ -2503,21 +2503,24 @@ svg {
   margin-top: 4px;
   flex: none;
   border-radius: 999px;
-  background: rgba(0, 0, 0, 0.25);
-  border: 1px solid var(--stroke);
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 0 16px;
+  padding: 0 18px;
 }
 .nsearch .ico {
-  width: 19px;
-  height: 19px;
+  width: 20px;
+  height: 20px;
+  flex: none;
   color: var(--ink-2);
 }
 .nsearch input {
   flex: 1;
   min-width: 0;
+  padding: 0;
+  line-height: 1.4;
   background: none;
   border: 0;
   outline: 0;
@@ -2526,7 +2529,7 @@ svg {
   font-size: 17px;
 }
 .nsearch input::placeholder {
-  color: rgba(255, 255, 255, 0.5);
+  color: rgba(255, 255, 255, 0.55);
 }
 .nitems {
   flex: 1;
