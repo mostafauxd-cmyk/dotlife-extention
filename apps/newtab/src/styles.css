@@ -2444,7 +2444,6 @@ svg {
 .flist button[aria-pressed="true"] {
   background: #fff;
   color: #0b0d12;
-  font-weight: 600;
 }
 .flist button[aria-pressed="true"] .ico,
 .flist button[aria-pressed="true"] .fcount {
