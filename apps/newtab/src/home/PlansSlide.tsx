@@ -227,7 +227,6 @@ export function PlansSlide() {
           <div className="ptools">
             <Tabs
               label="چند روز"
-              size="sm"
               value={span}
               onChange={setSpan}
               items={[

@@ -2938,6 +2938,21 @@ svg {
   align-items: center;
   gap: 8px;
 }
+/* every control of the bar is as tall as the tabs and the search beside them */
+.ptools .rbtn.sm {
+  width: 52px;
+  height: 52px;
+}
+.ptools .rbtn.sm .ico {
+  width: 20px;
+  height: 20px;
+}
+.ptools .chip {
+  height: 52px;
+  padding: 0 22px;
+  font-size: 16px;
+  border-radius: 999px;
+}
 .side {
   gap: 7px;
   overflow-y: auto;
