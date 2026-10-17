@@ -9,6 +9,7 @@ import {
   liveNotes,
   liveTasks,
   noteTitle,
+  taskLists,
   today,
 } from "../noghte/model";
 import { AD_LABEL, useAd } from "../ads";
@@ -175,7 +176,8 @@ export function SearchBox({
     };
   }, [traceAfter]);
 
-  const lists = liveLists();
+  // a task never goes to the saved news (notes only); a note may
+  const lists = mode === "task" ? taskLists() : liveLists();
   const chosenList = lists.find((l) => l.id === listId) ?? defaultList(lists);
 
   const pick = (m: Mode): void => {

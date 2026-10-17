@@ -2,6 +2,7 @@ import type { Change, PullResponse, PushResponse } from "@dotlife/sync";
 
 import { syncOnce, type Remote } from "../sync/engine";
 import { ApiError, authed, currentSession, loadSession, onSession } from "./api";
+import { keepSavedFolderOffDefault } from "../newsSaved";
 import { foldTakenLists } from "./model";
 import { LOCAL, records } from "./records";
 
@@ -64,6 +65,8 @@ export function syncNow(): Promise<void> {
       await syncOnce(records.local, remote);
       // what was written here before signing in is in the account now: its «شخصی» joins the account's
       if (first) foldTakenLists(records.takenLists());
+      // the saved news never stay the default list
+      keepSavedFolderOffDefault();
       await records.persist();
       setState({ status: "idle", lastAt: Date.now() });
       const arrived = records.takeArrived();
@@ -98,6 +101,7 @@ export async function startSync(): Promise<void> {
       const owner = records.owner();
       if (owner !== "" && owner !== LOCAL) await records.clear();
       else await records.open(LOCAL);
+      keepSavedFolderOffDefault();
       setState({ status: "signed-out", lastAt: null });
       return;
     }

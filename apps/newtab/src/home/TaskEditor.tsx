@@ -25,7 +25,7 @@ import {
 import { useRecordsVersion } from "../hooks";
 import {
   createTask,
-  liveLists,
+  taskLists,
   liveNotes,
   newId,
   newNote,
@@ -313,8 +313,8 @@ function Sheet({ input, onClose }: { input: EditorInput; onClose: () => void }) 
     setF((prev) => ({ ...prev, ...patch }));
   };
 
-  // «خرید» first, as in every list picker of the app
-  const lists = liveLists();
+  // «خرید» first, as in every list picker of the app; never the saved news (notes only)
+  const lists = taskLists();
   const shownLists = [
     ...lists.filter((l) => l.kind === "shopping"),
     ...lists.filter((l) => l.kind !== "shopping"),

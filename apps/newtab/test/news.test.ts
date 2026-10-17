@@ -163,6 +163,17 @@ describe("forYou and hottest", () => {
     expect(r2.map((s) => s.id)).toEqual(["o", "f"]);
   });
 
+  it("never gives one outlet more than two lines in a row", () => {
+    const rows = [
+      story("a1", "الف", "2026-10-17T11:50:00Z", "isna"),
+      story("a2", "ب", "2026-10-17T11:40:00Z", "isna"),
+      story("a3", "پ", "2026-10-17T11:30:00Z", "isna"),
+      story("b1", "ت", "2026-10-17T10:00:00Z", "mehr"),
+    ];
+    const r = forYou(rows, { topics: [], read: new Set(), covered: new Map(), now });
+    expect(r.map((s) => s.id)).toEqual(["a1", "a2", "b1", "a3"]);
+  });
+
   it("ranks the last day's stories by how many outlets tell them (the newer of two twins), one line per story", () => {
     const x = story("x", "خبر مهم", "2026-10-17T10:00:00Z", "isna");
     const y = story("y", "خبر مهم است", "2026-10-17T10:05:00Z", "donya");

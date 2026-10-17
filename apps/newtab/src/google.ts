@@ -18,7 +18,7 @@ const FROM_ENV = import.meta.env.VITE_GOOGLE_CLIENT_ID as string | undefined;
 const CLIENT_ID =
   FROM_ENV !== undefined && FROM_ENV !== ""
     ? FROM_ENV
-    : "466907834365-79lh6slme8m9dmte9e888reooo72ktqj.apps.googleusercontent.com";
+    : "466907834365-bgr8ilapaqqun2codl7hmhnov2lq981t.apps.googleusercontent.com";
 
 const SCOPES = [
   "https://www.googleapis.com/auth/calendar.calendarlist.readonly",

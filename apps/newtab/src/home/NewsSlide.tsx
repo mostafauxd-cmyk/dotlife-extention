@@ -144,6 +144,11 @@ export function NewsSlide() {
       fit.disconnect();
     };
   }, []);
+  const scroller = useRef<HTMLDivElement>(null);
+  // a new order or category starts from its top, not from where the last list was scrolled to
+  useEffect(() => {
+    scroller.current?.scrollTo({ top: 0 });
+  }, [mode, cat, q]);
   const src = (id: string): NewsSource | undefined => all.find((x) => x.id === id);
 
   const shown = useMemo(() => {
@@ -197,7 +202,6 @@ export function NewsSlide() {
           <div className="nw-bar">
             <Tabs
               label="ترتیب خبرها"
-              size="sm"
               value={mode}
               onChange={setMode}
               items={[
@@ -245,7 +249,7 @@ export function NewsSlide() {
           </div>
         </div>
 
-        <div className="nw-scroll">
+        <div className="nw-scroll" ref={scroller}>
           {top === undefined ? (
             <div className="nw-none">
               {loading ? (

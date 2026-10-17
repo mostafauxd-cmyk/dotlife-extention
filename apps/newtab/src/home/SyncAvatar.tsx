@@ -1,16 +1,21 @@
-import { useNow, useSession, useSyncState } from "../hooks";
+import { useNow, useRecordsVersion, useSession, useSyncState } from "../hooks";
+import { myAvatar } from "../noghte/avatar";
 import { ago } from "../ui/fa";
 
 /**
  * The account, at the bottom of the first view: a click opens «شخصی‌سازی» (signing in is there), and
  * a small dot says at a glance whether this page is in step with the phone — green when it is live
  * (breathing while it syncs), grey when it is not: offline, a failed sync, or nobody signed in (then
- * everything stays in this browser).
+ * everything stays in this browser). Once the phone's settings are here, the circle is the user's own
+ * face, drawn as the app draws it.
  */
 export function SyncAvatar({ onOpen }: { onOpen: () => void }) {
   const session = useSession();
   const sync = useSyncState();
   useNow(30_000); // «همگام‌شده ۲ دقیقه پیش» stays true
+  useRecordsVersion(); // the face follows the phone's settings as they arrive
+  // the face the phone shows; signed out, or before its settings arrive, the plain person icon
+  const face = session === null ? null : myAvatar();
   const status = session === null ? "signed-out" : sync.status;
   const when = sync.lastAt === null ? "" : ` · ${ago(new Date(sync.lastAt).toISOString())}`;
   const say =
@@ -31,20 +36,26 @@ export function SyncAvatar({ onOpen }: { onOpen: () => void }) {
       title={say}
       onClick={onOpen}
     >
-      <span className="me-in">
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <g
-            fill="none"
-            stroke="currentColor"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth="1.5"
-          >
-            <path d="M11.98 15.35c-3.87 0-7.17.58-7.17 2.92s3.28 2.95 7.17 2.95c3.87 0 7.17-.59 7.17-2.93s-3.28-2.94-7.17-2.94z" />
-            <path d="M11.98 12.01a4.6 4.6 0 1 0-.03 0h.03z" />
-          </g>
-        </svg>
-      </span>
+      {face !== null ? (
+        <span className="me-face" style={{ background: face.tone }}>
+          <img src={`/avatars/${face.art}.webp`} alt="" draggable={false} />
+        </span>
+      ) : (
+        <span className="me-in">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <g
+              fill="none"
+              stroke="currentColor"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="1.5"
+            >
+              <path d="M11.98 15.35c-3.87 0-7.17.58-7.17 2.92s3.28 2.95 7.17 2.95c3.87 0 7.17-.59 7.17-2.93s-3.28-2.94-7.17-2.94z" />
+              <path d="M11.98 12.01a4.6 4.6 0 1 0-.03 0h.03z" />
+            </g>
+          </svg>
+        </span>
+      )}
     </button>
   );
 }

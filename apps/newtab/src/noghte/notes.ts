@@ -582,3 +582,46 @@ export function repoint(
     return { ...n, folderId: to !== undefined && liveIds.has(to) ? to : defaultId };
   });
 }
+
+// ── links ────────────────────────────────────────────────────────────────────
+
+/** The web addresses written in a line of text, in order, without the punctuation that ends a sentence. */
+export function urlsIn(text: string): string[] {
+  const out: string[] = [];
+  for (const m of text.matchAll(/https?:\/\/[^\s<>"'«»]+/gi)) {
+    const url = m[0].replace(/[.,;:!?)\]}،؛؟»]+$/u, "");
+    try {
+      new URL(url);
+    } catch {
+      continue;
+    }
+    if (!out.includes(url)) out.push(url);
+  }
+  return out;
+}
+
+/** A line without its web addresses (the link under it stands in for them); the note itself keeps them. */
+export function withoutUrls(text: string): string {
+  let out = text;
+  for (const u of urlsIn(text)) out = out.split(`\n${u}`).join("").split(u).join("");
+  return out;
+}
+
+/** What a box now holds, once its words are edited: the addresses it keeps (shown as links) go back after them. */
+export function withUrlsKept(kept: string, edited: string): string {
+  const urls = urlsIn(kept).filter((u) => !edited.includes(u));
+  return [edited, ...urls].filter((s) => s !== "").join("\n");
+}
+
+/** «eghtesadonline.com/fa/news/…»: an address as a link shows it, the scheme and «www.» left off. */
+export function linkLabel(url: string, max = 56): string {
+  let u: URL;
+  try {
+    u = new URL(url);
+  } catch {
+    return url;
+  }
+  const path = decodeURIComponent(u.pathname + u.search).replace(/\/$/, "");
+  const full = `${u.host.replace(/^www\./, "")}${path}`;
+  return full.length > max ? `${full.slice(0, max - 1)}…` : full;
+}

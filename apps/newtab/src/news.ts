@@ -88,12 +88,22 @@ const domestic = (
   name: string,
   feeds: readonly NewsFeed[],
   color: string,
-  icon = `/news/${id}.svg`,
+  icon: string | null = `/news/${id}.svg`,
 ): NewsSource => ({ id, name, feeds, icon, color, group: "domestic" });
 
+/** A Sepehr newsroom (Tabnak, Entekhab): its sections are `/fa/rss/<id>`, its front page `/fa/rss/allnews`. */
+const sepehr = (origin: string, tp: Partial<Record<NewsCategory, number>>): NewsFeed[] => [
+  ...Object.entries(tp).map(([cat, id]) =>
+    feed(`${origin}/fa/rss/${String(id)}`, cat as NewsCategory),
+  ),
+  feed(`${origin}/fa/rss/allnews`),
+];
+
 /**
- * The sources. The four big newsrooms are read section by section (checked 2026-10-17: each section
- * feed answers with 30 stories and their pictures), the specialised outlets by their one feed.
+ * The sources. The big newsrooms are read section by section (checked 2026-10-17: each section feed
+ * answers with its stories, most with pictures), the specialised outlets by their one feed. Every
+ * category chip has at least three outlets behind it. Tejaratnews and Salamatnews, like Varzesh3,
+ * wear many colours, so they sit on white.
  */
 export const NEWS_SOURCES: readonly NewsSource[] = [
   domestic(
@@ -163,7 +173,21 @@ export const NEWS_SOURCES: readonly NewsSource[] = [
     [feed("https://www.eghtesadonline.com/fa/updates/allnews", "economy")],
     "#D6262C",
   ),
+  domestic(
+    "tejaratnews",
+    "تجارت‌نیوز",
+    [feed("https://tejaratnews.com/feed", "economy")],
+    "#FFFFFF",
+    "/news/tejaratnews.png",
+  ),
   domestic("digiato", "دیجیاتو", [feed("https://digiato.com/feed", "tech")], "#2C7FEA"),
+  domestic(
+    "zoomit",
+    "زومیت",
+    [feed("https://www.zoomit.ir/feed/", "tech")],
+    "#E10B25",
+    "/news/zoomit.png",
+  ),
   domestic(
     "varzesh3",
     "ورزش۳",
@@ -171,6 +195,35 @@ export const NEWS_SOURCES: readonly NewsSource[] = [
     "#2E9B4E",
     "/news/varzesh3.png",
   ),
+  domestic(
+    "khabarvarzeshi",
+    "خبرورزشی",
+    [feed("https://www.khabarvarzeshi.com/rss", "sport")],
+    "#FF2D55",
+    "/news/khabarvarzeshi.png",
+  ),
+  domestic(
+    "tabnak",
+    "تابناک",
+    sepehr("https://www.tabnak.ir", { society: 3, sport: 2, culture: 21, tech: 26 }),
+    "#0B59A6",
+    "/news/tabnak.png",
+  ),
+  domestic(
+    "entekhab",
+    "انتخاب",
+    sepehr("https://www.entekhab.ir", { society: 4, sport: 9, culture: 18, tech: 15, health: 14 }),
+    "#D8232A",
+    "/news/entekhab.png",
+  ),
+  domestic(
+    "salamatnews",
+    "سلامت‌نیوز",
+    [feed("https://www.salamatnews.com/rss", "health")],
+    "#FFFFFF",
+    "/news/salamatnews.png",
+  ),
+  domestic("fararu", "فرارو", [feed("https://fararu.com/feeds")], "#7E3410", "/news/fararu.png"),
   PAKET_SOURCE,
 ];
 
@@ -665,7 +718,8 @@ export function useNews(sources: readonly NewsSource[]): {
   return {
     stories,
     loading,
-    failed: failed && stories.length === 0,
+    // Paket's own stories do not hide that the outlets could not be reached
+    failed: failed && fetched.length === 0,
     refresh: () => {
       void pull(true);
     },
@@ -715,8 +769,10 @@ const TOPIC_CATEGORY: Record<string, NewsCategory> = {
 };
 
 /**
- * «برای تو»: newest first, but what the person follows (the topics they said) rises, what several
- * outlets cover rises, and what they already opened sinks.
+ * «برای تو»: not the newest-first list again. What the person follows (the topics they said) rises
+ * well above newer stories, what several outlets cover rises, what they already opened sinks, and
+ * no outlet gets more than two lines in a row, so the feed reads as a mix and not as one newsroom's
+ * latest.
  */
 export function forYou(
   stories: readonly Story[],
@@ -731,19 +787,27 @@ export function forYou(
   const score = (s: Story): number => {
     const hours = Math.max(0, (now - Date.parse(s.at)) / 3_600_000);
     let v = -hours; // an hour older is an hour less
-    if (opts.topics.some((t) => TOPIC_CATEGORY[t] === s.category || s.title.includes(t))) v += 12;
-    v += 4 * Math.min(3, opts.covered.get(s.id)?.length ?? 0);
+    if (opts.topics.some((t) => TOPIC_CATEGORY[t] === s.category || s.title.includes(t))) v += 24;
+    v += 6 * Math.min(3, opts.covered.get(s.id)?.length ?? 0);
     if (opts.read.has(s.id)) v -= 48;
     return v;
   };
-  return [...stories].sort((a, b) => score(b) - score(a));
+  const ranked = [...stories].sort((a, b) => score(b) - score(a));
+  const out: Story[] = [];
+  while (ranked.length > 0) {
+    const last = out.at(-1)?.source;
+    const crowded = last !== undefined && out.at(-2)?.source === last;
+    const i = crowded ? ranked.findIndex((s) => s.source !== last) : 0;
+    out.push(...ranked.splice(i === -1 ? 0 : i, 1));
+  }
+  return out;
 }
 
 /** «داغ‌ترین»: the last day's stories told by the most outlets, then the newest. */
 export function hottest(
   stories: readonly Story[],
   covered: ReadonlyMap<string, Story[]>,
-  limit = 6,
+  limit = 10,
   now = Date.now(),
 ): Story[] {
   const day = stories.filter((s) => now - Date.parse(s.at) < 24 * 3_600_000);

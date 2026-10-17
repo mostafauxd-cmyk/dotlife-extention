@@ -32,12 +32,21 @@ const clockOf = (iso: string | null, persian = true): string => {
   return persian ? fa(t) : t;
 };
 
-/** «▲ ۰٫۴۱٪» */
-const change = (pct: number): string =>
-  `${pct >= 0 ? "▲" : "▼"} ${fa(Math.abs(pct).toFixed(2)).replace(".", "٫")}٪`;
-
-/** «▲ 0.41%» — the strip's numbers are Latin digits, as on an exchange */
-const changeLatin = (pct: number): string => `${pct >= 0 ? "▲" : "▼"} ${Math.abs(pct).toFixed(2)}%`;
+/**
+ * «۰٫۴۱٪▲»: the change, and behind it a small triangle for its direction (Latin digits and «%» for
+ * the strip's numbers, as on an exchange).
+ */
+function Delta({ pct, latin = false }: { pct: number; latin?: boolean }) {
+  const n = Math.abs(pct).toFixed(2);
+  return (
+    <>
+      {latin ? `${n}%` : `${fa(n).replace(".", "٫")}٪`}
+      <i className="ar" aria-hidden="true">
+        {pct >= 0 ? "▲" : "▼"}
+      </i>
+    </>
+  );
+}
 
 const usd = (n: number): string =>
   n.toLocaleString("en-US", { maximumFractionDigits: n < 1 ? 3 : n < 1000 ? 2 : 1 });
@@ -75,7 +84,9 @@ function TickerCell({ t }: { t: TickerItem }) {
         )}
       </span>
       {t.changePct !== null && (
-        <span className={t.changePct >= 0 ? "c up" : "c dn"}>{changeLatin(t.changePct)}</span>
+        <span className={t.changePct >= 0 ? "c up" : "c dn"}>
+          <Delta pct={t.changePct} latin />
+        </span>
       )}
     </span>
   );
@@ -248,7 +259,9 @@ function Row({
       <span className="pv">
         <b>{toman(String(Math.round(it.price)))}</b>
         {it.changePct !== null && (
-          <small className={up ? "up" : "dn"}>{change(it.changePct)}</small>
+          <small className={up ? "up" : "dn"}>
+            <Delta pct={it.changePct} />
+          </small>
         )}
       </span>
     </button>
@@ -369,7 +382,7 @@ export function MarketCard({
             <small>تومان</small>
             {span !== null && (
               <span className={span >= 0 ? "pill up" : "pill dn"}>
-                {change(span)} {PERIODS.find(([p]) => p === period)?.[2]}
+                <Delta pct={span} /> {PERIODS.find(([p]) => p === period)?.[2]}
               </span>
             )}
           </div>
@@ -447,9 +460,9 @@ function SponsoredRow() {
       <span className="pv">
         {Number.isFinite(price) && price > 0 && <b>{toman(String(Math.round(price)))}</b>}
         {Number.isFinite(change) && ad.extra?.change !== undefined && (
-          <small
-            className={change >= 0 ? "up" : "dn"}
-          >{`${change >= 0 ? "▲" : "▼"} ${fa(Math.abs(change).toFixed(2)).replace(".", "٫")}٪`}</small>
+          <small className={change >= 0 ? "up" : "dn"}>
+            <Delta pct={change} />
+          </small>
         )}
       </span>
     </a>

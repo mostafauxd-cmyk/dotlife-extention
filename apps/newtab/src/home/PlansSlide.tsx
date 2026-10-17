@@ -21,7 +21,7 @@ import {
 import { useNow, useRecordsVersion, useSettings } from "../hooks";
 import {
   addTask,
-  liveLists,
+  taskLists,
   liveNotes,
   liveTasks,
   TIME_ZONE,
@@ -163,7 +163,8 @@ export function PlansSlide() {
   const first = span === 7 ? weekStart(anchor) : anchor;
   const days = Array.from({ length: span }, (_, i) => addDays(first, i));
   const hidden = new Set(s.hiddenCals);
-  const lists = liveLists();
+  // the saved news are notes only: no switch, no column of their own
+  const lists = taskLists();
   const colorOf = new Map(lists.map((l) => [l.id, l.color]));
   const allTasks = liveTasks();
   const tasks = allTasks.filter((t) => !hidden.has(t.listId));

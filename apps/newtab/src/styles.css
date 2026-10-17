@@ -2746,6 +2746,12 @@ svg {
 .ed-body textarea::placeholder {
   color: rgba(255, 255, 255, 0.32);
 }
+/* a line that is only an address: the link under it is all there is to see */
+.ed-body textarea.url-only:not(:focus) {
+  field-sizing: fixed;
+  height: 0;
+  min-height: 0;
+}
 .ed-title {
   font-size: 34px !important;
   font-weight: 600 !important;
@@ -2826,12 +2832,18 @@ svg {
   flex: none;
   width: 44px;
   height: 44px;
+  padding: 0;
+  border: 0;
   border-radius: 50%;
   background: #fff;
   color: #0b0d12;
   display: grid;
   place-items: center;
+  cursor: pointer;
+}
+.b-v .play:disabled {
   opacity: 0.5;
+  cursor: default;
 }
 .b-v .play .ico {
   width: 18px;
@@ -2842,9 +2854,194 @@ svg {
   height: 32px;
   fill: rgba(255, 255, 255, 0.35);
 }
+.b-v .wave rect.on {
+  fill: #fff;
+}
+.b-v .wave.seek {
+  cursor: pointer;
+}
 .b-v .time {
   font-size: 14px;
   color: var(--ink-2);
+  font-variant-numeric: tabular-nums;
+}
+.b-v .rm {
+  flex: none;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: none;
+  color: var(--ink-3);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+}
+.b-v .rm:hover {
+  color: var(--ink);
+  background: rgba(255, 255, 255, 0.1);
+}
+.b-v .rm .ico {
+  width: 16px;
+  height: 16px;
+}
+
+/* a web address in a line, under it, as a link */
+.b-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+.b-links.in {
+  margin-inline-start: 34px;
+}
+.b-link {
+  max-width: 100%;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px 6px 10px;
+  border-radius: 999px;
+  background: rgba(140, 158, 255, 0.14);
+  color: var(--noghte);
+  font-size: 14px;
+  text-decoration: none;
+  transition: background 0.2s;
+}
+.b-link:hover {
+  background: rgba(140, 158, 255, 0.24);
+}
+.b-link img {
+  flex: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+}
+.b-link span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.b-link .ico {
+  flex: none;
+  width: 14px;
+  height: 14px;
+  transform: rotate(45deg);
+}
+
+/* the format bar under the note, and the recording panel that takes its place (as the app's) */
+.ed-bar {
+  position: sticky;
+  bottom: -10px;
+  z-index: 3;
+  margin-top: auto;
+  align-self: center;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px;
+  border-radius: 999px;
+  background: rgba(40, 44, 56, 0.78);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(24px) saturate(1.5);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.28);
+}
+.ed-bar.rec-on {
+  align-self: stretch;
+  border-radius: 28px;
+}
+.ed-bar .fmt {
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: none;
+  color: var(--ink);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.ed-bar .fmt:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+.ed-bar .fmt[aria-pressed="true"] {
+  background: #fff;
+  color: #0b0d12;
+}
+.ed-bar .fmt .ico {
+  width: 22px;
+  height: 22px;
+}
+.rec {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 2px 8px;
+}
+.rec.denied {
+  justify-content: space-between;
+  padding: 8px 14px;
+  font-size: 15px;
+  color: var(--ink-2);
+}
+.rec .dot {
+  flex: none;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #ff5a52;
+  animation: rec-breathe 1.4s ease-in-out infinite;
+}
+.rec .dot.paused,
+.rec .dot.starting {
+  background: var(--ink-3);
+  animation: none;
+}
+@keyframes rec-breathe {
+  50% {
+    opacity: 0.35;
+    transform: scale(0.8);
+  }
+}
+.rec .t {
+  flex: none;
+  min-width: 44px;
+  font-size: 16px;
+  font-variant-numeric: tabular-nums;
+}
+.rec .live {
+  flex: 1;
+  min-width: 0;
+  height: 32px;
+}
+.rec .live path {
+  stroke: rgba(255, 255, 255, 0.7);
+  fill: none;
+}
+.rec .rbtn.sm {
+  flex: none;
+  margin: 0;
+}
+.rec .rbtn.sm.sure {
+  background: #ff5a52;
+  border-color: transparent;
+  color: #fff;
+}
+.rec .cta.done {
+  flex: none;
+  padding: 10px 22px;
+  font-size: 15px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .rec .dot {
+    animation: none;
+  }
 }
 .b-v .tr {
   margin-top: 8px;
@@ -5617,6 +5814,12 @@ a.ts-link {
   font-size: 12.5px;
   font-variant-numeric: tabular-nums;
 }
+.ar {
+  font-style: normal;
+  font-size: 0.8em;
+  margin-inline-start: 0.35em;
+  vertical-align: 0.08em;
+}
 .up {
   color: #8add88;
 }
@@ -6950,8 +7153,8 @@ a.ts-link {
   content: "";
   position: absolute;
   z-index: -1;
-  /* the shade runs on well past the chips, so the fade is long and soft */
-  inset: 0 0 -76px;
+  /* the shade ends a hair under the chips, so it fades out before the first story, not over it */
+  inset: 0 0 -12px;
   pointer-events: none;
 }
 /* a progressive blur: strong at the top, gone a little under the chips */
@@ -6976,6 +7179,11 @@ a.ts-link {
   display: flex;
   align-items: center;
   gap: 10px;
+}
+.nw-bar .rbtn.sm {
+  flex: none;
+  width: 52px;
+  height: 52px;
 }
 .nw-search {
   flex: 1;
@@ -7036,8 +7244,8 @@ a.ts-link {
   display: flex;
   flex-direction: column;
   gap: 12px;
-  /* the first story starts just under the chips, its top edge already in the soft part */
-  padding: calc(var(--nwh, 140px) - 6px) 14px 14px;
+  /* the first story starts clear of the chips, the soft fade only touching its top edge */
+  padding: calc(var(--nwh, 140px) + 8px) 14px 14px;
 }
 .nw-scroll > * {
   flex: none;
@@ -7109,12 +7317,12 @@ a.ts-link {
   padding: 18px 22px 16px;
 }
 .nw-htx > b {
-  font-size: 27px;
+  font-size: 24px;
   font-weight: 600;
   line-height: 1.55;
 }
 .nw-sum {
-  font-size: 16px;
+  font-size: 14.5px;
   line-height: 1.85;
   color: var(--ink-2);
   display: -webkit-box;
@@ -7126,14 +7334,14 @@ a.ts-link {
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 14px;
+  font-size: 13px;
 }
 .nw-meta b {
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 600;
 }
 .nw-meta small {
-  font-size: 14px;
+  font-size: 12.5px;
   color: var(--ink-3);
 }
 .nw-meta.big .nw-b {
@@ -7186,7 +7394,7 @@ a.ts-link {
   padding-inline-end: 34px;
 }
 .nw-body > b {
-  font-size: 19px;
+  font-size: 17px;
   font-weight: 600;
   line-height: 1.6;
   display: -webkit-box;
@@ -7195,7 +7403,7 @@ a.ts-link {
   overflow: hidden;
 }
 .nw-body .nw-sum {
-  font-size: 15px;
+  font-size: 13.5px;
   line-height: 1.75;
 }
 .nw-top:hover,
@@ -7275,6 +7483,9 @@ a.ts-link {
   overflow-y: auto;
   scrollbar-width: none;
 }
+.nw-hot h2 {
+  font-size: 19px;
+}
 .nw-hot ol {
   margin: 14px 0 0;
   padding: 0;
@@ -7283,7 +7494,7 @@ a.ts-link {
 .nw-hot li a {
   display: flex;
   gap: 8px;
-  padding: 12px 0;
+  padding: 10px 0;
   color: inherit;
   text-decoration: none;
 }
@@ -7294,7 +7505,7 @@ a.ts-link {
   flex: none;
   /* the rank numeral sits as far from the title as it does from the card's edge (16px, the card's padding) */
   width: 16px;
-  font-size: 24px;
+  font-size: 19px;
   font-style: normal;
   font-weight: 600;
   color: var(--ink-3);
@@ -7306,7 +7517,7 @@ a.ts-link {
   min-width: 0;
 }
 .nw-hot li b {
-  font-size: 17px;
+  font-size: 14.5px;
   font-weight: 500;
   line-height: 1.65;
   display: -webkit-box;
@@ -7315,7 +7526,7 @@ a.ts-link {
   overflow: hidden;
 }
 .nw-hot li small {
-  font-size: 14px;
+  font-size: 12.5px;
   color: var(--ink-3);
 }
 .nw-hot li a:hover b {
@@ -7332,12 +7543,12 @@ a.ts-link {
 }
 .nw-saved h3 {
   margin: 0;
-  font-size: 21px;
+  font-size: 17px;
   font-weight: 600;
 }
 .nw-saved p {
   margin: 0 0 4px;
-  font-size: 15px;
+  font-size: 13px;
   line-height: 1.8;
   color: var(--ink-2);
 }
@@ -7346,7 +7557,7 @@ a.ts-link {
   background: none;
   padding: 4px 0;
   color: var(--ink);
-  font-size: 15px;
+  font-size: 13.5px;
   text-align: start;
   white-space: nowrap;
   overflow: hidden;
@@ -7450,4 +7661,26 @@ a.ts-link {
   .me.syncing::after {
     animation: none;
   }
+}
+/* the user's face, as the phone draws it: a deep tone of the app's colour, the grey drawing added
+   over it («Linear Dodge (Add)»), so the face burns through as a pale tint; `isolation` keeps the
+   addition inside the disc */
+.me:has(.me-face) {
+  padding: 0;
+  border-color: transparent;
+  background: none;
+  opacity: 0.92;
+}
+.me-face {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  overflow: hidden;
+  isolation: isolate;
+}
+.me-face img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  mix-blend-mode: plus-lighter;
 }

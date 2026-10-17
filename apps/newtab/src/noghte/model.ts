@@ -63,8 +63,23 @@ export function liveLists(): TaskList[] {
     .sort((a, b) => (a.order < b.order ? -1 : a.order > b.order ? 1 : 0));
 }
 
+/** The notes folder saved news go to (`newsSaved.ts`). */
+export const SAVED_FOLDER = "خبرهای ذخیره‌شده";
+
+/**
+ * The saved news' folder: notes only, never a home for tasks (2026-10-17, the user: «فقط توی
+ * یادداشت بمونن»). Known by its name, as on the phone — not a new list `kind`: the app before it
+ * drops a list of a kind it does not know and moves its notes to «شخصی», on every device.
+ */
+export const isNewsList = (l: TaskList | undefined): boolean =>
+  l?.kind === undefined && l?.name.trim() === SAVED_FOLDER;
+
+/** The lists tasks may live in: every live list but the saved news. */
+export const taskLists = (): TaskList[] => liveLists().filter((l) => !isNewsList(l));
+
+/** The default list, or else the first — never the saved news, which only hold what is saved. */
 export const defaultList = (lists: readonly TaskList[]): TaskList | undefined =>
-  lists.find((l) => l.isDefault) ?? lists[0];
+  lists.find((l) => l.isDefault) ?? lists.find((l) => !isNewsList(l));
 
 export function liveTasks(): Task[] {
   return records.all<Task>("task").filter((t) => t.deletedAt === undefined);
@@ -126,7 +141,7 @@ export function addTask(
   title: string,
   opts: { listId?: string; day?: LocalDate | null } = {},
 ): Task {
-  const lists = liveLists();
+  const lists = taskLists();
   const tasks = records.all<Task>("task");
   const last = tasks.reduce<string | undefined>(
     (max, t) => (max === undefined || t.order > max ? t.order : max),
@@ -166,7 +181,7 @@ export function createTask(fields: {
   recurrence?: Task["recurrence"];
   notes?: string;
 }): Task {
-  const lists = liveLists();
+  const lists = taskLists();
   const tasks = records.all<Task>("task");
   const last = tasks.reduce<string | undefined>(
     (max, t) => (max === undefined || t.order > max ? t.order : max),
@@ -175,7 +190,8 @@ export function createTask(fields: {
   const now = nowIso();
   const task: Task = {
     id: newId(),
-    listId: (lists.find((l) => l.id === fields.listId) ?? defaultList(lists) ?? ensureDefaultList()).id,
+    listId: (lists.find((l) => l.id === fields.listId) ?? defaultList(lists) ?? ensureDefaultList())
+      .id,
     title: fields.title.trim(),
     status: "todo",
     priority: "none",
@@ -280,7 +296,8 @@ export function addFolder(name: string, color: string): TaskList {
     name: name.trim(),
     color,
     order: last === undefined ? FIRST_ORDER : orderBetween(last, undefined),
-    isDefault: lists.length === 0,
+    // the saved news never become the default: tasks and new notes would land there
+    isDefault: lists.length === 0 && name.trim() !== SAVED_FOLDER,
     createdAt: now,
     updatedAt: now,
   };

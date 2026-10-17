@@ -42,7 +42,14 @@
     "https://donya-e-eqtesad.com/*",
     "https://www.eghtesadonline.com/*",
     "https://digiato.com/*",
-    "https://www.varzesh3.com/*"
+    "https://www.varzesh3.com/*",
+    "https://tejaratnews.com/*",
+    "https://www.zoomit.ir/*",
+    "https://www.khabarvarzeshi.com/*",
+    "https://www.tabnak.ir/*",
+    "https://www.entekhab.ir/*",
+    "https://www.salamatnews.com/*",
+    "https://fararu.com/*"
   ],
   "optional_host_permissions": [
     "https://*/*"

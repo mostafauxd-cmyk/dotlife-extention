@@ -35,6 +35,10 @@ export const ICONS = {
   refresh:
     '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"> <path d="M4.309 14.2922C3.492 13.3172 3 12.0612 3 10.6892C3 7.58822 5.514 5.07422 8.615 5.07422H15.386C18.487 5.07422 21 7.58822 21 10.6892C21 13.7902 18.487 16.3032 15.386 16.3032H8.615" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/> <path d="M11.2363 13.6797L8.61328 16.3027L11.2363 18.9267" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/> </svg>',
   pin: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"> <path d="M14.5 3.5l6 6-3 1.2-3.3 3.3.4 4.5-1.6 1.5-3.8-3.8L4.5 21 3 19.5l4.8-4.7L4 11l1.5-1.6 4.5.4 3.3-3.3z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/> </svg>',
+  voice:
+    '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2.75" width="6" height="11.5" rx="3"/><path d="M5.5 11.5a6.5 6.5 0 0 0 13 0M12 18v3.25"/></g></svg>',
+  "voice-pause":
+    '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="6.5" y="5" width="3.8" height="14" rx="1.3" fill="currentColor"/><rect x="13.7" y="5" width="3.8" height="14" rx="1.3" fill="currentColor"/></svg>',
   "voice-play":
     '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"> <path d="M8 5.5v13l11-6.5z" fill="currentColor"/> </svg>',
   newspaper:

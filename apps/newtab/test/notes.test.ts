@@ -7,6 +7,10 @@ import {
   clock,
   insertVoice,
   levelOf,
+  linkLabel,
+  urlsIn,
+  withoutUrls,
+  withUrlsKept,
   resample,
   setTranscript,
   transcriptIntoNote,
@@ -371,5 +375,39 @@ describe("voice blocks", () => {
 describe("barsPath", () => {
   it("draws each bar as a centred vertical stroke", () => {
     expect(barsPath([1, 0], { step: 4, bar: 2, height: 12 })).toBe("M1 1V11M5 5.99V6.01");
+  });
+});
+
+describe("links in a line", () => {
+  it("finds the addresses, without the punctuation that ends a sentence", () => {
+    expect(urlsIn("بخوان: https://a.com/x-y، و (http://b.org/p?q=1). تمام")).toEqual([
+      "https://a.com/x-y",
+      "http://b.org/p?q=1",
+    ]);
+    expect(urlsIn("بدون لینک")).toEqual([]);
+    expect(urlsIn("https://a.com https://a.com")).toEqual(["https://a.com"]);
+  });
+
+  it("leaves the addresses out of the text that a link stands in for", () => {
+    expect(withoutUrls("خلاصه خبر.\nhttps://a.com/x-y")).toBe("خلاصه خبر.");
+    expect(withoutUrls("بخوان https://a.com/x، تمام")).toBe("بخوان ، تمام");
+    expect(withoutUrls("https://a.com/x")).toBe("");
+    expect(withoutUrls("بدون لینک")).toBe("بدون لینک");
+    expect(withoutUrls("کلمه ")).toBe("کلمه ");
+  });
+
+  it("puts the kept addresses back after the edited words", () => {
+    expect(withUrlsKept("خلاصه\nhttps://a.com/x", "خلاصهٔ نو ")).toBe(
+      "خلاصهٔ نو \nhttps://a.com/x",
+    );
+    expect(withUrlsKept("https://a.com/x", "")).toBe("https://a.com/x");
+    expect(withUrlsKept("https://a.com/x", "https://a.com/x ok")).toBe("https://a.com/x ok");
+  });
+
+  it("labels an address without its scheme and www, shortened", () => {
+    expect(linkLabel("https://www.eghtesadonline.com/fa/news/1/")).toBe(
+      "eghtesadonline.com/fa/news/1",
+    );
+    expect(linkLabel("https://a.com/" + "x".repeat(80)).length).toBe(56);
   });
 });

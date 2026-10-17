@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useRef, useState, type KeyboardEvent } from "react";
+import { Fragment, useEffect, useLayoutEffect, useRef, useState, type KeyboardEvent } from "react";
 
 import { localNow } from "@dotlife/tasks";
 
@@ -20,10 +20,13 @@ import {
   checklistProgress,
   clock,
   groupNotes,
+  insertVoice,
   joinBackward,
+  linkLabel,
   notePreview,
   noteTitle,
   resample,
+  removeBlock,
   rowDate,
   searchNotes,
   setKind,
@@ -31,23 +34,62 @@ import {
   solarDay,
   splitBlock,
   toggleDone,
+  urlsIn,
+  withoutUrls,
+  withUrlsKept,
   type Block,
+  type BlockKind,
   type Caret,
   type NoteSection,
+  type Voice,
 } from "../noghte/notes";
+import { dropVoice, voiceUrl } from "../noghte/voiceStore";
+import { faviconUrl } from "../platform";
 import { ago, fa } from "../ui/fa";
 import { Icon } from "../ui/Icon";
 import { SyncInvite } from "./Corners";
 import { AD_LABEL, useAd } from "../ads";
 import { openNewCategory } from "./NewCategory";
+import { VoiceRecorder } from "./VoiceRecorder";
 import { onOpenNote } from "./openNote";
 
 /**
  * The notes slide, as the app's notes: folders (which are task lists), the list with its pinned
  * notes, search and the app's date groups, and a full editor — title, text, headings, bullets and
  * checklists. Editing uses the app's own rules (`noghte/notes.ts`), and every change is a whole
- * record synced a moment later. Voice notes play on the phone; here they show their wave and words.
+ * record synced a moment later. The editor follows the app's (`apps/mobile/app/note/[id].tsx`): the
+ * format bar under the note (heading, text, list, checklist, the mic) and the recording panel that
+ * takes its place. A web address in a line shows under it as a link. A recording made here plays
+ * here (its audio stays in this browser); one made on the phone shows its wave and words.
  */
+
+/** The app's formats, in its order, with its glyphs (a 22-unit box, 1.6 strokes). */
+const FORMATS: readonly { kind: Exclude<BlockKind, "title" | "voice">; label: string }[] = [
+  { kind: "heading", label: "سرتیتر" },
+  { kind: "text", label: "متن" },
+  { kind: "bullet", label: "فهرست" },
+  { kind: "check", label: "چک‌لیست" },
+];
+const GLYPH: Record<"heading" | "text" | "bullet", string> = {
+  heading: "M3 5.5 H12.5 M7.75 5.5 V17 M13.5 10.5 H19 M16.25 10.5 V17",
+  text: "M3 5.5 H19 M3 10 H19 M3 14.5 H19 M9 19 H19",
+  bullet: "M8 6 H19 M8 11.5 H19 M8 17 H19 M3.6 6 h0.01 M3.6 11.5 h0.01 M3.6 17 h0.01",
+};
+
+function FormatGlyph({ kind }: { kind: Exclude<BlockKind, "title" | "voice"> }) {
+  if (kind === "check") return <Icon name="tick-square" />;
+  return (
+    <svg className="ico" viewBox="0 0 22 22" fill="none" aria-hidden="true">
+      <path
+        d={GLYPH[kind]}
+        stroke="currentColor"
+        strokeWidth="1.6"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
 
 /** «all», «trash», or a list's id. */
 type Folder = string;
@@ -267,6 +309,9 @@ function Editor({ note, focusTitle }: { note: Note; focusTitle: React.RefObject<
   const boxes = useRef(new Map<string, HTMLTextAreaElement>());
   const caret = useRef<Caret | null>(null);
   const [focused, setFocused] = useState(0);
+  const [recording, setRecording] = useState(false);
+  // where the recording drops in: the line the caret was on when it started
+  const recordAt = useRef(0);
   const lists = liveLists();
   const folder = lists.find((l) => l.id === note.folderId);
   const task =
@@ -293,6 +338,13 @@ function Editor({ note, focusTitle }: { note: Note; focusTitle: React.RefObject<
     saveNote({ ...note, blocks });
   };
 
+  /** A finished recording goes into the note as it is now (a sync or another edit may have come since). */
+  const addVoice = (voice: Voice): void => {
+    const now = allNotes().find((n) => n.id === note.id) ?? note;
+    const r = insertVoice(now.blocks, recordAt.current, voice, newId);
+    saveNote({ ...now, blocks: r.blocks });
+  };
+
   const onKey = (e: KeyboardEvent<HTMLTextAreaElement>, i: number): void => {
     const el = e.currentTarget;
     if (e.key === "Enter" && !e.shiftKey) {
@@ -307,28 +359,31 @@ function Editor({ note, focusTitle }: { note: Note; focusTitle: React.RefObject<
     }
   };
 
-  const box = (b: Block, i: number, cls: string, placeholder?: string) => (
-    <textarea
-      ref={(el) => {
-        if (el === null) boxes.current.delete(b.id);
-        else boxes.current.set(b.id, el);
-      }}
-      className={cls}
-      rows={1}
-      value={b.text}
-      placeholder={placeholder}
-      readOnly={trashed}
-      onFocus={() => {
-        setFocused(i);
-      }}
-      onChange={(e) => {
-        write(setText(note.blocks, b.id, e.target.value));
-      }}
-      onKeyDown={(e) => {
-        onKey(e, i);
-      }}
-    />
-  );
+  const box = (b: Block, i: number, cls: string, placeholder?: string) => {
+    const words = withoutUrls(b.text);
+    return (
+      <textarea
+        ref={(el) => {
+          if (el === null) boxes.current.delete(b.id);
+          else boxes.current.set(b.id, el);
+        }}
+        className={words === "" && urlsIn(b.text).length > 0 ? `${cls} url-only` : cls}
+        rows={1}
+        value={words}
+        placeholder={placeholder}
+        readOnly={trashed}
+        onFocus={() => {
+          setFocused(i);
+        }}
+        onChange={(e) => {
+          write(setText(note.blocks, b.id, withUrlsKept(b.text, e.target.value)));
+        }}
+        onKeyDown={(e) => {
+          onKey(e, i);
+        }}
+      />
+    );
+  };
 
   return (
     <>
@@ -345,21 +400,6 @@ function Editor({ note, focusTitle }: { note: Note; focusTitle: React.RefObject<
         <span className="tools">
           {!trashed && (
             <>
-              <button
-                type="button"
-                className="rbtn sm"
-                aria-label="چک‌لیست"
-                title="چک‌لیست"
-                onMouseDown={(e) => {
-                  e.preventDefault();
-                }}
-                onClick={() => {
-                  const r = setKind(note.blocks, focused, "check", newId);
-                  write(r.blocks, r.caret);
-                }}
-              >
-                <Icon name="tick-square" />
-              </button>
               <button
                 type="button"
                 className="rbtn sm"
@@ -411,18 +451,35 @@ function Editor({ note, focusTitle }: { note: Note; focusTitle: React.RefObject<
 
       <div className="ed-body">
         {note.blocks.map((b, i) => {
-          if (b.kind === "title") return <div key={b.id}>{box(b, i, "ed-title", "عنوان")}</div>;
-          if (b.kind === "heading") return <div key={b.id}>{box(b, i, "b-h")}</div>;
-          if (b.kind === "bullet")
+          if (b.kind === "voice" && b.voice !== undefined) {
             return (
-              <div key={b.id} className="b-b">
+              <VoiceBlock
+                key={b.id}
+                voice={b.voice}
+                onRemove={
+                  trashed
+                    ? undefined
+                    : () => {
+                        write(removeBlock(note.blocks, b.id));
+                        void dropVoice(b.voice?.file ?? "");
+                      }
+                }
+              />
+            );
+          }
+          let el: React.ReactNode;
+          if (b.kind === "title") el = <div>{box(b, i, "ed-title", "عنوان")}</div>;
+          else if (b.kind === "heading") el = <div>{box(b, i, "b-h")}</div>;
+          else if (b.kind === "bullet")
+            el = (
+              <div className="b-b">
                 <i />
                 {box(b, i, "tx")}
               </div>
             );
-          if (b.kind === "check")
-            return (
-              <div key={b.id} className={b.done === true ? "b-c done" : "b-c"}>
+          else if (b.kind === "check")
+            el = (
+              <div className={b.done === true ? "b-c done" : "b-c"}>
                 <button
                   type="button"
                   aria-label={b.done === true ? "انجام نشده" : "انجام شد"}
@@ -437,38 +494,208 @@ function Editor({ note, focusTitle }: { note: Note; focusTitle: React.RefObject<
                 {box(b, i, "tx")}
               </div>
             );
-          if (b.kind === "voice" && b.voice !== undefined)
-            return <VoiceBlock key={b.id} voice={b.voice} />;
+          else
+            el = (
+              <div>
+                {box(b, i, "b-p", i === 1 && note.blocks.length === 2 ? "بنویس…" : undefined)}
+              </div>
+            );
+          const links = urlsIn(b.text);
           return (
-            <div key={b.id}>
-              {box(b, i, "b-p", i === 1 && note.blocks.length === 2 ? "بنویس…" : undefined)}
-            </div>
+            <Fragment key={b.id}>
+              {el}
+              {links.length > 0 && (
+                <div
+                  className={b.kind === "bullet" || b.kind === "check" ? "b-links in" : "b-links"}
+                >
+                  {links.map((u) => (
+                    <a
+                      key={u}
+                      className="b-link"
+                      href={u}
+                      target="_blank"
+                      rel="noreferrer"
+                      title={u}
+                    >
+                      <img src={faviconUrl(u, 32)} alt="" draggable={false} />
+                      <span dir="ltr">{linkLabel(u)}</span>
+                      <Icon name="arrow-up" />
+                    </a>
+                  ))}
+                </div>
+              )}
+            </Fragment>
           );
         })}
       </div>
+
+      {!trashed &&
+        (recording ? (
+          <div className="ed-bar rec-on">
+            <VoiceRecorder
+              onDone={addVoice}
+              onClose={() => {
+                setRecording(false);
+              }}
+            />
+          </div>
+        ) : (
+          <div className="ed-bar" role="toolbar" aria-label="قالب‌بندی">
+            {FORMATS.map((f) => {
+              const on = note.blocks[focused]?.kind === f.kind && focused > 0;
+              return (
+                <button
+                  key={f.kind}
+                  type="button"
+                  className="fmt"
+                  aria-label={f.label}
+                  title={f.label}
+                  aria-pressed={on}
+                  onMouseDown={(e) => {
+                    e.preventDefault();
+                  }}
+                  onClick={() => {
+                    const r = setKind(note.blocks, focused, f.kind, newId);
+                    write(r.blocks, r.caret);
+                  }}
+                >
+                  <FormatGlyph kind={f.kind} />
+                </button>
+              );
+            })}
+            <button
+              type="button"
+              className="fmt"
+              aria-label="ضبط صدا"
+              title="ضبط صدا"
+              onMouseDown={(e) => {
+                e.preventDefault();
+              }}
+              onClick={() => {
+                recordAt.current = focused;
+                setRecording(true);
+              }}
+            >
+              <Icon name="voice" />
+            </button>
+          </div>
+        ))}
     </>
   );
 }
 
-/** A recording made on the phone: its wave and length, and its words when they have been written out. */
-function VoiceBlock({ voice }: { voice: NonNullable<Block["voice"]> }) {
+/**
+ * A recording: its wave and length, and its words when they have been written out. One made in this
+ * browser plays here (click the wave to move around); one made on the phone plays there.
+ */
+function VoiceBlock({ voice, onRemove }: { voice: Voice; onRemove: (() => void) | undefined }) {
   const bars = resample(voice.peaks, 48);
   const words = voice.transcript?.status === "done" ? (voice.transcript.text ?? "") : "";
+  // undefined: looking; null: not in this browser
+  const [url, setUrl] = useState<string | null | undefined>(undefined);
+  const [playing, setPlaying] = useState(false);
+  const [pos, setPos] = useState(0);
+  const audio = useRef<HTMLAudioElement>(null);
+  useEffect(() => {
+    let live = true;
+    let made: string | null = null;
+    void voiceUrl(voice.file).then((u) => {
+      made = u;
+      if (live) setUrl(u);
+      else if (u !== null) URL.revokeObjectURL(u);
+    });
+    return () => {
+      live = false;
+      if (made !== null) URL.revokeObjectURL(made);
+    };
+  }, [voice.file]);
+  const toggle = (): void => {
+    const a = audio.current;
+    if (a === null) return;
+    if (a.paused) void a.play();
+    else a.pause();
+  };
   return (
     <div className="b-v">
       <div className="row">
-        <span className="play" title="پخش روی گوشی">
-          <Icon name="voice-play" />
-        </span>
-        <svg className="wave" viewBox={`0 0 ${String(bars.length * 6)} 32`} aria-hidden="true">
+        <button
+          type="button"
+          className="play"
+          aria-label={playing ? "مکث" : "پخش"}
+          title={url === null ? "روی دستگاهی که ضبط شد پخش می‌شود" : playing ? "مکث" : "پخش"}
+          disabled={url === null || url === undefined}
+          onClick={toggle}
+        >
+          <Icon name={playing ? "voice-pause" : "voice-play"} />
+        </button>
+        <svg
+          className={url === null || url === undefined ? "wave" : "wave seek"}
+          viewBox={`0 0 ${String(bars.length * 6)} 32`}
+          aria-hidden="true"
+          onClick={(e) => {
+            const a = audio.current;
+            if (a === null || !Number.isFinite(a.duration)) return;
+            const box = e.currentTarget.getBoundingClientRect();
+            // the wave reads right to left, like the page
+            a.currentTime =
+              a.duration * Math.min(1, Math.max(0, (box.right - e.clientX) / box.width));
+          }}
+        >
           {bars.map((v, i) => {
             const h = Math.max(3, v * 30);
-            return <rect key={i} x={i * 6} y={(32 - h) / 2} width="3" height={h} rx="1.5" />;
+            const x = (bars.length - 1 - i) * 6;
+            return (
+              <rect
+                key={i}
+                className={i / bars.length < pos ? "on" : undefined}
+                x={x}
+                y={(32 - h) / 2}
+                width="3"
+                height={h}
+                rx="1.5"
+              />
+            );
           })}
         </svg>
         <span className="time">{fa(clock(voice.durationMs))}</span>
+        {onRemove !== undefined && (
+          <button
+            type="button"
+            className="rm"
+            aria-label="حذف صدا"
+            title="حذف صدا"
+            onClick={onRemove}
+          >
+            <Icon name="close" />
+          </button>
+        )}
       </div>
-      <div className="tr">{words !== "" ? words : "یادداشت صوتی؛ روی گوشی پخش می‌شود."}</div>
+      {url !== null && url !== undefined && (
+        <audio
+          ref={audio}
+          src={url}
+          preload="metadata"
+          onPlay={() => {
+            setPlaying(true);
+          }}
+          onPause={() => {
+            setPlaying(false);
+          }}
+          onEnded={() => {
+            setPlaying(false);
+            setPos(0);
+          }}
+          onTimeUpdate={(e) => {
+            const a = e.currentTarget;
+            setPos(Number.isFinite(a.duration) && a.duration > 0 ? a.currentTime / a.duration : 0);
+          }}
+        />
+      )}
+      {(words !== "" || url === null) && (
+        <div className="tr">
+          {words !== "" ? words : "یادداشت صوتی؛ روی دستگاهی که ضبط شد پخش می‌شود."}
+        </div>
+      )}
     </div>
   );
 }
