@@ -221,7 +221,12 @@ export type ImportResult =
   | { ok: false; error: string; issues: string[] };
 
 /** Reads a bundle's JSON (or a bare list of ads), checking every ad with the shared schema. */
+/** A file bigger than this is refused before it is read. */
+export const MAX_IMPORT_CHARS = 5_000_000;
+
 export function parseImport(text: string): ImportResult {
+  if (text.length > MAX_IMPORT_CHARS)
+    return { ok: false, error: "فایل بزرگ‌تر از ۵ مگابایت است.", issues: [] };
   let raw: unknown;
   try {
     raw = JSON.parse(text);

@@ -99,3 +99,29 @@ describe("vocabulary and days", () => {
     expect(tehranDay(new Date("2026-10-17T21:00:00Z"))).toBe("2026-10-18");
   });
 });
+
+describe("links", () => {
+  const base = {
+    id: "a",
+    slot: 6,
+    products: ["newtab"],
+    status: "live",
+    advertiser: "x",
+    title: "t",
+    model: "per-thousand",
+  };
+  it("takes only https links and pictures", () => {
+    expect(adSchema.safeParse({ ...base, url: "https://example.com/a?b=1" }).success).toBe(true);
+    for (const url of [
+      "javascript:alert(1)",
+      "JAVASCRIPT:alert(1)",
+      "data:text/html,<script>alert(1)</script>",
+      "http://example.com/",
+      "https://",
+    ])
+      expect(adSchema.safeParse({ ...base, url }).success, url).toBe(false);
+    expect(
+      adSchema.safeParse({ ...base, url: "https://example.com/", image: "javascript:x" }).success,
+    ).toBe(false);
+  });
+});

@@ -7,6 +7,7 @@ import {
   buildBundle,
   campaignMap,
   canonicalJson,
+  MAX_IMPORT_CHARS,
   overfilled,
   parseImport,
   planImport,
@@ -18,15 +19,9 @@ import {
 } from "../data/logic";
 import { Icon } from "../ui/Icon";
 import { toNoghtePromos } from "../data/noghtePromo";
-import {
-  NoghteError,
-  noghteAccount,
-  onNoghteAccount,
-  requestCode,
-  signOut,
-  syncPromos,
-  verifyCode,
-} from "../data/noghteSync";
+import { authState, onAuth } from "../data/auth";
+import { syncPromos } from "../data/noghteSync";
+import { SignInForm } from "../ui/SignIn";
 
 /** The bundle as clients receive it; the signature is the server's, so it shows as a placeholder here. */
 const shown = (b: Bundle): string =>
@@ -87,6 +82,11 @@ function Importer() {
           onChange={(e) => {
             const f = e.target.files?.[0];
             if (f === undefined) return;
+            if (f.size > MAX_IMPORT_CHARS) {
+              toast("فایل بزرگ‌تر از ۵ مگابایت است.");
+              e.target.value = "";
+              return;
+            }
             void f.text().then(setText);
             e.target.value = "";
           }}
@@ -176,87 +176,20 @@ function Importer() {
 }
 
 /** What the ads of places 101 and 102 become in Noghte's own sponsor-card list. */
-/** Signing in to Noghte's server with an admin phone's code, and the state of that link. */
+/** The link to Noghte's server: the panel's own sign-in (always on, unless development skips it). */
 function NoghteLink({ onSync }: { onSync: () => void }) {
-  const { toast } = useApp();
-  const account = useSyncExternalStore(onNoghteAccount, noghteAccount);
-  const [phone, setPhone] = useState("");
-  const [code, setCode] = useState("");
-  const [sent, setSent] = useState(false);
-  const [busy, setBusy] = useState(false);
-  const fail = (e: unknown): void => {
-    const c = e instanceof NoghteError ? e.code : "";
-    toast(
-      c === "not_admin"
-        ? "این شماره ادمین نقطه نیست."
-        : c === "unauthorized" || c === "bad_code"
-          ? "کد درست نیست."
-          : "سرور نقطه جواب نداد.",
-    );
-  };
-  if (account !== null)
-    return (
-      <div className="link-row">
-        <span className="badge live">متصل به نقطه · {account}</span>
-        <button type="button" className="btn sm" onClick={onSync}>
-          <Icon name="upload" size={15} />
-          همگام‌سازی حالا
-        </button>
-        <button type="button" className="btn ghost sm" onClick={signOut}>
-          قطع اتصال
-        </button>
-      </div>
-    );
+  const { phone } = useSyncExternalStore(onAuth, authState);
+  if (phone === null) return <SignInForm compact />;
   return (
-    <form
-      className="link-row"
-      onSubmit={(e) => {
-        e.preventDefault();
-        setBusy(true);
-        const job = sent ? verifyCode(phone.trim(), code.trim()) : requestCode(phone.trim());
-        job.then(
-          () => {
-            setBusy(false);
-            if (sent) toast("به سرور نقطه وصل شد.");
-            else {
-              setSent(true);
-              toast("کد فرستاده شد.");
-            }
-          },
-          (err: unknown) => {
-            setBusy(false);
-            fail(err);
-          },
-        );
-      }}
-    >
-      <input
-        dir="ltr"
-        inputMode="tel"
-        aria-label="شماره‌ی ادمین نقطه"
-        placeholder="شماره‌ی ادمین نقطه، 09…"
-        value={phone}
-        disabled={sent}
-        onChange={(e) => {
-          setPhone(e.target.value);
-        }}
-      />
-      {sent && (
-        <input
-          dir="ltr"
-          inputMode="numeric"
-          aria-label="کد پیامکی"
-          placeholder="کد پیامکی"
-          value={code}
-          onChange={(e) => {
-            setCode(e.target.value);
-          }}
-        />
-      )}
-      <button type="submit" className="btn sm" disabled={busy || phone.trim() === ""}>
-        {sent ? "ورود" : "فرستادن کد"}
+    <div className="link-row">
+      <span className="badge live">
+        متصل به نقطه · <span dir="ltr">{phone}</span>
+      </span>
+      <button type="button" className="btn sm" onClick={onSync}>
+        <Icon name="upload" size={15} />
+        همگام‌سازی حالا
       </button>
-    </form>
+    </div>
   );
 }
 
@@ -377,7 +310,7 @@ export function Publish() {
     store.publish().then(
       (b) => {
         setBusy(false);
-        if (noghteAccount() !== null)
+        if (authState().phone !== null)
           void syncPromos(toNoghtePromos(b.ads)).then(
             (r) => {
               toast(`منتشر شد و ${num(r.on)} کارت به اپ نقطه رسید.`);

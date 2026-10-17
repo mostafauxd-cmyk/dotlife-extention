@@ -1,10 +1,11 @@
 import { SAMPLE_ADS, type Bundle } from "@dotlife/ads";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
 
 import { Ctx, go, useAds, useCampaigns, useRoute, type AppContext } from "./context";
 import { SAMPLE_CAMPAIGNS, SAMPLE_CREATIVES } from "./data/samples";
 import { CampaignForm } from "./pages/CampaignForm";
 import { Campaigns } from "./pages/Campaigns";
+import { AUTH_REQUIRED, authState, onAuth, restore, signOut, watchIdle } from "./data/auth";
 import { LocalEventsStore } from "./data/events";
 import { LocalAdsStore } from "./data/store";
 import { AdForm } from "./pages/AdForm";
@@ -14,6 +15,7 @@ import { Publish } from "./pages/Publish";
 import { Slots } from "./pages/Slots";
 import { num } from "./data/labels";
 import { NxStudioMark } from "./ui/NxStudioMark";
+import { SignInPage } from "./ui/SignIn";
 import { Tabs } from "./ui/Tabs";
 
 /** In development, a published bundle also goes to the dev server's bundle route (vite.config.ts). */
@@ -27,6 +29,26 @@ async function postToDevRoute(bundle: Bundle): Promise<void> {
 }
 
 type Page = "slots" | "campaigns" | "ads" | "publish" | "dashboard";
+
+/** Who is signed in, and the way out. */
+function Account() {
+  const { phone } = useSyncExternalStore(onAuth, authState);
+  if (phone === null) return null;
+  return (
+    <span className="account">
+      <span dir="ltr">{phone}</span>
+      <button
+        type="button"
+        className="btn ghost sm"
+        onClick={() => {
+          void signOut();
+        }}
+      >
+        خروج
+      </button>
+    </span>
+  );
+}
 
 function Shell() {
   const route = useRoute();
@@ -63,12 +85,15 @@ function Shell() {
             { id: "dashboard", label: "داشبورد" },
           ]}
         />
-        <span
-          className="store-chip"
-          title="تبلیغ‌ها در همین مرورگر نگه داشته می‌شوند تا سرور آماده شود"
-        >
-          ذخیره‌ی محلی
-        </span>
+        <div className="top-end">
+          <Account />
+          <span
+            className="store-chip"
+            title="تبلیغ‌ها در همین مرورگر نگه داشته می‌شوند تا سرور آماده شود"
+          >
+            ذخیره‌ی محلی
+          </span>
+        </div>
       </header>
       <main className="page" key={pageKey}>
         {route.page === "slots" && <Slots />}
@@ -114,6 +139,13 @@ export function App() {
     }),
     [toast],
   );
+  const auth = useSyncExternalStore(onAuth, authState);
+  useEffect(() => {
+    void restore();
+    return watchIdle();
+  }, []);
+  if (AUTH_REQUIRED && auth.restoring) return <p className="loading gate">در حال ورود…</p>;
+  if (AUTH_REQUIRED && auth.phone === null) return <SignInPage />;
   return (
     <Ctx.Provider value={ctx}>
       <Shell />

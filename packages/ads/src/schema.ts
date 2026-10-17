@@ -13,6 +13,11 @@ export type AdStatus = (typeof AD_STATUS)[number];
 
 const color = z.string().regex(/^#[0-9a-fA-F]{6}$/);
 const day = z.string().regex(/^\d{4}-\d{2}-\d{2}$/);
+/**
+ * Only `https://` links and pictures: a client puts them straight into `href` and `src`, so
+ * `javascript:`, `data:` and plain `http:` must never get through.
+ */
+export const httpsUrl = z.url({ protocol: /^https$/, hostname: z.regexes.domain }).max(2000);
 
 /** Who and when an ad is for. An empty list means everyone on that dimension. */
 export const targetingSchema = z
@@ -49,11 +54,11 @@ export const adSchema = z.object({
   line: z.string().optional(),
   /** The button or tile's words («عضویت»، «+ برنامه»). */
   cta: z.string().optional(),
-  url: z.url(),
+  url: httpsUrl,
   /** A glyph (one letter) and colours for the round or square mark when there is no picture. */
   glyph: z.string().max(3).optional(),
   tint: color.optional(),
-  image: z.url().optional(),
+  image: httpsUrl.optional(),
   /** Slot-specific extras: the folder a tile goes in, a template's body, a symbol's price. */
   extra: z.record(z.string(), z.string()).optional(),
   targeting: targetingSchema,
