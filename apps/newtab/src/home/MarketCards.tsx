@@ -18,7 +18,7 @@ import { toman, usePaketLinked } from "../paket";
 import { fa } from "../ui/fa";
 import { Icon } from "../ui/Icon";
 import { Tabs } from "../ui/Tabs";
-import { PaketSync } from "./PaketSync";
+import { PaketLogo, PaketSync } from "./PaketSync";
 
 /**
  * The market half of the money slide, from Paket's public prices — it needs no link: the strip of
@@ -463,7 +463,8 @@ function PortfolioInvite({ onClose }: { onClose: () => void }) {
         aria-label="دارایی‌های من"
       >
         <div className="card-h">
-          <h2>دارایی‌های من</h2>
+          <PaketLogo size={40} />
+          <h2>دارایی‌هایت را هم همین‌جا ببین</h2>
           <button type="button" className="rbtn sm" aria-label="بستن" onClick={onClose}>
             <Icon name="close" />
           </button>
@@ -484,7 +485,10 @@ function PortfolioInvite({ onClose }: { onClose: () => void }) {
             </a>
           </div>
         ) : (
-          <PaketSync />
+          <PaketSync
+            embedded
+            lead="پاکت را به این صفحه وصل کن تا دارایی‌هایت (طلا، سکه، ارز) را با قیمت روز و تغییر امروزشان همین‌جا ببینی. فقط خواندنی است؛ از این‌جا چیزی در پاکت عوض نمی‌شود."
+          />
         )}
       </div>
     </div>,

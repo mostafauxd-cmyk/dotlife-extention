@@ -30,7 +30,15 @@ export function PaketLogo({ size = 52 }: { size?: number }) {
  * month's spending — and says how to link: the code from the phone's «تنظیمات ← دستگاه‌ها و افزونه»,
  * typed here, and a QR to get Paket. The market and the news beside it work without it.
  */
-export function PaketSync() {
+export function PaketSync({
+  embedded = false,
+  lead,
+}: {
+  /** Inside a sheet that carries the title and the logo itself. */
+  embedded?: boolean;
+  /** The paragraph under the title, when the place has its own words. */
+  lead?: string;
+}) {
   const [code, setCode] = useState("");
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState("");
@@ -53,11 +61,11 @@ export function PaketSync() {
   return (
     <div className="card g pk-empty">
       <div className="pke-copy">
-        <PaketLogo />
-        <h2>پول‌هایت را هم همین‌جا ببین</h2>
+        {!embedded && <PaketLogo />}
+        {!embedded && <h2>پول‌هایت را هم همین‌جا ببین</h2>}
         <p>
-          پاکت را به این صفحه وصل کن تا موجودی، بودجه‌ی ماه، آخرین خرج‌ها، قبض‌های پیش رو و بدهی و
-          طلبت روی هر تب تازه دیده شود. فقط خواندنی است؛ از این‌جا چیزی در پاکت عوض نمی‌شود.
+          {lead ??
+            "پاکت را به این صفحه وصل کن تا موجودی، بودجه‌ی ماه، آخرین خرج‌ها، قبض‌های پیش رو و بدهی و طلبت روی هر تب تازه دیده شود. فقط خواندنی است؛ از این‌جا چیزی در پاکت عوض نمی‌شود."}
         </p>
         <ol className="pke-steps">
           <li>پاکت را روی گوشی باز کن.</li>
