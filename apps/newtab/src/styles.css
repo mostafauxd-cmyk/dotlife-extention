@@ -1402,48 +1402,6 @@ svg {
   cursor: default;
 }
 
-/* the gear at the bottom middle: «شخصی‌سازی» is always one click away */
-.gear {
-  position: absolute;
-  z-index: 6;
-  bottom: 22px;
-  /* the gear and the account side by side, the pair centred */
-  left: calc(50% - 26px);
-  transform: translateX(-50%);
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  display: grid;
-  place-items: center;
-  padding: 0;
-  cursor: pointer;
-  color: var(--ink-2);
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.09);
-  opacity: 0.8;
-  transition:
-    opacity 0.2s,
-    color 0.2s,
-    background 0.2s;
-}
-.gear:hover,
-.gear:focus-visible {
-  opacity: 1;
-  color: var(--ink);
-  background: rgba(255, 255, 255, 0.1);
-}
-/* the icon pinned to the middle of the circle, however a browser lays out a button */
-.gear .ico {
-  position: absolute;
-  inset: 0;
-  margin: auto;
-  width: 20px;
-  height: 20px;
-}
-.nt.enter .gear {
-  animation: fade 0.4s ease 0.45s both;
-}
-
 /* ---------- customisation drawer ---------- */
 .cust {
   position: absolute;
@@ -7423,13 +7381,13 @@ a.ts-link {
   text-decoration: none;
 }
 
-/* the account beside the gear, as quiet as the gear; a small badge says whether this page is in
-   step with the phone: green live, grey offline (or not signed in) */
+/* the account at the bottom middle: «شخصی‌سازی» (and signing in) one click away, quiet; a small
+   dot says whether this page is in step with the phone: green live, grey offline or signed out */
 .me {
   position: absolute;
   z-index: 6;
   bottom: 22px;
-  left: calc(50% + 26px);
+  left: 50%;
   transform: translateX(-50%);
   width: 40px;
   height: 40px;

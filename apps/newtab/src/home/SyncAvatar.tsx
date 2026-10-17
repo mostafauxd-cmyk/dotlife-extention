@@ -2,11 +2,12 @@ import { useNow, useSession, useSyncState } from "../hooks";
 import { ago } from "../ui/fa";
 
 /**
- * The account, beside the gear, with a small badge that says at a glance whether this page is in
- * step with the phone: green when it is live (breathing while it syncs), grey when it is not —
- * offline, a failed sync, or nobody signed in (then everything stays in this browser).
+ * The account, at the bottom of the first view: a click opens «شخصی‌سازی» (signing in is there), and
+ * a small dot says at a glance whether this page is in step with the phone — green when it is live
+ * (breathing while it syncs), grey when it is not: offline, a failed sync, or nobody signed in (then
+ * everything stays in this browser).
  */
-export function SyncAvatar({ onOpen, onSignIn }: { onOpen: () => void; onSignIn: () => void }) {
+export function SyncAvatar({ onOpen }: { onOpen: () => void }) {
   const session = useSession();
   const sync = useSyncState();
   useNow(30_000); // «همگام‌شده ۲ دقیقه پیش» stays true
@@ -26,9 +27,9 @@ export function SyncAvatar({ onOpen, onSignIn }: { onOpen: () => void; onSignIn:
     <button
       type="button"
       className={`me ${status}`}
-      aria-label={say}
+      aria-label={`شخصی‌سازی و حساب — ${say}`}
       title={say}
-      onClick={session === null ? onSignIn : onOpen}
+      onClick={onOpen}
     >
       <span className="me-in">
         <svg viewBox="0 0 24 24" aria-hidden="true">

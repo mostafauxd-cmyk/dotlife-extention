@@ -22,7 +22,6 @@ import { TaskEditorHost } from "./home/TaskEditor";
 import { useSession, useSettings } from "./hooks";
 import { onArrival } from "./noghte/sync";
 import { isOn, orderedSlides, SLIDES, themeOf, updateSettings, type SlideId } from "./settings";
-import { Icon } from "./ui/Icon";
 import type { IconName } from "./ui/icons";
 import { warmMarket } from "./market";
 import { installPaging } from "./ui/paging";
@@ -246,25 +245,13 @@ export function App() {
             }}
           />
 
-          {/* the account, its ring saying whether this page is in step with the phone */}
+          {/* always in sight: the account, the one way into «شخصی‌سازی» (sign-in is there too), and
+              a dot that says whether this page is in step with the phone */}
           <SyncAvatar
-            onSignIn={openSignIn}
             onOpen={() => {
               setCustOpen(true);
             }}
           />
-          {/* always in sight: the one way into «شخصی‌سازی» that needs no hunting */}
-          <button
-            type="button"
-            className="gear"
-            aria-label="شخصی‌سازی"
-            title="شخصی‌سازی"
-            onClick={() => {
-              setCustOpen(true);
-            }}
-          >
-            <Icon name="setting" />
-          </button>
         </section>
 
         {shownSlides.map((id) => (
