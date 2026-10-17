@@ -1,6 +1,18 @@
 import { describe, expect, it } from "vitest";
 
-import { adSchema, bundleSchema, inSchedule, pickAd, SAMPLE_ADS, SLOTS, type Ad, type AdContext } from "../src";
+import {
+  AD_PERSONAS,
+  AD_SEASONS,
+  adSchema,
+  bundleSchema,
+  inSchedule,
+  pickAd,
+  SAMPLE_ADS,
+  SLOTS,
+  tehranDay,
+  type Ad,
+  type AdContext,
+} from "../src";
 
 const NOW = new Date("2026-10-17T09:00:00Z");
 const ctx = (over: Partial<AdContext> = {}): AdContext => ({
@@ -74,5 +86,16 @@ describe("pickAd", () => {
     const b = ad({ id: "b", weight: 5 });
     expect(pickAd([a, b], 6, ctx())?.id).toBe("b");
     expect(pickAd([a, b], 6, ctx({ dismissed: new Set(["b"]) }))?.id).toBe("a");
+  });
+});
+
+describe("vocabulary and days", () => {
+  it("names each persona and season once", () => {
+    expect(new Set(AD_PERSONAS.map((p) => p.id)).size).toBe(AD_PERSONAS.length);
+    expect(AD_SEASONS.map((x) => x.id)).toEqual(["spring", "summer", "autumn", "winter"]);
+  });
+  it("reads a day on the Tehran clock", () => {
+    // 21:00 UTC is already the next morning in Tehran (UTC+3:30)
+    expect(tehranDay(new Date("2026-10-17T21:00:00Z"))).toBe("2026-10-18");
   });
 });

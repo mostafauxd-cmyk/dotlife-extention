@@ -23,7 +23,8 @@ export type AdContext = {
   dismissed?: ReadonlySet<string>;
 };
 
-const tehranDay = (d: Date): string =>
+/** The Tehran calendar day of a moment, as `YYYY-MM-DD`. */
+export const tehranDay = (d: Date): string =>
   new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Tehran" }).format(d);
 
 /** An ad's days: it is live when its status says so and today is inside from…until. */
