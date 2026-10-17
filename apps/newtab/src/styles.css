@@ -6915,27 +6915,25 @@ a.ts-link {
 }
 .nw-head::before,
 .nw-head::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: 0 0 -44px;
+  pointer-events: none;
+}
+/* a progressive blur: strong at the top, gone a little under the chips */
+.nw-head::before {
+  backdrop-filter: blur(18px);
+  mask-image: linear-gradient(to bottom, #000 0%, #000 50%, transparent 100%);
+}
+/* the page's own dark over it, only as deep as keeps the bar's words readable on a bright picture */
+.nw-head::after {
   backdrop-filter: blur(6px);
-  mask-image: linear-gradient(to bottom, #000 55%, transparent 100%);
-  /* the page's own dark, only as deep as keeps the bar's words readable over a bright picture */
+  mask-image: linear-gradient(to bottom, #000 60%, transparent 100%);
   background: linear-gradient(
     to bottom,
     color-mix(in srgb, var(--bgc) 62%, transparent) 0%,
     color-mix(in srgb, var(--bgc) 46%, transparent) 60%,
-    transparent 100%
-  );
-}
-.nw-head::before {
-  backdrop-filter: blur(18px);
-  mask-image: linear-gradient(to bottom, #000 0%, #000 55%, transparent 100%);
-}
-.nw-head::after {
-  backdrop-filter: blur(6px);
-  mask-image: linear-gradient(to bottom, #000 55%, transparent 100%);
-  background: linear-gradient(
-    to bottom,
-    color-mix(in srgb, color-mix(in srgb, var(--bgc) 84%, #fff) 88%, transparent) 0%,
-    color-mix(in srgb, color-mix(in srgb, var(--bgc) 84%, #fff) 70%, transparent) 55%,
     transparent 100%
   );
 }
