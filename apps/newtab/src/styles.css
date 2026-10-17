@@ -6703,3 +6703,7 @@ a.ts-link {
 .pf-body .cta {
   text-decoration: none;
 }
+
+.pf-invite .card-h .rbtn {
+  margin-inline-start: auto;
+}

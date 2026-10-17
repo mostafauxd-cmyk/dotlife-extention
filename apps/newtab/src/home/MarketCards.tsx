@@ -488,6 +488,7 @@ function PortfolioInvite({ onClose }: { onClose: () => void }) {
         )}
       </div>
     </div>,
-    document.body,
+    // inside the page's root, where the theme's colours are defined (the body has none)
+    document.querySelector(".nt") ?? document.body,
   );
 }
