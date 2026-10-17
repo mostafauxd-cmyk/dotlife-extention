@@ -1,15 +1,15 @@
 import type { Bundle } from "@dotlife/ads";
 import { useEffect, useRef, useState } from "react";
 
-import { useApp, useAds, useLastBundle } from "../context";
+import { useApp, useAds, useCampaigns, useLastBundle } from "../context";
 import { jalali, num } from "../data/labels";
 import {
   buildBundle,
+  campaignMap,
   canonicalJson,
   overfilled,
   parseImport,
   planImport,
-  publishable,
   SIGNATURE_PLACEHOLDER,
   sha256Hex,
   slideFilled,
@@ -45,7 +45,11 @@ function Importer() {
 
   const apply = (): void => {
     if (plan === undefined || parsed?.ok !== true) return;
-    const job = mode === "replace" ? store.replaceAll(plan.result) : store.putMany(plan.result);
+    const job = (
+      mode === "replace" ? store.replaceAll(plan.result) : store.putMany(plan.result)
+    ).then(async () => {
+      for (const c of parsed.campaigns) await store.putCampaign(c);
+    });
     job.then(
       () => {
         toast(`${num(parsed.ads.length)} تبلیغ درون‌ریزی شد.`);
@@ -117,7 +121,8 @@ function Importer() {
       {parsed?.ok === true && plan !== undefined && (
         <div className="plan">
           <p>
-            <b>{num(parsed.ads.length)} تبلیغ</b> خوانده شد
+            <b>{num(parsed.ads.length)} آگهی</b>
+            {parsed.campaigns.length > 0 && ` و ${num(parsed.campaigns.length)} کمپین`} خوانده شد
             {parsed.source === "bundle" && parsed.version !== undefined
               ? ` (بسته‌ی نسخه‌ی ${num(parsed.version)})`
               : " (فهرست ساده)"}
@@ -163,9 +168,10 @@ function Importer() {
 export function Publish() {
   const { ads: store, toast } = useApp();
   const { ads } = useAds();
+  const { campaigns } = useCampaigns();
   const last = useLastBundle();
   const now = new Date();
-  const next = buildBundle(ads, last?.version ?? 0, now);
+  const next = buildBundle(ads, last?.version ?? 0, now, campaigns);
   const [digest, setDigest] = useState<{ bytes: number; sha: string } | undefined>();
   const [busy, setBusy] = useState(false);
 
@@ -188,8 +194,11 @@ export function Publish() {
 
   const unchanged = current !== undefined && canonicalJson(current.ads) === canonicalJson(next.ads);
   const left = ads.length - next.ads.length;
-  const crowded = slides().filter((g) => overfilled(slideFilled(g, ads, now)));
-  const upcoming = ads.filter((a) => publishable(a, now));
+  const crowded = slides().filter((g) =>
+    overfilled(slideFilled(g, ads, now, campaignMap(campaigns))),
+  );
+  const upcoming = next.ads;
+  const fromCampaigns = upcoming.filter((a) => a.campaign !== undefined).length;
 
   const publish = (): void => {
     setBusy(true);
@@ -206,7 +215,7 @@ export function Publish() {
   };
   const everything = (): string =>
     JSON.stringify(
-      { version: current?.version ?? 0, generatedAt: now.toISOString(), ads },
+      { version: current?.version ?? 0, generatedAt: now.toISOString(), ads, campaigns },
       null,
       2,
     );
@@ -217,8 +226,9 @@ export function Publish() {
         <div>
           <h1>انتشار</h1>
           <p>
-            انتشار از تبلیغ‌های زنده و زمان‌بندی‌شده یک بسته‌ی تازه می‌سازد (نسخه یکی بالا می‌رود).
-            کلاینت‌ها آن را می‌گیرند و انتخاب تبلیغ را روی دستگاه خودشان انجام می‌دهند.
+            انتشار از کمپین‌های در حال اجرا (هر آگهی با سهم نمایشش از روی پیشنهاد قیمت و بودجه) و
+            آگهی‌های جدای زنده یک بسته‌ی تازه می‌سازد (نسخه یکی بالا می‌رود). کلاینت‌ها آن را
+            می‌گیرند و انتخاب تبلیغ را روی دستگاه خودشان انجام می‌دهند.
           </p>
         </div>
       </section>
@@ -243,6 +253,9 @@ export function Publish() {
               <dt>تبلیغ در بسته</dt>
               <dd>
                 {num(upcoming.length)}
+                {fromCampaigns > 0 && (
+                  <small> · {num(fromCampaigns)} از کمپین‌ها، با سهم نمایش</small>
+                )}
                 {left > 0 && (
                   <small> · {num(left)} تبلیغ بیرون می‌ماند (پیش‌نویس، متوقف یا پایان‌یافته)</small>
                 )}

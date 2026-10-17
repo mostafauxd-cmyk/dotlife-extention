@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState, useSyncExternalStore } from "react";
-import type { Ad, Bundle } from "@dotlife/ads";
+import type { Ad, Bundle, Campaign } from "@dotlife/ads";
 
 import type { EventsStore, StatRow } from "./data/events";
 import { parseRoute, type Route } from "./data/route";
@@ -104,4 +104,28 @@ export function useStats(): StatRow[] {
     };
   }, [events]);
   return rows;
+}
+
+/** The campaigns, reloaded whenever the store says something changed. */
+export function useCampaigns(): { campaigns: Campaign[]; ready: boolean } {
+  const { ads: store } = useApp();
+  const [state, setState] = useState<{ campaigns: Campaign[]; ready: boolean }>({
+    campaigns: [],
+    ready: false,
+  });
+  useEffect(() => {
+    let live = true;
+    const load = (): void => {
+      void store.listCampaigns().then((campaigns) => {
+        if (live) setState({ campaigns, ready: true });
+      });
+    };
+    load();
+    const stop = store.subscribe(load);
+    return () => {
+      live = false;
+      stop();
+    };
+  }, [store]);
+  return state;
 }

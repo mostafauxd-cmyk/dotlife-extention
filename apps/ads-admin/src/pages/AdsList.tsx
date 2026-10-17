@@ -1,7 +1,7 @@
-import { SLOTS, slotById, type Ad } from "@dotlife/ads";
+import { PRODUCTS, slotById, type Ad } from "@dotlife/ads";
 import { useState } from "react";
 
-import { go, useApp, useAds } from "../context";
+import { go, useApp, useAds, useCampaigns } from "../context";
 import {
   firstLetter,
   jalali,
@@ -14,6 +14,8 @@ import {
 import {
   adPhase,
   advertisers,
+  campaignMap,
+  slides,
   duplicateAd,
   filterAds,
   newAdId,
@@ -42,18 +44,21 @@ function Schedule({ ad }: { ad: Ad }) {
 export function AdsList({ filter }: { filter: AdFilter }) {
   const { ads: store, toast } = useApp();
   const { ads, ready } = useAds();
+  const { campaigns } = useCampaigns();
+  const map = campaignMap(campaigns);
   const now = new Date();
   const [selected, setSelected] = useState<ReadonlySet<string>>(new Set());
   const [toDelete, setToDelete] = useState<Ad | undefined>();
   const [toPreview, setToPreview] = useState<Ad | undefined>();
 
   // the phase tabs count what the other filters leave, so the numbers match what a tab would show
-  const withoutPhase = filterAds(ads, { ...filter, phase: undefined }, now);
+  const withoutPhase = filterAds(ads, { ...filter, phase: undefined }, now, map);
   const shown =
     filter.phase === undefined
       ? withoutPhase
-      : withoutPhase.filter((a) => adPhase(a, now) === filter.phase);
-  const phaseCount = (p: Phase): number => withoutPhase.filter((a) => adPhase(a, now) === p).length;
+      : withoutPhase.filter((a) => adPhase(a, now, map) === filter.phase);
+  const phaseCount = (p: Phase): number =>
+    withoutPhase.filter((a) => adPhase(a, now, map) === p).length;
 
   const set = (patch: Partial<AdFilter>): void => {
     go(adsHash({ ...filter, ...patch }), true);
@@ -114,9 +119,10 @@ export function AdsList({ filter }: { filter: AdFilter }) {
     <>
       <section className="intro">
         <div>
-          <h1>تبلیغ‌ها</h1>
+          <h1>آگهی‌ها</h1>
           <p>
-            همه‌ی تبلیغ‌ها در یک فهرست. با فیلتر جایگاه، وضعیت، محصول و آگهی‌دهنده، یا جستجوی عنوان.
+            همه‌ی آگهی‌ها، چه از یک کمپین چه جدا. با فیلتر جایگاه، وضعیت، محصول و آگهی‌دهنده، یا
+            جستجوی عنوان.
           </p>
         </div>
         <button
@@ -127,7 +133,7 @@ export function AdsList({ filter }: { filter: AdFilter }) {
           }}
         >
           <Icon name="plus" size={17} />
-          تبلیغ تازه
+          آگهی تازه
         </button>
       </section>
 
@@ -153,10 +159,16 @@ export function AdsList({ filter }: { filter: AdFilter }) {
             }}
           >
             <option value="">همه</option>
-            {SLOTS.map((s) => (
-              <option key={s.id} value={s.id}>
-                {num(s.id)} · {s.name}
-              </option>
+            {PRODUCTS.map((p) => (
+              <optgroup key={p} label={PRODUCT_LABEL[p]}>
+                {slides(p)
+                  .flatMap((g) => g.slots)
+                  .map((s) => (
+                    <option key={s.id} value={s.id}>
+                      {num(s.id)} · {s.name}
+                    </option>
+                  ))}
+              </optgroup>
             ))}
           </select>
         </label>
@@ -257,7 +269,7 @@ export function AdsList({ filter }: { filter: AdFilter }) {
               />
             </label>
             <span />
-            <span>تبلیغ</span>
+            <span>آگهی</span>
             <span>جایگاه</span>
             <span>محصول</span>
             <span>وضعیت و روزها</span>
@@ -267,7 +279,8 @@ export function AdsList({ filter }: { filter: AdFilter }) {
           </div>
         )}
         {shown.map((ad) => {
-          const phase = adPhase(ad, now);
+          const phase = adPhase(ad, now, map);
+          const camp = ad.campaign === undefined ? undefined : map.get(ad.campaign);
           const slot = slotById(ad.slot);
           const tint = ad.tint ?? "#8c9eff";
           return (
@@ -299,7 +312,7 @@ export function AdsList({ filter }: { filter: AdFilter }) {
               >
                 <b>{ad.title}</b>
                 <small>
-                  {ad.advertiser}
+                  {camp === undefined ? ad.advertiser : `کمپین ${camp.name}`}
                   {ad.line !== undefined && ` · ${ad.line}`}
                 </small>
               </button>
@@ -316,10 +329,10 @@ export function AdsList({ filter }: { filter: AdFilter }) {
               </span>
               <span className="ad-phase">
                 <span className={`badge ${phase}`}>{PHASE_LABEL[phase]}</span>
-                <Schedule ad={ad} />
+                {camp === undefined ? <Schedule ad={ad} /> : <small>با روزهای کمپین</small>}
               </span>
               <span className="ad-weight">{num(ad.weight)}</span>
-              <span className="ad-model">{MODEL_LABEL[ad.model]}</span>
+              <span className="ad-model">{MODEL_LABEL[camp?.model ?? ad.model]}</span>
               <span className="row-actions">
                 <button
                   type="button"
@@ -383,7 +396,7 @@ export function AdsList({ filter }: { filter: AdFilter }) {
                   }}
                 >
                   <Icon name="plus" size={17} />
-                  تبلیغ تازه
+                  آگهی تازه
                 </button>
               </>
             ) : (

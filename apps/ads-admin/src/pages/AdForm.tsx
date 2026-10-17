@@ -1,19 +1,15 @@
 import {
-  AD_CITIES,
-  AD_PERSONAS,
-  AD_SEASONS,
   AD_STATUS,
-  AD_TOPICS,
   PRODUCTS,
   SALE_MODELS,
-  SLOTS,
   slotById,
   type Ad,
+  type Campaign,
   type Target,
 } from "@dotlife/ads";
 import { useEffect, useState, type SyntheticEvent } from "react";
 
-import { go, useApp } from "../context";
+import { go, useApp, useCampaigns } from "../context";
 import {
   graphemes,
   jalali,
@@ -22,10 +18,9 @@ import {
   num,
   PHASE_LABEL,
   PRODUCT_LABEL,
-  TARGET_LABEL,
 } from "../data/labels";
 import { duplicateAd, newAdId } from "../data/logic";
-import { adsHash, editHash } from "../data/route";
+import { adsHash, campaignHash, editHash } from "../data/route";
 import {
   blankDraft,
   draftFromAd,
@@ -37,7 +32,8 @@ import {
 import { validateAd } from "../data/validate";
 import { AdPreview, type PreviewAd } from "../ui/AdPreview";
 import { ConfirmDialog } from "../ui/Dialog";
-import { ChipSet, Field, TagInput } from "../ui/Fields";
+import { ChipSet, Field } from "../ui/Fields";
+import { TargetingFields } from "../ui/TargetingFields";
 import { Icon } from "../ui/Icon";
 import { slides } from "../data/logic";
 
@@ -161,157 +157,53 @@ function ExtraInput({
 
 function Targeting({
   d,
-  set,
+  setD,
   errors,
 }: {
   d: Draft;
-  set: SetField;
+  setD: (f: (prev: Draft) => Draft) => void;
   errors: Record<string, string>;
 }) {
   const slot = slotById(d.slot);
-  const allowed = new Set<Target>(slot?.targets ?? []);
-  if (allowed.size === 0)
-    return <p className="note">این جایگاه هدف‌گیری ندارد: برای همه نمایش داده می‌شود.</p>;
   return (
-    <div className="fields">
-      {allowed.has("persona") && (
-        <Field
-          label={TARGET_LABEL.persona}
-          error={errors["targeting.persona"]}
-          hint="خالی یعنی همه."
-          wide
-        >
-          {() => (
-            <ChipSet
-              label={TARGET_LABEL.persona}
-              items={AD_PERSONAS.map((p) => ({ id: p.id, label: p.name }))}
-              value={d.persona}
-              onChange={(v) => {
-                set("persona", v);
-              }}
-            />
-          )}
-        </Field>
-      )}
-      {allowed.has("season") && (
-        <Field
-          label={TARGET_LABEL.season}
-          error={errors["targeting.season"]}
-          hint="خالی یعنی همه‌ی فصل‌ها."
-          wide
-        >
-          {() => (
-            <ChipSet
-              label={TARGET_LABEL.season}
-              items={AD_SEASONS.map((s) => ({ id: s.id, label: s.name }))}
-              value={d.season}
-              onChange={(v) => {
-                set("season", v);
-              }}
-            />
-          )}
-        </Field>
-      )}
-      {allowed.has("city") && (
-        <Field
-          label={TARGET_LABEL.city}
-          error={errors["targeting.city"]}
-          hint="با Enter یا ویرگول اضافه کن؛ خالی یعنی همه‌ی شهرها."
-        >
-          {(id) => (
-            <TagInput
-              id={id}
-              value={d.city}
-              suggestions={AD_CITIES}
-              placeholder="مثلاً تهران"
-              onChange={(v) => {
-                set("city", v);
-              }}
-            />
-          )}
-        </Field>
-      )}
-      {allowed.has("occasion") && (
-        <Field
-          label={TARGET_LABEL.occasion}
-          error={errors["targeting.occasion"]}
-          hint="شناسه‌ی مناسبت؛ خالی یعنی همه‌ی مناسبت‌ها."
-        >
-          {(id) => (
-            <TagInput
-              id={id}
-              value={d.occasion}
-              placeholder="مثلاً sports-day"
-              onChange={(v) => {
-                set("occasion", v);
-              }}
-            />
-          )}
-        </Field>
-      )}
-      {allowed.has("keyword") && (
-        <Field
-          label={TARGET_LABEL.keyword}
-          error={errors["targeting.keyword"]}
-          hint="وقتی کاربر یکی از این‌ها را بنویسد نشان داده می‌شود؛ خالی یعنی هر جستجو."
-        >
-          {(id) => (
-            <TagInput
-              id={id}
-              value={d.keyword}
-              placeholder="مثلاً قطار"
-              onChange={(v) => {
-                set("keyword", v);
-              }}
-            />
-          )}
-        </Field>
-      )}
-      {allowed.has("topic") && (
-        <Field
-          label={TARGET_LABEL.topic}
-          error={errors["targeting.topic"]}
-          hint="خالی یعنی همه‌ی موضوع‌ها."
-        >
-          {(id) => (
-            <TagInput
-              id={id}
-              value={d.topic}
-              suggestions={AD_TOPICS}
-              placeholder="مثلاً سفر"
-              onChange={(v) => {
-                set("topic", v);
-              }}
-            />
-          )}
-        </Field>
-      )}
-      {allowed.has("weekend") && (
-        <label className="switch wide">
-          <input
-            type="checkbox"
-            checked={d.weekend}
-            onChange={(e) => {
-              set("weekend", e.target.checked);
-            }}
-          />
-          <span>فقط آخر هفته (پنجشنبه و جمعه)</span>
-        </label>
-      )}
-    </div>
+    <TargetingFields
+      allowed={new Set<Target>(slot?.targets ?? [])}
+      value={d}
+      errors={errors}
+      onChange={(patch) => {
+        setD((prev) => ({ ...prev, ...patch }));
+      }}
+    />
   );
 }
 
-function FormBody({ initial, isNew }: { initial: Draft; isNew: boolean }) {
+function FormBody({
+  initial,
+  isNew,
+  campaigns,
+}: {
+  initial: Draft;
+  isNew: boolean;
+  campaigns: readonly Campaign[];
+}) {
   const { ads: store, toast } = useApp();
   const [d, setD] = useState<Draft>(initial);
   const [submitted, setSubmitted] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
   const form = slotForm(d.slot);
   const slot = slotById(d.slot);
+  const camp = campaigns.find((c) => c.id === d.campaign);
+  const campSlots = camp?.products.flatMap((p) => p.slots) ?? [];
 
   const set: SetField = (key, value) => {
     setD((prev) => ({ ...prev, [key]: value }));
+  };
+  const changeCampaign = (id: string): void => {
+    const c = campaigns.find((x) => x.id === id);
+    const slots = c?.products.flatMap((p) => p.slots) ?? [];
+    setD((prev) => ({ ...prev, campaign: id, ...(c === undefined ? {} : { model: c.model }) }));
+    const first = slots[0];
+    if (c !== undefined && first !== undefined && !slots.includes(d.slot)) changeSlot(first);
   };
   const changeSlot = (n: number): void => {
     const next = slotById(n);
@@ -322,7 +214,7 @@ function FormBody({ initial, isNew }: { initial: Draft; isNew: boolean }) {
     setD((prev) => ({
       ...prev,
       slot: n,
-      model: next.model,
+      model: camp?.model ?? next.model,
       products: prev.products.includes(next.product)
         ? prev.products
         : [next.product, ...prev.products],
@@ -362,7 +254,11 @@ function FormBody({ initial, isNew }: { initial: Draft; isNew: boolean }) {
     store.put(result.ad).then(
       () => {
         toast(isNew ? "تبلیغ ساخته شد." : "تغییرها ذخیره شد.");
-        go(adsHash({ slot: result.ad.slot }));
+        go(
+          result.ad.campaign === undefined
+            ? adsHash({ slot: result.ad.slot })
+            : campaignHash(result.ad.campaign),
+        );
       },
       () => {
         toast("ذخیره نشد.");
@@ -417,27 +313,55 @@ function FormBody({ initial, isNew }: { initial: Draft; isNew: boolean }) {
 
         <section className="card">
           <h2>جایگاه</h2>
-          <Field label="این تبلیغ کجا بنشیند؟" wide>
-            {(id) => (
-              <select
-                id={id}
-                value={d.slot}
-                onChange={(e) => {
-                  changeSlot(Number(e.target.value));
-                }}
-              >
-                {slides().map((g) => (
-                  <optgroup key={g.name} label={`اسلاید ${g.name}`}>
-                    {g.slots.map((s) => (
-                      <option key={s.id} value={s.id}>
-                        {num(s.id)} · {s.name}
-                      </option>
-                    ))}
-                  </optgroup>
-                ))}
-              </select>
-            )}
-          </Field>
+          <div className="fields">
+            <Field label="کمپین" hint="آگهیِ یک کمپین هدف‌گیری، روزها و قیمتش را از کمپین می‌گیرد.">
+              {(id) => (
+                <select
+                  id={id}
+                  value={d.campaign}
+                  onChange={(e) => {
+                    changeCampaign(e.target.value);
+                  }}
+                >
+                  <option value="">بدون کمپین (آگهی جدا)</option>
+                  {campaigns.map((c) => (
+                    <option key={c.id} value={c.id}>
+                      {c.name} · {c.advertiser}
+                    </option>
+                  ))}
+                </select>
+              )}
+            </Field>
+            <Field label="این تبلیغ کجا بنشیند؟">
+              {(id) => (
+                <select
+                  id={id}
+                  value={d.slot}
+                  onChange={(e) => {
+                    changeSlot(Number(e.target.value));
+                  }}
+                >
+                  {PRODUCTS.flatMap((p) =>
+                    slides(p).map((g) => {
+                      const list = g.slots.filter(
+                        (s) => camp === undefined || campSlots.includes(s.id),
+                      );
+                      if (list.length === 0) return null;
+                      return (
+                        <optgroup key={`${p}-${g.name}`} label={`${PRODUCT_LABEL[p]} · ${g.name}`}>
+                          {list.map((s) => (
+                            <option key={s.id} value={s.id}>
+                              {num(s.id)} · {s.name}
+                            </option>
+                          ))}
+                        </optgroup>
+                      );
+                    }),
+                  )}
+                </select>
+              )}
+            </Field>
+          </div>
           {slot !== undefined && (
             <p className="note">
               {slot.shape}. سقف: {slot.cap}.
@@ -605,152 +529,184 @@ function FormBody({ initial, isNew }: { initial: Draft; isNew: boolean }) {
           </section>
         )}
 
-        <section className="card">
-          <h2>هدف‌گیری</h2>
-          <Targeting d={d} set={set} errors={errors} />
-          <p className="note">
-            فقط از روی این‌هاست؛ هرگز از روی متن یادداشت، کار، تراکنش یا دارایی.
-          </p>
-        </section>
+        {camp !== undefined ? (
+          <section className="card">
+            <h2>از کمپین</h2>
+            <p className="note">
+              هدف‌گیری، روزها، محصول و قیمتِ این آگهی از کمپین «{camp.name}» می‌آید و سهم نمایشش از
+              پیشنهاد قیمت و بودجه‌ی آن. <a href={campaignHash(camp.id)}>دیدن کمپین</a>
+            </p>
+            <div className="fields">
+              <Field label="وضعیت این آگهی" hint="متوقف یا پیش‌نویس یعنی در بسته نمی‌آید.">
+                {(id) => (
+                  <select
+                    id={id}
+                    value={d.status}
+                    onChange={(e) => {
+                      const v = AD_STATUS.find((x) => x === e.target.value);
+                      if (v !== undefined) set("status", v);
+                    }}
+                  >
+                    {AD_STATUS.map((x) => (
+                      <option key={x} value={x}>
+                        {PHASE_LABEL[x]}
+                      </option>
+                    ))}
+                  </select>
+                )}
+              </Field>
+            </div>
+          </section>
+        ) : (
+          <>
+            <section className="card">
+              <h2>هدف‌گیری</h2>
+              <Targeting d={d} setD={setD} errors={errors} />
+              <p className="note">
+                فقط از روی این‌هاست؛ هرگز از روی متن یادداشت، کار، تراکنش یا دارایی.
+              </p>
+            </section>
 
-        <section className="card">
-          <h2>زمان و فروش</h2>
-          <div className="fields">
-            <Field
-              label="محصول"
-              error={errors["products"]}
-              hint="کلاینت‌های کدام محصول می‌توانند این را نشان بدهند."
-              wide
-            >
-              {() => (
-                <ChipSet
+            <section className="card">
+              <h2>زمان و فروش</h2>
+              <div className="fields">
+                <Field
                   label="محصول"
-                  items={PRODUCTS.map((p) => ({ id: p, label: PRODUCT_LABEL[p] }))}
-                  value={d.products}
-                  onChange={(v) => {
-                    set("products", v);
-                  }}
-                />
-              )}
-            </Field>
-            <Field label="وضعیت" error={errors["status"]}>
-              {(id) => (
-                <select
-                  id={id}
-                  value={d.status}
-                  onChange={(e) => {
-                    const v = AD_STATUS.find((s) => s === e.target.value);
-                    if (v !== undefined) set("status", v);
-                  }}
+                  error={errors["products"]}
+                  hint="کلاینت‌های کدام محصول می‌توانند این را نشان بدهند."
+                  wide
                 >
-                  {AD_STATUS.map((s) => (
-                    <option key={s} value={s}>
-                      {PHASE_LABEL[s]}
-                    </option>
-                  ))}
-                </select>
-              )}
-            </Field>
-            <Field
-              label="وزن"
-              error={errors["weight"]}
-              hint="بین ۱ تا ۱۰۰؛ وقتی چند تبلیغ یک جایگاه را می‌خواهند، سنگین‌تر برنده است."
-            >
-              {(id) => (
-                <input
-                  id={id}
-                  inputMode="numeric"
-                  dir="ltr"
-                  value={d.weight}
-                  onChange={(e) => {
-                    set("weight", e.target.value);
-                  }}
-                />
-              )}
-            </Field>
-            <Field
-              label="از روز"
-              error={errors["from"]}
-              hint={d.from === "" ? "خالی یعنی از همین حالا." : jalali(d.from)}
-            >
-              {(id) => (
-                <input
-                  id={id}
-                  type="date"
-                  value={d.from}
-                  onChange={(e) => {
-                    set("from", e.target.value);
-                  }}
-                />
-              )}
-            </Field>
-            <Field
-              label="تا روز (و همان روز)"
-              error={errors["until"]}
-              hint={d.until === "" ? "خالی یعنی بدون پایان." : jalali(d.until)}
-            >
-              {(id) => (
-                <input
-                  id={id}
-                  type="date"
-                  value={d.until}
-                  onChange={(e) => {
-                    set("until", e.target.value);
-                  }}
-                />
-              )}
-            </Field>
-            <Field label="مدل فروش" error={errors["model"]}>
-              {(id) => (
-                <select
-                  id={id}
-                  value={d.model}
-                  onChange={(e) => {
-                    const v = SALE_MODELS.find((m) => m === e.target.value);
-                    if (v !== undefined) set("model", v);
-                  }}
+                  {() => (
+                    <ChipSet
+                      label="محصول"
+                      items={PRODUCTS.map((p) => ({ id: p, label: PRODUCT_LABEL[p] }))}
+                      value={d.products}
+                      onChange={(v) => {
+                        set("products", v);
+                      }}
+                    />
+                  )}
+                </Field>
+                <Field label="وضعیت" error={errors["status"]}>
+                  {(id) => (
+                    <select
+                      id={id}
+                      value={d.status}
+                      onChange={(e) => {
+                        const v = AD_STATUS.find((s) => s === e.target.value);
+                        if (v !== undefined) set("status", v);
+                      }}
+                    >
+                      {AD_STATUS.map((s) => (
+                        <option key={s} value={s}>
+                          {PHASE_LABEL[s]}
+                        </option>
+                      ))}
+                    </select>
+                  )}
+                </Field>
+                <Field
+                  label="وزن"
+                  error={errors["weight"]}
+                  hint="بین ۱ تا ۱۰۰؛ وقتی چند تبلیغ یک جایگاه را می‌خواهند، سنگین‌تر برنده است."
                 >
-                  {SALE_MODELS.map((m) => (
-                    <option key={m} value={m}>
-                      {MODEL_LABEL[m]}
-                      {slot?.model === m ? " (پیشنهاد جایگاه)" : ""}
-                    </option>
-                  ))}
-                </select>
-              )}
-            </Field>
-            <Field label="قیمت" error={errors["price"]} hint={MODEL_UNIT[d.model]}>
-              {(id) => (
-                <input
-                  id={id}
-                  inputMode="numeric"
-                  dir="ltr"
-                  value={d.price}
-                  onChange={(e) => {
-                    set("price", e.target.value);
-                  }}
-                />
-              )}
-            </Field>
-            <Field
-              label="سقف نمایش روزانه"
-              error={errors["dailyCap"]}
-              hint="خالی یعنی بدون سقف؛ رسیدن به سقف، تبلیغ را از بسته‌ی بعدی بیرون می‌گذارد."
-            >
-              {(id) => (
-                <input
-                  id={id}
-                  inputMode="numeric"
-                  dir="ltr"
-                  value={d.dailyCap}
-                  onChange={(e) => {
-                    set("dailyCap", e.target.value);
-                  }}
-                />
-              )}
-            </Field>
-          </div>
-        </section>
+                  {(id) => (
+                    <input
+                      id={id}
+                      inputMode="numeric"
+                      dir="ltr"
+                      value={d.weight}
+                      onChange={(e) => {
+                        set("weight", e.target.value);
+                      }}
+                    />
+                  )}
+                </Field>
+                <Field
+                  label="از روز"
+                  error={errors["from"]}
+                  hint={d.from === "" ? "خالی یعنی از همین حالا." : jalali(d.from)}
+                >
+                  {(id) => (
+                    <input
+                      id={id}
+                      type="date"
+                      value={d.from}
+                      onChange={(e) => {
+                        set("from", e.target.value);
+                      }}
+                    />
+                  )}
+                </Field>
+                <Field
+                  label="تا روز (و همان روز)"
+                  error={errors["until"]}
+                  hint={d.until === "" ? "خالی یعنی بدون پایان." : jalali(d.until)}
+                >
+                  {(id) => (
+                    <input
+                      id={id}
+                      type="date"
+                      value={d.until}
+                      onChange={(e) => {
+                        set("until", e.target.value);
+                      }}
+                    />
+                  )}
+                </Field>
+                <Field label="مدل فروش" error={errors["model"]}>
+                  {(id) => (
+                    <select
+                      id={id}
+                      value={d.model}
+                      onChange={(e) => {
+                        const v = SALE_MODELS.find((m) => m === e.target.value);
+                        if (v !== undefined) set("model", v);
+                      }}
+                    >
+                      {SALE_MODELS.map((m) => (
+                        <option key={m} value={m}>
+                          {MODEL_LABEL[m]}
+                          {slot?.model === m ? " (پیشنهاد جایگاه)" : ""}
+                        </option>
+                      ))}
+                    </select>
+                  )}
+                </Field>
+                <Field label="قیمت" error={errors["price"]} hint={MODEL_UNIT[d.model]}>
+                  {(id) => (
+                    <input
+                      id={id}
+                      inputMode="numeric"
+                      dir="ltr"
+                      value={d.price}
+                      onChange={(e) => {
+                        set("price", e.target.value);
+                      }}
+                    />
+                  )}
+                </Field>
+                <Field
+                  label="سقف نمایش روزانه"
+                  error={errors["dailyCap"]}
+                  hint="خالی یعنی بدون سقف؛ رسیدن به سقف، تبلیغ را از بسته‌ی بعدی بیرون می‌گذارد."
+                >
+                  {(id) => (
+                    <input
+                      id={id}
+                      inputMode="numeric"
+                      dir="ltr"
+                      value={d.dailyCap}
+                      onChange={(e) => {
+                        set("dailyCap", e.target.value);
+                      }}
+                    />
+                  )}
+                </Field>
+              </div>
+            </section>
+          </>
+        )}
 
         <div className="form-actions">
           <button type="submit" className="btn">
@@ -812,14 +768,23 @@ function FormBody({ initial, isNew }: { initial: Draft; isNew: boolean }) {
   );
 }
 
-export function AdForm({ id, slot }: { id: string; slot: number | undefined }) {
+export function AdForm({
+  id,
+  slot,
+  campaign,
+}: {
+  id: string;
+  slot: number | undefined;
+  campaign: string | undefined;
+}) {
   const { ads: store } = useApp();
+  const { campaigns, ready } = useCampaigns();
   const isNew = id === "new";
   const [state, setState] = useState<
     { kind: "loading" } | { kind: "missing" } | { kind: "ready"; draft: Draft }
   >(
     isNew
-      ? { kind: "ready", draft: blankDraft(slot ?? SLOTS[0]?.id ?? 1, newAdId()) }
+      ? { kind: "ready", draft: blankDraft(slot ?? 1, newAdId(), campaign ?? "") }
       : { kind: "loading" },
   );
 
@@ -857,8 +822,8 @@ export function AdForm({ id, slot }: { id: string; slot: number | undefined }) {
           </a>
         </div>
       )}
-      {state.kind === "ready" && (
-        <FormBody key={state.draft.id} initial={state.draft} isNew={isNew} />
+      {state.kind === "ready" && ready && (
+        <FormBody key={state.draft.id} initial={state.draft} isNew={isNew} campaigns={campaigns} />
       )}
     </>
   );

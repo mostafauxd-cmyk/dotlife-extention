@@ -1,9 +1,10 @@
-import { PRODUCTS, SLOTS, type Product } from "@dotlife/ads";
+import { PLACEMENTS, PRODUCTS, type Product } from "@dotlife/ads";
 import { useState } from "react";
 
-import { useApp, useAds, useStats } from "../context";
-import { ctr, demoEvents, sinceDay, summarize } from "../data/events";
-import { num, pct, PRODUCT_LABEL } from "../data/labels";
+import { useApp, useAds, useCampaigns, useStats } from "../context";
+import { campaignStats, ctr, demoEvents, sinceDay, summarize } from "../data/events";
+import { MODEL_LABEL, num, pct, PRODUCT_LABEL, toman } from "../data/labels";
+import { campaignHash } from "../data/route";
 import { Tabs } from "../ui/Tabs";
 
 type Period = 7 | 30 | 0;
@@ -11,16 +12,20 @@ type Period = 7 | 30 | 0;
 export function Dashboard() {
   const { events, toast } = useApp();
   const { ads } = useAds();
+  const { campaigns } = useCampaigns();
   const rows = useStats();
   const [product, setProduct] = useState<Product | "all">("all");
   const [period, setPeriod] = useState<Period>(7);
   const now = new Date();
 
-  const sum = summarize(rows, {
-    product,
-    since: period === 0 ? undefined : sinceDay(now, period),
-  });
+  const filter = { product, since: period === 0 ? undefined : sinceDay(now, period) };
+  const sum = summarize(rows, filter);
+  const perCampaign = campaignStats(rows, ads, campaigns, filter).sort(
+    (a, b) => b.impressions - a.impressions,
+  );
+  const spend = perCampaign.reduce((s, c) => s + (c.spend ?? 0), 0);
   const title = (id: string): string => ads.find((a) => a.id === id)?.title ?? id;
+  const places = PLACEMENTS.filter((s) => product === "all" || s.product === product);
   const maxShown = Math.max(1, ...[...sum.bySlot.values()].map((t) => t.impressions));
   const hasData = sum.total.impressions > 0 || sum.total.clicks > 0;
   const topShown = sum.byAd.slice(0, 5);
@@ -45,9 +50,9 @@ export function Dashboard() {
             داشبورد <span className="badge draft">نسخه‌ی اول</span>
           </h1>
           <p>
-            شمارنده‌های نمایش و کلیک هر جایگاه و هر تبلیغ، بدون هیچ شناسه‌ی شخصی. فعلاً از یک
-            ذخیره‌ی محلی می‌خواند؛ نیوتب بعداً رویدادها را به <code>POST /v1/ads/events</code>
-            می‌فرستد.
+            نمایش، کلیک و خرج هر محصول، جایگاه، کمپین و آگهی در یک جا: نیوتب، اپ نقطه، پاکت و
+            محصول‌های بعدی. بدون هیچ شناسه‌ی شخصی. فعلاً از یک ذخیره‌ی محلی می‌خواند؛ کلاینت‌ها
+            بعداً رویدادها را به <code>POST /v1/ads/events</code> می‌فرستند.
           </p>
         </div>
         <div className="btn-row">
@@ -75,7 +80,7 @@ export function Dashboard() {
           value={product}
           onChange={setProduct}
           items={[
-            { id: "all", label: "همه" },
+            { id: "all", label: "همه‌ی محصول‌ها" },
             ...PRODUCTS.map((p) => ({ id: p, label: PRODUCT_LABEL[p] })),
           ]}
         />
@@ -92,7 +97,7 @@ export function Dashboard() {
         />
       </div>
 
-      <section className="kpis" aria-label="جمع‌ها">
+      <section className="kpis four" aria-label="جمع‌ها">
         <div className="card kpi">
           <small>نمایش</small>
           <b>{num(sum.total.impressions)}</b>
@@ -104,6 +109,10 @@ export function Dashboard() {
         <div className="card kpi">
           <small>نرخ کلیک (CTR)</small>
           <b>{hasData ? pct(ctr(sum.total) * 100) : "—"}</b>
+        </div>
+        <div className="card kpi">
+          <small>خرج کمپین‌ها (تومان)</small>
+          <b>{hasData ? toman(spend) : "—"}</b>
         </div>
       </section>
 
@@ -122,91 +131,138 @@ export function Dashboard() {
       )}
 
       {hasData && (
-        <div className="two">
+        <>
           <section className="card">
-            <h2>جایگاه‌ها</h2>
-            <div className="stat-table">
-              <div className="stat-head">
-                <span>جایگاه</span>
-                <span>نمایش</span>
-                <span>کلیک</span>
-                <span>CTR</span>
+            <h2>کمپین‌ها</h2>
+            {perCampaign.length === 0 ? (
+              <p className="note">در این بازه کمپینی نمایش نداشته است.</p>
+            ) : (
+              <div className="stat-table">
+                <div className="stat-head cmp">
+                  <span>کمپین</span>
+                  <span>نمایش</span>
+                  <span>کلیک</span>
+                  <span>CTR</span>
+                  <span>خرج</span>
+                  <span>بودجه</span>
+                </div>
+                {perCampaign.map((s) => {
+                  const c = campaigns.find((x) => x.id === s.campaign);
+                  if (c === undefined) return null;
+                  const used = s.spend === undefined ? undefined : s.spend / c.budget.total;
+                  return (
+                    <div key={s.campaign} className="stat-row cmp">
+                      <a className="stat-name" href={campaignHash(c.id)}>
+                        <b>{c.name}</b>
+                        <small>
+                          {c.advertiser} · {MODEL_LABEL[c.model]}
+                        </small>
+                      </a>
+                      <span>{num(s.impressions)}</span>
+                      <span>{num(s.clicks)}</span>
+                      <span>{pct(ctr(s) * 100)}</span>
+                      <span>{s.spend === undefined ? "با گزارش آگهی‌دهنده" : toman(s.spend)}</span>
+                      <span>
+                        {used === undefined ? "—" : pct(Math.min(1, used) * 100)}
+                        {used !== undefined && (
+                          <i
+                            className="bar"
+                            style={{ width: `${String(Math.min(1, used) * 100)}%` }}
+                          />
+                        )}
+                      </span>
+                    </div>
+                  );
+                })}
               </div>
-              {SLOTS.map((s) => {
-                const t = sum.bySlot.get(s.id);
-                return (
-                  <div key={s.id} className={t === undefined ? "stat-row none" : "stat-row"}>
-                    <span className="stat-name">
-                      <span className="num">{num(s.id)}</span>
-                      {s.name}
-                    </span>
-                    <span>
-                      {t === undefined ? "—" : num(t.impressions)}
-                      {t !== undefined && (
-                        <i
-                          className="bar"
-                          style={{ width: `${String((t.impressions / maxShown) * 100)}%` }}
-                        />
-                      )}
-                    </span>
-                    <span>{t === undefined ? "—" : num(t.clicks)}</span>
-                    <span>{t === undefined ? "—" : pct(ctr(t) * 100)}</span>
-                  </div>
-                );
-              })}
-            </div>
+            )}
           </section>
 
-          <div className="stack">
+          <div className="two">
             <section className="card">
-              <h2>بیشترین نمایش</h2>
-              <ol className="toplist">
-                {topShown.map((a) => (
-                  <li key={a.ad}>
-                    <span className="num">{num(a.slot)}</span>
-                    <b>{title(a.ad)}</b>
-                    <small>
-                      {num(a.impressions)} نمایش · {pct(ctr(a) * 100)}
-                    </small>
-                  </li>
-                ))}
-              </ol>
+              <h2>جایگاه‌ها</h2>
+              <div className="stat-table">
+                <div className="stat-head">
+                  <span>جایگاه</span>
+                  <span>نمایش</span>
+                  <span>کلیک</span>
+                  <span>CTR</span>
+                </div>
+                {places.map((s) => {
+                  const t = sum.bySlot.get(s.id);
+                  return (
+                    <div key={s.id} className={t === undefined ? "stat-row none" : "stat-row"}>
+                      <span className="stat-name">
+                        <span className="num">{num(s.id)}</span>
+                        {s.name}
+                        {product === "all" && <small>{PRODUCT_LABEL[s.product]}</small>}
+                      </span>
+                      <span>
+                        {t === undefined ? "—" : num(t.impressions)}
+                        {t !== undefined && (
+                          <i
+                            className="bar"
+                            style={{ width: `${String((t.impressions / maxShown) * 100)}%` }}
+                          />
+                        )}
+                      </span>
+                      <span>{t === undefined ? "—" : num(t.clicks)}</span>
+                      <span>{t === undefined ? "—" : pct(ctr(t) * 100)}</span>
+                    </div>
+                  );
+                })}
+              </div>
             </section>
-            <section className="card">
-              <h2>بیشترین نرخ کلیک</h2>
-              {topCtr.length === 0 ? (
-                <p className="note">هنوز تبلیغی به ۱۰۰ نمایش نرسیده.</p>
-              ) : (
+
+            <div className="stack">
+              <section className="card">
+                <h2>بیشترین نمایش</h2>
                 <ol className="toplist">
-                  {topCtr.map((a) => (
+                  {topShown.map((a) => (
                     <li key={a.ad}>
                       <span className="num">{num(a.slot)}</span>
                       <b>{title(a.ad)}</b>
                       <small>
-                        {pct(ctr(a) * 100)} · {num(a.clicks)} کلیک
+                        {num(a.impressions)} نمایش · {pct(ctr(a) * 100)}
                       </small>
                     </li>
                   ))}
                 </ol>
-              )}
-            </section>
+              </section>
+              <section className="card">
+                <h2>بیشترین نرخ کلیک</h2>
+                {topCtr.length === 0 ? (
+                  <p className="note">هنوز آگهی‌ای به ۱۰۰ نمایش نرسیده.</p>
+                ) : (
+                  <ol className="toplist">
+                    {topCtr.map((a) => (
+                      <li key={a.ad}>
+                        <span className="num">{num(a.slot)}</span>
+                        <b>{title(a.ad)}</b>
+                        <small>
+                          {pct(ctr(a) * 100)} · {num(a.clicks)} کلیک
+                        </small>
+                      </li>
+                    ))}
+                  </ol>
+                )}
+              </section>
+            </div>
           </div>
-        </div>
+        </>
       )}
 
       <section className="card next">
-        <h2>بعدی: داشبورد یکپارچه</h2>
+        <h2>بعدی: شمارنده‌های واقعی هر محصول</h2>
         <p>
-          این نسخه فقط جایگاه‌های نیوتب را می‌شمارد. داشبورد یکپارچه‌ی همه‌ی محصول‌ها (اپ نقطه،
-          افزونه، پاکت و محصول‌های دیگر) کنار هم خواهد آمد: یک جا برای دیدن اینکه هر جایگاه در هر
-          محصول چه می‌کند. داده در همین‌جا از اول بر پایه‌ی محصول نگه داشته می‌شود، پس محصول تازه
-          فقط یک مقدار تازه است.
+          داده‌ها از اول بر پایه‌ی محصول نگه داشته می‌شوند، پس محصول تازه فقط یک ردیف در کاتالوگ
+          است. تا وقتی اپ نقطه، پاکت و نیوتب رویدادهایشان را به سرور نفرستند، این‌جا فقط داده‌ی
+          آزمایشی دیده می‌شود.
         </p>
         <div className="pills">
           {PRODUCTS.map((p) => (
             <span key={p} className="mini-chip">
-              {PRODUCT_LABEL[p]}
-              {p === "newtab" ? " · امروز" : " · به‌زودی"}
+              {PRODUCT_LABEL[p]} · {num(PLACEMENTS.filter((s) => s.product === p).length)} جایگاه
             </span>
           ))}
         </div>

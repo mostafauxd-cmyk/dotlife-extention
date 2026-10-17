@@ -1,6 +1,6 @@
 import type { CSSProperties, ReactNode } from "react";
 import type { Ad } from "@dotlife/ads";
-import { slotById } from "@dotlife/ads";
+import { PRODUCT_INFO, slotById } from "@dotlife/ads";
 
 import { firstLetter, num } from "../data/labels";
 import { Icon } from "./Icon";
@@ -329,6 +329,187 @@ function Mock({ ad }: { ad: PreviewAd }) {
           </div>
         </div>
       );
+    // Noghte's phone app
+    case 101:
+    case 102:
+      return (
+        <div className="pv-phone">
+          {ad.slot === 102 && <div className="pv-box ghost">آب‌وهوا · ۱۸°</div>}
+          <div className="pv-box own">
+            <span className="pv-boxhead">
+              {ad.glyph !== undefined || ad.image !== undefined ? <Mark ad={ad} /> : null}
+              <b>{title}</b>
+              <Tag />
+            </span>
+            {line !== undefined && <span className="pv-sub">{line}</span>}
+            {cta !== undefined && (
+              <button type="button" className="pv-btn" tabIndex={-1}>
+                {cta}
+              </button>
+            )}
+          </div>
+          {ad.slot === 101 && <div className="pv-box ghost">رویدادهای امروز</div>}
+        </div>
+      );
+    case 103:
+      return (
+        <div className="pv-phone">
+          <div className="pv-list">
+            <div className="pv-row">
+              <span className="pv-day">{num(25)}</span>
+              <Ghost>روز ملی کتاب‌خوانی</Ghost>
+            </div>
+            <div className="pv-row sub own">
+              <span>{title}</span>
+              <Tag />
+            </div>
+            <div className="pv-row">
+              <span className="pv-day">{num(29)}</span>
+              <Ghost>روز صادرات</Ghost>
+            </div>
+          </div>
+        </div>
+      );
+    case 104:
+      return (
+        <div className="pv-phone">
+          <div className="pv-box">
+            <small>رویدادهای امروز</small>
+            <div className="pv-list">
+              <div className="pv-row">
+                <Ghost>زادروز سعدی</Ghost>
+              </div>
+              <div className="pv-row own">
+                <i className="pv-sdot" />
+                <span>{title}</span>
+                <Tag />
+              </div>
+            </div>
+            {line !== undefined && <span className="pv-sub">{line}</span>}
+          </div>
+        </div>
+      );
+    case 105:
+      return (
+        <div className="pv-phone">
+          <div className="pv-forecast">
+            {["ش", "ی", "د", "س", "چ"].map((d, i) => (
+              <span key={d}>
+                {d}
+                <b>{num(18 - i)}°</b>
+              </span>
+            ))}
+          </div>
+          <div className="pv-event own">
+            <Mark ad={ad} />
+            <div>
+              <b>{title}</b>
+              <span>
+                {line === undefined ? "" : `${line} · `}
+                {LABEL}
+              </span>
+            </div>
+            <button type="button" tabIndex={-1}>
+              {cta ?? "ببین"}
+            </button>
+          </div>
+        </div>
+      );
+    case 106:
+    case 206:
+      return (
+        <div className="pv-phone">
+          <div className="pv-list">
+            <div className="pv-row">
+              <Ghost>{ad.slot === 106 ? "شهر و اوقات شرعی" : "اشتراک پلاس"}</Ghost>
+            </div>
+            <div className="pv-row own price">
+              <Mark ad={ad} />
+              <span className="pv-nm">
+                <b>
+                  {title}
+                  <Tag />
+                </b>
+                {line !== undefined && <small>{line}</small>}
+              </span>
+              <button type="button" className="pv-btn" tabIndex={-1}>
+                {cta ?? "عضویت"}
+              </button>
+            </div>
+            <div className="pv-row">
+              <Ghost>پشتیبانی</Ghost>
+            </div>
+          </div>
+        </div>
+      );
+    // Paket's phone app
+    case 201:
+      return (
+        <div className="pv-phone">
+          <div className="pv-news">
+            <div className="pv-ncard">
+              <span className="pv-kind info">اطلاعیه</span>
+              <Ghost>قطعی برنامه‌ریزی‌شده‌ی پرداخت کارتی</Ghost>
+            </div>
+            <div className="pv-ncard dashed own">
+              <span className="pv-kind">{LABEL}</span>
+              <b>{title}</b>
+              <span className="pv-foot">
+                <small>{line ?? ""}</small>
+                <small>{cta === undefined ? "" : `${cta} ←`}</small>
+              </span>
+            </div>
+          </div>
+        </div>
+      );
+    case 202:
+      return (
+        <div className="pv-phone">
+          <div className="pv-halves">
+            <div className="pv-box ghost">دسته‌های پرخرج</div>
+            <div className="pv-box own tile">
+              <Mark ad={ad} shape="square" />
+              <b>{title}</b>
+              <Tag />
+            </div>
+          </div>
+        </div>
+      );
+    case 203:
+    case 204:
+    case 205:
+      return (
+        <div className="pv-phone">
+          <div className="pv-list">
+            <div className="pv-row">
+              <Ghost>
+                {ad.slot === 203
+                  ? "خوراک"
+                  : ad.slot === 204
+                    ? "قبض برق · یکشنبه"
+                    : "پیش‌بینی پایان ماه"}
+              </Ghost>
+            </div>
+            <div className="pv-row">
+              <Ghost>
+                {ad.slot === 203 ? "حمل‌ونقل" : ad.slot === 204 ? "اجاره · ۱ آبان" : "سقف بودجه"}
+              </Ghost>
+            </div>
+          </div>
+          <div className="pv-box own">
+            <span className="pv-boxhead">
+              <b>{title}</b>
+              <Tag />
+            </span>
+            {line !== undefined && <span className="pv-sub">{line}</span>}
+            {cta !== undefined && (
+              <button type="button" className="pv-btn" tabIndex={-1}>
+                {cta}
+              </button>
+            )}
+          </div>
+        </div>
+      );
     default:
       return <Ghost>{title}</Ghost>;
   }
@@ -342,7 +523,9 @@ export function AdPreview({ ad }: { ad: PreviewAd }) {
       <figcaption>
         <span className="num">{num(ad.slot)}</span>
         {slot?.name ?? "جایگاه"}
-        <small>{slot?.slide}</small>
+        <small>
+          {slot === undefined ? "" : `${PRODUCT_INFO[slot.product].name} · ${slot.slide}`}
+        </small>
       </figcaption>
       <div className="pv-stage">
         <Mock ad={ad} />

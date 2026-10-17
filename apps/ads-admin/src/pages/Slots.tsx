@@ -1,10 +1,30 @@
-import { MAX_PER_SLIDE, type Ad, type Slot } from "@dotlife/ads";
+import {
+  allocate,
+  MAX_PER_SLIDE,
+  placementsOf,
+  PRODUCT_INFO,
+  PRODUCTS,
+  type Ad,
+  type PlaceForecast,
+  type Product,
+  type Slot,
+} from "@dotlife/ads";
+import { useState } from "react";
 
-import { go, useAds } from "../context";
-import { MODEL_LABEL, num, TARGET_LABEL, jalali } from "../data/labels";
-import { overfilled, slideFilled, slides, slotFill, type SlotFill } from "../data/logic";
+import { go, useAds, useCampaigns } from "../context";
+import { jalali, MODEL_LABEL, num, pct, PRODUCT_LABEL, TARGET_LABEL } from "../data/labels";
+import {
+  campaignMap,
+  overfilled,
+  slideFilled,
+  slides,
+  slotFill,
+  type Campaigns,
+  type SlotFill,
+} from "../data/logic";
 import { adsHash, newAdHash } from "../data/route";
 import { Icon } from "../ui/Icon";
+import { Tabs } from "../ui/Tabs";
 
 const FILL_LABEL: Record<SlotFill["kind"], string> = {
   live: "زنده",
@@ -54,8 +74,20 @@ function FillLine({ fill, ad }: { fill: SlotFill; ad: Ad | undefined }) {
   }
 }
 
-function SlotCard({ slot, ads, now }: { slot: Slot; ads: readonly Ad[]; now: Date }) {
-  const fill = slotFill(slot, ads, now);
+function SlotCard({
+  slot,
+  ads,
+  now,
+  campaigns,
+  place,
+}: {
+  slot: Slot;
+  ads: readonly Ad[];
+  now: Date;
+  campaigns: Campaigns;
+  place: PlaceForecast | undefined;
+}) {
+  const fill = slotFill(slot, ads, now, campaigns);
   const total = ads.filter((a) => a.slot === slot.id).length;
   return (
     <article className={`slot-card ${fill.kind}`}>
@@ -88,6 +120,16 @@ function SlotCard({ slot, ads, now }: { slot: Slot; ads: readonly Ad[]; now: Dat
         </div>
       </dl>
       <FillLine fill={fill} ad={fill.ad} />
+      {place !== undefined && place.lines.length > 0 && (
+        <div className="sold">
+          <span>
+            {pct(place.sold * 100)} فروخته‌شده امروز · {num(place.lines.length)} کمپین
+          </span>
+          <span className="meter" aria-hidden="true">
+            <i style={{ width: `${String(place.sold * 100)}%` }} />
+          </span>
+        </div>
+      )}
       <footer>
         <button
           type="button"
@@ -96,7 +138,7 @@ function SlotCard({ slot, ads, now }: { slot: Slot; ads: readonly Ad[]; now: Dat
             go(adsHash({ slot: slot.id }));
           }}
         >
-          تبلیغ‌ها ({num(total)})
+          آگهی‌ها ({num(total)})
         </button>
         <button
           type="button"
@@ -106,7 +148,7 @@ function SlotCard({ slot, ads, now }: { slot: Slot; ads: readonly Ad[]; now: Dat
           }}
         >
           <Icon name="plus" size={15} />
-          تبلیغ تازه
+          آگهی تازه
         </button>
       </footer>
     </article>
@@ -115,19 +157,24 @@ function SlotCard({ slot, ads, now }: { slot: Slot; ads: readonly Ad[]; now: Dat
 
 export function Slots() {
   const { ads, ready } = useAds();
+  const { campaigns } = useCampaigns();
+  const [product, setProduct] = useState<Product>("newtab");
   const now = new Date();
-  const groups = slides();
+  const map = campaignMap(campaigns);
+  const forecast = allocate(campaigns, now);
+  const groups = slides(product);
   const counts = { live: 0, scheduled: 0, house: 0, empty: 0 };
-  for (const g of groups) for (const s of g.slots) counts[slotFill(s, ads, now).kind]++;
+  for (const g of groups) for (const s of g.slots) counts[slotFill(s, ads, now, map).kind]++;
   return (
     <>
       <section className="intro">
         <div>
           <h1>جایگاه‌های تبلیغ</h1>
           <p>
-            ۱۵ جایگاه در شش اسلاید. همه بومی‌اند: شکل و اندازه‌ی همان چیزی را دارند که کنارش
-            نشسته‌اند و فقط برچسب «معرفی‌شده» فرقشان را نشان می‌دهد. جایگاه فروخته‌نشده خالی می‌ماند
-            یا با معرفی خود نقطه و پاکت پر می‌شود، هیچ‌وقت با تبلیغ پرکننده‌ی شبکه‌ای.
+            {num(placementsOf(product).length)} جایگاه در {PRODUCT_INFO[product].name} (
+            {PRODUCT_INFO[product].platform}). همه بومی‌اند: شکل و اندازه‌ی همان چیزی را دارند که
+            کنارش نشسته‌اند و فقط برچسب «معرفی‌شده» فرقشان را نشان می‌دهد. جایگاه فروخته‌نشده خالی
+            می‌ماند یا با معرفی خود نقطه و پاکت پر می‌شود، هیچ‌وقت با تبلیغ پرکننده‌ی شبکه‌ای.
           </p>
           <div className="summary" aria-label="خلاصه‌ی جایگاه‌ها">
             {(["live", "scheduled", "house", "empty"] as const).map((k) => (
@@ -138,31 +185,62 @@ export function Slots() {
           </div>
         </div>
       </section>
+      <div className="switches">
+        <Tabs<Product>
+          label="محصول"
+          value={product}
+          onChange={setProduct}
+          items={PRODUCTS.map((p) => ({
+            id: p,
+            label: PRODUCT_LABEL[p],
+            count: num(placementsOf(p).length),
+          }))}
+        />
+      </div>
       <ul className="rules">
-        <li>در نمای اول فقط ردیف معرفی‌شده‌ی پیشنهاد سرچ (۴) و تم روز (۳) دیده می‌شوند.</li>
+        {product === "newtab" && (
+          <li>در نمای اول فقط ردیف معرفی‌شده‌ی پیشنهاد سرچ (۴) و تم روز (۳) دیده می‌شوند.</li>
+        )}
+        {product === "paket" && (
+          <li>
+            مشترک پاکت پلاس هیچ تبلیغی نمی‌بیند؛ هیچ جایگاهی کنار موجودی، تراکنش یا بودجه نیست.
+          </li>
+        )}
+        {product === "noghte" && (
+          <li>هیچ جایگاهی داخل یادداشت‌ها، کارها یا جدول برنامه‌ها نیست.</li>
+        )}
         <li>
-          هیچ تبلیغی داخل محتوای کاربر نمی‌آید و هدف‌گیری فقط با پرسونا، شهر، فصل، مناسبت و کلمه‌ی
-          سرچ است.
+          هیچ تبلیغی داخل محتوای کاربر نمی‌آید و هدف‌گیری فقط با پرسونا، شهر، فصل، مناسبت، موضوع و
+          کلمه‌ی سرچ است.
         </li>
-        <li>در هر اسلاید حداکثر {num(MAX_PER_SLIDE)} جایگاه با هم پر می‌شوند.</li>
+        {product === "newtab" && (
+          <li>در هر اسلاید حداکثر {num(MAX_PER_SLIDE)} جایگاه با هم پر می‌شوند.</li>
+        )}
       </ul>
       {!ready && <p className="loading">در حال خواندن…</p>}
       {groups.map((g, i) => {
-        const filled = slideFilled(g, ads, now);
+        const filled = slideFilled(g, ads, now, map);
         return (
           <section key={g.name} className="slide-group">
             <h2>
-              <span>
-                اسلاید {num(i + 1)} · {g.name}
-              </span>
-              <small className={overfilled(filled) ? "warn" : undefined}>
+              <span>{product === "newtab" ? `اسلاید ${num(i + 1)} · ${g.name}` : g.name}</span>
+              <small className={product === "newtab" && overfilled(filled) ? "warn" : undefined}>
                 {num(filled)} از {num(g.slots.length)} جایگاه زنده
-                {overfilled(filled) && ` — فقط ${num(MAX_PER_SLIDE)} تا با هم نمایش داده می‌شوند`}
+                {product === "newtab" &&
+                  overfilled(filled) &&
+                  ` — فقط ${num(MAX_PER_SLIDE)} تا با هم نمایش داده می‌شوند`}
               </small>
             </h2>
             <div className="slot-grid">
               {g.slots.map((s) => (
-                <SlotCard key={s.id} slot={s} ads={ads} now={now} />
+                <SlotCard
+                  key={s.id}
+                  slot={s}
+                  ads={ads}
+                  now={now}
+                  campaigns={map}
+                  place={forecast.places.find((p) => p.slot === s.id)}
+                />
               ))}
             </div>
           </section>

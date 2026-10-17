@@ -878,9 +878,14 @@ select optgroup {
   gap: 20px;
   align-items: start;
 }
-.form-side .sticky {
+/* the side column itself stays in view; a long forecast scrolls inside it */
+.form-side {
   position: sticky;
   top: 16px;
+  align-self: start;
+  max-height: calc(100vh - 32px);
+  overflow-y: auto;
+  border-radius: var(--cr);
 }
 .fields {
   display: grid;
@@ -1727,8 +1732,9 @@ ol.toplist small {
   .two {
     grid-template-columns: 1fr;
   }
-  .form-side .sticky {
+  .form-side {
     position: static;
+    max-height: none;
   }
   .ad-head {
     display: none;
@@ -1772,5 +1778,295 @@ ol.toplist small {
   }
   .ad-row .ad-phase {
     display: none;
+  }
+}
+
+/* ---------- campaigns ---------- */
+.kpis.four {
+  grid-template-columns: repeat(4, 1fr);
+}
+.meter {
+  display: block;
+  height: 5px;
+  margin-top: 6px;
+  border-radius: 99px;
+  background: rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+}
+.meter i {
+  display: block;
+  height: 100%;
+  border-radius: 99px;
+  background: var(--noghte);
+}
+.sold {
+  font-size: 12.5px;
+  color: var(--ink-2);
+}
+.cmp-head,
+.cmp-row {
+  display: grid;
+  grid-template-columns:
+    minmax(0, 2fr) minmax(0, 1.6fr) minmax(0, 1fr) minmax(0, 1.2fr) minmax(0, 1fr)
+    110px auto;
+  align-items: center;
+  gap: 14px;
+}
+.cmp-head {
+  padding: 8px 12px;
+  color: var(--ink-3);
+  font-size: 12.5px;
+}
+.cmp-row {
+  padding: 12px;
+  border-radius: 18px;
+  border-top: 1px solid var(--stroke);
+}
+.cmp-row:first-of-type {
+  border-top: 0;
+}
+.cmp-row:hover {
+  background: rgba(255, 255, 255, 0.04);
+}
+.cmp-bid,
+.cmp-today {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.6;
+}
+.cmp-bid small,
+.cmp-today small,
+.cmp-budget small {
+  color: var(--ink-3);
+  font-size: 12px;
+}
+.prods {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.prod-card {
+  border: 1px solid var(--stroke);
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.03);
+}
+.prod-card.on {
+  border-color: rgba(140, 158, 255, 0.4);
+  background: rgba(140, 158, 255, 0.05);
+}
+.prod-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 16px;
+  cursor: pointer;
+}
+.prod-head b {
+  font-size: 16px;
+}
+.prod-head small {
+  color: var(--ink-3);
+  margin-inline-end: auto;
+}
+.prod-body {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 0 16px 16px;
+}
+.prod-body .note {
+  margin: 0;
+}
+.field-err,
+.warn.small {
+  margin: 8px 0 0;
+  color: var(--coral);
+  font-size: 13px;
+}
+.warn.small {
+  color: var(--amber);
+}
+.creatives {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.creatives li {
+  padding: 12px 14px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.04);
+}
+.cr-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.cr-head small {
+  color: var(--ink-3);
+  margin-inline-end: auto;
+}
+.cr-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 8px;
+  padding: 6px 10px;
+  border-radius: 12px;
+  color: var(--ink);
+  text-decoration: none;
+  background: rgba(255, 255, 255, 0.04);
+}
+.cr-row:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+.forecast .lines {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 14px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.line-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.line-head small {
+  color: var(--ink-3);
+  margin-inline-end: auto;
+}
+.line-head strong {
+  font-size: 18px;
+}
+.line-meta {
+  display: block;
+  margin-top: 4px;
+  color: var(--ink-3);
+  font-size: 12px;
+}
+.stat-head.cmp,
+.stat-row.cmp {
+  grid-template-columns: minmax(0, 1.8fr) 100px 80px 64px minmax(0, 1fr) 90px;
+}
+.stat-row.cmp .stat-name {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0;
+  color: var(--ink);
+  text-decoration: none;
+  line-height: 1.6;
+}
+.stat-row.cmp .stat-name small,
+.stat-name small {
+  color: var(--ink-3);
+  font-size: 12px;
+}
+.stat-row > span:last-child {
+  position: relative;
+}
+.pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+/* ---------- previews of the phone apps ---------- */
+.pv-phone {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: min(100%, 300px);
+  margin-inline: auto;
+  padding: 12px;
+  border: 1px solid var(--stroke-hi);
+  border-radius: 26px;
+  background: #171a22;
+}
+.pv-box {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 12px 14px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.06);
+  font-size: 13px;
+}
+.pv-box.own {
+  background: rgba(255, 255, 255, 0.1);
+}
+.pv-box.ghost {
+  color: var(--ink-3);
+}
+.pv-box small {
+  color: var(--ink-3);
+  font-size: 11.5px;
+}
+.pv-boxhead {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.pv-boxhead .pv-mark {
+  width: 32px;
+  height: 32px;
+  font-size: 13px;
+}
+.pv-forecast {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 10px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--ink-3);
+  font-size: 11.5px;
+}
+.pv-forecast span {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.pv-forecast b {
+  color: var(--ink-2);
+  font-weight: 500;
+}
+.pv-halves {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+.pv-box.tile {
+  align-items: flex-start;
+}
+.pv-box.tile .pv-mark {
+  width: 34px;
+  height: 34px;
+}
+.pv-kind.info {
+  background: rgba(140, 158, 255, 0.18);
+  color: var(--noghte);
+}
+.pv-phone .pv-news {
+  grid-template-columns: 1fr;
+}
+@media (max-width: 1100px) {
+  .cmp-head {
+    display: none;
+  }
+  .cmp-row {
+    grid-template-columns: minmax(0, 1fr) auto auto;
+  }
+  .cmp-row .ad-products,
+  .cmp-row .cmp-bid,
+  .cmp-row .cmp-budget {
+    display: none;
+  }
+  .kpis.four {
+    grid-template-columns: repeat(2, 1fr);
   }
 }
