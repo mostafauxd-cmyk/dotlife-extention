@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import {
   categorize,
+  ogImage,
   coverage,
   forYou,
   hottest,
@@ -133,6 +134,15 @@ describe("coverage", () => {
     expect(m.has("c")).toBe(false);
   });
 
+  it("names each other outlet once, however many times it told the story", () => {
+    const b2 = { ...b, id: "b2", url: "https://x.test/b2" };
+    expect(
+      coverage([a, b, b2])
+        .get("a")
+        ?.map((s) => s.id),
+    ).toEqual(["b"]);
+  });
+
   it("never pairs two stories of one outlet", () => {
     expect(coverage([a, { ...b, source: "isna" }]).size).toBe(0);
   });
@@ -163,5 +173,18 @@ describe("forYou and hottest", () => {
       ["y", [x]],
     ]);
     expect(hottest([x, y, z, gone], covered, 6, now).map((s) => s.id)).toEqual(["y", "z"]);
+  });
+});
+
+describe("ogImage", () => {
+  it("reads the page's own picture, in either attribute order, https only", () => {
+    expect(ogImage('<meta property="og:image" content="https://a.test/p.webp">')).toBe(
+      "https://a.test/p.webp",
+    );
+    expect(ogImage('<meta content="https://a.test/q.jpg" name="twitter:image">')).toBe(
+      "https://a.test/q.jpg",
+    );
+    expect(ogImage('<meta property="og:image" content="http://a.test/p.jpg">')).toBeNull();
+    expect(ogImage("<p>nothing</p>")).toBeNull();
   });
 });

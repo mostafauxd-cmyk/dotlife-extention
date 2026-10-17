@@ -72,40 +72,44 @@ export const PAKET_SOURCE: NewsSource = {
   id: "paket",
   name: "تیم پاکت",
   feeds: [],
-  icon: "/brands/paket.svg",
-  color: "#2FB59A",
+  icon: "/news/paket.svg",
+  color: "#4FA34F",
   group: "paket",
 };
 
+/**
+ * The badges in `public/news` follow one guide: a 96×96 tile of the outlet's own colour with a soft
+ * light from the top, its mark in white in one safe box (a monogram 56×56, a wordmark about 74×38),
+ * centred — vector where the outlet publishes one, a 384px picture where it does not. Varzesh3's
+ * mark is many-coloured, so it sits on white.
+ */
 const domestic = (
   id: string,
   name: string,
   feeds: readonly NewsFeed[],
   color: string,
-): NewsSource => ({ id, name, feeds, icon: `/news/${id}.png`, color, group: "domestic" });
+  icon = `/news/${id}.svg`,
+): NewsSource => ({ id, name, feeds, icon, color, group: "domestic" });
 
 /**
  * The sources. The four big newsrooms are read section by section (checked 2026-10-17: each section
  * feed answers with 30 stories and their pictures), the specialised outlets by their one feed.
  */
 export const NEWS_SOURCES: readonly NewsSource[] = [
-  // ISNA's own icon is only 16px (its site answers bots with a challenge): its letter on its blue
-  {
-    ...domestic(
-      "isna",
-      "ایسنا",
-      sections("https://www.isna.ir", {
-        society: 9,
-        health: 50,
-        culture: 20,
-        tech: 41,
-        sport: 24,
-        economy: 34,
-      }),
-      "#2B4E9E",
-    ),
-    icon: null,
-  },
+  domestic(
+    "isna",
+    "ایسنا",
+    sections("https://www.isna.ir", {
+      society: 9,
+      health: 50,
+      culture: 20,
+      tech: 41,
+      sport: 24,
+      economy: 34,
+    }),
+    "#0E2C50",
+    "/news/isna.png",
+  ),
   domestic(
     "mehr",
     "مهر",
@@ -117,7 +121,7 @@ export const NEWS_SOURCES: readonly NewsSource[] = [
       sport: 9,
       economy: 25,
     }),
-    "#1E6FB8",
+    "#E1251B",
   ),
   domestic(
     "khabaronline",
@@ -130,7 +134,7 @@ export const NEWS_SOURCES: readonly NewsSource[] = [
       sport: 6,
       economy: 2,
     }),
-    "#C0462F",
+    "#1B1A8C",
   ),
   domestic(
     "hamshahri",
@@ -143,23 +147,30 @@ export const NEWS_SOURCES: readonly NewsSource[] = [
       sport: 9,
       economy: 10,
     }),
-    "#B8862B",
+    "#E1251B",
+    "/news/hamshahri.png",
   ),
-  domestic("yjc", "باشگاه خبرنگاران", [feed("https://www.yjc.ir/fa/rss/allnews")], "#7A5BC4"),
+  domestic("yjc", "باشگاه خبرنگاران", [feed("https://www.yjc.ir/fa/rss/allnews")], "#8E1B21"),
   domestic(
     "donya",
     "دنیای اقتصاد",
     [feed("https://donya-e-eqtesad.com/feeds", "economy")],
-    "#C79A1E",
+    "#013B82",
   ),
   domestic(
     "eghtesadonline",
     "اقتصادآنلاین",
     [feed("https://www.eghtesadonline.com/fa/updates/allnews", "economy")],
-    "#2E8B6A",
+    "#D6262C",
   ),
-  domestic("digiato", "دیجیاتو", [feed("https://digiato.com/feed", "tech")], "#3F51B5"),
-  domestic("varzesh3", "ورزش۳", [feed("https://www.varzesh3.com/rss/all", "sport")], "#2E9B4E"),
+  domestic("digiato", "دیجیاتو", [feed("https://digiato.com/feed", "tech")], "#2C7FEA"),
+  domestic(
+    "varzesh3",
+    "ورزش۳",
+    [feed("https://www.varzesh3.com/rss/all", "sport")],
+    "#2E9B4E",
+    "/news/varzesh3.png",
+  ),
   PAKET_SOURCE,
 ];
 
@@ -488,7 +499,8 @@ const words = (title: string): Set<string> =>
 
 /**
  * For each story, the stories of other outlets that tell the same thing: headlines sharing at least
- * half their words. The map is by story id; a story with no other outlet has no entry.
+ * half their words, one story per outlet. The map is by story id; a story with no other outlet has no
+ * entry.
  */
 export function coverage(stories: readonly Story[], threshold = 0.5): Map<string, Story[]> {
   const bag = stories.map((s) => words(s.title));
@@ -502,7 +514,12 @@ export function coverage(stories: readonly Story[], threshold = 0.5): Map<string
       if (i === j || wb === undefined || b.source === a.source || wb.size < 3) return;
       let shared = 0;
       for (const w of wa) if (wb.has(w)) shared++;
-      if (shared / (wa.size + wb.size - shared) >= threshold) same.push(b);
+      // one line per outlet: its first telling of the story stands for the rest
+      if (
+        shared / (wa.size + wb.size - shared) >= threshold &&
+        !same.some((x) => x.source === b.source)
+      )
+        same.push(b);
     });
     if (same.length > 0) out.set(a.id, same);
   });
@@ -746,4 +763,64 @@ export function hottest(
     if (out.length === limit) break;
   }
   return out;
+}
+
+// ---- a picture for a story whose feed gives none ----
+
+/** The page's own picture (`og:image`, else `twitter:image`), or null. */
+export function ogImage(html: string): string | null {
+  const head = html.slice(0, 200_000);
+  for (const name of ["og:image", "og:image:secure_url", "twitter:image"]) {
+    const n = name.replace(/:/g, "\\:");
+    const m =
+      new RegExp(`<meta[^>]+(?:property|name)=["']${n}["'][^>]*content=["']([^"']+)["']`, "i").exec(
+        head,
+      ) ??
+      new RegExp(`<meta[^>]+content=["']([^"']+)["'][^>]*(?:property|name)=["']${n}["']`, "i").exec(
+        head,
+      );
+    const url = httpsOnly(m?.[1] === undefined ? null : decode(m[1]));
+    if (url !== null) return url;
+  }
+  return null;
+}
+
+const OG = "news.og.v1";
+const OG_LIMIT = 500;
+let ogKept: Promise<Record<string, string>> | null = null;
+const ogStore = (): Promise<Record<string, string>> =>
+  (ogKept ??= load<Record<string, string>>(OG).then((r) => r ?? {}));
+
+// a few at a time: the pictures are asked for as cards come into view, not all at once
+let running = 0;
+const waiting: (() => void)[] = [];
+async function oneAtATime<T>(work: () => Promise<T>): Promise<T> {
+  if (running >= 3) await new Promise<void>((go) => waiting.push(go));
+  running++;
+  try {
+    return await work();
+  } finally {
+    running--;
+    waiting.shift()?.();
+  }
+}
+
+/**
+ * The picture on the story's own page, for a feed that gives none (اقتصادآنلاین): read once, kept
+ * ("" when the page has none; a failed read is tried again another time).
+ */
+export async function articleImage(url: string): Promise<string | null> {
+  const kept = await ogStore();
+  const had = kept[url];
+  if (had !== undefined) return had === "" ? null : had;
+  const html = await oneAtATime(() => fetchText(url));
+  if (html === null) return null;
+  const img = ogImage(html);
+  kept[url] = img ?? "";
+  // the newest few hundred are kept, the oldest go
+  const all = Object.entries(kept);
+  const next = all.length > OG_LIMIT ? Object.fromEntries(all.slice(-OG_LIMIT)) : kept;
+  ogKept = Promise.resolve(next);
+  void save(OG, next).catch(() => undefined);
+  return img;
 }
