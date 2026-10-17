@@ -898,13 +898,15 @@ function MiniMonth({
   return (
     <div className="mini">
       <div className="mini-h">
-        <b>
-          {monthName({ calendar: "solar-hijri", year, month, day: 1 })} {fa(String(year))}
-        </b>
-        <span>
-          {monthName(g0)}
-          {g0.month !== g1.month ? `–${monthName(g1)}` : ""} {fa(String(g1.year))}
-        </span>
+        <div className="mini-t">
+          <b>
+            {monthName({ calendar: "solar-hijri", year, month, day: 1 })} {fa(String(year))}
+          </b>
+          <span>
+            {monthName(g0)}
+            {g0.month !== g1.month ? `–${monthName(g1)}` : ""} {fa(String(g1.year))}
+          </span>
+        </div>
         <span className="mini-nav">
           <button
             type="button"
