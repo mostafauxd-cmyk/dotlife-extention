@@ -233,6 +233,9 @@ export function Launcher() {
   const [from, setFrom] = useState<number | null>(null);
   const [over, setOver] = useState<number | null>(null);
   const [naming, setNaming] = useState(false);
+  // inside an open folder: the site being dragged, and whether it is over the way back
+  const [dragUrl, setDragUrl] = useState<string | null>(null);
+  const [overBack, setOverBack] = useState(false);
   const folder = items.find((i): i is QuickFolder => isFolder(i) && i.id === open);
   const put = (next: QuickItem[]): void => {
     updateSettings({ sites: next });
@@ -306,7 +309,28 @@ export function Launcher() {
     };
     return (
       <div className="launch infolder">
-        <div className="lt back">
+        <div
+          className={overBack ? "lt back target" : "lt back"}
+          onDragOver={(e) => {
+            // a site dropped here leaves the folder, and the row is shown again
+            if (dragUrl === null) return;
+            e.preventDefault();
+            setOverBack(true);
+          }}
+          onDragLeave={() => {
+            setOverBack(false);
+          }}
+          onDrop={(e) => {
+            e.preventDefault();
+            const site = folder.items.find((x) => x.url === dragUrl);
+            setDragUrl(null);
+            setOverBack(false);
+            if (site === undefined) return;
+            takeOut(site);
+            setOpen(null);
+            setNaming(false);
+          }}
+        >
           <button
             type="button"
             className="ic"
@@ -343,6 +367,19 @@ export function Launcher() {
           <Tile
             key={site.url}
             site={site}
+            drag={{
+              className: dragUrl === site.url ? "dragging" : "",
+              draggable: true,
+              onDragStart: (e: React.DragEvent) => {
+                setDragUrl(site.url);
+                e.dataTransfer.effectAllowed = "move";
+                e.dataTransfer.setData("text/plain", site.url);
+              },
+              onDragEnd: () => {
+                setDragUrl(null);
+                setOverBack(false);
+              },
+            }}
             removeLabel="بیرون آوردن از پوشه"
             onRemove={() => {
               takeOut(site);

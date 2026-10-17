@@ -692,7 +692,9 @@ svg {
 }
 .dateline .clock {
   color: var(--ink);
-  font-variant-numeric: tabular-nums;
+  /* the digits at their own widths: tabular ones leave wide holes round a ۱ */
+  font-variant-numeric: normal;
+  letter-spacing: 0;
 }
 .dateline i {
   width: 4px;
@@ -5368,6 +5370,11 @@ a.ts-link {
 }
 .launch.infolder .lt.back {
   cursor: default;
+}
+.lt.back.target .ic {
+  outline: 2px solid #fff;
+  outline-offset: 3px;
+  transform: scale(1.06);
 }
 .lt.back .ic {
   background: var(--tint);
