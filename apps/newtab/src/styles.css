@@ -6195,3 +6195,36 @@ a.ts-link {
 .tpl + .newf {
   margin-top: 8px;
 }
+
+/* the quick panel's words, a size up so they read as the rest of the page's */
+.qpanel .qp-k {
+  width: 34px;
+  font-size: 15px;
+}
+.qpanel .tabs.sm {
+  flex: 1;
+  height: 44px;
+}
+.qpanel .tabs.sm button {
+  font-size: 16px;
+}
+.qpanel .ts-chips button {
+  height: 36px;
+  padding: 0 14px;
+  font-size: 15.5px;
+}
+.qpanel .qp-h {
+  font-size: 15px;
+}
+.qpanel .qt b {
+  font-size: 17px;
+}
+.qpanel .qt small {
+  font-size: 14px;
+}
+.qpanel .qp-none {
+  font-size: 15px;
+}
+.qpanel .ts-notes {
+  font-size: 16px;
+}
