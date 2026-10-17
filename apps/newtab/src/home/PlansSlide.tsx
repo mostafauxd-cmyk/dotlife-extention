@@ -197,6 +197,7 @@ export function PlansSlide() {
         </div>
         <Tabs
           label="نما"
+          width={250}
           value={view}
           onChange={setView}
           items={[

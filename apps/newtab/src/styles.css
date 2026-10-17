@@ -2916,6 +2916,11 @@ svg {
   gap: 18px;
   min-height: 58px;
 }
+/* a fixed width, so the bar beside it stays where it is whatever the subtitle says */
+.ptitle {
+  flex: none;
+  width: 230px;
+}
 .ptitle b {
   display: block;
   font-size: 28px;
@@ -5784,7 +5789,7 @@ a.ts-link {
   align-items: stretch;
   gap: 2px;
   height: 52px;
-  padding: 5px;
+  padding: 4px;
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.08);
   border: 1px solid rgba(255, 255, 255, 0.1);
@@ -5794,7 +5799,7 @@ a.ts-link {
   font: inherit;
   font-size: 16px;
   font-weight: 500;
-  padding: 0 22px;
+  padding: 0 16px;
   border: 0;
   border-radius: 999px;
   background: none;
@@ -6207,9 +6212,9 @@ a.ts-link {
   font-size: 16px;
 }
 .qpanel .ts-chips button {
-  height: 30px;
-  padding: 0 13px;
-  font-size: 14.5px;
+  height: 36px;
+  padding: 0 16px;
+  font-size: 15px;
 }
 .qpanel .qp-h {
   font-size: 15px;
@@ -6240,8 +6245,8 @@ a.ts-link {
   color: var(--ink-3);
 }
 .ab-chips button {
-  height: 32px;
-  padding: 0 12px;
+  height: 36px;
+  padding: 0 16px;
   border-radius: 999px;
   border: 1px solid var(--stroke);
   background: rgba(255, 255, 255, 0.06);
