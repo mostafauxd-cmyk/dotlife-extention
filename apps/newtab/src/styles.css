@@ -3560,9 +3560,9 @@ svg {
   border-radius: 50%;
 }
 .lchips button[aria-pressed="true"] {
-  background: #fff;
-  color: #0b0d12;
-  border-color: #fff;
+  background: rgba(255, 255, 255, 0.16);
+  color: #fff;
+  border-color: transparent;
 }
 .mfoot .cnt {
   font-size: 15px;
@@ -3846,10 +3846,9 @@ svg {
   border-radius: 50%;
 }
 .ts-chips button[aria-pressed="true"] {
-  background: #fff;
-  border-color: #fff;
-  color: #0b0d12;
-  font-weight: 600;
+  background: rgba(255, 255, 255, 0.16);
+  border-color: transparent;
+  color: #fff;
 }
 .ts-chips button.add {
   padding: 0 10px;
@@ -6259,10 +6258,9 @@ a.ts-link {
   color: var(--ink);
 }
 .ab-chips button[aria-pressed="true"] {
-  background: #fff;
-  border-color: #fff;
-  color: #0b0d12;
-  font-weight: 600;
+  background: rgba(255, 255, 255, 0.16);
+  border-color: transparent;
+  color: #fff;
 }
 
 .qp-sec .ts-chips {
@@ -6383,10 +6381,9 @@ a.ts-link {
   height: 32px;
   padding: 0 12px;
   border-radius: 999px;
-  background: #fff;
-  color: #0b0d12;
+  background: rgba(255, 255, 255, 0.16);
+  color: #fff;
   font-size: 14.5px;
-  font-weight: 600;
 }
 .cp-chip button {
   width: 18px;
