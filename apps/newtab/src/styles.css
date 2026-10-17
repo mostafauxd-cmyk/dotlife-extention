@@ -6449,3 +6449,19 @@ a.ts-link {
 .ab-chips > span {
   display: none;
 }
+
+/* no title and no bar until Paket is linked: the strip is the first row */
+.money-s.nobar {
+  grid-template-rows: auto minmax(0, 1fr) auto;
+}
+.money-s.nobar .pk-empty,
+.money-s.nobar .pk-wait,
+.money-s.nobar .mkt {
+  grid-row: 2;
+}
+.money-s.nobar .news {
+  grid-row: 3;
+}
+.mbar .chip:first-of-type {
+  margin-inline-start: auto;
+}
