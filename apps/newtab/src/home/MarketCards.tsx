@@ -266,14 +266,18 @@ export function MarketCard({
   offline,
   period,
   setPeriod,
+  sel,
+  setSel,
 }: {
   prices: Prices | null;
   offline: boolean;
   period: Period;
   setPeriod: (p: Period) => void;
+  /** The price the chart is for; asked for here so a source with heavy history reads only that one. */
+  sel: string | null;
+  setSel: (id: string | null) => void;
 }) {
   const [group, setGroup] = useState<"gold" | "fx">("gold");
-  const [sel, setSel] = useState<string | null>(null);
   const items = prices?.items ?? [];
   const groups = GROUPS.filter(([g]) => items.some((i) => i.group === g));
   const here = groups.some(([g]) => g === group) ? group : (groups[0]?.[0] ?? group);
@@ -353,7 +357,7 @@ export function MarketCard({
                   aria-selected={here === g}
                   onClick={() => {
                     setGroup(g);
-                    setSel(null);
+                    setSel(items.find((i) => i.group === g)?.id ?? null);
                   }}
                 >
                   {name}

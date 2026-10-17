@@ -31,7 +31,9 @@
     "https://web.bale.ai/*",
     "https://web.rubika.ir/*",
     "https://web.eitaa.com/*",
-    "https://api.paket.app/*"
+    "https://api.paket.app/*",
+    "https://raw.githubusercontent.com/iran-market/*",
+    "https://api.nobitex.ir/*"
   ],
   "icons": {
     "16": "icons/16.png",

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 
+import { directMarket } from "./marketDirect";
 import { paketGet } from "./paket";
 
 /**
@@ -90,7 +91,7 @@ type Market = {
  * Asked again every minute while the slide is in view (the server keeps each answer for half a
  * minute); `active` is false while it is scrolled away. Changing `period` asks for that history once; what was shown stays until it arrives.
  */
-export function useMarket(period: Period, active = true): Market {
+export function useMarket(period: Period, active = true, want: string | null = null): Market {
   const [prices, setPrices] = useState<Prices | null>(null);
   const [ticker, setTicker] = useState<Ticker | null>(null);
   const [offline, setOffline] = useState(false);
@@ -99,15 +100,24 @@ export function useMarket(period: Period, active = true): Market {
     let live = true;
     const pull = (): void => {
       if (document.visibilityState !== "visible") return;
-      void Promise.all([
-        paketGet<Prices>(`/v1/market/prices?history=${String(period)}`).catch(() => null),
-        paketGet<Ticker>("/v1/market/ticker").catch(() => null),
-      ]).then(([p, t]) => {
+      void (async () => {
+        const [p, t] = await Promise.all([
+          paketGet<Prices>(`/v1/market/prices?history=${String(period)}`).catch(() => null),
+          paketGet<Ticker>("/v1/market/ticker").catch(() => null),
+        ]);
+        // Paket's server not answering, or not yet filled: the sources themselves stand in
+        let prices = p !== null && p.items.length > 0 ? p : null;
+        let ticker = t !== null && t.items.length > 0 ? t : null;
+        if (prices === null || ticker === null) {
+          const d = await directMarket(period, want).catch(() => null);
+          prices ??= d?.prices ?? null;
+          ticker ??= d?.ticker ?? null;
+        }
         if (!live) return;
-        if (p !== null) setPrices(p);
-        if (t !== null) setTicker(t);
-        setOffline(p === null && t === null);
-      });
+        if (prices !== null) setPrices(prices);
+        if (ticker !== null) setTicker(ticker);
+        setOffline(prices === null && ticker === null);
+      })();
     };
     pull();
     const t = setInterval(pull, 60_000);
@@ -117,6 +127,6 @@ export function useMarket(period: Period, active = true): Market {
       clearInterval(t);
       document.removeEventListener("visibilitychange", pull);
     };
-  }, [period, active]);
+  }, [period, active, want]);
   return { prices, ticker, offline };
 }

@@ -55,7 +55,8 @@ export function MoneySlide() {
   }, []);
   const { data, error } = useSnapshot(inView);
   const [period, setPeriod] = useState<Period>(30);
-  const { prices, ticker, offline } = useMarket(period, inView);
+  const [sel, setSel] = useState<string | null>(null);
+  const { prices, ticker, offline } = useMarket(period, inView, sel);
   const news = usePaketNews();
   const hide = s.hideMoney;
   return (
@@ -104,7 +105,14 @@ export function MoneySlide() {
         <PaketCards data={data} hide={hide} />
       )}
 
-      <MarketCard prices={prices} offline={offline} period={period} setPeriod={setPeriod} />
+      <MarketCard
+        prices={prices}
+        offline={offline}
+        period={period}
+        setPeriod={setPeriod}
+        sel={sel}
+        setSel={setSel}
+      />
 
       <div className="card g news">
         <div className="card-h">
