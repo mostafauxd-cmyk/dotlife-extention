@@ -6918,7 +6918,8 @@ a.ts-link {
   content: "";
   position: absolute;
   z-index: -1;
-  inset: 0 0 -44px;
+  /* the shade runs on well past the chips, so the fade is long and soft */
+  inset: 0 0 -76px;
   pointer-events: none;
 }
 /* a progressive blur: strong at the top, gone a little under the chips */
@@ -6929,11 +6930,12 @@ a.ts-link {
 /* the page's own dark over it, only as deep as keeps the bar's words readable on a bright picture */
 .nw-head::after {
   backdrop-filter: blur(6px);
-  mask-image: linear-gradient(to bottom, #000 60%, transparent 100%);
+  mask-image: linear-gradient(to bottom, #000 62%, transparent 100%);
   background: linear-gradient(
     to bottom,
-    color-mix(in srgb, var(--bgc) 62%, transparent) 0%,
-    color-mix(in srgb, var(--bgc) 46%, transparent) 60%,
+    color-mix(in srgb, var(--bgc) 94%, transparent) 0%,
+    color-mix(in srgb, var(--bgc) 84%, transparent) 55%,
+    color-mix(in srgb, var(--bgc) 45%, transparent) 80%,
     transparent 100%
   );
 }
