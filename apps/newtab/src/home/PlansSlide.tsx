@@ -35,6 +35,7 @@ import { fa } from "../ui/fa";
 import { Icon } from "../ui/Icon";
 import { AD_LABEL, useAd } from "../ads";
 import { Tabs } from "../ui/Tabs";
+import { openNewCategory } from "./NewCategory";
 import { openEditor } from "./TaskEditor";
 import {
   connectGoogle,
@@ -287,6 +288,10 @@ export function PlansSlide() {
           {lists.map((l) => (
             <CalSwitch key={l.id} id={l.id} name={l.name} color={l.color} hidden={hidden} />
           ))}
+          <button type="button" className="calnew" onClick={() => openNewCategory()}>
+            <Icon name="plus" />
+            دسته‌ی تازه
+          </button>
           {gcals.length > 0 && (
             <>
               <span className="cgrp">
@@ -669,6 +674,19 @@ function TodoView({
               {l.name} <small>{fa(String(openIn(l.id)))}</small>
             </button>
           ))}
+          <button
+            type="button"
+            className="tdnew"
+            aria-label="دسته‌ی تازه"
+            title="دسته‌ی تازه"
+            onClick={() => {
+              openNewCategory((l) => {
+                setOnly(l.id);
+              });
+            }}
+          >
+            <Icon name="plus" />
+          </button>
         </div>
         <form
           className="td-add"
@@ -903,7 +921,7 @@ function MiniMonth({
           </b>
           <span>
             {monthName(g0)}
-            {g0.month !== g1.month ? `–${monthName(g1)}` : ""} {fa(String(g1.year))}
+            {g0.month !== g1.month ? ` – ${monthName(g1)}` : ""} {fa(String(g1.year))}
           </span>
         </div>
         <span className="mini-nav">

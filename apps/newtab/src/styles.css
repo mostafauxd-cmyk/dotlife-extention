@@ -2933,7 +2933,9 @@ svg {
 /* a fixed width, so the bar beside it stays where it is whatever the subtitle says */
 .ptitle {
   flex: none;
-  width: 230px;
+  /* so the tab bar's middle falls on the middle of the gap between the cards below: the side card
+     (320px) plus half the grid gap, less half the bar (125px) and the bar's own gap (10px) */
+  width: calc(320px + 9px - 125px - 10px);
 }
 .ptitle b {
   display: block;
@@ -4952,14 +4954,16 @@ a.ts-link {
 }
 .pke-form {
   display: flex;
-  gap: 10px;
+  align-items: stretch;
+  gap: 6px;
   align-self: stretch;
   margin-top: 4px;
 }
 .pke-form input {
   flex: 1;
   min-width: 0;
-  height: 42px;
+  height: auto;
+  min-height: 44px;
   padding-inline: 20px;
   border-radius: 999px;
   border: 1px solid var(--stroke-hi);
@@ -4976,7 +4980,7 @@ a.ts-link {
   border-color: #5db35c;
 }
 .pke-form .cta {
-  height: 42px;
+  height: auto;
   padding: 0 22px;
   min-width: 112px;
   font-size: 15px;
@@ -6502,15 +6506,18 @@ a.ts-link {
   background: color-mix(in srgb, var(--mc) 16%, transparent);
 }
 /* the rows' highlight runs to the card's edges; the figures stay where they were */
+/* a few pixels of the card's own edge stay round the highlight; the figures keep their place */
 .mkt .plist {
-  margin-inline: -16px;
+  margin-inline: -10px;
 }
 .mkt .prow {
-  padding-inline: 24px;
+  padding-inline: 18px;
   border-radius: 14px;
 }
 /* the market's groups as a line under the active word, as in the design */
 .tabs.line {
+  /* the line runs the card's whole width */
+  margin-inline: -16px;
   height: 44px;
   padding: 0;
   gap: 0;
@@ -6543,4 +6550,110 @@ a.ts-link {
 }
 .tabs.line.morph::before {
   display: none;
+}
+
+/* the shared «دسته‌ی تازه» sheet, and where it is asked for */
+.cat-bg {
+  z-index: 32;
+}
+.modal.cat {
+  width: min(420px, calc((100vw / var(--z)) - 32px));
+  gap: 14px;
+}
+.cat-hint {
+  margin: -6px 0 0;
+  font-size: 14px;
+  color: var(--ink-3);
+}
+.cat-field {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  height: 52px;
+  padding-inline: 18px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+.cat-field:focus-within {
+  border-color: rgba(255, 255, 255, 0.24);
+}
+.cat-field i {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  flex: none;
+}
+.cat-field input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  outline: 0;
+  background: none;
+  color: var(--ink);
+  font: inherit;
+  font-size: 17px;
+}
+.cat-colors {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.cat-colors button {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 0;
+  cursor: pointer;
+  padding: 0;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.18);
+}
+.cat-colors button[aria-checked="true"] {
+  box-shadow:
+    0 0 0 3px color-mix(in srgb, var(--bgc) 90%, #000),
+    0 0 0 5px #fff;
+}
+.modal.cat .cta {
+  height: 48px;
+  font-size: 16px;
+}
+.calnew {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 2px;
+  border: 0;
+  background: none;
+  color: var(--ink-3);
+  font: inherit;
+  font-size: 14.5px;
+  cursor: pointer;
+}
+.calnew:hover {
+  color: var(--ink);
+}
+.calnew .ico {
+  width: 16px;
+  height: 16px;
+}
+.tdnew {
+  flex: none;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 1px dashed var(--stroke-hi);
+  background: none;
+  color: var(--ink-2);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  padding: 0;
+}
+.tdnew:hover {
+  color: var(--ink);
+  background: rgba(255, 255, 255, 0.06);
+}
+.tdnew .ico {
+  width: 16px;
+  height: 16px;
 }

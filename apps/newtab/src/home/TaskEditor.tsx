@@ -24,7 +24,6 @@ import {
 
 import { useRecordsVersion } from "../hooks";
 import {
-  addFolder,
   createTask,
   liveLists,
   liveNotes,
@@ -60,6 +59,7 @@ import {
 } from "../google";
 import { fa } from "../ui/fa";
 import { Icon } from "../ui/Icon";
+import { openNewCategory } from "./NewCategory";
 
 /**
  * The task form, as the app's `TaskSheet` (apps/mobile/src/tasks/TaskSheet.tsx) — the same fields in
@@ -302,7 +302,6 @@ function Sheet({ input, onClose }: { input: EditorInput; onClose: () => void }) 
   const [start0] = useState<Fields>(() => initial(input, todayD));
   const [f, setF] = useState<Fields>(start0);
   const [panel, setPanel] = useState<Panel>(null);
-  const [naming, setNaming] = useState(false);
   const [ask, setAsk] = useState<{
     title: string;
     allowThis: boolean;
@@ -618,38 +617,20 @@ function Sheet({ input, onClose }: { input: EditorInput; onClose: () => void }) 
                 </button>
               );
             })}
-            {event === undefined && naming ? (
-              <input
-                className="ts-newlist"
-                autoFocus
-                placeholder="اسم لیست…"
-                onKeyDown={(e) => {
-                  const v = e.currentTarget.value.trim();
-                  if (e.key === "Enter" && v !== "") {
-                    const l = addFolder(v, "#8C9EFF");
-                    update({ listId: l.id });
-                    setNaming(false);
-                  } else if (e.key === "Escape") {
-                    e.stopPropagation();
-                    setNaming(false);
-                  }
-                }}
-                onBlur={() => {
-                  setNaming(false);
-                }}
-              />
-            ) : event === undefined ? (
+            {event === undefined && (
               <button
                 type="button"
                 className="add"
                 onClick={() => {
-                  setNaming(true);
+                  openNewCategory((l) => {
+                    update({ listId: l.id });
+                  });
                 }}
               >
                 <Icon name="plus" />
                 لیست
               </button>
-            ) : null}
+            )}
             {/* the person's Google calendars: a new item can go there as an event */}
             {destCalendars.map((c) => {
               const on = f.calendarId === c.id;

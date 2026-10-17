@@ -4,7 +4,6 @@ import { localNow } from "@dotlife/tasks";
 
 import { useRecordsVersion, useSyncState } from "../hooks";
 import {
-  addFolder,
   allNotes,
   liveLists,
   liveTasks,
@@ -40,6 +39,7 @@ import { ago, fa } from "../ui/fa";
 import { Icon } from "../ui/Icon";
 import { SyncInvite } from "./Corners";
 import { AD_LABEL, useAd } from "../ads";
+import { openNewCategory } from "./NewCategory";
 import { onOpenNote } from "./openNote";
 
 /**
@@ -53,7 +53,6 @@ import { onOpenNote } from "./openNote";
 type Folder = string;
 
 /** The colours a new folder takes in turn (the app's list colours). */
-const COLORS = ["#8C9EFF", "#5AB0FF", "#F2A65A", "#8ADD88", "#E59AAA", "#B79CF0", "#F2C94C"];
 
 const dayOf = (iso: string) => localNow(TIME_ZONE, new Date(iso)).date;
 
@@ -62,7 +61,6 @@ export function NotesSlide({ signedIn, onSignIn }: { signedIn: boolean; onSignIn
   const [folder, setFolder] = useState<Folder>("all");
   const [query, setQuery] = useState("");
   const [openId, setOpenId] = useState<string | null>(null);
-  const [naming, setNaming] = useState(false);
   const focusTitle = useRef(false);
   // a note picked elsewhere on the page (the search box's recent notes)
   useEffect(
@@ -146,35 +144,18 @@ export function NotesSlide({ signedIn, onSignIn }: { signedIn: boolean; onSignIn
             setOpenId(id);
           }}
         />
-        {naming ? (
-          <input
-            className="newf-in"
-            autoFocus
-            placeholder="اسم دسته…"
-            onKeyDown={(e) => {
-              const v = e.currentTarget.value.trim();
-              if (e.key === "Enter" && v !== "") {
-                const l = addFolder(v, COLORS[lists.length % COLORS.length] ?? "#8C9EFF");
-                setNaming(false);
-                setFolder(l.id);
-              } else if (e.key === "Escape") setNaming(false);
-            }}
-            onBlur={() => {
-              setNaming(false);
-            }}
-          />
-        ) : (
-          <button
-            type="button"
-            className="newf"
-            onClick={() => {
-              setNaming(true);
-            }}
-          >
-            <Icon name="plus" />
-            دسته‌ی تازه
-          </button>
-        )}
+        <button
+          type="button"
+          className="newf"
+          onClick={() => {
+            openNewCategory((l) => {
+              setFolder(l.id);
+            });
+          }}
+        >
+          <Icon name="plus" />
+          دسته‌ی تازه
+        </button>
       </aside>
 
       <div className="card g nlist">

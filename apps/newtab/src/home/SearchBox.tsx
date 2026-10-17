@@ -16,6 +16,7 @@ import { search, suggest } from "../platform";
 import { addDays } from "@dotlife/tasks";
 import { ago } from "../ui/fa";
 import { GMark, Icon } from "../ui/Icon";
+import { openNewCategory } from "./NewCategory";
 import { openNote } from "./openNote";
 import { openEditor } from "./TaskEditor";
 
@@ -459,6 +460,18 @@ export function SearchBox({
                     {l.name}
                   </button>
                 ))}
+                <button
+                  type="button"
+                  className="add"
+                  onClick={() => {
+                    openNewCategory((l) => {
+                      setListId(l.id);
+                    });
+                  }}
+                >
+                  <Icon name="plus" />
+                  دسته
+                </button>
               </div>
             </div>
           )}
