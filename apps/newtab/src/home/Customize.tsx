@@ -158,26 +158,6 @@ export function Customize({
                   ))}
                 </div>
               </section>
-
-              <section className="cs">
-                <h3>پیشنهادهای معرفی‌شده</h3>
-                <button
-                  type="button"
-                  className="trow"
-                  aria-pressed={isOn(s, "ads")}
-                  onClick={() => {
-                    toggleBlock("ads");
-                  }}
-                >
-                  نمایش پیشنهادهای معرفی‌شده
-                  <span className="sw" />
-                </button>
-                <div className="chint">
-                  پیشنهادها روی همین دستگاه و فقط با شهر، علاقه‌ها، فصل و مناسبت انتخاب می‌شوند؛
-                  هیچ‌چیزِ نوشته‌ات (کار، یادداشت، پول) خوانده نمی‌شود و این اطلاعات جایی فرستاده
-                  نمی‌شود.
-                </div>
-              </section>
             </>
           )}
 

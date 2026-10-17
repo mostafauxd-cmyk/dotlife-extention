@@ -35,8 +35,8 @@ export const BLOCKS = [
 export const SLIDES = [
   ["s-plans", "برنامه‌ها"],
   ["s-money", "پول"],
-  ["s-news", "خبر"],
   ["s-notes", "یادداشت‌ها"],
+  ["s-news", "خبر"],
   ["s-social", "شبکه‌ها"],
 ] as const;
 export type SlideId = (typeof SLIDES)[number][0];
@@ -76,6 +76,8 @@ export type Settings = {
   hideMoney: boolean;
   /** News sources the person switched off (every other source of `NEWS_SOURCES` is read). */
   newsOff: string[];
+  /** News sources the person added by an RSS address. */
+  newsOwn: { id: string; name: string; feed: string }[];
   /**
    * What the person chose to say about themself, only to be offered better «معرفی‌شده» boxes: a
    * city and topics they follow. It stays on this device; nothing is sent anywhere.
@@ -107,7 +109,9 @@ export const DEFAULTS: Settings = {
     seen: [],
   },
   hideMoney: false,
-  newsOff: [],
+  // the outlets read from the person's own connection start off (see `NEWS_OFF_AT_FIRST`)
+  newsOff: ["bbc", "dw", "euronews"],
+  newsOwn: [],
   city: null,
   topics: [],
 };
@@ -143,11 +147,22 @@ export function toggleBlock(id: BlockId): void {
   updateSettings({ off: isOn(s, id) ? [...s.off, id] : s.off.filter((x) => x !== id) });
 }
 
-/** The slides in the person's order (switched-off ones included; `isOn` tells). */
+/**
+ * The slides in the person's order (switched-off ones included; `isOn` tells). A slide the saved
+ * order has never heard of (one added since) takes its place in the design's order: just before the
+ * next slide of the design that is in the list, or last.
+ */
 export function orderedSlides(s: Settings): SlideId[] {
-  const known = new Set<string>(SLIDES.map(([id]) => id));
-  const kept = s.slideOrder.filter((id) => known.has(id));
-  return [...kept, ...SLIDES.map(([id]) => id).filter((id) => !kept.includes(id))];
+  const design = SLIDES.map(([id]) => id);
+  const out: SlideId[] = s.slideOrder.filter(
+    (id, i, all) => design.includes(id) && all.indexOf(id) === i,
+  );
+  design.forEach((id, i) => {
+    if (out.includes(id)) return;
+    const next = design.slice(i + 1).find((x) => out.includes(x));
+    out.splice(next === undefined ? out.length : out.indexOf(next), 0, id);
+  });
+  return out;
 }
 
 /** One step up (-1) or down (+1) among the slides. */

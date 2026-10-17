@@ -15,6 +15,7 @@ import { SearchBox } from "./home/SearchBox";
 import { SignIn } from "./home/SignIn";
 import { SocialSlide } from "./home/SocialSlide";
 import { NewCategoryHost } from "./home/NewCategory";
+import { PaketPairHost } from "./home/PaketPair";
 import { TaskEditorHost } from "./home/TaskEditor";
 import { useSession, useSettings } from "./hooks";
 import { onArrival } from "./noghte/sync";
@@ -260,6 +261,7 @@ export function App() {
       )}
       <TaskEditorHost />
       <NewCategoryHost />
+      <PaketPairHost />
       {toast !== null && <div className="toast">{toast}</div>}
     </div>
   );

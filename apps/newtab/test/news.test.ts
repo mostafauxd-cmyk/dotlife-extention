@@ -1,6 +1,16 @@
 import { describe, expect, it } from "vitest";
 
-import { mergeStories, NEWS_SOURCES, parseFeed, plain, type Story } from "../src/news";
+import {
+  categorize,
+  coverage,
+  forYou,
+  hottest,
+  mergeStories,
+  NEWS_SOURCES,
+  parseFeed,
+  plain,
+  type Story,
+} from "../src/news";
 
 const src = NEWS_SOURCES.find((x) => x.id === "isna") ?? NEWS_SOURCES[0];
 if (src === undefined) throw new Error("no sources");
@@ -11,6 +21,7 @@ const FEED = `<?xml version="1.0"?><rss version="2.0"><channel><title>x</title>
   <link>https://www.isna.ir/news/1</link>
   <description>خلاصه‌ی خبر.</description>
   <enclosure url="https://cdn.isna.ir/a.jpg" length="1" type="image/jpeg" />
+  <category>اقتصاد &gt; بانک</category>
   <pubDate>Sat, 17 Oct 2026 09:54:23 GMT</pubDate>
 </item>
 <item>
@@ -39,6 +50,11 @@ describe("parseFeed", () => {
     });
   });
 
+  it("takes the category from the feed's tags when the source has none of its own", () => {
+    expect(stories[0]?.category).toBe("economy");
+    expect(stories[1]?.category).toBe("society");
+  });
+
   it("opens CDATA, takes the item's own image, and drops a feed's «The post …» footer", () => {
     expect(stories[1]).toMatchObject({
       title: "دیجیاتو: خبر دو",
@@ -54,18 +70,27 @@ describe("plain", () => {
   });
 });
 
-describe("mergeStories", () => {
-  const story = (id: string, title: string, at: string): Story => ({
-    id,
-    title,
-    summary: "",
-    image: null,
-    source: "isna",
-    category: "general",
-    at,
-    url: `https://x.test/${id}`,
+describe("categorize", () => {
+  it("keeps a source's own category, else goes by the words", () => {
+    expect(categorize("هر چیزی", "tech")).toBe("tech");
+    expect(categorize("پرسپولیس برد", null)).toBe("sport");
+    expect(categorize("قیمت دلار امروز", null)).toBe("economy");
+    expect(categorize("هوا ابری است", null)).toBe("society");
   });
+});
 
+const story = (id: string, title: string, at: string, source = "isna"): Story => ({
+  id,
+  title,
+  summary: "",
+  image: null,
+  source,
+  category: "society",
+  at,
+  url: `https://x.test/${id}`,
+});
+
+describe("mergeStories", () => {
   it("sorts newest first and drops the same headline twice", () => {
     const a = [story("1", "یک", "2026-10-17T08:00:00Z"), story("2", "دو", "2026-10-17T10:00:00Z")];
     const b = [story("3", "دو", "2026-10-17T09:00:00Z"), story("4", "سه", "2026-10-17T09:30:00Z")];
@@ -77,5 +102,60 @@ describe("mergeStories", () => {
       story(String(i), `t${String(i)}`, `2026-10-17T${String(i % 24).padStart(2, "0")}:00:00Z`),
     );
     expect(mergeStories([many], 5)).toHaveLength(5);
+  });
+});
+
+describe("coverage", () => {
+  const a = story(
+    "a",
+    "عرضه اولیه یکشنبه یک شرکت پتروشیمی در فرابورس",
+    "2026-10-17T09:00:00Z",
+    "isna",
+  );
+  const b = story(
+    "b",
+    "عرضه اولیه یکشنبه شرکت پتروشیمی در فرابورس انجام می‌شود",
+    "2026-10-17T09:10:00Z",
+    "donya",
+  );
+  const c = story("c", "هوا ابری است و باران می‌بارد", "2026-10-17T09:20:00Z", "yjc");
+
+  it("pairs the same story in different outlets, and not different ones", () => {
+    const m = coverage([a, b, c]);
+    expect(m.get("a")?.map((s) => s.id)).toEqual(["b"]);
+    expect(m.get("b")?.map((s) => s.id)).toEqual(["a"]);
+    expect(m.has("c")).toBe(false);
+  });
+
+  it("never pairs two stories of one outlet", () => {
+    expect(coverage([a, { ...b, source: "isna" }]).size).toBe(0);
+  });
+});
+
+describe("forYou and hottest", () => {
+  const now = Date.parse("2026-10-17T12:00:00Z");
+  const fresh = story("f", "خبر تازه", "2026-10-17T11:30:00Z");
+  const old = {
+    ...story("o", "خبر ورزشی قدیمی", "2026-10-17T05:00:00Z"),
+    category: "sport" as const,
+  };
+
+  it("puts a followed topic above a newer story, and a read one below", () => {
+    const r = forYou([fresh, old], { topics: ["ورزش"], read: new Set(), covered: new Map(), now });
+    expect(r.map((s) => s.id)).toEqual(["o", "f"]);
+    const r2 = forYou([fresh, old], { topics: [], read: new Set(["f"]), covered: new Map(), now });
+    expect(r2.map((s) => s.id)).toEqual(["o", "f"]);
+  });
+
+  it("ranks the last day's stories by how many outlets tell them (the newer of two twins), one line per story", () => {
+    const x = story("x", "خبر مهم", "2026-10-17T10:00:00Z", "isna");
+    const y = story("y", "خبر مهم است", "2026-10-17T10:05:00Z", "donya");
+    const z = story("z", "خبر دیگر", "2026-10-17T11:00:00Z", "yjc");
+    const gone = story("g", "خبر دیروز", "2026-10-15T11:00:00Z", "yjc");
+    const covered = new Map([
+      ["x", [y]],
+      ["y", [x]],
+    ]);
+    expect(hottest([x, y, z, gone], covered, 6, now).map((s) => s.id)).toEqual(["y", "z"]);
   });
 });

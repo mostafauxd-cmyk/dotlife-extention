@@ -33,6 +33,7 @@ export type Peek = { label: string; keys: ReadonlySet<string> } | null;
 export function Corner({
   pos,
   icon,
+  mark,
   label,
   pinned,
   peek,
@@ -41,6 +42,8 @@ export function Corner({
 }: {
   pos: "tr" | "tl" | "br" | "bl";
   icon: IconName;
+  /** Instead of the icon (Paket's own logo). */
+  mark?: ReactNode;
   label: string;
   pinned: boolean;
   peek: Peek;
@@ -53,7 +56,7 @@ export function Corner({
   return (
     <div className={cls} tabIndex={0} aria-label={label}>
       <span className={dot ? "cmk has" : "cmk"} title={label}>
-        <Icon name={icon} />
+        {mark ?? <Icon name={icon} />}
       </span>
       <span className="cl">{label}</span>
       <div className="ccard">

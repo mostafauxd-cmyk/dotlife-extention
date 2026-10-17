@@ -501,7 +501,6 @@ function News({ items }: { items: ReturnType<typeof usePaketNews> }) {
     <div className="card g news">
       <div className="card-h">
         <h2>خبر و پیشنهاد</h2>
-        <span className="sub">از تیم پاکت · همان خبرهای صفحه‌ی خانه‌ی اپ</span>
         <More place="news">همه‌ی خبرها</More>
       </div>
       <div className="ncards">

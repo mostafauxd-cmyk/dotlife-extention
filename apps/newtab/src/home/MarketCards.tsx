@@ -1,5 +1,4 @@
-import { Fragment, useEffect, useState } from "react";
-import { createPortal } from "react-dom";
+import { Fragment, useState } from "react";
 
 import { localNow } from "@dotlife/tasks";
 
@@ -14,11 +13,10 @@ import {
   type TickerItem,
 } from "../market";
 import { TIME_ZONE } from "../noghte/model";
-import { toman, usePaketLinked } from "../paket";
+import { toman } from "../paket";
 import { fa } from "../ui/fa";
-import { Icon } from "../ui/Icon";
 import { Tabs } from "../ui/Tabs";
-import { PaketLogo, PaketSync } from "./PaketSync";
+import { PaketPairModal } from "./PaketPair";
 
 /**
  * The market half of the money slide, from Paket's public prices — it needs no link: the strip of
@@ -440,60 +438,27 @@ function SponsoredRow() {
  * it yet — so the tab asks them in. Not linked: the way to link Paket; linked: where to record it.
  */
 function PortfolioInvite({ onClose }: { onClose: () => void }) {
-  const linked = usePaketLinked();
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent): void => {
-      if (e.key === "Escape") onClose();
-    };
-    addEventListener("keydown", onKey);
-    return () => {
-      removeEventListener("keydown", onKey);
-    };
-  }, [onClose]);
-  return createPortal(
-    <div
-      className="modal-bg"
-      onMouseDown={(e) => {
-        if (e.target === e.currentTarget) onClose();
-      }}
-    >
-      <div
-        className="modal wide pf-invite"
-        role="dialog"
-        aria-modal="true"
-        aria-label="دارایی‌های من"
-      >
-        <div className="card-h">
-          <PaketLogo size={40} />
-          <h2>دارایی‌هایت را هم همین‌جا ببین</h2>
-          <button type="button" className="rbtn sm" aria-label="بستن" onClick={onClose}>
-            <Icon name="close" />
-          </button>
+  return (
+    <PaketPairModal
+      title="دارایی‌هایت را هم همین‌جا ببین"
+      lead="پاکت را به این صفحه وصل کن تا دارایی‌هایت (طلا، سکه، ارز) را با قیمت روز و تغییر امروزشان همین‌جا ببینی. فقط خواندنی است؛ از این‌جا چیزی در پاکت عوض نمی‌شود."
+      linked={
+        <div className="pf-body">
+          <p>
+            هنوز دارایی‌ای در پاکت ثبت نشده. طلا، سکه یا ارزی که داری را آن‌جا بنویس؛ این‌جا هر لحظه
+            با قیمت روز ارزش‌شان و تغییر امروزشان را می‌بینی.
+          </p>
+          <a
+            className="cta"
+            href="https://paket.life/?src=chrome&c=money-assets"
+            target="_blank"
+            rel="noreferrer"
+          >
+            باز کردن پاکت
+          </a>
         </div>
-        {linked ? (
-          <div className="pf-body">
-            <p>
-              هنوز دارایی‌ای در پاکت ثبت نشده. طلا، سکه یا ارزی که داری را آن‌جا بنویس؛ این‌جا هر
-              لحظه با قیمت روز ارزش‌شان و تغییر امروزشان را می‌بینی.
-            </p>
-            <a
-              className="cta"
-              href="https://paket.life/?src=chrome&c=money-assets"
-              target="_blank"
-              rel="noreferrer"
-            >
-              باز کردن پاکت
-            </a>
-          </div>
-        ) : (
-          <PaketSync
-            embedded
-            lead="پاکت را به این صفحه وصل کن تا دارایی‌هایت (طلا، سکه، ارز) را با قیمت روز و تغییر امروزشان همین‌جا ببینی. فقط خواندنی است؛ از این‌جا چیزی در پاکت عوض نمی‌شود."
-          />
-        )}
-      </div>
-    </div>,
-    // inside the page's root, where the theme's colours are defined (the body has none)
-    document.querySelector(".nt") ?? document.body,
+      }
+      onClose={onClose}
+    />
   );
 }
