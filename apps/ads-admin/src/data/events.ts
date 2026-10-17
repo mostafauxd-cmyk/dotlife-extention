@@ -1,4 +1,4 @@
-import { tehranDay, type Ad, type Product } from "@dotlife/ads";
+import { tehranDay, type Ad, type Campaign, type Product } from "@dotlife/ads";
 
 import type { KeyValueStorage } from "./store";
 
@@ -174,4 +174,61 @@ export function demoEvents(ads: readonly Ad[], now: Date, days = 14, seed = 7): 
     }
   }
   return out;
+}
+
+export type CampaignStats = Totals & {
+  campaign: string;
+  /** Toman, worked out from the counts and the bid; undefined for pay-per-action models. */
+  spend: number | undefined;
+};
+
+/**
+ * Each campaign's counts and what they cost: a thousand showings or a click at the bid, a sponsor's
+ * price for each day it was shown. Actions (a purchase, a signup) are counted by the advertiser's
+ * own system, so their spend stays unknown here.
+ */
+export function campaignStats(
+  rows: readonly StatRow[],
+  ads: readonly Ad[],
+  campaigns: readonly Campaign[],
+  f: StatsFilter,
+): CampaignStats[] {
+  const owner = new Map(ads.flatMap((a) => (a.campaign === undefined ? [] : [[a.id, a.campaign]])));
+  const out = new Map<string, Totals & { days: Set<string> }>();
+  for (const r of rows) {
+    if (f.product !== "all" && r.product !== f.product) continue;
+    if (f.since !== undefined && r.day < f.since) continue;
+    const c = owner.get(r.ad);
+    if (c === undefined) continue;
+    const t = out.get(c) ?? { impressions: 0, clicks: 0, days: new Set<string>() };
+    t.impressions += r.impressions;
+    t.clicks += r.clicks;
+    if (r.impressions > 0) t.days.add(r.day);
+    out.set(c, t);
+  }
+  return campaigns.flatMap((c) => {
+    const t = out.get(c.id);
+    if (t === undefined) return [];
+    let spend: number | undefined;
+    switch (c.model) {
+      case "per-thousand":
+        spend = (t.impressions / 1000) * c.bid;
+        break;
+      case "per-click":
+        spend = t.clicks * c.bid;
+        break;
+      case "daily-sponsor":
+      case "occasion-sponsor":
+        spend = t.days.size * c.bid;
+        break;
+      case "monthly-sponsor":
+        spend = (t.days.size * c.bid) / 30;
+        break;
+      case "per-purchase":
+      case "per-signup":
+      case "per-sale":
+        spend = undefined;
+    }
+    return [{ campaign: c.id, impressions: t.impressions, clicks: t.clicks, spend }];
+  });
 }

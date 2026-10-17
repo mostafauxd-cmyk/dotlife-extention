@@ -1,4 +1,11 @@
-import { adSchema, bundleSchema, type Ad, type Bundle } from "@dotlife/ads";
+import {
+  adSchema,
+  bundleSchema,
+  campaignSchema,
+  type Ad,
+  type Bundle,
+  type Campaign,
+} from "@dotlife/ads";
 
 import { buildBundle } from "./logic";
 
@@ -17,6 +24,11 @@ export interface AdsStore {
   delete(id: string): Promise<void>;
   /** Swaps the whole list (importing a bundle in «replace» mode). */
   replaceAll(ads: readonly Ad[]): Promise<void>;
+  listCampaigns(): Promise<Campaign[]>;
+  /** Adds a campaign, or replaces the one with the same id. Throws when it is not valid. */
+  putCampaign(campaign: Campaign): Promise<void>;
+  /** Deletes a campaign and its creatives. */
+  deleteCampaign(id: string): Promise<void>;
   /** The last bundle that was published, if any. */
   lastBundle(): Promise<Bundle | undefined>;
   /** Writes the next bundle (version + 1) from the ads that are live or waiting, and returns it. */
@@ -43,11 +55,14 @@ export class MemoryStorage implements KeyValueStorage {
 
 export const ADS_KEY = "ads-admin.ads";
 export const BUNDLE_KEY = "ads-admin.bundle";
+export const CAMPAIGNS_KEY = "ads-admin.campaigns";
 
 export type LocalAdsStoreOptions = {
   storage?: KeyValueStorage;
   /** Ads to start with when nothing has been saved yet. */
   seed?: readonly Ad[];
+  /** Campaigns (and their creatives) to start with when none have been saved yet. */
+  seedCampaigns?: { campaigns: readonly Campaign[]; ads: readonly Ad[] };
 };
 
 /** Keeps ads in the browser's localStorage. The panel's only store until a server exists. */
@@ -55,9 +70,58 @@ export class LocalAdsStore implements AdsStore {
   private readonly storage: KeyValueStorage;
   private readonly listeners = new Set<() => void>();
 
-  constructor({ storage = localStorage, seed }: LocalAdsStoreOptions = {}) {
+  constructor({ storage = localStorage, seed, seedCampaigns }: LocalAdsStoreOptions = {}) {
     this.storage = storage;
     if (seed !== undefined && this.storage.getItem(ADS_KEY) === null) this.write([...seed]);
+    if (seedCampaigns !== undefined && this.storage.getItem(CAMPAIGNS_KEY) === null) {
+      this.writeCampaigns([...seedCampaigns.campaigns]);
+      const have = new Set(this.read().map((a) => a.id));
+      this.write([...this.read(), ...seedCampaigns.ads.filter((a) => !have.has(a.id))]);
+    }
+  }
+
+  private readCampaigns(): Campaign[] {
+    const raw = this.storage.getItem(CAMPAIGNS_KEY);
+    if (raw === null) return [];
+    try {
+      const json: unknown = JSON.parse(raw);
+      if (!Array.isArray(json)) return [];
+      return json.flatMap((x: unknown) => {
+        const r = campaignSchema.safeParse(x);
+        return r.success ? [r.data] : [];
+      });
+    } catch {
+      return [];
+    }
+  }
+
+  private writeCampaigns(list: Campaign[]): void {
+    this.storage.setItem(CAMPAIGNS_KEY, JSON.stringify(list));
+    this.emit();
+  }
+
+  listCampaigns(): Promise<Campaign[]> {
+    return Promise.resolve(this.readCampaigns());
+  }
+
+  putCampaign(campaign: Campaign): Promise<void> {
+    try {
+      const c = campaignSchema.parse(campaign);
+      const all = this.readCampaigns();
+      const i = all.findIndex((x) => x.id === c.id);
+      if (i >= 0) all[i] = c;
+      else all.push(c);
+      this.writeCampaigns(all);
+      return Promise.resolve();
+    } catch (e) {
+      return Promise.reject(e instanceof Error ? e : new Error("put failed"));
+    }
+  }
+
+  deleteCampaign(id: string): Promise<void> {
+    this.write(this.read().filter((a) => a.campaign !== id));
+    this.writeCampaigns(this.readCampaigns().filter((c) => c.id !== id));
+    return Promise.resolve();
   }
 
   private read(): Ad[] {
@@ -141,7 +205,7 @@ export class LocalAdsStore implements AdsStore {
 
   async publish(now: Date = new Date()): Promise<Bundle> {
     const previous = await this.lastBundle();
-    const bundle = buildBundle(this.read(), previous?.version ?? 0, now);
+    const bundle = buildBundle(this.read(), previous?.version ?? 0, now, this.readCampaigns());
     this.storage.setItem(BUNDLE_KEY, JSON.stringify(bundle));
     this.emit();
     return bundle;
@@ -151,7 +215,7 @@ export class LocalAdsStore implements AdsStore {
     this.listeners.add(listener);
     // a change from another tab arrives as a storage event
     const onStorage = (e: StorageEvent): void => {
-      if (e.key === ADS_KEY || e.key === BUNDLE_KEY) listener();
+      if (e.key === ADS_KEY || e.key === BUNDLE_KEY || e.key === CAMPAIGNS_KEY) listener();
     };
     const target = typeof window === "undefined" ? undefined : window;
     target?.addEventListener("storage", onStorage);

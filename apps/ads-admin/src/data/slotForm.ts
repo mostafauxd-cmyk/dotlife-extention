@@ -180,6 +180,95 @@ export const SLOT_FORM: Record<number, SlotForm> = {
     image: true,
     extra: [],
   },
+  // Noghte's phone app
+  101: {
+    titleLabel: "عنوان کارت",
+    titleMax: 60,
+    lineLabel: "متن کارت",
+    ctaLabel: "متن دکمه",
+    ctaPlaceholder: "ببین",
+    glyph: true,
+    tint: "optional",
+    image: true,
+    extra: [],
+  },
+  102: {
+    titleLabel: "عنوان کارت",
+    titleMax: 60,
+    lineLabel: "متن کارت",
+    ctaLabel: "متن دکمه",
+    ctaPlaceholder: "ببین",
+    glyph: true,
+    tint: "optional",
+    image: true,
+    extra: [],
+  },
+  103: { titleLabel: "متن ردیف", titleMax: 50, extra: [] },
+  104: { titleLabel: "متن ردیف", titleMax: 60, lineLabel: "توضیح کوتاه", extra: [] },
+  105: {
+    titleLabel: "عنوان کارت",
+    titleMax: 60,
+    lineLabel: "توضیح",
+    ctaLabel: "متن دکمه",
+    ctaPlaceholder: "ببین",
+    glyph: true,
+    tint: "optional",
+    extra: [],
+  },
+  106: {
+    titleLabel: "عنوان ردیف",
+    titleMax: 50,
+    lineLabel: "توضیح کوتاه",
+    ctaLabel: "متن دکمه",
+    ctaPlaceholder: "عضویت",
+    glyph: true,
+    tint: "optional",
+    extra: [],
+  },
+  // Paket's phone app
+  201: {
+    titleLabel: "عنوان کارت",
+    titleMax: 80,
+    lineLabel: "از طرف …",
+    ctaLabel: "متن دکمه",
+    ctaPlaceholder: "ببین",
+    extra: [],
+  },
+  202: {
+    titleLabel: "نام کاشی",
+    titleMax: 24,
+    glyph: true,
+    tint: "required",
+    image: true,
+    extra: [],
+  },
+  203: {
+    titleLabel: "عنوان پیشنهاد",
+    titleMax: 70,
+    lineLabel: "توضیح",
+    ctaLabel: "متن دکمه",
+    ctaPlaceholder: "ببین",
+    extra: [],
+  },
+  204: {
+    titleLabel: "عنوان پیشنهاد",
+    titleMax: 70,
+    lineLabel: "توضیح",
+    ctaLabel: "متن دکمه",
+    ctaPlaceholder: "ببین",
+    extra: [],
+  },
+  205: { titleLabel: "متن نکته", titleMax: 70, lineLabel: "توضیح", extra: [] },
+  206: {
+    titleLabel: "عنوان ردیف",
+    titleMax: 50,
+    lineLabel: "توضیح کوتاه",
+    ctaLabel: "متن دکمه",
+    ctaPlaceholder: "عضویت",
+    glyph: true,
+    tint: "optional",
+    extra: [],
+  },
 };
 
 export const slotForm = (slot: number): SlotForm =>
@@ -189,6 +278,8 @@ export const slotForm = (slot: number): SlotForm =>
 export type Draft = {
   id: string;
   slot: number;
+  /** The campaign it is a creative of, or "" for an ad on its own. */
+  campaign: string;
   products: Product[];
   status: AdStatus;
   advertiser: string;
@@ -215,11 +306,12 @@ export type Draft = {
   dailyCap: string;
 };
 
-export function blankDraft(slot: number, id: string): Draft {
+export function blankDraft(slot: number, id: string, campaign = ""): Draft {
   const def = slotById(slot);
   return {
     id,
     slot,
+    campaign,
     products: [def?.product ?? "newtab"],
     status: "draft",
     advertiser: "",
@@ -252,6 +344,7 @@ export function draftFromAd(ad: Ad): Draft {
   return {
     id: ad.id,
     slot: ad.slot,
+    campaign: ad.campaign ?? "",
     products: [...ad.products],
     status: ad.status,
     advertiser: ad.advertiser,
@@ -289,7 +382,9 @@ const number = (s: string): number | undefined => (s.trim() === "" ? undefined :
 export function draftToInput(d: Draft): Record<string, unknown> {
   const def = slotById(d.slot);
   const form = slotForm(d.slot);
-  const allowed = new Set<string>(def?.targets ?? []);
+  // a campaign's creative takes its targeting, days and price from the campaign
+  const own = d.campaign === "";
+  const allowed = new Set<string>(own ? (def?.targets ?? []) : []);
   const keep = (dim: Target, list: string[]): string[] =>
     allowed.has(dim) ? list.map((x) => x.trim()).filter((x) => x !== "") : [];
   const extra: Record<string, string> = {};
@@ -300,7 +395,7 @@ export function draftToInput(d: Draft): Record<string, unknown> {
   return {
     id: d.id,
     slot: d.slot,
-    products: d.products,
+    products: own ? d.products : def === undefined ? d.products : [def.product],
     status: d.status,
     advertiser: d.advertiser.trim(),
     title: d.title.trim(),
@@ -320,11 +415,12 @@ export function draftToInput(d: Draft): Record<string, unknown> {
       topic: keep("topic", d.topic),
       weekend: allowed.has("weekend") && d.weekend,
     },
-    from: text(d.from),
-    until: text(d.until),
+    from: own ? text(d.from) : undefined,
+    until: own ? text(d.until) : undefined,
     weight: number(d.weight),
     model: d.model,
-    price: number(d.price),
+    price: own ? number(d.price) : undefined,
     dailyCap: number(d.dailyCap),
+    campaign: own ? undefined : d.campaign,
   };
 }

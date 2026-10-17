@@ -1,12 +1,44 @@
-import type { AdStatus, Product, SaleModel, Target } from "@dotlife/ads";
+import {
+  PRODUCT_INFO,
+  PRODUCTS,
+  type AdStatus,
+  type CampaignStatus,
+  type Limit,
+  type Product,
+  type SaleModel,
+  type Target,
+} from "@dotlife/ads";
 
 /** What the panel calls things, in Persian. */
 
-export const PRODUCT_LABEL: Record<Product, string> = {
-  newtab: "نیوتب نقطه",
-  noghte: "اپ نقطه",
-  paket: "پاکت",
+export const PRODUCT_LABEL = Object.fromEntries(
+  PRODUCTS.map((p) => [p, PRODUCT_INFO[p].name]),
+) as Record<Product, string>;
+
+export const CAMPAIGN_STATUS_LABEL: Record<CampaignStatus, string> = {
+  draft: "پیش‌نویس",
+  live: "در حال اجرا",
+  paused: "متوقف",
+  ended: "پایان‌یافته",
 };
+
+/** Why a campaign gets no more of a place. */
+export const LIMIT_LABEL: Record<Exclude<Limit, null>, string> = {
+  budget: "بودجه‌ی روزانه",
+  reach: "دامنه‌ی هدف‌گیری",
+  outbid: "پیشنهاد بالاتر دیگران",
+  exclusive: "اسپانسر انحصاری",
+};
+
+/** Toman, short: «۱٫۲ م» for millions, «۴۵۰ ه» for thousands. */
+export function toman(n: number): string {
+  if (n >= 1_000_000_000)
+    return `${(n / 1_000_000_000).toLocaleString("fa-IR", { maximumFractionDigits: 1 })} میلیارد`;
+  if (n >= 1_000_000)
+    return `${(n / 1_000_000).toLocaleString("fa-IR", { maximumFractionDigits: 1 })} میلیون`;
+  if (n >= 10_000) return `${Math.round(n / 1000).toLocaleString("fa-IR")} هزار`;
+  return Math.round(n).toLocaleString("fa-IR");
+}
 
 /** An ad's state today: its own status, read against its days (`adPhase`). */
 export type Phase = AdStatus;

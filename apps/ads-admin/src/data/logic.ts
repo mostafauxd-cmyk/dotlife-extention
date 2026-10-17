@@ -1,13 +1,16 @@
 import {
   adSchema,
   bundleSchema,
+  campaignSchema,
+  compileCampaigns,
   inSchedule,
   MAX_PER_SLIDE,
-  SLOTS,
+  placementsOf,
   tehranDay,
   type Ad,
   type AdStatus,
   type Bundle,
+  type Campaign,
   type Product,
   type Slot,
 } from "@dotlife/ads";
@@ -17,9 +20,27 @@ import { issueMessage } from "./validate";
 
 /** The pure rules of the panel: what an ad is today, what fills a slot, filtering, bulk edits, bundles. */
 
-/** What an ad is today: its status, read against its days the way a client's `pickAd` reads them. */
-export function adPhase(ad: Ad, now: Date): Phase {
+export type Campaigns = ReadonlyMap<string, Campaign>;
+
+/** What a campaign is today: its status read against its days. */
+export function campaignPhase(c: Campaign, now: Date): Phase {
+  if (c.status !== "live") return c.status;
+  const today = tehranDay(now);
+  if (c.until !== undefined && today > c.until) return "ended";
+  if (c.from !== undefined && today < c.from) return "scheduled";
+  return "live";
+}
+
+/**
+ * What an ad is today: its status, read against its days the way a client's `pickAd` reads them.
+ * A campaign's creative is also held by its campaign: it runs only while the campaign does.
+ */
+export function adPhase(ad: Ad, now: Date, campaigns?: Campaigns): Phase {
   if (ad.status === "draft" || ad.status === "paused" || ad.status === "ended") return ad.status;
+  if (ad.campaign !== undefined) {
+    const c = campaigns?.get(ad.campaign);
+    return c === undefined ? "draft" : campaignPhase(c, now);
+  }
   if (inSchedule(ad, now)) return "live";
   const today = tehranDay(now);
   if (ad.until !== undefined && today > ad.until) return "ended";
@@ -37,11 +58,16 @@ export type SlotFill = {
 const heaviest = (a: Ad, b: Ad): number => b.weight - a.weight;
 
 /** What fills one slot today: sold and live, sold for later, the product's own promotion, or nothing. */
-export function slotFill(slot: Slot, ads: readonly Ad[], now: Date): SlotFill {
+export function slotFill(
+  slot: Slot,
+  ads: readonly Ad[],
+  now: Date,
+  campaigns?: Campaigns,
+): SlotFill {
   const mine = ads.filter((a) => a.slot === slot.id);
-  const live = mine.filter((a) => adPhase(a, now) === "live").sort(heaviest);
+  const live = mine.filter((a) => adPhase(a, now, campaigns) === "live").sort(heaviest);
   const later = mine
-    .filter((a) => adPhase(a, now) === "scheduled")
+    .filter((a) => adPhase(a, now, campaigns) === "scheduled")
     .sort((a, b) => (a.from ?? "").localeCompare(b.from ?? ""));
   const base = { live: live.length, scheduled: later.length };
   if (live[0] !== undefined) return { kind: "live", ad: live[0], ...base };
@@ -50,22 +76,28 @@ export function slotFill(slot: Slot, ads: readonly Ad[], now: Date): SlotFill {
   return { kind: "empty", ad: undefined, ...base };
 }
 
-export type Slide = { name: string; slots: Slot[] };
+/** A slide of the new tab, or a screen of an app. */
+export type Slide = { product: Product; name: string; slots: Slot[] };
 
-/** The slots grouped by slide, in the design's order. */
-export function slides(): Slide[] {
+/** A product's places grouped by slide or screen, in the catalog's order. */
+export function slides(product: Product = "newtab"): Slide[] {
   const out: Slide[] = [];
-  for (const s of SLOTS) {
-    const last = out[out.length - 1];
-    if (last?.name === s.slide) last.slots.push(s);
-    else out.push({ name: s.slide, slots: [s] });
+  for (const s of placementsOf(product)) {
+    const same = out.find((g) => g.name === s.slide);
+    if (same !== undefined) same.slots.push(s);
+    else out.push({ product, name: s.slide, slots: [s] });
   }
   return out;
 }
 
 /** How many of a slide's slots have a live ad today; a client draws at most `MAX_PER_SLIDE`. */
-export function slideFilled(slide: Slide, ads: readonly Ad[], now: Date): number {
-  return slide.slots.filter((s) => slotFill(s, ads, now).kind === "live").length;
+export function slideFilled(
+  slide: Slide,
+  ads: readonly Ad[],
+  now: Date,
+  campaigns?: Campaigns,
+): number {
+  return slide.slots.filter((s) => slotFill(s, ads, now, campaigns).kind === "live").length;
 }
 export const overfilled = (filled: number): boolean => filled > MAX_PER_SLIDE;
 
@@ -93,12 +125,12 @@ const haystack = (a: Ad): string =>
     ].join(" "),
   );
 
-export function filterAds(ads: readonly Ad[], f: AdFilter, now: Date): Ad[] {
+export function filterAds(ads: readonly Ad[], f: AdFilter, now: Date, campaigns?: Campaigns): Ad[] {
   const q = f.q === undefined ? "" : normalize(f.q);
   return ads.filter(
     (a) =>
       (f.slot === undefined || a.slot === f.slot) &&
-      (f.phase === undefined || adPhase(a, now) === f.phase) &&
+      (f.phase === undefined || adPhase(a, now, campaigns) === f.phase) &&
       (f.product === undefined || a.products.includes(f.product)) &&
       (f.advertiser === undefined || a.advertiser === f.advertiser) &&
       (q === "" || haystack(a).includes(q)),
@@ -124,8 +156,12 @@ export function resumeAds(ads: readonly Ad[], ids: ReadonlySet<string>): Ad[] {
     .map((a) => ({ ...a, status: "live" satisfies AdStatus }));
 }
 
-export function newAdId(now: Date = new Date(), rand: () => number = Math.random): string {
-  return `ad-${now.getTime().toString(36)}${Math.floor(rand() * 36 ** 3)
+export function newAdId(
+  now: Date = new Date(),
+  rand: () => number = Math.random,
+  prefix = "ad",
+): string {
+  return `${prefix}-${now.getTime().toString(36)}${Math.floor(rand() * 36 ** 3)
     .toString(36)
     .padStart(3, "0")}`;
 }
@@ -141,8 +177,20 @@ export function publishable(ad: Ad, now: Date): boolean {
   return ad.until === undefined || tehranDay(now) <= ad.until;
 }
 
-export function buildBundle(ads: readonly Ad[], previousVersion: number, now: Date): Bundle {
-  const list = ads.filter((a) => publishable(a, now)).sort((a, b) => a.id.localeCompare(b.id));
+/**
+ * The next bundle: campaign creatives compiled with their campaign's targeting, days and share
+ * (`compileCampaigns`), and the other ads that are live or waiting, in id order. A campaign that
+ * starts later joins the bundle made on or after its first day.
+ */
+export function buildBundle(
+  ads: readonly Ad[],
+  previousVersion: number,
+  now: Date,
+  campaigns: readonly Campaign[] = [],
+): Bundle {
+  const list = compileCampaigns(campaigns, ads, now)
+    .filter((a) => publishable(a, now))
+    .sort((a, b) => a.id.localeCompare(b.id));
   return { version: previousVersion + 1, generatedAt: now.toISOString(), ads: list };
 }
 
@@ -169,7 +217,7 @@ export async function sha256Hex(text: string): Promise<string> {
 export const SIGNATURE_PLACEHOLDER = "<ed25519 · base64 · امضای سرور>";
 
 export type ImportResult =
-  | { ok: true; ads: Ad[]; source: "bundle" | "list"; version?: number }
+  | { ok: true; ads: Ad[]; campaigns: Campaign[]; source: "bundle" | "list"; version?: number }
   | { ok: false; error: string; issues: string[] };
 
 /** Reads a bundle's JSON (or a bare list of ads), checking every ad with the shared schema. */
@@ -198,9 +246,15 @@ export function parseImport(text: string): ImportResult {
       return { ok: false, error: `شناسه‌ی «${a.id}» بیش از یک بار آمده است.`, issues: [] };
     ids.add(a.id);
   }
+  // a full export also carries the campaigns; a client's bundle does not
+  const rawCampaigns =
+    !isList && typeof raw === "object" && raw !== null && "campaigns" in raw ? raw.campaigns : [];
+  const camps = campaignSchema.array().safeParse(rawCampaigns);
+  if (!camps.success)
+    return { ok: false, error: "کمپین‌های فایل با قالب کمپین نمی‌خوانند.", issues: [] };
   return Array.isArray(parsed.data)
-    ? { ok: true, ads, source: "list" }
-    : { ok: true, ads, source: "bundle", version: parsed.data.version };
+    ? { ok: true, ads, campaigns: [], source: "list" }
+    : { ok: true, ads, campaigns: camps.data, source: "bundle", version: parsed.data.version };
 }
 
 export type ImportPlan = { added: number; updated: number; removed: number; result: Ad[] };
@@ -230,3 +284,12 @@ export function planImport(
     result: [...merged, ...incoming.filter((a) => !have.has(a.id))],
   };
 }
+
+/** A copy of a campaign that starts as a draft, its spend at zero. */
+export function duplicateCampaign(c: Campaign, id: string): Campaign {
+  const { spent: _spent, ...rest } = c;
+  return { ...rest, id, status: "draft", name: `${c.name} (کپی)` };
+}
+
+export const campaignMap = (list: readonly Campaign[]): Campaigns =>
+  new Map(list.map((c) => [c.id, c]));

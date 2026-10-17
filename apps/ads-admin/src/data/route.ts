@@ -1,13 +1,15 @@
 import type { AdFilter } from "./logic";
 import { PHASE_LABEL, PRODUCT_LABEL, type Phase } from "./labels";
-import type { Product } from "@dotlife/ads";
+import { slotById, type Product } from "@dotlife/ads";
 
 /** The panel's pages, kept in the URL's hash so a slot's card can open a filtered list. */
 
 export type Route =
   | { page: "slots" }
   | { page: "ads"; filter: AdFilter }
-  | { page: "ad"; id: string; slot: number | undefined }
+  | { page: "ad"; id: string; slot: number | undefined; campaign: string | undefined }
+  | { page: "campaigns" }
+  | { page: "campaign"; id: string }
   | { page: "publish" }
   | { page: "dashboard" };
 
@@ -15,7 +17,7 @@ const isPhase = (v: string | null): v is Phase => v !== null && v in PHASE_LABEL
 const isProduct = (v: string | null): v is Product => v !== null && v in PRODUCT_LABEL;
 const slotParam = (v: string | null): number | undefined => {
   const n = Number(v);
-  return v !== null && Number.isInteger(n) && n >= 1 && n <= 15 ? n : undefined;
+  return v !== null && slotById(n) !== undefined ? n : undefined;
 };
 
 export function parseRoute(hash: string): Route {
@@ -24,9 +26,15 @@ export function parseRoute(hash: string): Route {
   const parts = path.split("/").filter((x) => x !== "");
   const head = parts[0];
   if (head === "ads") {
-    if (parts[1] === "new") return { page: "ad", id: "new", slot: slotParam(p.get("slot")) };
+    if (parts[1] === "new")
+      return {
+        page: "ad",
+        id: "new",
+        slot: slotParam(p.get("slot")),
+        campaign: p.get("campaign") ?? undefined,
+      };
     if (parts[1] === "edit" && parts[2] !== undefined)
-      return { page: "ad", id: decodeURIComponent(parts[2]), slot: undefined };
+      return { page: "ad", id: decodeURIComponent(parts[2]), slot: undefined, campaign: undefined };
     const phase = p.get("status");
     const product = p.get("product");
     return {
@@ -39,6 +47,12 @@ export function parseRoute(hash: string): Route {
         q: p.get("q") ?? undefined,
       },
     };
+  }
+  if (head === "campaigns") {
+    if (parts[1] === "new") return { page: "campaign", id: "new" };
+    if (parts[1] === "edit" && parts[2] !== undefined)
+      return { page: "campaign", id: decodeURIComponent(parts[2]) };
+    return { page: "campaigns" };
   }
   if (head === "publish") return { page: "publish" };
   if (head === "dashboard") return { page: "dashboard" };
@@ -57,6 +71,12 @@ export function adsHash(filter: AdFilter): string {
   return `#/ads${s === "" ? "" : `?${s}`}`;
 }
 
-export const newAdHash = (slot?: number): string =>
-  slot === undefined ? "#/ads/new" : `#/ads/new?slot=${String(slot)}`;
+export function newAdHash(slot?: number, campaign?: string): string {
+  const p = new URLSearchParams();
+  if (slot !== undefined) p.set("slot", String(slot));
+  if (campaign !== undefined) p.set("campaign", campaign);
+  const q = p.toString();
+  return q === "" ? "#/ads/new" : `#/ads/new?${q}`;
+}
+export const campaignHash = (id: string): string => `#/campaigns/edit/${encodeURIComponent(id)}`;
 export const editHash = (id: string): string => `#/ads/edit/${encodeURIComponent(id)}`;
