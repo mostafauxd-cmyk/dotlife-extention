@@ -1,0 +1,865 @@
+import {
+  AD_CITIES,
+  AD_PERSONAS,
+  AD_SEASONS,
+  AD_STATUS,
+  AD_TOPICS,
+  PRODUCTS,
+  SALE_MODELS,
+  SLOTS,
+  slotById,
+  type Ad,
+  type Target,
+} from "@dotlife/ads";
+import { useEffect, useState, type SyntheticEvent } from "react";
+
+import { go, useApp } from "../context";
+import {
+  graphemes,
+  jalali,
+  MODEL_LABEL,
+  MODEL_UNIT,
+  num,
+  PHASE_LABEL,
+  PRODUCT_LABEL,
+  TARGET_LABEL,
+} from "../data/labels";
+import { duplicateAd, newAdId } from "../data/logic";
+import { adsHash, editHash } from "../data/route";
+import {
+  blankDraft,
+  draftFromAd,
+  draftToInput,
+  slotForm,
+  type Draft,
+  type ExtraField,
+} from "../data/slotForm";
+import { validateAd } from "../data/validate";
+import { AdPreview, type PreviewAd } from "../ui/AdPreview";
+import { ConfirmDialog } from "../ui/Dialog";
+import { ChipSet, Field, TagInput } from "../ui/Fields";
+import { Icon } from "../ui/Icon";
+import { slides } from "../data/logic";
+
+type SetField = <K extends keyof Draft>(key: K, value: Draft[K]) => void;
+
+/** What the preview draws: the draft as typed, with placeholders where nothing is typed yet. */
+function previewOf(d: Draft): PreviewAd {
+  const input = draftToInput(d);
+  const str = (k: string): string | undefined => {
+    const v = input[k];
+    return typeof v === "string" ? v : undefined;
+  };
+  const extra = input["extra"];
+  const tint = str("tint");
+  const image = str("image");
+  return {
+    slot: d.slot,
+    title: d.title.trim(),
+    advertiser: d.advertiser.trim(),
+    ...(str("line") === undefined ? {} : { line: str("line") }),
+    ...(str("cta") === undefined ? {} : { cta: str("cta") }),
+    ...(str("glyph") === undefined ? {} : { glyph: str("glyph") }),
+    ...(tint !== undefined && /^#[0-9a-fA-F]{6}$/.test(tint) ? { tint } : {}),
+    ...(image?.startsWith("https://") === true ? { image } : {}),
+    ...(typeof extra === "object" && extra !== null
+      ? { extra: extra as Record<string, string> }
+      : {}),
+  };
+}
+
+function ExtraInput({
+  f,
+  id,
+  value,
+  onChange,
+}: {
+  f: ExtraField;
+  id: string;
+  value: string;
+  onChange: (v: string) => void;
+}) {
+  switch (f.kind) {
+    case "textarea":
+      return (
+        <textarea
+          id={id}
+          rows={5}
+          value={value}
+          placeholder={f.placeholder}
+          onChange={(e) => {
+            onChange(e.target.value);
+          }}
+        />
+      );
+    case "select":
+      return (
+        <select
+          id={id}
+          value={value}
+          onChange={(e) => {
+            onChange(e.target.value);
+          }}
+        >
+          <option value="">انتخاب کن…</option>
+          {f.options?.map((o) => (
+            <option key={o} value={o}>
+              {o}
+            </option>
+          ))}
+        </select>
+      );
+    case "date":
+      return (
+        <input
+          id={id}
+          type="date"
+          value={value}
+          onChange={(e) => {
+            onChange(e.target.value);
+          }}
+        />
+      );
+    case "number":
+      return (
+        <input
+          id={id}
+          type="text"
+          inputMode="decimal"
+          dir="ltr"
+          value={value}
+          placeholder={f.placeholder}
+          onChange={(e) => {
+            onChange(e.target.value);
+          }}
+        />
+      );
+    case "text":
+      return (
+        <>
+          <input
+            id={id}
+            type="text"
+            list={f.suggestions === undefined ? undefined : `${id}-list`}
+            value={value}
+            placeholder={f.placeholder}
+            onChange={(e) => {
+              onChange(e.target.value);
+            }}
+          />
+          {f.suggestions !== undefined && (
+            <datalist id={`${id}-list`}>
+              {f.suggestions.map((s) => (
+                <option key={s} value={s} />
+              ))}
+            </datalist>
+          )}
+        </>
+      );
+  }
+}
+
+function Targeting({
+  d,
+  set,
+  errors,
+}: {
+  d: Draft;
+  set: SetField;
+  errors: Record<string, string>;
+}) {
+  const slot = slotById(d.slot);
+  const allowed = new Set<Target>(slot?.targets ?? []);
+  if (allowed.size === 0)
+    return <p className="note">این جایگاه هدف‌گیری ندارد: برای همه نمایش داده می‌شود.</p>;
+  return (
+    <div className="fields">
+      {allowed.has("persona") && (
+        <Field
+          label={TARGET_LABEL.persona}
+          error={errors["targeting.persona"]}
+          hint="خالی یعنی همه."
+          wide
+        >
+          {() => (
+            <ChipSet
+              label={TARGET_LABEL.persona}
+              items={AD_PERSONAS.map((p) => ({ id: p.id, label: p.name }))}
+              value={d.persona}
+              onChange={(v) => {
+                set("persona", v);
+              }}
+            />
+          )}
+        </Field>
+      )}
+      {allowed.has("season") && (
+        <Field
+          label={TARGET_LABEL.season}
+          error={errors["targeting.season"]}
+          hint="خالی یعنی همه‌ی فصل‌ها."
+          wide
+        >
+          {() => (
+            <ChipSet
+              label={TARGET_LABEL.season}
+              items={AD_SEASONS.map((s) => ({ id: s.id, label: s.name }))}
+              value={d.season}
+              onChange={(v) => {
+                set("season", v);
+              }}
+            />
+          )}
+        </Field>
+      )}
+      {allowed.has("city") && (
+        <Field
+          label={TARGET_LABEL.city}
+          error={errors["targeting.city"]}
+          hint="با Enter یا ویرگول اضافه کن؛ خالی یعنی همه‌ی شهرها."
+        >
+          {(id) => (
+            <TagInput
+              id={id}
+              value={d.city}
+              suggestions={AD_CITIES}
+              placeholder="مثلاً تهران"
+              onChange={(v) => {
+                set("city", v);
+              }}
+            />
+          )}
+        </Field>
+      )}
+      {allowed.has("occasion") && (
+        <Field
+          label={TARGET_LABEL.occasion}
+          error={errors["targeting.occasion"]}
+          hint="شناسه‌ی مناسبت؛ خالی یعنی همه‌ی مناسبت‌ها."
+        >
+          {(id) => (
+            <TagInput
+              id={id}
+              value={d.occasion}
+              placeholder="مثلاً sports-day"
+              onChange={(v) => {
+                set("occasion", v);
+              }}
+            />
+          )}
+        </Field>
+      )}
+      {allowed.has("keyword") && (
+        <Field
+          label={TARGET_LABEL.keyword}
+          error={errors["targeting.keyword"]}
+          hint="وقتی کاربر یکی از این‌ها را بنویسد نشان داده می‌شود؛ خالی یعنی هر جستجو."
+        >
+          {(id) => (
+            <TagInput
+              id={id}
+              value={d.keyword}
+              placeholder="مثلاً قطار"
+              onChange={(v) => {
+                set("keyword", v);
+              }}
+            />
+          )}
+        </Field>
+      )}
+      {allowed.has("topic") && (
+        <Field
+          label={TARGET_LABEL.topic}
+          error={errors["targeting.topic"]}
+          hint="خالی یعنی همه‌ی موضوع‌ها."
+        >
+          {(id) => (
+            <TagInput
+              id={id}
+              value={d.topic}
+              suggestions={AD_TOPICS}
+              placeholder="مثلاً سفر"
+              onChange={(v) => {
+                set("topic", v);
+              }}
+            />
+          )}
+        </Field>
+      )}
+      {allowed.has("weekend") && (
+        <label className="switch wide">
+          <input
+            type="checkbox"
+            checked={d.weekend}
+            onChange={(e) => {
+              set("weekend", e.target.checked);
+            }}
+          />
+          <span>فقط آخر هفته (پنجشنبه و جمعه)</span>
+        </label>
+      )}
+    </div>
+  );
+}
+
+function FormBody({ initial, isNew }: { initial: Draft; isNew: boolean }) {
+  const { ads: store, toast } = useApp();
+  const [d, setD] = useState<Draft>(initial);
+  const [submitted, setSubmitted] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState(false);
+  const form = slotForm(d.slot);
+  const slot = slotById(d.slot);
+
+  const set: SetField = (key, value) => {
+    setD((prev) => ({ ...prev, [key]: value }));
+  };
+  const changeSlot = (n: number): void => {
+    const next = slotById(n);
+    if (next === undefined) return;
+    // what the new slot cannot hold is dropped, so nothing hidden is saved
+    const keep = new Set<Target>(next.targets);
+    const nf = slotForm(n);
+    setD((prev) => ({
+      ...prev,
+      slot: n,
+      model: next.model,
+      products: prev.products.includes(next.product)
+        ? prev.products
+        : [next.product, ...prev.products],
+      persona: keep.has("persona") ? prev.persona : [],
+      city: keep.has("city") ? prev.city : [],
+      season: keep.has("season") ? prev.season : [],
+      occasion: keep.has("occasion") ? prev.occasion : [],
+      keyword: keep.has("keyword") ? prev.keyword : [],
+      topic: keep.has("topic") ? prev.topic : [],
+      weekend: keep.has("weekend") ? prev.weekend : false,
+      extra: Object.fromEntries(
+        nf.extra.flatMap((f) => {
+          const v = prev.extra[f.key];
+          return v === undefined ? [] : [[f.key, v]];
+        }),
+      ),
+    }));
+  };
+
+  const result = validateAd(draftToInput(d));
+  const errors = !result.ok && submitted ? result.errors : {};
+  const errorList = Object.values(errors);
+
+  const save = (e: SyntheticEvent): void => {
+    e.preventDefault();
+    setSubmitted(true);
+    if (!result.ok) {
+      toast("چند جای فرم درست نیست؛ زیر هر کادر نوشته شده.");
+      // the errors are above; bring them into view
+      window.requestAnimationFrame(() => {
+        document
+          .querySelector(".error-sum")
+          ?.scrollIntoView({ behavior: "smooth", block: "center" });
+      });
+      return;
+    }
+    store.put(result.ad).then(
+      () => {
+        toast(isNew ? "تبلیغ ساخته شد." : "تغییرها ذخیره شد.");
+        go(adsHash({ slot: result.ad.slot }));
+      },
+      () => {
+        toast("ذخیره نشد.");
+      },
+    );
+  };
+  const duplicate = (): void => {
+    if (!result.ok) {
+      setSubmitted(true);
+      toast("اول فرم را درست کن.");
+      return;
+    }
+    const copy: Ad = duplicateAd(result.ad, newAdId());
+    store.put(copy).then(
+      () => {
+        toast("کپی به‌عنوان پیش‌نویس ساخته شد.");
+        go(editHash(copy.id));
+      },
+      () => {
+        toast("ذخیره نشد.");
+      },
+    );
+  };
+  const remove = (): void => {
+    store.delete(d.id).then(
+      () => {
+        toast("تبلیغ حذف شد.");
+        go(adsHash({}));
+      },
+      () => {
+        toast("حذف نشد.");
+      },
+    );
+  };
+
+  return (
+    <form className="ad-form" onSubmit={save} noValidate>
+      <div className="form-main">
+        {errorList.length > 0 && (
+          <div className="error-sum" role="alert">
+            <Icon name="alert" />
+            <div>
+              <b>این تبلیغ هنوز ذخیره نشد</b>
+              <ul>
+                {errorList.map((m) => (
+                  <li key={m}>{m}</li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        )}
+
+        <section className="card">
+          <h2>جایگاه</h2>
+          <Field label="این تبلیغ کجا بنشیند؟" wide>
+            {(id) => (
+              <select
+                id={id}
+                value={d.slot}
+                onChange={(e) => {
+                  changeSlot(Number(e.target.value));
+                }}
+              >
+                {slides().map((g) => (
+                  <optgroup key={g.name} label={`اسلاید ${g.name}`}>
+                    {g.slots.map((s) => (
+                      <option key={s.id} value={s.id}>
+                        {num(s.id)} · {s.name}
+                      </option>
+                    ))}
+                  </optgroup>
+                ))}
+              </select>
+            )}
+          </Field>
+          {slot !== undefined && (
+            <p className="note">
+              {slot.shape}. سقف: {slot.cap}.
+            </p>
+          )}
+        </section>
+
+        <section className="card">
+          <h2>محتوا</h2>
+          <div className="fields">
+            <Field label="آگهی‌دهنده" error={errors["advertiser"]}>
+              {(id) => (
+                <input
+                  id={id}
+                  value={d.advertiser}
+                  onChange={(e) => {
+                    set("advertiser", e.target.value);
+                  }}
+                />
+              )}
+            </Field>
+            <Field
+              label={form.titleLabel}
+              error={errors["title"]}
+              hint={`${num(graphemes(d.title).length)} از ${num(form.titleMax)} نویسه`}
+            >
+              {(id) => (
+                <input
+                  id={id}
+                  value={d.title}
+                  onChange={(e) => {
+                    set("title", e.target.value);
+                  }}
+                />
+              )}
+            </Field>
+            {form.lineLabel !== undefined && (
+              <Field label={form.lineLabel} error={errors["line"]}>
+                {(id) => (
+                  <input
+                    id={id}
+                    value={d.line}
+                    onChange={(e) => {
+                      set("line", e.target.value);
+                    }}
+                  />
+                )}
+              </Field>
+            )}
+            {form.ctaLabel !== undefined && (
+              <Field label={form.ctaLabel} error={errors["cta"]}>
+                {(id) => (
+                  <input
+                    id={id}
+                    value={d.cta}
+                    placeholder={form.ctaPlaceholder}
+                    onChange={(e) => {
+                      set("cta", e.target.value);
+                    }}
+                  />
+                )}
+              </Field>
+            )}
+            <Field label="نشانی مقصد" error={errors["url"]} hint="باید با https شروع شود." wide>
+              {(id) => (
+                <input
+                  id={id}
+                  dir="ltr"
+                  value={d.url}
+                  onChange={(e) => {
+                    set("url", e.target.value);
+                  }}
+                />
+              )}
+            </Field>
+            {form.glyph === true && (
+              <Field
+                label="نماد (یک حرف)"
+                error={errors["glyph"]}
+                hint="وقتی تصویری نیست، روی رنگ برند می‌نشیند."
+              >
+                {(id) => (
+                  <input
+                    id={id}
+                    maxLength={3}
+                    value={d.glyph}
+                    onChange={(e) => {
+                      set("glyph", e.target.value);
+                    }}
+                  />
+                )}
+              </Field>
+            )}
+            {form.tint !== undefined && (
+              <Field
+                label={form.tint === "required" ? "رنگ برند" : "رنگ برند (اختیاری)"}
+                error={errors["tint"]}
+              >
+                {(id) => (
+                  <div className="color">
+                    <input
+                      type="color"
+                      aria-label="انتخاب رنگ"
+                      value={/^#[0-9a-fA-F]{6}$/.test(d.tint) ? d.tint : "#8c9eff"}
+                      onChange={(e) => {
+                        set("tint", e.target.value);
+                      }}
+                    />
+                    <input
+                      id={id}
+                      dir="ltr"
+                      placeholder="#D9862B"
+                      value={d.tint}
+                      onChange={(e) => {
+                        set("tint", e.target.value);
+                      }}
+                    />
+                  </div>
+                )}
+              </Field>
+            )}
+            {form.image === true && (
+              <Field label="نشانی تصویر (اختیاری)" error={errors["image"]} wide>
+                {(id) => (
+                  <input
+                    id={id}
+                    dir="ltr"
+                    placeholder="https://"
+                    value={d.image}
+                    onChange={(e) => {
+                      set("image", e.target.value);
+                    }}
+                  />
+                )}
+              </Field>
+            )}
+          </div>
+        </section>
+
+        {form.extra.length > 0 && (
+          <section className="card">
+            <h2>ویژه‌ی جایگاه {num(d.slot)}</h2>
+            <div className="fields">
+              {form.extra.map((f) => (
+                <Field
+                  key={f.key}
+                  label={f.label}
+                  hint={f.hint}
+                  error={errors[`extra.${f.key}`]}
+                  wide={f.kind === "textarea"}
+                >
+                  {(id) => (
+                    <ExtraInput
+                      f={f}
+                      id={id}
+                      value={d.extra[f.key] ?? ""}
+                      onChange={(v) => {
+                        setD((prev) => ({ ...prev, extra: { ...prev.extra, [f.key]: v } }));
+                      }}
+                    />
+                  )}
+                </Field>
+              ))}
+            </div>
+          </section>
+        )}
+
+        <section className="card">
+          <h2>هدف‌گیری</h2>
+          <Targeting d={d} set={set} errors={errors} />
+          <p className="note">
+            فقط از روی این‌هاست؛ هرگز از روی متن یادداشت، کار، تراکنش یا دارایی.
+          </p>
+        </section>
+
+        <section className="card">
+          <h2>زمان و فروش</h2>
+          <div className="fields">
+            <Field
+              label="محصول"
+              error={errors["products"]}
+              hint="کلاینت‌های کدام محصول می‌توانند این را نشان بدهند."
+              wide
+            >
+              {() => (
+                <ChipSet
+                  label="محصول"
+                  items={PRODUCTS.map((p) => ({ id: p, label: PRODUCT_LABEL[p] }))}
+                  value={d.products}
+                  onChange={(v) => {
+                    set("products", v);
+                  }}
+                />
+              )}
+            </Field>
+            <Field label="وضعیت" error={errors["status"]}>
+              {(id) => (
+                <select
+                  id={id}
+                  value={d.status}
+                  onChange={(e) => {
+                    const v = AD_STATUS.find((s) => s === e.target.value);
+                    if (v !== undefined) set("status", v);
+                  }}
+                >
+                  {AD_STATUS.map((s) => (
+                    <option key={s} value={s}>
+                      {PHASE_LABEL[s]}
+                    </option>
+                  ))}
+                </select>
+              )}
+            </Field>
+            <Field
+              label="وزن"
+              error={errors["weight"]}
+              hint="بین ۱ تا ۱۰۰؛ وقتی چند تبلیغ یک جایگاه را می‌خواهند، سنگین‌تر برنده است."
+            >
+              {(id) => (
+                <input
+                  id={id}
+                  inputMode="numeric"
+                  dir="ltr"
+                  value={d.weight}
+                  onChange={(e) => {
+                    set("weight", e.target.value);
+                  }}
+                />
+              )}
+            </Field>
+            <Field
+              label="از روز"
+              error={errors["from"]}
+              hint={d.from === "" ? "خالی یعنی از همین حالا." : jalali(d.from)}
+            >
+              {(id) => (
+                <input
+                  id={id}
+                  type="date"
+                  value={d.from}
+                  onChange={(e) => {
+                    set("from", e.target.value);
+                  }}
+                />
+              )}
+            </Field>
+            <Field
+              label="تا روز (و همان روز)"
+              error={errors["until"]}
+              hint={d.until === "" ? "خالی یعنی بدون پایان." : jalali(d.until)}
+            >
+              {(id) => (
+                <input
+                  id={id}
+                  type="date"
+                  value={d.until}
+                  onChange={(e) => {
+                    set("until", e.target.value);
+                  }}
+                />
+              )}
+            </Field>
+            <Field label="مدل فروش" error={errors["model"]}>
+              {(id) => (
+                <select
+                  id={id}
+                  value={d.model}
+                  onChange={(e) => {
+                    const v = SALE_MODELS.find((m) => m === e.target.value);
+                    if (v !== undefined) set("model", v);
+                  }}
+                >
+                  {SALE_MODELS.map((m) => (
+                    <option key={m} value={m}>
+                      {MODEL_LABEL[m]}
+                      {slot?.model === m ? " (پیشنهاد جایگاه)" : ""}
+                    </option>
+                  ))}
+                </select>
+              )}
+            </Field>
+            <Field label="قیمت" error={errors["price"]} hint={MODEL_UNIT[d.model]}>
+              {(id) => (
+                <input
+                  id={id}
+                  inputMode="numeric"
+                  dir="ltr"
+                  value={d.price}
+                  onChange={(e) => {
+                    set("price", e.target.value);
+                  }}
+                />
+              )}
+            </Field>
+            <Field
+              label="سقف نمایش روزانه"
+              error={errors["dailyCap"]}
+              hint="خالی یعنی بدون سقف؛ رسیدن به سقف، تبلیغ را از بسته‌ی بعدی بیرون می‌گذارد."
+            >
+              {(id) => (
+                <input
+                  id={id}
+                  inputMode="numeric"
+                  dir="ltr"
+                  value={d.dailyCap}
+                  onChange={(e) => {
+                    set("dailyCap", e.target.value);
+                  }}
+                />
+              )}
+            </Field>
+          </div>
+        </section>
+
+        <div className="form-actions">
+          <button type="submit" className="btn">
+            <Icon name="check" size={17} />
+            ذخیره
+          </button>
+          <button
+            type="button"
+            className="btn ghost"
+            onClick={() => {
+              go(adsHash({}));
+            }}
+          >
+            انصراف
+          </button>
+          {!isNew && (
+            <>
+              <button type="button" className="btn ghost" onClick={duplicate}>
+                <Icon name="copy" size={16} />
+                کپی
+              </button>
+              <button
+                type="button"
+                className="btn ghost danger"
+                onClick={() => {
+                  setConfirmDelete(true);
+                }}
+              >
+                <Icon name="trash" size={16} />
+                حذف
+              </button>
+            </>
+          )}
+        </div>
+      </div>
+
+      <aside className="form-side">
+        <div className="card sticky">
+          <h2>پیش‌نمایش زنده</h2>
+          <AdPreview ad={previewOf(d)} />
+          <p className="note">
+            یک نمونه‌ی فشرده از جعبه‌ی واقعی؛ کلاینت‌ها با اجزای خودشان می‌کشند.
+          </p>
+        </div>
+      </aside>
+
+      {confirmDelete && (
+        <ConfirmDialog
+          title="حذف تبلیغ"
+          message={`«${d.title}» برای همیشه حذف می‌شود.`}
+          confirm="حذف"
+          onConfirm={remove}
+          onClose={() => {
+            setConfirmDelete(false);
+          }}
+        />
+      )}
+    </form>
+  );
+}
+
+export function AdForm({ id, slot }: { id: string; slot: number | undefined }) {
+  const { ads: store } = useApp();
+  const isNew = id === "new";
+  const [state, setState] = useState<
+    { kind: "loading" } | { kind: "missing" } | { kind: "ready"; draft: Draft }
+  >(
+    isNew
+      ? { kind: "ready", draft: blankDraft(slot ?? SLOTS[0]?.id ?? 1, newAdId()) }
+      : { kind: "loading" },
+  );
+
+  useEffect(() => {
+    if (isNew) return;
+    let live = true;
+    void store.get(id).then((ad) => {
+      if (live)
+        setState(
+          ad === undefined ? { kind: "missing" } : { kind: "ready", draft: draftFromAd(ad) },
+        );
+    });
+    return () => {
+      live = false;
+    };
+  }, [id, isNew, store]);
+
+  return (
+    <>
+      <section className="intro">
+        <div>
+          <a className="crumb" href={adsHash({})}>
+            <Icon name="back" size={14} />
+            تبلیغ‌ها
+          </a>
+          <h1>{isNew ? "تبلیغ تازه" : "ویرایش تبلیغ"}</h1>
+        </div>
+      </section>
+      {state.kind === "loading" && <p className="loading">در حال خواندن…</p>}
+      {state.kind === "missing" && (
+        <div className="card blank">
+          <b>این تبلیغ پیدا نشد</b>
+          <a className="btn ghost" href={adsHash({})}>
+            برگشت به فهرست
+          </a>
+        </div>
+      )}
+      {state.kind === "ready" && (
+        <FormBody key={state.draft.id} initial={state.draft} isNew={isNew} />
+      )}
+    </>
+  );
+}
