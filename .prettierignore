@@ -3,3 +3,6 @@ coverage/
 dist/
 design/
 packages/
+release/
+.claude/
+.impeccable/

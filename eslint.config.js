@@ -6,7 +6,15 @@ import tseslint from "typescript-eslint";
 export default tseslint.config(
   {
     // design/ holds the plain-browser prototype; packages/ are copies of dotlife's, linted there
-    ignores: ["**/node_modules/", "**/dist/", "**/coverage/", "design/", "packages/"],
+    ignores: [
+      "**/node_modules/",
+      "**/dist/",
+      "**/coverage/",
+      "**/release/",
+      ".claude/",
+      "design/",
+      "packages/",
+    ],
   },
   js.configs.recommended,
   ...tseslint.configs.strictTypeChecked,
@@ -33,6 +41,11 @@ export default tseslint.config(
   {
     files: ["apps/newtab/src/**/*.{ts,tsx}"],
     languageOptions: { globals: { ...globals.browser } },
+  },
+  {
+    // plain scripts the extension serves as they are (not bundled)
+    files: ["apps/newtab/public/**/*.js"],
+    languageOptions: { globals: { ...globals.browser, chrome: "readonly" } },
   },
   {
     files: ["**/*.js"],

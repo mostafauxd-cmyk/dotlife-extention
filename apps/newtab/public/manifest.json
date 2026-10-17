@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "نقطه",
   "short_name": "نقطه",
-  "description": "نیوتب نقطه: سرچ گوگل، کارها و یادداشت‌های نقطه، و امروز، روی هر تب تازه.",
+  "description": "تب جدید فارسی با جستجو، کارها، یادداشت‌ها، تقویم، خبر و قیمت روز، همگام با اپ نقطه.",
   "version": "0.1.0",
   "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA7yln2I++ezMY227MoJSbVWarSSujz45554vJSvWxYhHxrdwq+L+bVaMigeCPnaLJOg7Ay1Ae0Vsje3IIWaQYCzDYa+qLae2QSmoZMZbjm2GjnhdwNZtvfNDyz79MtQ7sKUe1Ar/5aKimz463dznisX0RK4i+HghwhvnbEGKdopYHeeSdi8q2PDs14JTRx4V23kxIcf7eF8w3DozEPOhMlrQxxXvfW9zcEEydX7uFDFayKsupBsk2+8VO1NY33kp5zwo3DaB4RXPzc6qBvb+VFZBtS8olP7fK/CRDGFgSlPCS4lfSZg3cxE588XKLyGexnbICIRO4RrHAVvOuJD3C1wIDAQAB",
   "minimum_chrome_version": "123",

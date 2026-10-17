@@ -8,7 +8,8 @@
  * anything is drawn.
  */
 (function () {
-  if (typeof chrome === "undefined" || !chrome.tabs || location.search.indexOf("focus") !== -1) return;
+  if (typeof chrome === "undefined" || !chrome.tabs || location.search.indexOf("focus") !== -1)
+    return;
   chrome.tabs.getCurrent(function (tab) {
     if (tab && tab.id !== undefined)
       chrome.tabs.update(tab.id, { url: chrome.runtime.getURL("index.html?focus") });

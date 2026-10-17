@@ -11,10 +11,11 @@ import { isOn } from "./settings";
  * the ad on the device from a bundle by the rules there — consent (the «پیشنهادهای معرفی‌شده»
  * switch in «شخصی‌سازی»), schedule, and only who/when/search-word targeting, never anything the
  * person wrote or owns. Until a server sends a signed bundle, the sample's one-ad-per-slot set is
- * what is drawn, so the slots can be seen and styled.
+ * what is drawn in development, so the slots can be seen and styled. A production build (the
+ * store's) draws none: the samples are placeholders pointing at example.com.
  */
 
-let bundle: readonly Ad[] = SAMPLE_ADS;
+let bundle: readonly Ad[] = import.meta.env.DEV ? SAMPLE_ADS : [];
 const listeners = new Set<() => void>();
 
 /** Replaces the ads in hand (a bundle read from the server). */
