@@ -41,6 +41,9 @@ importers:
       '@dotlife/ads':
         specifier: workspace:*
         version: link:../../packages/ads
+      '@dotlife/event-data':
+        specifier: workspace:*
+        version: link:../../packages/event-data
       react:
         specifier: 19.2.3
         version: 19.2.3

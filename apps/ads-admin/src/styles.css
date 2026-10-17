@@ -2132,3 +2132,46 @@ ol.toplist small {
   color: rgba(255, 255, 255, 0.6);
   font-size: 11px;
 }
+.link-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin: 12px 0;
+}
+.link-row input {
+  width: 220px;
+  min-height: 38px;
+  border-radius: 999px;
+}
+.multi {
+  position: relative;
+}
+.multi-list {
+  position: absolute;
+  z-index: 20;
+  inset-inline: 0;
+  top: calc(100% + 6px);
+  max-height: 260px;
+  margin: 0;
+  padding: 6px;
+  overflow-y: auto;
+  list-style: none;
+  border: 1px solid var(--stroke-hi);
+  border-radius: 16px;
+  background: #1d2029;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45);
+}
+.multi-list button {
+  width: 100%;
+  padding: 7px 12px;
+  border: 0;
+  border-radius: 10px;
+  background: none;
+  text-align: start;
+  cursor: pointer;
+}
+.multi-list button:hover,
+.multi-list button:focus-visible {
+  background: rgba(255, 255, 255, 0.08);
+}

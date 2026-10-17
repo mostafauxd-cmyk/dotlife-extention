@@ -63,11 +63,20 @@ function devBundleRoute(): Plugin {
   };
 }
 
+const noghteProxy = {
+  target: process.env.NOGHTE_API_URL ?? "https://noghte.life/api",
+  changeOrigin: true,
+  rewrite: (path: string): string => path.replace(/^\/noghte/, ""),
+};
+
 /** The NX Ads panel: a plain single-page app, served from its own port while it is built. */
 export default defineConfig({
   base: "./",
   plugins: [devBundleRoute()],
   oxc: { jsx: { runtime: "automatic", importSource: "react" } },
   build: { outDir: "dist", emptyOutDir: true, target: "es2023" },
-  server: { port: Number(process.env.PORT ?? 5190) },
+  // Noghte's server sends no CORS headers, so the panel reaches it through its own server:
+  // `/noghte/admin/api/promos` → `<NOGHTE_API_URL>/admin/api/promos` (the live one by default)
+  server: { port: Number(process.env.PORT ?? 5190), proxy: { "/noghte": noghteProxy } },
+  preview: { proxy: { "/noghte": noghteProxy } },
 });

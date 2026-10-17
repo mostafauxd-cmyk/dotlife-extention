@@ -1,7 +1,9 @@
 import { AD_CITIES, AD_PERSONAS, AD_SEASONS, AD_TOPICS, type Target } from "@dotlife/ads";
 
 import { TARGET_LABEL } from "../data/labels";
+import { OCCASIONS } from "../data/occasions";
 import { ChipSet, Field, TagInput } from "./Fields";
+import { MultiSelect } from "./MultiSelect";
 
 /** Who and when, as the forms hold it. */
 export type TargetingValue = {
@@ -15,8 +17,10 @@ export type TargetingValue = {
 };
 
 /**
- * The targeting fields, only for the dimensions `allowed`: chips for the closed sets (persona,
- * season), free words with suggestions for the rest. Errors are read as `<prefix><dim>`.
+ * The targeting fields, only for the dimensions `allowed`, every one optional and multi-select:
+ * chips for the short lists (persona, season, topic), a searchable list for cities and the
+ * calendar's occasions, and free words only for the search keyword (searches have no list).
+ * Errors are read as `<prefix><dim>`.
  */
 export function TargetingFields({
   allowed,
@@ -37,7 +41,12 @@ export function TargetingFields({
   return (
     <div className="fields">
       {allowed.has("persona") && (
-        <Field label={TARGET_LABEL.persona} error={err("persona")} hint="خالی یعنی همه." wide>
+        <Field
+          label={TARGET_LABEL.persona}
+          error={err("persona")}
+          hint="اختیاری و چندتایی. خالی یعنی همه."
+          wide
+        >
           {() => (
             <ChipSet
               label={TARGET_LABEL.persona}
@@ -54,7 +63,7 @@ export function TargetingFields({
         <Field
           label={TARGET_LABEL.season}
           error={err("season")}
-          hint="خالی یعنی همه‌ی فصل‌ها."
+          hint="اختیاری و چندتایی. خالی یعنی همه‌ی فصل‌ها."
           wide
         >
           {() => (
@@ -73,14 +82,14 @@ export function TargetingFields({
         <Field
           label={TARGET_LABEL.city}
           error={err("city")}
-          hint="با Enter یا ویرگول اضافه کن؛ خالی یعنی همه‌ی شهرها."
+          hint="اختیاری و چندتایی، از فهرست. خالی یعنی همه‌ی شهرها."
         >
           {(id) => (
-            <TagInput
+            <MultiSelect
               id={id}
               value={value.city}
-              suggestions={AD_CITIES}
-              placeholder="مثلاً تهران"
+              options={AD_CITIES}
+              placeholder="جستجو یا انتخاب شهر"
               onChange={(v) => {
                 onChange({ city: v });
               }}
@@ -92,13 +101,14 @@ export function TargetingFields({
         <Field
           label={TARGET_LABEL.occasion}
           error={err("occasion")}
-          hint="عنوان مناسبت همان‌طور که در تقویم آمده؛ خالی یعنی همه‌ی روزها."
+          hint="اختیاری و چندتایی، از مناسبت‌های تقویم. خالی یعنی همه‌ی روزها."
         >
           {(id) => (
-            <TagInput
+            <MultiSelect
               id={id}
               value={value.occasion}
-              placeholder="مثلاً روز ملی کتاب"
+              options={OCCASIONS}
+              placeholder="جستجو در مناسبت‌ها"
               onChange={(v) => {
                 onChange({ occasion: v });
               }}
@@ -110,7 +120,7 @@ export function TargetingFields({
         <Field
           label={TARGET_LABEL.keyword}
           error={err("keyword")}
-          hint="وقتی کاربر یکی از این‌ها را بنویسد؛ خالی یعنی هر جستجو."
+          hint="کلمه‌ی آزاد (جستجوها فهرست ندارند)؛ با Enter اضافه کن. خالی یعنی هر جستجو."
         >
           {(id) => (
             <TagInput
@@ -125,13 +135,17 @@ export function TargetingFields({
         </Field>
       )}
       {allowed.has("topic") && (
-        <Field label={TARGET_LABEL.topic} error={err("topic")} hint="خالی یعنی همه‌ی موضوع‌ها.">
-          {(id) => (
-            <TagInput
-              id={id}
+        <Field
+          label={TARGET_LABEL.topic}
+          error={err("topic")}
+          hint="اختیاری و چندتایی. خالی یعنی همه‌ی موضوع‌ها."
+          wide
+        >
+          {() => (
+            <ChipSet
+              label={TARGET_LABEL.topic}
+              items={AD_TOPICS.map((t) => ({ id: t, label: t }))}
               value={value.topic}
-              suggestions={AD_TOPICS}
-              placeholder="مثلاً سفر"
               onChange={(v) => {
                 onChange({ topic: v });
               }}

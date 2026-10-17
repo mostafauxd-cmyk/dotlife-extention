@@ -1,5 +1,5 @@
 import type { Ad, Bundle } from "@dotlife/ads";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 
 import { useApp, useAds, useCampaigns, useLastBundle } from "../context";
 import { jalali, num } from "../data/labels";
@@ -18,6 +18,15 @@ import {
 } from "../data/logic";
 import { Icon } from "../ui/Icon";
 import { toNoghtePromos } from "../data/noghtePromo";
+import {
+  NoghteError,
+  noghteAccount,
+  onNoghteAccount,
+  requestCode,
+  signOut,
+  syncPromos,
+  verifyCode,
+} from "../data/noghteSync";
 
 /** The bundle as clients receive it; the signature is the server's, so it shows as a placeholder here. */
 const shown = (b: Bundle): string =>
@@ -167,10 +176,106 @@ function Importer() {
 }
 
 /** What the ads of places 101 and 102 become in Noghte's own sponsor-card list. */
+/** Signing in to Noghte's server with an admin phone's code, and the state of that link. */
+function NoghteLink({ onSync }: { onSync: () => void }) {
+  const { toast } = useApp();
+  const account = useSyncExternalStore(onNoghteAccount, noghteAccount);
+  const [phone, setPhone] = useState("");
+  const [code, setCode] = useState("");
+  const [sent, setSent] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const fail = (e: unknown): void => {
+    const c = e instanceof NoghteError ? e.code : "";
+    toast(
+      c === "not_admin"
+        ? "این شماره ادمین نقطه نیست."
+        : c === "unauthorized" || c === "bad_code"
+          ? "کد درست نیست."
+          : "سرور نقطه جواب نداد.",
+    );
+  };
+  if (account !== null)
+    return (
+      <div className="link-row">
+        <span className="badge live">متصل به نقطه · {account}</span>
+        <button type="button" className="btn sm" onClick={onSync}>
+          <Icon name="upload" size={15} />
+          همگام‌سازی حالا
+        </button>
+        <button type="button" className="btn ghost sm" onClick={signOut}>
+          قطع اتصال
+        </button>
+      </div>
+    );
+  return (
+    <form
+      className="link-row"
+      onSubmit={(e) => {
+        e.preventDefault();
+        setBusy(true);
+        const job = sent ? verifyCode(phone.trim(), code.trim()) : requestCode(phone.trim());
+        job.then(
+          () => {
+            setBusy(false);
+            if (sent) toast("به سرور نقطه وصل شد.");
+            else {
+              setSent(true);
+              toast("کد فرستاده شد.");
+            }
+          },
+          (err: unknown) => {
+            setBusy(false);
+            fail(err);
+          },
+        );
+      }}
+    >
+      <input
+        dir="ltr"
+        inputMode="tel"
+        aria-label="شماره‌ی ادمین نقطه"
+        placeholder="شماره‌ی ادمین نقطه، 09…"
+        value={phone}
+        disabled={sent}
+        onChange={(e) => {
+          setPhone(e.target.value);
+        }}
+      />
+      {sent && (
+        <input
+          dir="ltr"
+          inputMode="numeric"
+          aria-label="کد پیامکی"
+          placeholder="کد پیامکی"
+          value={code}
+          onChange={(e) => {
+            setCode(e.target.value);
+          }}
+        />
+      )}
+      <button type="submit" className="btn sm" disabled={busy || phone.trim() === ""}>
+        {sent ? "ورود" : "فرستادن کد"}
+      </button>
+    </form>
+  );
+}
+
 function NoghtePromos({ ads }: { ads: readonly Ad[] }) {
   const { toast } = useApp();
   const writes = toNoghtePromos(ads);
   const text = JSON.stringify(writes, null, 2);
+  const sync = (): void => {
+    syncPromos(writes).then(
+      (r) => {
+        toast(
+          `${num(r.on)} کارت در نقطه نوشته شد${r.off > 0 ? ` و ${num(r.off)} کارت قدیمی خاموش شد` : ""}.`,
+        );
+      },
+      () => {
+        toast("همگام‌سازی با نقطه نشد.");
+      },
+    );
+  };
   return (
     <section className="card">
       <h2>
@@ -178,11 +283,12 @@ function NoghtePromos({ ads }: { ads: readonly Ad[] }) {
         <small> {num(writes.length)} کارت</small>
       </h2>
       <p className="note">
-        اپ نقطه هنوز بسته‌ی NX Ads را نمی‌خواند؛ آگهی‌های جایگاه ۱۰۱ (بالای تقویم) و ۱۰۲ (پایین
-        تقویم) به شکل کارت‌های promo خودش در می‌آیند. هر کارت با{" "}
-        <code>PUT /admin/api/promos/:id</code> در پنل نقطه نوشته می‌شود. اپ در هر جا اولین کارت زنده
-        را نشان می‌دهد، پس ترتیب از روی سهم است و هدف‌گیری ندارد.
+        آگهی‌های جایگاه ۱۰۱ (بالای تقویم) و ۱۰۲ (پایین تقویم) کارت‌های حامی خود اپ نقطه می‌شوند. با
+        اتصال به سرور نقطه، هر «انتشار» آن‌ها را آن‌جا می‌نویسد، کارت‌های قدیمی NX Ads را خاموش
+        می‌کند و ترتیب را از روی سهم می‌گذارد؛ کارت‌هایی که در پنل خود نقطه ساخته شده‌اند دست
+        نمی‌خورند. اپ در هر جا اولین کارت زنده را نشان می‌دهد و هدف‌گیری ندارد.
       </p>
+      <NoghteLink onSync={sync} />
       {writes.length === 0 ? (
         <p className="note">آگهی زنده‌ای برای این دو جایگاه نیست.</p>
       ) : (
@@ -271,6 +377,15 @@ export function Publish() {
     store.publish().then(
       (b) => {
         setBusy(false);
+        if (noghteAccount() !== null)
+          void syncPromos(toNoghtePromos(b.ads)).then(
+            (r) => {
+              toast(`منتشر شد و ${num(r.on)} کارت به اپ نقطه رسید.`);
+            },
+            () => {
+              toast("منتشر شد، ولی همگام‌سازی با نقطه نشد.");
+            },
+          );
         toast(
           import.meta.env.DEV
             ? `نسخه‌ی ${num(b.version)} منتشر شد و به نیوتبِ در حال توسعه رسید.`
