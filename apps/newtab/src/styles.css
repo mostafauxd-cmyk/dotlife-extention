@@ -6516,8 +6516,18 @@ a.ts-link {
   padding-inline: 18px;
   border-radius: 26px;
 }
-.mkt {
+.card.g.mkt {
   padding-bottom: 6px;
+}
+/* the list takes the card's height: its rows grow (to a limit) so the last one ends as near the
+   bottom edge as the rows are to the sides */
+.mkt .plist {
+  flex: 1;
+  min-height: 0;
+}
+.mkt .prow {
+  flex: 1 1 auto;
+  max-height: 84px;
 }
 /* the market's groups as a line under the active word, as in the design */
 .tabs.line {
