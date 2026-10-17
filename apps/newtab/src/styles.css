@@ -4403,8 +4403,8 @@ a.ts-link {
 }
 .lg {
   flex: none;
-  width: 26px;
-  height: 26px;
+  width: 28px;
+  height: 28px;
   border-radius: 8px;
   display: grid;
   place-items: center;
@@ -5257,31 +5257,16 @@ a.ts-link {
   container-type: inline-size;
 }
 
-/* a service's own mark: its white glyph masked over its colour, or its full app icon */
+/* a service's mark: its glyph in its own colour (Iconly Pro's brand icons), or its full app icon */
 .mk {
   position: relative;
-  overflow: hidden;
 }
-.mk:not(.icon)::before {
-  content: "";
-  position: absolute;
-  inset: 22%;
-  background: #fff;
+.mk.glyph {
+  background: var(--mc);
   mask: var(--logo) center / contain no-repeat;
 }
-.mk.ig {
-  background: radial-gradient(
-    circle at 30% 107%,
-    #fdf497 0%,
-    #fdf497 5%,
-    #fd5949 45%,
-    #d6249f 60%,
-    #285aeb 90%
-  ) !important;
-}
-.mk.x {
-  background: #000 !important;
-  box-shadow: inset 0 0 0 1px #333;
+.mk.icon {
+  overflow: hidden;
 }
 .mk.icon img {
   position: absolute;
@@ -5294,10 +5279,16 @@ a.ts-link {
 }
 .sx-glyph.mk {
   position: absolute;
-  overflow: visible;
 }
-.sx-glyph.mk:not(.icon)::before {
-  inset: 24%;
+/* the glyph alone, in the service's colour: no tile, so no tile's shadow or sheen */
+.sx-glyph.mk.glyph {
+  width: 130px;
+  height: 130px;
+  margin: -65px 0 0 -65px;
+  box-shadow: none;
+}
+.sx-glyph.mk.glyph::after {
+  display: none;
 }
 .sx-glyph.mk.icon img {
   border-radius: inherit;

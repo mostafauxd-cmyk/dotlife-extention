@@ -21,7 +21,7 @@ type Service = {
   name: string;
   color: string;
   letter: string;
-  /** The service's own mark (public/brands): a white glyph on its colour, or its full app icon. */
+  /** The service's mark (public/brands): a glyph drawn in its colour, or its full app icon. */
   logo: string;
   /** True when `logo` is the full app icon (drawn as it is), false for a glyph on the colour. */
   icon: boolean;
@@ -49,7 +49,7 @@ export const SERVICES: readonly Service[] = [
     logo: "./brands/instagram.svg",
     icon: false,
     name: "اینستاگرام",
-    color: "#DD2A7B",
+    color: "#E1306C",
     letter: "I",
     url: "https://www.instagram.com/",
     host: "instagram.com",
@@ -73,7 +73,7 @@ export const SERVICES: readonly Service[] = [
     logo: "./brands/x.svg",
     icon: false,
     name: "ایکس",
-    color: "#000000",
+    color: "#E7E9EA",
     letter: "X",
     url: "https://x.com/",
     host: "x.com",
@@ -392,16 +392,17 @@ function Arrange({ s, onClose }: { s: Settings; onClose: () => void }) {
 
 /** A service's own mark in a rounded tile: its app icon, or its white glyph on its colour. */
 function Mark({ svc, className }: { svc: Service; className: string }) {
+  // an app icon (Rubika, Eitaa) is drawn as it is; the others are a glyph in the service's own colour
   if (svc.icon)
     return (
-      <span className={`${className} mk icon`} style={{ background: svc.color }}>
+      <span className={`${className} mk icon`}>
         <img src={svc.logo} alt="" />
       </span>
     );
   return (
     <span
-      className={`${className} mk ${svc.id}`}
-      style={{ background: svc.color, "--logo": `url("${svc.logo}")` } as React.CSSProperties}
+      className={`${className} mk glyph`}
+      style={{ "--mc": svc.color, "--logo": `url("${svc.logo}")` } as React.CSSProperties}
     />
   );
 }
