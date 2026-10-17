@@ -73,6 +73,12 @@ export type Settings = {
   social: { order: string[]; shown: string[]; seen: string[] };
   /** Money amounts hidden on the money slide (one tap shows them). */
   hideMoney: boolean;
+  /**
+   * What the person chose to say about themself, only to be offered better «معرفی‌شده» boxes: a
+   * city and topics they follow. It stays on this device; nothing is sent anywhere.
+   */
+  city: string | null;
+  topics: string[];
 };
 
 export const DEFAULT_SITES: readonly QuickSite[] = [
@@ -98,6 +104,8 @@ export const DEFAULTS: Settings = {
     seen: [],
   },
   hideMoney: false,
+  city: null,
+  topics: [],
 };
 
 const KEY = "settings.v1";

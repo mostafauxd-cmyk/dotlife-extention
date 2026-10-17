@@ -6228,3 +6228,38 @@ a.ts-link {
 .qpanel .ts-notes {
   font-size: 16px;
 }
+
+/* «شخصی‌سازی»: the city and topics the person may give, as small pills that wrap */
+.ab-chips {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+.ab-chips > span {
+  width: 52px;
+  font-size: 14px;
+  color: var(--ink-3);
+}
+.ab-chips button {
+  height: 34px;
+  padding: 0 14px;
+  border-radius: 17px;
+  border: 1px solid var(--stroke);
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--ink-2);
+  font: inherit;
+  font-size: 14.5px;
+  cursor: pointer;
+  transition:
+    background 0.2s,
+    color 0.2s;
+}
+.ab-chips button:hover {
+  color: var(--ink);
+}
+.ab-chips button[aria-pressed="true"] {
+  background: rgba(255, 255, 255, 0.16);
+  border-color: transparent;
+  color: #fff;
+}

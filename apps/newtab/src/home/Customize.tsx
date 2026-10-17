@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 
+import { AD_CITIES, AD_TOPICS } from "@dotlife/ads";
+
 import { useSession, useSettings, useSyncState } from "../hooks";
 import { signOut } from "../noghte/api";
 import { syncNow } from "../noghte/sync";
@@ -97,6 +99,45 @@ export function Customize({
           پوشه‌ای از سایت‌های همین کار به دسترسی سریع زیر سرچ اضافه می‌شود.
         </div>
         <PersonaPicker />
+
+        <h3>برای پیشنهادهای بهتر (اختیاری)</h3>
+        <div className="chint">
+          فقط برای انتخاب «معرفی‌شده»ها؛ روی همین دستگاه می‌ماند و جایی فرستاده نمی‌شود.
+        </div>
+        <div className="ab-chips" role="group" aria-label="شهر">
+          <span>شهر</span>
+          {AD_CITIES.map((c) => (
+            <button
+              key={c}
+              type="button"
+              aria-pressed={s.city === c}
+              onClick={() => {
+                updateSettings({ city: s.city === c ? null : c });
+              }}
+            >
+              {c}
+            </button>
+          ))}
+        </div>
+        <div className="ab-chips" role="group" aria-label="موضوع‌ها">
+          <span>علاقه‌ها</span>
+          {AD_TOPICS.map((tp) => (
+            <button
+              key={tp}
+              type="button"
+              aria-pressed={s.topics.includes(tp)}
+              onClick={() => {
+                updateSettings({
+                  topics: s.topics.includes(tp)
+                    ? s.topics.filter((x) => x !== tp)
+                    : [...s.topics, tp],
+                });
+              }}
+            >
+              {tp}
+            </button>
+          ))}
+        </div>
 
         <h3>صفحه‌ی اول</h3>
         <div className="chint">صفحه‌ی اول فقط نقطه و سرچ است؛ بقیه در گوشه‌ها و لبه منتظرند.</div>
