@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { fromJdn, monthName } from "@dotlife/calendar-core";
 import { dateToJdn, localNow } from "@dotlife/tasks";
 
+import { AD_LABEL, useAd } from "../ads";
 import { useSettings } from "../hooks";
 import { useMarket, type Period } from "../market";
 import { TIME_ZONE } from "../noghte/model";
@@ -16,7 +17,8 @@ import {
   type Snapshot,
 } from "../paket";
 import { updateSettings } from "../settings";
-import { fa } from "../ui/fa";
+import { ago, fa } from "../ui/fa";
+import { Icon } from "../ui/Icon";
 import { MarketCard, TickerStrip } from "./MarketCards";
 import { PaketSync } from "./PaketSync";
 
@@ -31,6 +33,38 @@ import { PaketSync } from "./PaketSync";
 const solarDay = (iso: string): string => {
   const s = fromJdn(dateToJdn(iso.slice(0, 10)), "solar-hijri");
   return fa(`${String(s.day)} ${monthName(s)}`);
+};
+
+/** «۲٫۹م» for a big amount in a small place. */
+const compact = (minor: string): string => {
+  const n = Number(minor);
+  if (Math.abs(n) >= 1e6)
+    return `${fa((n / 1e6).toFixed(1).replace(/\.0$/, "")).replace(".", "٫")}م`;
+  return toman(minor);
+};
+
+/** Where a card's «← …» link goes: Paket's own site, marked with where it was clicked. */
+const paketLink = (place: string): string => `https://paket.life/?src=chrome&c=money-${place}`;
+
+function More({ place, children }: { place: string; children: string }) {
+  return (
+    <a
+      className="ml"
+      href={paketLink(place)}
+      target="_blank"
+      rel="noreferrer"
+      title="باز کردن در پاکت"
+    >
+      {children} ←
+    </a>
+  );
+}
+
+const KINDS: Record<string, [string, string]> = {
+  ipo: ["عرضه‌ی اولیه", "amber"],
+  opportunity: ["فرصت سرمایه‌گذاری", "green"],
+  announcement: ["اطلاعیه", "blue"],
+  offer: ["پیشنهاد", "violet"],
 };
 
 export function MoneySlide() {
@@ -106,31 +140,7 @@ export function MoneySlide() {
 
       <MarketCard prices={prices} offline={offline} period={period} setPeriod={setPeriod} />
 
-      <div className="card g news">
-        <div className="card-h">
-          <h2>خبر و پیشنهاد</h2>
-          <span className="sub">از تیم پاکت · همان خبرهای صفحه‌ی خانه‌ی اپ</span>
-        </div>
-        <div className="ncards">
-          {news.length === 0 ? (
-            <p className="none">خبری نیست.</p>
-          ) : (
-            news.slice(0, 4).map((n) => (
-              <a
-                key={n.id}
-                className="ncard"
-                href={n.ctaUrl ?? "#"}
-                target="_blank"
-                rel="noreferrer"
-              >
-                <b>{n.title}</b>
-                <span>{n.summary}</span>
-                {n.ctaLabel !== null && <em>{n.ctaLabel}</em>}
-              </a>
-            ))
-          )}
-        </div>
-      </div>
+      <News items={news} />
     </div>
   );
 }
@@ -170,6 +180,7 @@ function PaketCards({ data, hide }: { data: Snapshot; hide: boolean }) {
       <div className="card g mc">
         <div className="mh">
           <h2>موجودی</h2>
+          <More place="accounts">حساب‌ها</More>
         </div>
         <div className="stats">
           <div>
@@ -211,6 +222,7 @@ function PaketCards({ data, hide }: { data: Snapshot; hide: boolean }) {
 
         <div className="mh sub2">
           <h3>۱۴ روز آینده</h3>
+          <More place="upcoming">خرج‌های پیش رو</More>
         </div>
         <div className="rows">
           {soon.length === 0 ? (
@@ -269,6 +281,7 @@ function PaketCards({ data, hide }: { data: Snapshot; hide: boolean }) {
         <Spending data={data} hide={hide} />
         <div className="mh sub2">
           <h3>دسته‌های پرخرج</h3>
+          <More place="budgets">بودجه‌ها</More>
         </div>
         <div className="rows">
           {data.categories.length === 0 && <p className="none">هنوز خرجی در این ماه ثبت نشده.</p>}
@@ -280,17 +293,20 @@ function PaketCards({ data, hide }: { data: Snapshot; hide: boolean }) {
               <div key={c.id} className="rw cat2">
                 <i className="cd" style={{ background: c.color ?? "#a7a7a7" }} />
                 <span className="nm">{c.name}</span>
-                <span className="am">{amt(c.spentMinor)}</span>
-                {limit !== null && (
-                  <span className="bar">
+                <span className="am">{hide ? "••••" : compact(c.spentMinor)}</span>
+                <span className="bar">
+                  {limit !== null && (
                     <i
                       style={{
                         width: `${String(share * 100)}%`,
                         background: spent > limit ? "var(--coral)" : undefined,
                       }}
                     />
-                  </span>
-                )}
+                  )}
+                </span>
+                <span className="bd">
+                  {limit === null || hide ? "" : compact(c.limitMinor ?? "0")}
+                </span>
               </div>
             );
           })}
@@ -335,6 +351,7 @@ function Spending({ data, hide }: { data: Snapshot; hide: boolean }) {
     <>
       <div className="mh">
         <h2>{title}</h2>
+        <More place="transactions">تراکنش‌ها</More>
       </div>
       <div className="hero2">
         <b className="hn big">
@@ -351,7 +368,7 @@ function Spending({ data, hide }: { data: Snapshot; hide: boolean }) {
           </span>
         )}
       </div>
-      <SpendChart data={data} />
+      <SpendChart data={data} hide={hide} />
     </>
   );
 }
@@ -361,7 +378,7 @@ const CH = 110;
 const CP = 8;
 
 /** Cumulative spending, step by step (one step a day), the budget's ceiling as a dashed line and Paket's forecast to the last day. */
-function SpendChart({ data }: { data: Snapshot }) {
+function SpendChart({ data, hide }: { data: Snapshot; hide: boolean }) {
   const days = Math.max(2, data.month.daysInMonth);
   const daily = data.spend.dailyMinor.map(Number);
   if (daily.length === 0) return null;
@@ -387,40 +404,140 @@ function SpendChart({ data }: { data: Snapshot }) {
     .join(" ");
   const lastDay = cum.length;
   const lastV = cum.at(-1) ?? 0;
+  const mname = data.month.monthName;
+  const endsAt = limit !== null || forecast !== null;
   return (
     <div className="chart spend">
+      {endsAt && (
+        <span className="legend">
+          {forecast !== null && (
+            <span className="lg-f">
+              پیش‌بینی آخر ماه {hide ? "••••" : compact(String(forecast))}
+            </span>
+          )}
+          {limit !== null && (
+            <span className="lg-l">سقف بودجه {hide ? "••••" : compact(String(limit))}</span>
+          )}
+        </span>
+      )}
       <svg viewBox={`0 0 ${String(CW)} ${String(CH)}`} role="img" aria-label="خرج تجمعی ماه">
+        <defs>
+          <linearGradient id="spg" x1="0" x2="0" y1="0" y2="1">
+            <stop offset="0" stopColor="#8add88" stopOpacity=".28" />
+            <stop offset="1" stopColor="#8add88" stopOpacity="0" />
+          </linearGradient>
+        </defs>
+        <path
+          d={`${path} L${x(lastDay).toFixed(1)},${String(CH - CP)} L${x(1).toFixed(1)},${String(CH - CP)} Z`}
+          fill="url(#spg)"
+        />
         {limit !== null && (
-          <line
-            x1={x(1)}
-            y1={y(0)}
-            x2={x(days)}
-            y2={y(limit)}
-            stroke="var(--coral)"
-            strokeDasharray="4 4"
-            strokeOpacity=".7"
-          />
+          <>
+            <line
+              x1={x(1)}
+              y1={y(0)}
+              x2={x(days)}
+              y2={y(limit)}
+              stroke="#a7a7a7"
+              strokeDasharray="1 4"
+              strokeLinecap="round"
+              strokeOpacity=".8"
+            />
+            <circle
+              cx={x(days)}
+              cy={y(limit)}
+              r="3"
+              fill="#0f1116"
+              stroke="#cfd3dc"
+              strokeWidth="1.5"
+            />
+          </>
         )}
         {forecast !== null && (
-          <line
-            x1={x(lastDay)}
-            y1={y(lastV)}
-            x2={x(days)}
-            y2={y(forecast)}
-            stroke="#a7a7a7"
-            strokeDasharray="2 4"
-          />
+          <>
+            <line
+              x1={x(lastDay)}
+              y1={y(lastV)}
+              x2={x(days)}
+              y2={y(forecast)}
+              stroke="#8add88"
+              strokeDasharray="4 4"
+            />
+            <circle
+              cx={x(days)}
+              cy={y(forecast)}
+              r="3"
+              fill="#0f1116"
+              stroke="#8add88"
+              strokeWidth="1.5"
+            />
+          </>
         )}
-        <path d={path} fill="none" stroke="#f5f6f8" strokeWidth="1.8" strokeLinejoin="round" />
+        <path d={path} fill="none" stroke="#8add88" strokeWidth="1.8" strokeLinejoin="round" />
         <circle
           cx={x(lastDay)}
           cy={y(lastV)}
           r="4"
           fill="#0f1116"
-          stroke="#f5f6f8"
+          stroke="#8add88"
           strokeWidth="2"
         />
       </svg>
+      <span className="axis">
+        <small>
+          {fa(1)} {mname}
+        </small>
+        <small>{fa(15)}</small>
+        <small>
+          {fa(days)} {mname}
+        </small>
+      </span>
+    </div>
+  );
+}
+
+/** Paket's news, and after them the slot-12 card: the same size, a dashed edge and the label. */
+function News({ items }: { items: ReturnType<typeof usePaketNews> }) {
+  const ad = useAd(12);
+  const shown = items.slice(0, ad === null ? 5 : 4);
+  return (
+    <div className="card g news">
+      <div className="card-h">
+        <h2>خبر و پیشنهاد</h2>
+        <span className="sub">از تیم پاکت · همان خبرهای صفحه‌ی خانه‌ی اپ</span>
+        <More place="news">همه‌ی خبرها</More>
+      </div>
+      <div className="ncards">
+        {shown.length === 0 && ad === null && <p className="none">خبری نیست.</p>}
+        {shown.map((n) => {
+          const [kind, tone] = KINDS[n.kind] ?? ["خبر", "blue"];
+          return (
+            <a key={n.id} className="ncard" href={n.ctaUrl ?? "#"} target="_blank" rel="noreferrer">
+              <span className="kh">
+                <span className={`kind ${tone}`}>{kind}</span>
+                {n.pinned === true && <Icon name="pin" className="pn" />}
+              </span>
+              <b>{n.title}</b>
+              <span className="nf">
+                {n.ctaLabel !== null && <em>{n.ctaLabel} ←</em>}
+                <small>{ago(n.publishedAt)}</small>
+              </span>
+            </a>
+          );
+        })}
+        {ad !== null && (
+          <a className="ncard adcard" href={ad.url} target="_blank" rel="noreferrer">
+            <span className="kh">
+              <span className="kind ad">{AD_LABEL}</span>
+            </span>
+            <b>{ad.title}</b>
+            <span className="nf">
+              {ad.cta !== undefined && <em>{ad.cta} ←</em>}
+              {ad.line !== undefined && <small>{ad.line}</small>}
+            </span>
+          </a>
+        )}
+      </div>
     </div>
   );
 }

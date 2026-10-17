@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 
+import { AD_LABEL, useAd } from "../ads";
 import { useSettings } from "../hooks";
 import { faviconUrl, siteName, topSites, type Site } from "../platform";
 import {
@@ -201,6 +202,21 @@ function FolderTile({
   );
 }
 
+/** Slots 1 and 2: a tile like the others, with an amber dot in the row and the label inside a folder. */
+function AdTile({ slot, folder }: { slot: 1 | 2; folder?: string }) {
+  const ad = useAd(slot);
+  if (ad === null || (slot === 2 && ad.extra?.folder !== folder)) return null;
+  return (
+    <a className="lt adt" href={ad.url} aria-label={`${ad.title} (${AD_LABEL})`}>
+      <span className="ic" style={{ "--bc": ad.tint ?? "#D9862B" } as React.CSSProperties}>
+        <span className="letter">{ad.glyph ?? ad.title.slice(0, 1)}</span>
+      </span>
+      <span className="lb">{ad.title}</span>
+      {slot === 1 ? <i className="sdot" /> : <span className="tag">{AD_LABEL}</span>}
+    </a>
+  );
+}
+
 const newFolderId = (): string =>
   `f${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}`;
 
@@ -333,6 +349,7 @@ export function Launcher() {
             }}
           />
         ))}
+        <AdTile slot={2} folder={folder.name} />
         <button
           type="button"
           className="lt"
@@ -381,6 +398,7 @@ export function Launcher() {
           />
         ),
       )}
+      <AdTile slot={1} />
       <button
         type="button"
         className="lt"

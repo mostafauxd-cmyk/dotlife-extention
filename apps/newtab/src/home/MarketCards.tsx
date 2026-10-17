@@ -1,6 +1,8 @@
-import { useState } from "react";
+import { Fragment, useState } from "react";
 
 import { localNow } from "@dotlife/tasks";
+
+import { AD_LABEL, useAd } from "../ads";
 
 import {
   BADGE,
@@ -82,6 +84,7 @@ function TickerCell({ t }: { t: TickerItem }) {
 
 export function TickerStrip({ ticker }: { ticker: Ticker | null }) {
   const items = ticker?.items ?? [];
+  const ad = useAd(10);
   return (
     <div className="ticker" aria-label="قیمت جهانی و رمزارز">
       <span className="tk-h">
@@ -98,8 +101,18 @@ export function TickerStrip({ ticker }: { ticker: Ticker | null }) {
           <div className="tk-track">
             {[0, 1].map((k) => (
               <span key={k} className="tk-run" aria-hidden={k === 1 ? true : undefined}>
-                {items.map((t) => (
-                  <TickerCell key={t.id} t={t} />
+                {items.map((t, i) => (
+                  <Fragment key={t.id}>
+                    <TickerCell t={t} />
+                    {/* the partner's item sits among the symbols, after the fifth */}
+                    {ad !== null && i === Math.min(4, items.length - 1) && (
+                      <a className="tk-i ad" href={ad.url} target="_blank" rel="noreferrer">
+                        <b>{ad.title}</b>
+                        {ad.line}
+                        <span className="tag">{AD_LABEL}</span>
+                      </a>
+                    )}
+                  </Fragment>
                 ))}
               </span>
             ))}
@@ -367,9 +380,41 @@ export function MarketCard({
                 }}
               />
             ))}
+            <SponsoredRow />
           </div>
         </>
       )}
     </div>
+  );
+}
+
+/** Slot 11: a symbol the partner pays to list, a row like the others with the label. */
+function SponsoredRow() {
+  const ad = useAd(11);
+  if (ad === null) return null;
+  const price = Number(ad.extra?.price ?? "");
+  const change = Number(ad.extra?.change ?? "");
+  return (
+    <a className="prow spx" href={ad.url} target="_blank" rel="noreferrer">
+      <i className="ai sm" style={{ background: ad.tint ?? "#B8862B", color: "#3a2a05" }}>
+        {ad.glyph ?? "؟"}
+      </i>
+      <span className="nm2">
+        <b>
+          {ad.title}
+          <span className="tag">{AD_LABEL}</span>
+        </b>
+        <small>{ad.line}</small>
+      </span>
+      <span />
+      <span className="pv">
+        {Number.isFinite(price) && price > 0 && <b>{toman(String(Math.round(price)))}</b>}
+        {Number.isFinite(change) && ad.extra?.change !== undefined && (
+          <small
+            className={change >= 0 ? "up" : "dn"}
+          >{`${change >= 0 ? "▲" : "▼"} ${fa(Math.abs(change).toFixed(2)).replace(".", "٫")}٪`}</small>
+        )}
+      </span>
+    </a>
   );
 }

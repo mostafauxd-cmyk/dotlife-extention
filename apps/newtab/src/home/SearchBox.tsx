@@ -11,6 +11,7 @@ import {
   noteTitle,
   today,
 } from "../noghte/model";
+import { AD_LABEL, useAd } from "../ads";
 import { search, suggest } from "../platform";
 import { addDays } from "@dotlife/tasks";
 import { ago } from "../ui/fa";
@@ -147,6 +148,8 @@ export function SearchBox({
     };
   }, [text, mode]);
   const showSugg = mode === "google" && focused && sugg.length > 0 && text.trim() !== "";
+  // slot 4: one row among the suggestions, aimed only by the word being typed
+  const sponsored = useAd(4, { keyword: text });
 
   // the box grows with long text (Google takes up to 2,048 characters)
   useLayoutEffect(() => {
@@ -362,6 +365,23 @@ export function SearchBox({
               </li>
             );
           })}
+          {sponsored !== null && (
+            <li
+              role="option"
+              aria-selected={false}
+              className="spons"
+              onClick={() => {
+                location.href = sponsored.url;
+              }}
+            >
+              <Icon name="search" />
+              <span>
+                {sponsored.title}
+                {sponsored.line !== undefined && ` · ${sponsored.line}`}
+              </span>
+              <span className="tag">{AD_LABEL}</span>
+            </li>
+          )}
         </ul>
       )}
 

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 
+import { AD_LABEL, useAd } from "../ads";
 import { useSettings } from "../hooks";
 import { inExtension, openWindow } from "../platform";
 import { updateSettings, type Settings } from "../settings";
@@ -154,6 +155,7 @@ export function SocialSlide() {
             icon: <Mark svc={t} className="lg" />,
           }))}
         />
+        <ChannelCard />
         <button
           type="button"
           className="rbtn sm"
@@ -420,5 +422,28 @@ function Mark({ svc, className }: { svc: Service; className: string }) {
       className={`${className} mk glyph`}
       style={{ "--mc": svc.color, "--logo": `url("${svc.logo}")` } as React.CSSProperties}
     />
+  );
+}
+
+/** Slot 15: a channel or page to follow, above the frames — never inside a service's own page. */
+function ChannelCard() {
+  const ad = useAd(15);
+  if (ad === null) return null;
+  return (
+    <div className="spev chan">
+      <span className="pst" style={{ background: ad.tint ?? "#2AABEE" }}>
+        {ad.glyph ?? "کانال"}
+      </span>
+      <div>
+        <b>{ad.title}</b>
+        <span>
+          {ad.line}
+          <span className="tag">{AD_LABEL}</span>
+        </span>
+      </div>
+      <a className="btn" href={ad.url} target="_blank" rel="noreferrer">
+        {ad.cta ?? "عضویت"}
+      </a>
+    </div>
   );
 }

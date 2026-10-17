@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 
+import { AD_LABEL, useAd } from "../ads";
 import { bookmarksBar, faviconUrl, type Bookmark } from "../platform";
 import { Icon } from "../ui/Icon";
 
@@ -16,6 +17,7 @@ export function Edge({
   pinned: boolean;
   onCustomize: () => void;
 }) {
+  const ad = useAd(6);
   const [bar, setBar] = useState<Bookmark[]>([]);
   const [open, setOpen] = useState<string | null>(null);
   useEffect(() => {
@@ -57,6 +59,13 @@ export function Edge({
               <div className="bml">{bar.map((b) => row(b))}</div>
             )}
           </>
+        )}
+        {ad !== null && (
+          <a className="spcard" href={ad.url} target="_blank" rel="noreferrer">
+            <b>{ad.title}</b>
+            {ad.line !== undefined && <small>{ad.line}</small>}
+            <span className="tag">{AD_LABEL}</span>
+          </a>
         )}
         <button
           type="button"
