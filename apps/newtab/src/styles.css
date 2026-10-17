@@ -6263,3 +6263,7 @@ a.ts-link {
   border-color: transparent;
   color: #fff;
 }
+
+.qp-sec .ts-chips {
+  flex-wrap: wrap;
+}
