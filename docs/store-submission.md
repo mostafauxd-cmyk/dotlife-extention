@@ -1,6 +1,6 @@
-# آماده‌سازی انتشار «نقطه» در کروم وب استور (نسخه ۰.۱.۰)
+# آماده‌سازی انتشار «نقطه» در کروم وب استور (نسخه ۰.۱.۱)
 
-زیپ آماده: `release/noghte-newtab-0.1.0.zip` (با `pnpm package` ساخته می‌شود، ۷ permission و ۲۳ host؛ اسلاید «شبکه‌ها» و قانون‌های حذف هدر از این نسخه برداشته شده).
+زیپ آماده: `release/noghte-newtab-0.1.2.zip` (با `pnpm package` ساخته می‌شود، ۷ permission و ۲۳ host؛ اسلاید «شبکه‌ها» و قانون‌های حذف هدر از این نسخه برداشته شده).
 
 ## ۱. پیش از آپلود
 
@@ -26,15 +26,15 @@
 
 ### host_permissions
 
-| گروه             | نشانی‌ها                                                    | دلیل                                                                                     |
-| ---------------- | ----------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
-| همگام‌سازی نقطه  | `noghte.life`                                               | Login by SMS code and task/note sync with the user's own account.                        |
-| پیشنهاد جستجو    | `suggestqueries.google.com`                                 | Search suggestions while typing.                                                         |
-| گوگل تقویم و میت | `www.googleapis.com`, `meet.googleapis.com`                 | Reads and writes calendar events and creates Meet links, after the user connects Google. |
-| پاکت             | `api.paket.app`                                             | Read-only snapshot of the user's finances if they link the Paket app.                    |
-| قیمت روز         | `raw.githubusercontent.com/iran-market/*`, `api.nobitex.ir` | Public currency and crypto prices.                                                       |
-| خبر              | ۱۶ سایت خبری (isna، mehrnews، zoomit، tabnak، …)            | Reads each site's public RSS/section pages for the news slide.                           |
-| اختیاری          | `https://*/*` (optional)                                    | Asked only when the user adds their own RSS feed; the browser prompts per site.          |
+| گروه             | نشانی‌ها                                                             | دلیل                                                                                                                                    |
+| ---------------- | -------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| همگام‌سازی نقطه  | `noghte.life`                                                        | Login by SMS code and task/note sync with the user's own account.                                                                       |
+| پیشنهاد جستجو    | `suggestqueries.google.com`                                          | Search suggestions while typing.                                                                                                        |
+| گوگل تقویم و میت | `www.googleapis.com`, `meet.googleapis.com`, `oauth2.googleapis.com` | Reads and writes calendar events and creates Meet links, after the user connects Google; `oauth2` only revokes the token on disconnect. |
+| پاکت             | `api.paket.life`                                                     | Read-only snapshot of the user's finances if they link the Paket app.                                                                   |
+| قیمت روز         | `raw.githubusercontent.com/iran-market/*`, `api.nobitex.ir`          | Public currency and crypto prices.                                                                                                      |
+| خبر              | ۱۶ سایت خبری (isna، mehrnews، zoomit، tabnak، …)                     | Reads each site's public RSS/section pages for the news slide.                                                                          |
+| اختیاری          | `https://*/*` (optional)                                             | Asked only when the user adds their own RSS feed; the browser prompts per site.                                                         |
 
 ## ۳. ریسک‌های اصلی و پیشنهاد
 
@@ -60,7 +60,7 @@
 
 ## ۵. متن‌های لیست استور
 
-**نام:** نقطه
+**نام:** Noghte - Personal Assistant in your newtab (لوکالی `en`، پیش‌فرض)؛ در لوکالی `fa`: نقطه. متن‌ها در `apps/newtab/public/_locales/`.
 
 **خلاصه (تا ۱۳۲ نویسه):**
 تب جدید فارسی با جستجو، کارها، یادداشت‌ها، تقویم، خبر و قیمت روز، همگام با اپ نقطه.

@@ -67,12 +67,19 @@ export type Snapshot = {
     currencyCode: string;
     periodStart: string;
   } | null;
+  /**
+   * The month's biggest categories, each with its subcategories' spending added in and the biggest
+   * of them in `children`. `name` is what the phone shows and `icon` the key of its art; an older
+   * server sends neither `icon` nor `children`, and the built-ins' English names.
+   */
   categories: {
     id: string;
     name: string;
+    icon?: string | null;
     color: string | null;
     spentMinor: string;
     limitMinor: string | null;
+    children?: { id: string; name: string; spentMinor: string }[];
   }[];
   transactions: {
     id: string;
@@ -81,6 +88,8 @@ export type Snapshot = {
     currencyCode: string;
     title: string;
     occurredAt: string;
+    categoryName?: string | null;
+    categoryIcon?: string | null;
   }[];
   upcoming: {
     id: string;
@@ -89,6 +98,7 @@ export type Snapshot = {
     amountMinor: string | null;
     currencyCode: string | null;
     categoryName: string | null;
+    categoryIcon?: string | null;
     categoryColor: string | null;
   }[];
   obligations: {
@@ -326,6 +336,22 @@ export async function paketNews(): Promise<NewsItem[]> {
 }
 
 /**
+ * One summary in flight at a time, and none asked again within 30 seconds of the last: the slide
+ * coming into view, the tab coming back and the minute's timer often fire together. A failure is
+ * forgotten, so the next of them asks again.
+ */
+let lastPull: { at: number; got: Promise<Snapshot> } | null = null;
+function pullSnapshot(): Promise<Snapshot> {
+  if (lastPull !== null && Date.now() - lastPull.at < 30_000) return lastPull.got;
+  const pull = { at: Date.now(), got: snapshot() };
+  lastPull = pull;
+  pull.got.catch(() => {
+    if (lastPull === pull) lastPull = null;
+  });
+  return pull.got;
+}
+
+/**
  * The summary, asked again every minute while the tab is in view and when it comes back. The last one
  * received is shown at once (and kept when Paket cannot be reached), with `error` saying why it is old.
  */
@@ -335,6 +361,7 @@ export function useSnapshot(active = true): { data: Snapshot | null; error: stri
   const [error, setError] = useState<string | null>(null);
   useEffect(() => {
     if (!on) {
+      lastPull = null;
       setData(null);
       setError(null);
       return;
@@ -345,7 +372,7 @@ export function useSnapshot(active = true): { data: Snapshot | null; error: stri
     });
     const pull = (): void => {
       if (document.visibilityState !== "visible") return;
-      void snapshot().then(
+      void pullSnapshot().then(
         (s) => {
           if (live) {
             setData(s);
@@ -374,10 +401,17 @@ export function useSnapshot(active = true): { data: Snapshot | null; error: stri
   return { data, error };
 }
 
+/** The news is asked once a page, however many places show it (a failure is asked again). */
+let newsOnce: Promise<NewsItem[]> | null = null;
+
 export function usePaketNews(): NewsItem[] {
   const [items, setItems] = useState<NewsItem[]>([]);
   useEffect(() => {
-    void paketNews().then(setItems, () => undefined);
+    newsOnce ??= paketNews().catch((e: unknown) => {
+      newsOnce = null;
+      throw e;
+    });
+    void newsOnce.then(setItems, () => undefined);
   }, []);
   return items;
 }

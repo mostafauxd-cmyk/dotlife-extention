@@ -7,6 +7,7 @@ import { AD_LABEL, useAd } from "../ads";
 import { useSettings } from "../hooks";
 import { useMarket, type Period } from "../market";
 import { TIME_ZONE } from "../noghte/model";
+import { paketCategory } from "../paketCategories";
 import {
   shortToman,
   toman,
@@ -164,6 +165,7 @@ function PaketCards({ data, hide }: { data: Snapshot; hide: boolean }) {
               amountMinor: o.amountMinor,
               currencyCode: o.currencyCode,
               categoryName: o.kind === "claim" ? "طلب" : "قسط",
+              categoryIcon: null,
               categoryColor: o.kind === "claim" ? "#8add88" : "#5ab0ff",
             },
           ],
@@ -234,7 +236,7 @@ function PaketCards({ data, hide }: { data: Snapshot; hide: boolean }) {
                     className="tg cat"
                     style={{ ["--c" as string]: u.categoryColor ?? "#a7a7a7" }}
                   >
-                    {u.categoryName}
+                    {paketCategory(u.categoryName, u.categoryIcon).name}
                   </span>
                 ) : (
                   <span />
@@ -286,10 +288,17 @@ function PaketCards({ data, hide }: { data: Snapshot; hide: boolean }) {
             const spent = Number(c.spentMinor);
             const limit = c.limitMinor === null ? null : Number(c.limitMinor);
             const share = limit === null || limit === 0 ? 0 : Math.min(1, spent / limit);
+            const cat = paketCategory(c.name, c.icon);
             return (
               <div key={c.id} className="rw cat2">
-                <i className="cd" style={{ background: c.color ?? "#a7a7a7" }} />
-                <span className="nm">{c.name}</span>
+                <CategoryMark art={cat.art} color={c.color} />
+                <span className="nm" title={c.children?.map((k) => k.name).join("، ")}>
+                  {cat.name}
+                  {/* its subcategories, biggest first; their spending is already in the figure */}
+                  {c.children !== undefined && c.children.length > 0 && (
+                    <small>{c.children.map((k) => k.name).join("، ")}</small>
+                  )}
+                </span>
                 <span className="am">{hide ? "••••" : compact(c.spentMinor)}</span>
                 <span className="bar">
                   {limit !== null && (
@@ -332,6 +341,22 @@ function PaketCards({ data, hide }: { data: Snapshot; hide: boolean }) {
   );
 }
 
+/** Paket's own picture and glyph for a built-in category; a dot in its colour for one the person made. */
+function CategoryMark({ art, color }: { art: string | null; color: string | null }) {
+  if (art === null) return <i className="cd" style={{ background: color ?? "#a7a7a7" }} />;
+  return (
+    <i
+      className="cic"
+      style={
+        {
+          backgroundImage: `url("/category/${art}.jpg")`,
+          "--glyph": `url("/category/${art}.svg")`,
+        } as React.CSSProperties
+      }
+    />
+  );
+}
+
 function firstLetter(name: string): string {
   const seg = new Intl.Segmenter("fa", { granularity: "grapheme" }).segment(name);
   return seg[Symbol.iterator]().next().value?.segment ?? "؟";
@@ -359,9 +384,9 @@ function Spending({ data, hide }: { data: Snapshot; hide: boolean }) {
           <span className="sl2">
             {limit !== null &&
               (Number(b.spentMinor) > limit
-                ? `${toman(String(Number(b.spentMinor) - limit))} بیشتر از سقف`
-                : `${toman(String(limit - Number(b.spentMinor)))} تا سقف بودجه`)}
-            {left !== null && !left.startsWith("-") && ` · روزی ${toman(left)} جا دارید`}
+                ? `${toman(String(Number(b.spentMinor) - limit))} از سقف بودجه زدی بالا`
+                : `${toman(String(limit - Number(b.spentMinor)))} تا سقف بودجه مونده`)}
+            {left !== null && !left.startsWith("-") && ` · روزی ${toman(left)} می‌تونی خرج کنی`}
           </span>
         )}
       </div>
@@ -493,10 +518,15 @@ function SpendChart({ data, hide }: { data: Snapshot; hide: boolean }) {
   );
 }
 
-/** Paket's news, and after them the slot-12 card: the same size, a dashed edge and the label. */
+/**
+ * Paket's news, and after them the slot-12 card: the same size, a dashed edge and the label. The row
+ * keeps its own fixed height whatever the cards above hold; with no news it is not drawn (the ad
+ * alone does not keep it).
+ */
 function News({ items }: { items: ReturnType<typeof usePaketNews> }) {
   const ad = useAd(12);
   const shown = items.slice(0, ad === null ? 5 : 4);
+  if (shown.length === 0) return null;
   return (
     <div className="card g news">
       <div className="card-h">
@@ -504,7 +534,6 @@ function News({ items }: { items: ReturnType<typeof usePaketNews> }) {
         <More place="news">همه‌ی خبرها</More>
       </div>
       <div className="ncards">
-        {shown.length === 0 && ad === null && <p className="none">خبری نیست.</p>}
         {shown.map((n) => {
           const [kind, tone] = KINDS[n.kind] ?? ["خبر", "blue"];
           return (
