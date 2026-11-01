@@ -40,6 +40,13 @@ function isRule(r: unknown): boolean {
   if (o.kind === "last-weekday-of-month") {
     return isInt(o.weekday, 0, 6) && (o.offsetDays === undefined || isInt(o.offsetDays, -7, 7));
   }
+  if (o.kind === "nth-weekday-of-month") {
+    return (
+      isInt(o.weekday, 0, 6) &&
+      isInt(o.n, 1, 4) &&
+      (o.offsetDays === undefined || isInt(o.offsetDays, -7, 7))
+    );
+  }
   return false;
 }
 

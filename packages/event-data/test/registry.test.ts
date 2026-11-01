@@ -27,7 +27,7 @@ afterEach(() => {
 
 describe("registry", () => {
   it("knows only the bundled packs until others are downloaded", () => {
-    expect(BUNDLED_PACKS).toEqual(["official-holidays", "persian-cultural"]);
+    expect(BUNDLED_PACKS).toEqual(["official-holidays", "persian-cultural", "popular"]);
     expect(ids(day(1405, 1, 1))).toContain("nowruz-1"); // official holiday
     expect(ids(day(1405, 7, 10))).toContain("mehregan"); // Persian festival
     expect(ids(day(1405, 7, 20))).not.toContain("hafez-day"); // national: not yet here

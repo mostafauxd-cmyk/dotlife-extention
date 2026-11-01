@@ -45,6 +45,7 @@ export const PACK_TITLES_FA: Readonly<Record<PackId, string>> = {
   religious: "مناسبت‌های مذهبی",
   national: "مناسبت‌های ملی، فرهنگی و ادبی",
   "persian-cultural": "جشن‌های ایرانی و ایران باستان",
+  popular: "مناسبت‌های پرطرفدار",
   international: "روزهای جهانی",
   astronomy: "رویدادهای نجومی",
   professions: "روزهای مشاغل",

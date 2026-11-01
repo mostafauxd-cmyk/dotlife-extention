@@ -39,6 +39,7 @@ import { openNewCategory } from "./NewCategory";
 import { openEditor } from "./TaskEditor";
 import {
   connectGoogle,
+  disconnectGoogle,
   useGoogle,
   useGoogleCalendars,
   useGoogleEvents,
@@ -156,6 +157,8 @@ export function PlansSlide() {
       clearTimeout(t);
     };
   }, [gHint]);
+  /** The small card under the button while connected: which account, and the way to disconnect. */
+  const [gMenu, setGMenu] = useState(false);
   const [anchor, setAnchor] = useState<LocalDate>(todayD);
   const [span, setSpan] = useState<Span>(7);
   const body = useRef<HTMLDivElement>(null);
@@ -245,7 +248,10 @@ export function PlansSlide() {
                 setGHint("اتصال گوگل فقط در افزونه‌ی نصب‌شده در کروم کار می‌کند.");
                 return;
               }
-              if (google.status === "on") return;
+              if (google.status === "on") {
+                setGMenu((m) => !m);
+                return;
+              }
               setGHint(null);
               void connectGoogle().then((ok) => {
                 if (!ok) setGHint("به گوگل وصل نشد. دوباره امتحان کن.");
@@ -279,6 +285,21 @@ export function PlansSlide() {
           {gHint === null ? null : (
             <span className="ghint" role="status">
               {gHint}
+            </span>
+          )}
+          {gMenu && google.status === "on" && (
+            <span className="ghint gmenu">
+              {google.email !== null && <span className="gmail">{google.email}</span>}
+              <button
+                type="button"
+                className="gout"
+                onClick={() => {
+                  setGMenu(false);
+                  void disconnectGoogle();
+                }}
+              >
+                قطع اتصال
+              </button>
             </span>
           )}
         </span>

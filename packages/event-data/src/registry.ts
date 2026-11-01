@@ -1,5 +1,6 @@
 import { OFFICIAL_HOLIDAYS } from "./packs/official-holidays";
 import { PERSIAN_CULTURAL_EVENTS } from "./packs/persian-cultural";
+import { POPULAR_EVENTS } from "./packs/popular";
 import type { PackFile } from "./packFile";
 import type { CalendarEvent, PackId } from "./types";
 
@@ -10,9 +11,17 @@ import type { CalendarEvent, PackId } from "./types";
  */
 
 /** The packs that ship inside the app; every other pack is downloaded when switched on. */
-export const BUNDLED_PACKS: readonly PackId[] = ["official-holidays", "persian-cultural"];
+export const BUNDLED_PACKS: readonly PackId[] = [
+  "official-holidays",
+  "persian-cultural",
+  "popular",
+];
 
-const BUNDLED: readonly CalendarEvent[] = [...OFFICIAL_HOLIDAYS, ...PERSIAN_CULTURAL_EVENTS];
+const BUNDLED: readonly CalendarEvent[] = [
+  ...OFFICIAL_HOLIDAYS,
+  ...PERSIAN_CULTURAL_EVENTS,
+  ...POPULAR_EVENTS,
+];
 
 let files = new Map<PackId, readonly CalendarEvent[]>();
 let personal: readonly CalendarEvent[] = [];

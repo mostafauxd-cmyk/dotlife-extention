@@ -1,0 +1,7 @@
+{
+  "extName": { "message": "Noghte - Personal Assistant in your newtab" },
+  "extShortName": { "message": "Noghte" },
+  "extDescription": {
+    "message": "A Persian new tab with search, tasks, notes, calendar, news and live prices, synced with the Noghte app."
+  }
+}

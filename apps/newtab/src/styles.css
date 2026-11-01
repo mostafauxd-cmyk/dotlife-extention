@@ -197,9 +197,6 @@ svg {
   gap: 17px;
   background: color-mix(in srgb, var(--tint) 6%, rgba(255, 255, 255, 0.05));
   border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow:
-    0 24px 70px rgba(0, 0, 0, 0.35),
-    inset 0 1px 0 rgba(255, 255, 255, 0.06);
   transition: border-color 0.2s;
 }
 .sbox:focus-within {
@@ -622,9 +619,6 @@ svg {
   font-size: 22px;
   background: color-mix(in srgb, var(--bc) 15%, color-mix(in srgb, var(--bgc) 90%, #fff));
   border: 1px solid color-mix(in srgb, var(--bc) 26%, rgba(255, 255, 255, 0.1));
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.07),
-    0 8px 20px rgba(0, 0, 0, 0.24);
   transition:
     transform 0.25s var(--ease),
     background 0.25s;
@@ -4572,7 +4566,32 @@ label.ts-line {
   cursor: not-allowed;
 }
 .gsync.on {
-  cursor: default;
+  cursor: pointer;
+}
+/* the card under the button while connected: the account and «قطع اتصال» */
+.ghint.gmenu {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 200px;
+}
+.gmail {
+  direction: ltr;
+  text-align: start;
+  color: var(--ink);
+}
+.gout {
+  padding: 8px 12px;
+  border-radius: 10px;
+  border: 1px solid var(--stroke-hi);
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--ink);
+  font: inherit;
+  font-size: 14px;
+  cursor: pointer;
+}
+.gout:hover {
+  background: rgba(255, 255, 255, 0.12);
 }
 .ts-link {
   flex: 1;

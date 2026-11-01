@@ -13,7 +13,7 @@ import { load, remove, save } from "./platform";
 
 const FROM_ENV = import.meta.env.VITE_PAKET_API_URL as string | undefined;
 export const PAKET_API = (
-  FROM_ENV !== undefined && FROM_ENV !== "" ? FROM_ENV : "https://api.paket.app"
+  FROM_ENV !== undefined && FROM_ENV !== "" ? FROM_ENV : "https://api.paket.life"
 ).replace(/\/+$/, "");
 
 const KEY = "paket.v1";

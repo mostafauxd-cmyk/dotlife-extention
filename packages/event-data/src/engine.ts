@@ -52,7 +52,7 @@ function monthLength(ctx: DayContext, calendar: RuleCalendar): number {
 
 function matches(rule: EventRule, ctx: DayContext): boolean {
   if (
-    rule.kind === "last-weekday-of-month" &&
+    (rule.kind === "last-weekday-of-month" || rule.kind === "nth-weekday-of-month") &&
     rule.offsetDays !== undefined &&
     rule.offsetDays !== 0
   ) {
@@ -75,6 +75,11 @@ function matches(rule: EventRule, ctx: DayContext): boolean {
       if (weekdayOfJdn(ctx.jdn) !== rule.weekday) return false;
       // last such weekday ⇔ a week later is already next month
       return d.day + 7 > monthLength(ctx, rule.calendar);
+    }
+    case "nth-weekday-of-month": {
+      if (weekdayOfJdn(ctx.jdn) !== rule.weekday) return false;
+      // the nth such weekday falls on days 7(n−1)+1 … 7n
+      return Math.ceil(d.day / 7) === rule.n;
     }
     default:
       return assertNever(rule);

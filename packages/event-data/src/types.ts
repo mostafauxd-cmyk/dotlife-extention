@@ -6,6 +6,11 @@ export type PackId =
   | "religious"
   | "national"
   | "persian-cultural"
+  /**
+   * Popular Gregorian days people in Iran keep (2026-10-18, the owner): Valentine's, Halloween, Black
+   * Friday, Christmas, the Gregorian new year. Inside the app and on by default.
+   */
+  | "popular"
   | "international"
   | "astronomy"
   | "professions"
@@ -21,6 +26,7 @@ export const ALL_PACKS: readonly PackId[] = [
   "religious",
   "national",
   "persian-cultural",
+  "popular",
   "international",
   "astronomy",
   "professions",
@@ -49,6 +55,17 @@ export type EventRule =
       month: number;
       weekday: Weekday;
       /** Shift the occurrence, e.g. -1 = the day before that weekday (Chaharshanbe Suri = eve of the last Wednesday). */
+      offsetDays?: number;
+    }
+  | {
+      /** e.g. Thanksgiving = 4th Thursday of November, Black Friday = the day after it */
+      kind: "nth-weekday-of-month";
+      calendar: RuleCalendar;
+      month: number;
+      weekday: Weekday;
+      /** 1–4: the first to the fourth such weekday of the month. */
+      n: number;
+      /** Shift the occurrence, as for `last-weekday-of-month`. */
       offsetDays?: number;
     };
 

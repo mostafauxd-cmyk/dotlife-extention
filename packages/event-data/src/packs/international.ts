@@ -1,6 +1,10 @@
 import type { CalendarEvent, Provenance } from "../types";
 
-/** روزهای جهانی (میلادی) — بسته‌ی اختیاری. */
+/**
+ * روزهای جهانی (میلادی) — بسته‌ی اختیاری. Valentine's, Halloween, Christmas and the Gregorian new
+ * year moved to «مناسبت‌های پرطرفدار» (packs/popular.ts, inside the app) on 2026-10-18; not listed
+ * there as `alsoIn` here, because an older app refuses a whole file with a pack it does not know.
+ */
 const SRC: Provenance = {
   source: "United Nations international days",
   url: "https://www.un.org/en/observances/international-days-and-weeks",
@@ -24,7 +28,6 @@ const g = (
 });
 
 export const INTERNATIONAL_EVENTS: readonly CalendarEvent[] = [
-  g("new-year-gregorian", "آغاز سال نو میلادی", 1, 1),
   g("womens-day", "روز جهانی زن", 3, 8),
   g("pi-day", "روز جهانی عدد پی", 3, 14),
   g("happiness-day", "روز جهانی شادی", 3, 20),
@@ -34,6 +37,7 @@ export const INTERNATIONAL_EVENTS: readonly CalendarEvent[] = [
   g("world-theatre-day", "روز جهانی تئاتر", 3, 27),
   g("world-health-day", "روز جهانی بهداشت", 4, 7, ["health"]),
   g("earth-day", "روز زمین", 4, 22),
+  g("world-book-day", "روز جهانی کتاب و کتاب‌خوانی", 4, 23),
   g("world-design-day", "روز جهانی طراحی و گرافیک", 4, 27),
   g("workers-day", "روز جهانی کارگر", 5, 1, ["professions"]),
   g("women-in-maths-day", "روز جهانی زن در ریاضیات (زادروز مریم میرزاخانی)", 5, 12),
@@ -63,5 +67,4 @@ export const INTERNATIONAL_EVENTS: readonly CalendarEvent[] = [
   g("violence-against-women-day", "روز جهانی مبارزه با خشونت علیه زنان", 11, 25),
   g("human-rights-day", "روز جهانی حقوق بشر", 12, 10),
   g("mountain-day", "روز جهانی کوهستان", 12, 11),
-  g("christmas", "کریسمس (میلاد مسیح)", 12, 25),
 ];

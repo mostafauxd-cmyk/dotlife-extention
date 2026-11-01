@@ -122,6 +122,7 @@ export async function disconnectGoogle(): Promise<void> {
   if (t !== undefined)
     void fetch(`https://oauth2.googleapis.com/revoke?token=${encodeURIComponent(t)}`, {
       method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
     }).catch(() => undefined);
 }
 

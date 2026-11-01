@@ -24,12 +24,17 @@ import { fa } from "./ui/fa";
  * from the app's own packages — nothing is asked of a server.
  */
 
-/** Occasion packs shown by default, as in the app. */
+/**
+ * Occasion packs shown by default. The app has «تعطیلات رسمی», «جشن‌های ایرانی» and
+ * «مناسبت‌های پرطرفدار» on from the start; the extension has no switch for packs, so it also
+ * keeps the religious, national and international ones it showed before.
+ */
 const PACKS: readonly PackId[] = [
   "official-holidays",
   "religious",
   "national",
   "persian-cultural",
+  "popular",
   "international",
 ];
 

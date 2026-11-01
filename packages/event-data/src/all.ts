@@ -4,6 +4,7 @@ import { INTERNATIONAL_EVENTS } from "./packs/international";
 import { NATIONAL_EVENTS } from "./packs/national";
 import { OFFICIAL_HOLIDAYS } from "./packs/official-holidays";
 import { PERSIAN_CULTURAL_EVENTS } from "./packs/persian-cultural";
+import { POPULAR_EVENTS } from "./packs/popular";
 import { PROFESSION_EVENTS } from "./packs/professions";
 import { RELIGIOUS_EVENTS } from "./packs/religious";
 import type { CalendarEvent } from "./types";
@@ -18,6 +19,7 @@ export const ALL_EVENTS: readonly CalendarEvent[] = [
   ...RELIGIOUS_EVENTS,
   ...NATIONAL_EVENTS,
   ...PERSIAN_CULTURAL_EVENTS,
+  ...POPULAR_EVENTS,
   ...INTERNATIONAL_EVENTS,
   ...ASTRONOMY_EVENTS,
   ...PROFESSION_EVENTS,

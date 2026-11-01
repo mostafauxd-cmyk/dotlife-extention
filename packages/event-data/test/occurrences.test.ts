@@ -128,3 +128,28 @@ describe("profession and health days (checked against time.ir 1405)", () => {
     expect(idsOn(j(1405, 1, 18), health)).toContain("world-health-day");
   });
 });
+
+describe("popular days (2026-10-18)", () => {
+  it("puts Black Friday on the day after the 4th Thursday of November", async () => {
+    const { POPULAR_EVENTS } = await import("../src/packs/popular");
+    const { occurrencesBetween } = await import("../src/engine");
+    const on = (y: number) =>
+      occurrencesBetween(
+        POPULAR_EVENTS,
+        toJdn({ calendar: "gregorian", year: y, month: 11, day: 1 }),
+        toJdn({ calendar: "gregorian", year: y, month: 11, day: 30 }),
+        { packs: ["popular"] },
+      )
+        .filter((o) => o.event.id === "black-friday")
+        .map((o) => o.jdn);
+    // the dates Wikipedia lists
+    for (const [y, d] of [
+      [2025, 28],
+      [2026, 27],
+      [2027, 26],
+      [2028, 24],
+    ] as const) {
+      expect(on(y)).toEqual([toJdn({ calendar: "gregorian", year: y, month: 11, day: d })]);
+    }
+  });
+});
