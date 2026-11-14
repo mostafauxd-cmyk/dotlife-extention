@@ -14,7 +14,7 @@ const NOBITEX = "https://api.nobitex.ir";
 /** The mirror re-checks every 30 minutes; a price stays «live» a little longer than that. */
 const LIVE_MS = 45 * 60_000;
 
-type Entry = {
+export type Entry = {
   id: string;
   group: PriceItem["group"] | TickerItem["group"];
   name: string;
@@ -24,7 +24,7 @@ type Entry = {
   symbol: string;
 };
 
-const PRICE_ENTRIES: Entry[] = [
+export const PRICE_ENTRIES: Entry[] = [
   {
     id: "gold18",
     group: "gold",

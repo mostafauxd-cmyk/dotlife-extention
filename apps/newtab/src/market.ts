@@ -1,13 +1,16 @@
 import { useEffect, useState } from "react";
 
 import { directMarket } from "./marketDirect";
+import { ourRates, withOurRates } from "./noghteRates";
 import { load, save } from "./platform";
 import { paketGet } from "./paket";
 
 /**
  * The market on the money slide: today's gold, coins and currencies, and the strip of world metals
- * and crypto. Both are Paket's public prices (`/v1/market/prices`, `/v1/market/ticker`) — no sign-in,
- * so they show whether or not Paket is linked. The extension never asks the price sources itself.
+ * and crypto. Today's gold, coins and currencies come from نقطه's own server first (`/api/rates`,
+ * `noghteRates.ts`); the charts' history and the strip are Paket's public prices
+ * (`/v1/market/prices`, `/v1/market/ticker`) — no sign-in, so they show whether or not Paket is
+ * linked.
  */
 
 export type PriceItem = {
@@ -140,9 +143,10 @@ function pullMarket(period: Period, force = false): Promise<Pulled> {
   const going = running.get(period);
   if (going !== undefined) return going;
   const job = (async (): Promise<Pulled> => {
-    const [p, t] = await Promise.all([
+    const [p, t, ours] = await Promise.all([
       within(paketGet<Prices>(`/v1/market/prices?history=${String(period)}`), PAKET_WAIT_MS),
       within(paketGet<Ticker>("/v1/market/ticker"), PAKET_WAIT_MS),
+      ourRates(),
     ]);
     // Paket's server not answering, or not yet filled: the sources themselves stand in
     let prices = p !== null && p.items.length > 0 ? p : null;
@@ -156,6 +160,8 @@ function pullMarket(period: Period, force = false): Promise<Pulled> {
       ticker ??= d?.ticker ?? null;
       later = d?.later ?? null;
     }
+    // today's numbers from our server over whichever prices came (the charts stay theirs)
+    prices = withOurRates(prices, ours);
     const got = { prices, ticker, later };
     if (prices !== null || ticker !== null) {
       cached = { period, at: Date.now(), got };
