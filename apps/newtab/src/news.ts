@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 
-import { t } from "./i18n";
+import { lang, t } from "./i18n";
 import { usePaketNews, type NewsItem } from "./paket";
 import { faviconUrl, inExtension, load, save } from "./platform";
 
@@ -609,6 +609,50 @@ async function fetchFeed(src: NewsSource, f: NewsFeed): Promise<Story[]> {
 export async function loadStories(sources: readonly NewsSource[]): Promise<Story[]> {
   const lists = await Promise.all(sources.flatMap((s) => s.feeds.map((f) => fetchFeed(s, f))));
   return mergeStories(lists, 12);
+}
+
+/**
+ * The news in English (2026-11-20, the user: «منبع های خبر توی انگلیسی ش تغییر کنه اگر ممکنه از
+ * سایت هایی بزاریم که فیلتر نیستن»): Iranian newsrooms' own English editions, which are not filtered
+ * in Iran and (checked 2026-11-20) answer from abroad too — ISNA's, IRNA's and Tasnim's English
+ * sites did not, so they are left out. Tehran Times by section, Mehr's English desk by its one feed.
+ * Their sites are not in the manifest (a new site there would switch the extension off for every
+ * install until it is approved again): Chrome is asked for them when English is chosen.
+ */
+export const EN_SOURCES: readonly NewsSource[] = [
+  domestic(
+    "tehrantimes",
+    "Tehran Times",
+    [
+      ...sections("https://www.tehrantimes.com", {
+        society: 696,
+        economy: 697,
+        sport: 699,
+        culture: 700,
+      }),
+    ],
+    "#8B1E1E",
+    null,
+  ),
+  domestic("mehr-en", "Mehr News", [feed("https://en.mehrnews.com/rss")], "#E1251B", null),
+];
+
+export const EN_ORIGINS = ["https://www.tehrantimes.com/*", "https://en.mehrnews.com/*"];
+
+/** The sources for the page's language: Persian outlets and Paket's news, or the English ones. */
+export const sourcesForLanguage = (): readonly NewsSource[] =>
+  lang() === "en" ? EN_SOURCES : NEWS_SOURCES;
+
+/** Whether Chrome lets this page read the English sources. */
+export async function englishNewsAllowed(): Promise<boolean> {
+  if (!inExtension) return true;
+  return chrome.permissions.contains({ origins: EN_ORIGINS }).catch(() => false);
+}
+
+/** Asks Chrome for the English sources; call it from a click (Chrome asks only then). */
+export async function allowEnglishNews(): Promise<boolean> {
+  if (!inExtension) return true;
+  return chrome.permissions.request({ origins: EN_ORIGINS }).catch(() => false);
 }
 
 /**

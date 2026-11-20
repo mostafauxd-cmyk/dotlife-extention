@@ -1,7 +1,7 @@
 {
-  "extName": { "message": "Noghte - Personal Assistant in your newtab" },
+  "extName": { "message": "Noghte · Dotlife – Personal assistant in your new tab" },
   "extShortName": { "message": "Noghte" },
   "extDescription": {
-    "message": "A Persian new tab with search, tasks, notes, calendar, news and live prices, synced with the Noghte app."
+    "message": "Your new tab in English or Persian: search, tasks, notes, calendar, news and live prices, synced with the Noghte · Dotlife app."
   }
 }

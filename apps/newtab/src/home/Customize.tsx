@@ -3,6 +3,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { INTERESTS } from "../cities";
 import { useSession, useSettings, useSyncState } from "../hooks";
 import { LANGS, t } from "../i18n";
+import { allowEnglishNews } from "../news";
 import { signOut } from "../noghte/api";
 import { syncNow } from "../noghte/sync";
 import {
@@ -106,6 +107,8 @@ export function Customize({
                       lang={l.id}
                       onClick={() => {
                         updateSettings({ lang: l.id });
+                        // the English outlets' sites, asked on this click (Chrome asks only then)
+                        if (l.id === "en") void allowEnglishNews();
                       }}
                     >
                       {l.name}

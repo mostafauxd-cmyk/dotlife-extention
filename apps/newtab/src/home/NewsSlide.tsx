@@ -10,7 +10,9 @@ import {
   forYou,
   hottest,
   NEWS_CATEGORIES,
-  NEWS_SOURCES,
+  sourcesForLanguage,
+  englishNewsAllowed,
+  allowEnglishNews,
   ownToSource,
   useNews,
   useRead,
@@ -118,12 +120,39 @@ function Pic({ story, className }: { story: Story; className: string }) {
   );
 }
 
+/**
+ * In English: whether Chrome lets the page read the English outlets (asked when English was chosen).
+ * Null while asking Chrome; true outside English.
+ */
+function useEnglishNewsAllowed(english: boolean): boolean | null {
+  const [ok, setOk] = useState<boolean | null>(english ? null : true);
+  useEffect(() => {
+    if (!english) {
+      setOk(true);
+      return;
+    }
+    let live = true;
+    void englishNewsAllowed().then((v) => {
+      if (live) setOk(v);
+    });
+    return () => {
+      live = false;
+    };
+  }, [english]);
+  return ok;
+}
+
 export function NewsSlide() {
   const s = useSettings();
   const session = useSession();
   const sync = useSyncState();
   useRecordsVersion();
-  const all = useMemo(() => [...NEWS_SOURCES, ...s.newsOwn.map(ownToSource)], [s.newsOwn]);
+  // the outlets of the page's language (English ones in English), then the person's own feeds
+  const all = useMemo(
+    () => [...sourcesForLanguage(), ...s.newsOwn.map(ownToSource)],
+    [s.newsOwn, s.lang],
+  );
+  const englishOk = useEnglishNewsAllowed(s.lang === "en");
   const active = useMemo(() => all.filter((x) => !s.newsOff.includes(x.id)), [all, s.newsOff]);
   const { stories, loading, failed, refresh } = useNews(active);
   const { read, markRead } = useRead();
@@ -251,7 +280,26 @@ export function NewsSlide() {
         </div>
 
         <div className="nw-scroll" ref={scroller}>
-          {top === undefined ? (
+          {englishOk === false ? (
+            <div className="nw-none">
+              <p>
+                {t(
+                  "برای خبرهای انگلیسی، کروم باید اجازه‌ی خواندن از Tehran Times و Mehr News را بدهد.",
+                )}
+              </p>
+              <button
+                type="button"
+                className="cta"
+                onClick={() => {
+                  void allowEnglishNews().then((ok) => {
+                    if (ok) location.reload();
+                  });
+                }}
+              >
+                {t("اجازه بده")}
+              </button>
+            </div>
+          ) : top === undefined ? (
             <div className="nw-none">
               {loading ? (
                 <p>{t("خبرها در راه است…")}</p>
