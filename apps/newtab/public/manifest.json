@@ -4,7 +4,7 @@
   "name": "__MSG_extName__",
   "short_name": "__MSG_extShortName__",
   "description": "__MSG_extDescription__",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA7yln2I++ezMY227MoJSbVWarSSujz45554vJSvWxYhHxrdwq+L+bVaMigeCPnaLJOg7Ay1Ae0Vsje3IIWaQYCzDYa+qLae2QSmoZMZbjm2GjnhdwNZtvfNDyz79MtQ7sKUe1Ar/5aKimz463dznisX0RK4i+HghwhvnbEGKdopYHeeSdi8q2PDs14JTRx4V23kxIcf7eF8w3DozEPOhMlrQxxXvfW9zcEEydX7uFDFayKsupBsk2+8VO1NY33kp5zwo3DaB4RXPzc6qBvb+VFZBtS8olP7fK/CRDGFgSlPCS4lfSZg3cxE588XKLyGexnbICIRO4RrHAVvOuJD3C1wIDAQAB",
   "minimum_chrome_version": "123",
   "chrome_url_overrides": {
