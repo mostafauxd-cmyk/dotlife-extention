@@ -1,6 +1,8 @@
 import { fromJdn, MONTH_NAMES_FA, WEEKDAY_NAMES_FA, weekdayOfJdn } from "@dotlife/calendar-core";
 import { dateToJdn, type LocalDate } from "@dotlife/tasks";
 
+import { t } from "../i18n";
+
 /**
  * A copy of dotlife `apps/mobile/src/notes/model.ts` (with its tests in `test/notes.test.ts`), so a
  * note edited here splits, joins and changes kind exactly as on the phone. Keep the two in step.
@@ -78,7 +80,7 @@ const TITLE_CUT = 36;
  */
 export function noteTitle(note: Note): string {
   const first = note.blocks.find((b) => textOf(b) !== "");
-  if (first === undefined) return voicesOf(note).length > 0 ? "یادداشت صوتی" : "یادداشت تازه";
+  if (first === undefined) return voicesOf(note).length > 0 ? t("یادداشت صوتی") : t("یادداشت تازه");
   const line = firstLine(first.text);
   if (first.kind === "title" || line.length <= TITLE_CUT) return line;
   return `${line.slice(0, TITLE_CUT).trimEnd()}…`;
@@ -149,8 +151,8 @@ export function groupNotes(
   today: LocalDate,
   dayOf: (iso: string) => LocalDate,
 ): NoteSection[] {
-  const t = dateToJdn(today);
-  const thisYear = fromJdn(t, "solar-hijri").year;
+  const tj = dateToJdn(today);
+  const thisYear = fromJdn(tj, "solar-hijri").year;
   const sections: NoteSection[] = [];
   const add = (key: string, title: string, note: Note): void => {
     const last = sections.find((s) => s.key === key);
@@ -159,18 +161,18 @@ export function groupNotes(
   };
   const sorted = byUpdated(notes);
   const pinned = sorted.filter((n) => n.pinned);
-  if (pinned.length > 0) sections.push({ key: "pinned", title: "سنجاق‌شده", notes: pinned });
+  if (pinned.length > 0) sections.push({ key: "pinned", title: t("سنجاق‌شده"), notes: pinned });
   for (const n of sorted) {
     if (n.pinned) continue;
     const j = dateToJdn(dayOf(n.updatedAt));
-    const ago = t - j;
-    if (ago <= 0) add("today", "امروز", n);
-    else if (ago === 1) add("yesterday", "دیروز", n);
-    else if (ago < 7) add("week", "۷ روز گذشته", n);
-    else if (ago < 30) add("month", "۳۰ روز گذشته", n);
+    const ago = tj - j;
+    if (ago <= 0) add("today", t("امروز"), n);
+    else if (ago === 1) add("yesterday", t("دیروز"), n);
+    else if (ago < 7) add("week", t("۷ روز گذشته"), n);
+    else if (ago < 30) add("month", t("۳۰ روز گذشته"), n);
     else {
       const s = fromJdn(j, "solar-hijri");
-      const name = MONTH_NAMES_FA["solar-hijri"][s.month - 1] ?? "";
+      const name = t(MONTH_NAMES_FA["solar-hijri"][s.month - 1] ?? "");
       add(
         `${String(s.year)}-${String(s.month)}`,
         s.year === thisYear ? name : `${name} ${String(s.year)}`,
@@ -187,18 +189,18 @@ export function groupNotes(
  */
 export function rowDate(local: { date: LocalDate; time: string }, today: LocalDate): string {
   const j = dateToJdn(local.date);
-  const t = dateToJdn(today);
-  const ago = t - j;
+  const tj = dateToJdn(today);
+  const ago = tj - j;
   if (ago <= 0) return local.time;
-  if (ago === 1) return "دیروز";
-  if (ago < 7) return WEEKDAY_NAMES_FA[weekdayOfJdn(j)] ?? "";
-  return solarDay(local.date, fromJdn(t, "solar-hijri").year);
+  if (ago === 1) return t("دیروز");
+  if (ago < 7) return t(WEEKDAY_NAMES_FA[weekdayOfJdn(j)] ?? "");
+  return solarDay(local.date, fromJdn(tj, "solar-hijri").year);
 }
 
 /** «۱۲ شهریور», with the year unless it is `thisYear`. */
 export function solarDay(date: LocalDate, thisYear?: number): string {
   const s = fromJdn(dateToJdn(date), "solar-hijri");
-  const base = `${String(s.day)} ${MONTH_NAMES_FA["solar-hijri"][s.month - 1] ?? ""}`;
+  const base = `${String(s.day)} ${t(MONTH_NAMES_FA["solar-hijri"][s.month - 1] ?? "")}`;
   return s.year === thisYear ? base : `${base} ${String(s.year)}`;
 }
 

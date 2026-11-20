@@ -22,11 +22,11 @@ describe("traitsOf", () => {
   it("takes the city and topics the person chose, and the season and weekend from the date", () => {
     // Friday 17 Oct 2026 = 25 Mehr 1405
     const t = traitsOf(
-      { ...DEFAULTS, city: "مشهد", topics: ["سفر"], persona: "dev" },
+      { ...DEFAULTS, city: "مشهد", topics: ["سفر"], personas: ["dev", "designer"] },
       new Date("2026-10-23T09:00:00Z"),
     );
     expect(t).toMatchObject({
-      persona: "dev",
+      personas: ["dev", "designer"],
       city: "مشهد",
       topics: ["سفر"],
       season: "autumn",

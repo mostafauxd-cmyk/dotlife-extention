@@ -4,6 +4,8 @@
  * beside it. The edge toward the form dissolves into grain (`dissolve.png` as a mask).
  */
 
+import { t } from "../i18n";
+
 const SKY = { top: "#2b2540", mid: "#6c5c8f", glow: "#e8b5cb", ground: "#1b1828", seed: 8 };
 
 export function Painting({ step }: { step: "hello" | "phone" | "code" }) {
@@ -95,20 +97,20 @@ export function Painting({ step }: { step: "hello" | "phone" | "code" }) {
                 <path d="M19.5 12a7.5 7.5 0 1 1-2.2-5.3" />
                 <path d="M19.5 12h-7" />
               </svg>
-              در گوگل جستجو کن…
+              {t("در گوگل جستجو کن…")}
             </div>
             <div className="mini">
               <span className="ping2">
-                {step === "code" ? "در حال وصل شدن…" : "از گوشی · همین حالا"}
+                {step === "code" ? t("در حال وصل شدن…") : t("از گوشی · همین حالا")}
               </span>
-              <b>کارهای امروز</b>
+              <b>{t("کارهای امروز")}</b>
               <span className="r">
                 <i />
-                زنگ به آقای رحیمی
+                {t("زنگ به آقای رحیمی")}
               </span>
               <span className="r">
                 <i className="ok" />
-                پرداخت قبض برق
+                {t("پرداخت قبض برق")}
               </span>
             </div>
           </div>

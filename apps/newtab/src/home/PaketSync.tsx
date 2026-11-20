@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 
+import { t } from "../i18n";
 import { getLink, installId } from "../install";
 import { formatCode, linkPaket, PaketError } from "../paket";
 import { Qr } from "../ui/Qr";
@@ -17,7 +18,7 @@ export function PaketLogo({ size = 52 }: { size?: number }) {
     <img
       className="pk-logo"
       src="./brands/paket.svg"
-      alt="پاکت"
+      alt={t("پاکت")}
       width={size}
       height={size}
       draggable={false}
@@ -53,7 +54,7 @@ export function PaketSync({
     try {
       await linkPaket(code);
     } catch (e) {
-      setErr(REASONS[e instanceof PaketError ? e.code : ""] ?? "وصل نشد؛ دوباره امتحان کن.");
+      setErr(t(REASONS[e instanceof PaketError ? e.code : ""] ?? "وصل نشد؛ دوباره امتحان کن."));
     } finally {
       setBusy(false);
     }
@@ -62,17 +63,19 @@ export function PaketSync({
     <div className="card g pk-empty">
       <div className="pke-copy">
         {!embedded && <PaketLogo />}
-        {!embedded && <h2>پول‌هایت را هم همین‌جا ببین</h2>}
+        {!embedded && <h2>{t("پول‌هایت را هم همین‌جا ببین")}</h2>}
         <p>
-          {lead ??
-            "پاکت را به این صفحه وصل کن تا موجودی، بودجه‌ی ماه، آخرین خرج‌ها، قبض‌های پیش رو و بدهی و طلبت روی هر تب تازه دیده شود. فقط خواندنی است؛ از این‌جا چیزی در پاکت عوض نمی‌شود."}
+          {t(
+            lead ??
+              "پاکت را به این صفحه وصل کن تا موجودی، بودجه‌ی ماه، آخرین خرج‌ها، قبض‌های پیش رو و بدهی و طلبت روی هر تب تازه دیده شود. فقط خواندنی است؛ از این‌جا چیزی در پاکت عوض نمی‌شود.",
+          )}
         </p>
         <ol className="pke-steps">
-          <li>پاکت را روی گوشی باز کن.</li>
+          <li>{t("پاکت را روی گوشی باز کن.")}</li>
           <li>
-            برو به <b>تنظیمات ← دستگاه‌ها و افزونه</b> و «اتصال افزونه» را بزن.
+            {t("برو به")} <b>{t("تنظیمات ← دستگاه‌ها و افزونه")}</b> {t("و «اتصال افزونه» را بزن.")}
           </li>
-          <li>کد هشت‌حرفی‌ای را که نشان می‌دهد این‌جا بنویس.</li>
+          <li>{t("کد هشت‌حرفی‌ای را که نشان می‌دهد این‌جا بنویس.")}</li>
         </ol>
         <form
           className="pke-form"
@@ -85,7 +88,7 @@ export function PaketSync({
             className="ltr"
             value={code}
             placeholder="K7QM-4XDA"
-            aria-label="کد پاکت"
+            aria-label={t("کد پاکت")}
             autoComplete="off"
             spellCheck={false}
             onChange={(e) => {
@@ -94,16 +97,19 @@ export function PaketSync({
             }}
           />
           <button type="submit" className="cta" disabled={!ready || busy}>
-            {busy ? "در حال وصل شدن…" : "وصل شو"}
+            {busy ? t("در حال وصل شدن…") : t("وصل شو")}
           </button>
         </form>
         {err !== "" && <p className="pke-err">{err}</p>}
       </div>
       {install !== null && (
         <div className="pke-qr">
-          <Qr text={getLink("paket", "money-slide", install)} label="کد صفحه‌ی پاکت (paket.life)" />
-          <b>پاکت را نداری؟</b>
-          <small>با دوربین گوشی اسکن کن تا پاکت را ببینی و نصبش کنی.</small>
+          <Qr
+            text={getLink("paket", "money-slide", install)}
+            label={t("کد صفحه‌ی پاکت (paket.life)")}
+          />
+          <b>{t("پاکت را نداری؟")}</b>
+          <small>{t("با دوربین گوشی اسکن کن تا پاکت را ببینی و نصبش کنی.")}</small>
         </div>
       )}
     </div>

@@ -23,6 +23,7 @@ import {
 } from "@dotlife/tasks";
 
 import { useRecordsVersion } from "../hooks";
+import { t } from "../i18n";
 import {
   createTask,
   taskLists,
@@ -35,6 +36,7 @@ import {
   today,
 } from "../noghte/model";
 import { notePreview, noteTitle } from "../noghte/notes";
+import { linkIn, linkLabel, parseLink, withLink, withoutLink } from "../noghte/taskLink";
 import {
   applyChange,
   applyDelete,
@@ -57,6 +59,7 @@ import {
   type EventFields,
   type GEvent,
 } from "../google";
+import { faviconUrl } from "../platform";
 import { fa } from "../ui/fa";
 import { Icon } from "../ui/Icon";
 import { openNewCategory } from "./NewCategory";
@@ -145,6 +148,8 @@ type Fields = {
   calendarId: string | null;
   /** A Google Meet link for the meeting, or "" (kept in the notes as Google's conferencing block). */
   meet: string;
+  /** A web page kept on the task (first line of its notes), or "" (`noghte/taskLink.ts`). */
+  link: string;
 };
 
 const clock = (m: number): string => fa(minutesToTime(Math.min(Math.max(m, 0), 1439)));
@@ -152,9 +157,9 @@ const solarOf = (d: LocalDate) => fromJdn(dateToJdn(d), "solar-hijri");
 /** «پنجشنبه ۱۶ مهر ۱۴۰۵» */
 function longDate(d: LocalDate): string {
   const s = solarOf(d);
-  const wd = WEEKDAY_NAMES_FA[(dateToJdn(d) + 2) % 7] ?? "";
+  const wd = t(WEEKDAY_NAMES_FA[(dateToJdn(d) + 2) % 7] ?? "");
   return fa(
-    `${wd} ${String(s.day)} ${MONTH_NAMES_FA["solar-hijri"][s.month - 1] ?? ""} ${String(s.year)}`,
+    `${wd} ${String(s.day)} ${t(MONTH_NAMES_FA["solar-hijri"][s.month - 1] ?? "")} ${String(s.year)}`,
   );
 }
 
@@ -235,6 +240,7 @@ function initial(input: EditorInput, todayD: LocalDate): Fields {
       reminderId: "none",
       calendarId: e.calendarId,
       meet: e.meet,
+      link: "",
     };
   }
   if (input.mode === "new") {
@@ -253,6 +259,7 @@ function initial(input: EditorInput, todayD: LocalDate): Fields {
       reminderId: "none",
       calendarId: null,
       meet: "",
+      link: "",
     };
   }
   const { task, occurrence } = input;
@@ -264,7 +271,7 @@ function initial(input: EditorInput, todayD: LocalDate): Fields {
   const end = endPoint?.time === undefined ? start + 60 : timeToMinutes(endPoint.time);
   return {
     title: occurrence?.title ?? task.title,
-    notes: withoutMeet(task.notes ?? ""),
+    notes: withoutLink(withoutMeet(task.notes ?? "")),
     listId: task.listId,
     kind: s.kind,
     date,
@@ -276,6 +283,7 @@ function initial(input: EditorInput, todayD: LocalDate): Fields {
     reminderId: reminderIdOf(task.reminders),
     calendarId: null,
     meet: meetIn(task.notes ?? ""),
+    link: linkIn(task.notes ?? ""),
   };
 }
 
@@ -334,6 +342,14 @@ function Sheet({ input, onClose }: { input: EditorInput; onClose: () => void }) 
         ? gcals.filter((c) => c.writable)
         : [];
   const [meetBusy, setMeetBusy] = useState(false);
+  const [linkDraft, setLinkDraft] = useState("");
+  /** What was typed in the page field becomes the task's page, if it is an address. */
+  const commitLink = (): void => {
+    const url = parseLink(linkDraft);
+    if (url === "") return;
+    update({ link: url });
+    setLinkDraft("");
+  };
   const [gError, setGError] = useState("");
   const inShopping =
     !isEvent && lists.find((l) => l.id === (f.listId ?? defaultListId))?.kind === "shopping";
@@ -345,14 +361,14 @@ function Sheet({ input, onClose }: { input: EditorInput; onClose: () => void }) 
   const preset = presets.find((p) => p.id === f.repeatId);
   const repeatLabel =
     f.repeatId === "custom"
-      ? "تکرار سفارشی"
+      ? t("تکرار سفارشی")
       : preset === undefined || f.repeatId === "none"
-        ? "تکرار"
+        ? t("تکرار")
         : fa(`${preset.label} · ${preset.hint ?? ""}`);
   const reminderLabel =
     f.reminderId === "custom"
-      ? "یادآوری سفارشی"
-      : (REMINDERS.find((r) => r.id === f.reminderId)?.label ?? "یادآوری");
+      ? t("یادآوری سفارشی")
+      : t(REMINDERS.find((r) => r.id === f.reminderId)?.label ?? "یادآوری");
 
   /** «فقط همین / این و بعدی‌ها / همه» for a repeating task; null when backed out. */
   const askScope = (
@@ -376,14 +392,15 @@ function Sheet({ input, onClose }: { input: EditorInput; onClose: () => void }) 
         googleChanged();
       } catch {
         saved.current = false;
-        setGError("در تقویم گوگل ذخیره نشد. اتصال را بررسی کن و دوباره امتحان کن.");
+        setGError(t("در تقویم گوگل ذخیره نشد. اتصال را بررسی کن و دوباره امتحان کن."));
         return false;
       }
       return true;
     }
     const title = f.title.trim();
-    const notes = withMeet(f.notes, f.meet).trim();
-    const notesChanged = f.notes.trim() !== start0.notes.trim() || f.meet !== start0.meet;
+    const notes = withLink(withMeet(f.notes, f.meet), f.link).trim();
+    const notesChanged =
+      f.notes.trim() !== start0.notes.trim() || f.meet !== start0.meet || f.link !== start0.link;
     const schedule = scheduleOf(f);
     const recurrence =
       schedule.kind === "none"
@@ -440,7 +457,7 @@ function Sheet({ input, onClose }: { input: EditorInput; onClose: () => void }) 
       }
       let scope: Scope = "all";
       if (fresh.recurrence !== undefined) {
-        const answer = await askScope("تغییر کار تکراری", {
+        const answer = await askScope(t("تغییر کار تکراری"), {
           allowThis: !repeatChanged && change.notes === undefined,
         });
         if (answer === null) return false;
@@ -475,7 +492,7 @@ function Sheet({ input, onClose }: { input: EditorInput; onClose: () => void }) 
         saved.current = true;
         onClose();
       } catch {
-        setGError("از تقویم گوگل حذف نشد. دوباره امتحان کن.");
+        setGError(t("از تقویم گوگل حذف نشد. دوباره امتحان کن."));
       }
       return;
     }
@@ -487,7 +504,7 @@ function Sheet({ input, onClose }: { input: EditorInput; onClose: () => void }) 
     } else {
       let scope: Scope = "all";
       if (fresh.recurrence !== undefined) {
-        const answer = await askScope("حذف کار تکراری", { danger: true });
+        const answer = await askScope(t("حذف کار تکراری"), { danger: true });
         if (answer === null) return;
         scope = answer;
       }
@@ -539,13 +556,13 @@ function Sheet({ input, onClose }: { input: EditorInput; onClose: () => void }) 
     try {
       update({ meet: await createMeetLink() });
     } catch {
-      setGError("لینک گوگل میت ساخته نشد. دوباره امتحان کن.");
+      setGError(t("لینک گوگل میت ساخته نشد. دوباره امتحان کن."));
     } finally {
       setMeetBusy(false);
     }
   };
 
-  const label =
+  const label = t(
     event !== undefined
       ? event.recurring
         ? "رویداد تکراری"
@@ -556,7 +573,8 @@ function Sheet({ input, onClose }: { input: EditorInput; onClose: () => void }) 
           ? "کار جدید"
           : original.recurrence === undefined
             ? "کار"
-            : "کار تکراری";
+            : "کار تکراری",
+  );
 
   return (
     <div
@@ -570,11 +588,11 @@ function Sheet({ input, onClose }: { input: EditorInput; onClose: () => void }) 
           <span>{label}</span>
           {titled ? (
             <button type="button" className="ts-done" onClick={close}>
-              انجام شد
+              {t("انجام شد")}
             </button>
           ) : (
             <button type="button" className="ts-done plain" onClick={onClose}>
-              بستن
+              {t("بستن")}
             </button>
           )}
         </div>
@@ -585,7 +603,7 @@ function Sheet({ input, onClose }: { input: EditorInput; onClose: () => void }) 
             className="ts-title"
             rows={1}
             value={f.title}
-            placeholder={isEvent ? "عنوان رویداد" : "عنوان کار"}
+            placeholder={isEvent ? t("عنوان رویداد") : t("عنوان کار")}
             onChange={(e) => {
               update({ title: e.target.value.replace(/\n/g, " ") });
             }}
@@ -628,7 +646,7 @@ function Sheet({ input, onClose }: { input: EditorInput; onClose: () => void }) 
                 }}
               >
                 <Icon name="plus" />
-                لیست
+                {t("لیست")}
               </button>
             )}
             {/* the person's Google calendars: a new item can go there as an event */}
@@ -660,13 +678,13 @@ function Sheet({ input, onClose }: { input: EditorInput; onClose: () => void }) 
                 }}
               >
                 <Icon name="calendar-face" />
-                تقویم گوگل
+                {t("تقویم گوگل")}
               </button>
             )}
           </div>
           <div className="ts-div" />
 
-          <div className="ts-seg morph" role="radiogroup" aria-label="زمان" hidden={isEvent}>
+          <div className="ts-seg morph" role="radiogroup" aria-label={t("زمان")} hidden={isEvent}>
             {(inShopping ? KINDS.filter((k) => k.kind !== "range") : KINDS).map((k) => (
               <button
                 key={k.kind}
@@ -681,7 +699,7 @@ function Sheet({ input, onClose }: { input: EditorInput; onClose: () => void }) 
                   setPanel(null);
                 }}
               >
-                {k.label}
+                {t(k.label)}
               </button>
             ))}
           </div>
@@ -696,7 +714,11 @@ function Sheet({ input, onClose }: { input: EditorInput; onClose: () => void }) 
                 }}
               >
                 <Icon name="calendar-face" />
-                <span>{f.kind === "range" ? `از ${longDate(f.date)}` : longDate(f.date)}</span>
+                <span>
+                  {f.kind === "range"
+                    ? t("از {date}", { date: longDate(f.date) })
+                    : longDate(f.date)}
+                </span>
               </button>
               {f.kind === "range" && (
                 <button
@@ -706,12 +728,12 @@ function Sheet({ input, onClose }: { input: EditorInput; onClose: () => void }) 
                     choose("endDate");
                   }}
                 >
-                  <span>تا {longDate(addDays(f.date, f.endOffset))}</span>
+                  <span>{t("تا {date}", { date: longDate(addDays(f.date, f.endOffset)) })}</span>
                 </button>
               )}
               <label className="ts-line">
                 <Icon name="time-circle" />
-                <span className="grow">تمام‌روز</span>
+                <span className="grow">{t("تمام‌روز")}</span>
                 <input
                   type="checkbox"
                   className="switch"
@@ -793,17 +815,17 @@ function Sheet({ input, onClose }: { input: EditorInput; onClose: () => void }) 
                   disabled={meetBusy}
                   onClick={() => void addMeet()}
                 >
-                  {meetBusy ? "در حال ساختن لینک گوگل میت…" : "افزودن گوگل میت"}
+                  {meetBusy ? t("در حال ساختن لینک گوگل میت…") : t("افزودن گوگل میت")}
                 </button>
               ) : (
                 <>
                   <a className="ts-link" href={f.meet} target="_blank" rel="noreferrer">
-                    گوگل میت · {f.meet.replace(/^https?:\/\//, "")}
+                    {t("گوگل میت")} · {f.meet.replace(/^https?:\/\//, "")}
                   </a>
                   <button
                     type="button"
                     className="ts-x"
-                    aria-label="برداشتن گوگل میت"
+                    aria-label={t("برداشتن گوگل میت")}
                     onClick={() => {
                       update({ meet: "" });
                     }}
@@ -817,12 +839,64 @@ function Sheet({ input, onClose }: { input: EditorInput; onClose: () => void }) 
           {gError !== "" && <p className="ts-err">{gError}</p>}
           <div className="ts-div" />
 
+          {!isEvent && (
+            <div className="ts-line link">
+              {f.link === "" ? (
+                <Icon name="bookmark" />
+              ) : (
+                <img className="ts-fav" src={faviconUrl(f.link, 32)} alt="" />
+              )}
+              {f.link === "" ? (
+                <input
+                  className="ts-linkin"
+                  dir="ltr"
+                  inputMode="url"
+                  placeholder={t("لینک صفحه (اختیاری)")}
+                  value={linkDraft}
+                  onChange={(e) => {
+                    setLinkDraft(e.target.value);
+                  }}
+                  onPaste={(e) => {
+                    const url = parseLink(e.clipboardData.getData("text"));
+                    if (url === "") return;
+                    e.preventDefault();
+                    update({ link: url });
+                    setLinkDraft("");
+                  }}
+                  onBlur={commitLink}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      e.preventDefault();
+                      commitLink();
+                    }
+                  }}
+                />
+              ) : (
+                <>
+                  <a className="ts-link" href={f.link} target="_blank" rel="noreferrer">
+                    {linkLabel(f.link)}
+                  </a>
+                  <button
+                    type="button"
+                    className="ts-x"
+                    aria-label={t("برداشتن لینک")}
+                    onClick={() => {
+                      update({ link: "" });
+                    }}
+                  >
+                    <Icon name="close" />
+                  </button>
+                </>
+              )}
+            </div>
+          )}
+
           <div className="ts-line top">
             <Icon name="edit" />
             <textarea
               className="ts-notes"
               value={f.notes}
-              placeholder={isEvent ? "توضیحات" : "یادداشت"}
+              placeholder={isEvent ? t("توضیحات") : t("یادداشت")}
               onChange={(e) => {
                 update({ notes: e.target.value });
               }}
@@ -834,7 +908,7 @@ function Sheet({ input, onClose }: { input: EditorInput; onClose: () => void }) 
               <div className="ts-div" />
               <button type="button" className="ts-line danger" onClick={() => void remove()}>
                 <Icon name="delete" />
-                <span>{event.recurring ? "حذف رویداد تکراری" : "حذف رویداد"}</span>
+                <span>{event.recurring ? t("حذف رویداد تکراری") : t("حذف رویداد")}</span>
               </button>
             </>
           )}
@@ -865,13 +939,17 @@ function Sheet({ input, onClose }: { input: EditorInput; onClose: () => void }) 
               >
                 <Icon name="sticker-note" />
                 <span>
-                  {linked.length === 0 ? "نوشتن یادداشت برای این کار" : "یادداشت دیگر برای این کار"}
+                  {linked.length === 0
+                    ? t("نوشتن یادداشت برای این کار")
+                    : t("یادداشت دیگر برای این کار")}
                 </span>
               </button>
               <div className="ts-div" />
               <button type="button" className="ts-line danger" onClick={() => void remove()}>
                 <Icon name="delete" />
-                <span>{original.recurrence === undefined ? "حذف کار" : "حذف کار تکراری"}</span>
+                <span>
+                  {original.recurrence === undefined ? t("حذف کار") : t("حذف کار تکراری")}
+                </span>
               </button>
             </>
           )}
@@ -920,7 +998,7 @@ function Sheet({ input, onClose }: { input: EditorInput; onClose: () => void }) 
                     setPanel(null);
                   }}
                 >
-                  {r.label}
+                  {t(r.label)}
                 </button>
               ))}
             {panel !== "repeat" && panel !== "reminder" && (
@@ -931,7 +1009,7 @@ function Sheet({ input, onClose }: { input: EditorInput; onClose: () => void }) 
                   setPanel(null);
                 }}
               >
-                تأیید
+                {t("تأیید")}
               </button>
             )}
           </div>
@@ -958,7 +1036,7 @@ function Sheet({ input, onClose }: { input: EditorInput; onClose: () => void }) 
                     setAsk(null);
                   }}
                 >
-                  {l}
+                  {t(l)}
                 </button>
               ))}
             <button
@@ -969,7 +1047,7 @@ function Sheet({ input, onClose }: { input: EditorInput; onClose: () => void }) 
                 setAsk(null);
               }}
             >
-              انصراف
+              {t("انصراف")}
             </button>
           </div>
         )}
@@ -1047,11 +1125,11 @@ function DatePicker({
     <div className="ts-dp">
       <div className="h">
         <b>
-          {MONTH_NAMES_FA["solar-hijri"][shown.month - 1]} {fa(String(shown.year))}
+          {t(MONTH_NAMES_FA["solar-hijri"][shown.month - 1] ?? "")} {fa(String(shown.year))}
         </b>
         <button
           type="button"
-          aria-label="ماه قبل"
+          aria-label={t("ماه قبل")}
           onClick={() => {
             move(-1);
           }}
@@ -1060,7 +1138,7 @@ function DatePicker({
         </button>
         <button
           type="button"
-          aria-label="ماه بعد"
+          aria-label={t("ماه بعد")}
           onClick={() => {
             move(1);
           }}
@@ -1071,7 +1149,7 @@ function DatePicker({
       <div className="g">
         {["ش", "ی", "د", "س", "چ", "پ", "ج"].map((w) => (
           <span key={w} className="wk">
-            {w}
+            {t(w)}
           </span>
         ))}
         {Array.from({ length: (firstJ + 2) % 7 }, (_, i) => (

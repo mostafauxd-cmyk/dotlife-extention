@@ -1,3 +1,4 @@
+import { browserLang, setLang, type Lang } from "./i18n";
 import { load, save } from "./platform";
 
 /**
@@ -58,11 +59,18 @@ export const allSites = (items: readonly QuickItem[]): QuickSite[] =>
   items.flatMap((i) => (isFolder(i) ? i.items : [i]));
 
 export type Settings = {
+  /** The page's language (`i18n`), asked first in the welcome; changeable in «شخصی‌سازی». */
+  lang: Lang;
   theme: string;
   /** Parts switched off; everything else shows. «کارت‌ها همیشه باز» starts off. */
   off: BlockId[];
   sites: QuickItem[];
-  /** «کدام بیشتر شبیه توست؟»: a persona id, or null when none was picked. */
+  /**
+   * «کدام بیشتر شبیه توست؟»: every persona picked, in the order picked (2026-11-20, the user: «اجازه
+   * بدیم کاربر چندتا نقش رو باهم انتخاب کنه»). Empty when none was.
+   */
+  personas: string[];
+  /** The first of `personas`, or null: what settings saved before several could be picked hold. */
   persona: string | null;
   /** The welcome (what an account gives, then sign-in) has been shown once, on the first new tab. */
   welcomed: boolean;
@@ -94,10 +102,12 @@ export const DEFAULT_SITES: readonly QuickSite[] = [
 ];
 
 export const DEFAULTS: Settings = {
+  lang: "fa",
   theme: "noghte",
   off: ["pin"],
   sites: [...DEFAULT_SITES],
   welcomed: false,
+  personas: [],
   persona: null,
   hiddenCals: [],
   slideOrder: SLIDES.map(([id]) => id),
@@ -116,6 +126,13 @@ const listeners = new Set<() => void>();
 export async function loadSettings(): Promise<Settings> {
   const s = await load<Partial<Settings>>(KEY);
   current = { ...DEFAULTS, ...s };
+  // a new install starts in the browser's language; one from before languages stays in Persian
+  if (s?.lang !== "fa" && s?.lang !== "en") current.lang = s === undefined ? browserLang() : "fa";
+  setLang(current.lang);
+  // saved when only one persona could be picked: that one is the list
+  if (!Array.isArray(s?.personas)) {
+    current.personas = typeof current.persona === "string" ? [current.persona] : [];
+  }
   return current;
 }
 
@@ -128,6 +145,7 @@ export function onSettings(fn: () => void): () => void {
 
 export function updateSettings(patch: Partial<Settings>): void {
   current = { ...current, ...patch };
+  if (patch.lang !== undefined) setLang(patch.lang);
   void save(KEY, current);
   for (const l of listeners) l();
 }

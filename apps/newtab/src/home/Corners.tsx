@@ -13,7 +13,8 @@ import {
   todayRows,
   toggleTask,
 } from "../noghte/model";
-import { AD_LABEL, useAd } from "../ads";
+import { adLabel, useAd } from "../ads";
+import { t } from "../i18n";
 import { getLink, installId } from "../install";
 import { usePaketLinked } from "../paket";
 import { todayInfo } from "../today";
@@ -23,6 +24,7 @@ import type { IconName } from "../ui/icons";
 import { Qr } from "../ui/Qr";
 import { openPaketPair } from "./PaketPair";
 import { PaketLogo } from "./PaketSync";
+import { SiteLink } from "./SiteLink";
 import { openEditor } from "./TaskEditor";
 
 /**
@@ -95,9 +97,9 @@ function SyncBadge() {
               ]
             : ["همگام", "همگام با گوشی"];
   return (
-    <span className={`sync ${s.status}`} title={full}>
+    <span className={`sync ${s.status}`} title={t(full)}>
       <i />
-      {word}
+      {t(word)}
     </span>
   );
 }
@@ -120,13 +122,13 @@ function SignInHint({
     <div className="signin-cta">
       <div className="sc-text">
         <b>{head}</b>
-        <p>وارد شو تا این‌جا و گوشی یکی شوند. نقطه را نداری؟ کد را با گوشی اسکن کن.</p>
+        <p>{t("وارد شو تا این‌جا و گوشی یکی شوند. نقطه را نداری؟ کد را با گوشی اسکن کن.")}</p>
         <button type="button" className="cta" onClick={onSignIn}>
-          ورود به نقطه
+          {t("ورود به نقطه")}
         </button>
       </div>
       {install !== null && (
-        <Qr text={getLink("noghte", place, install)} label="کد نصب نقطه از کافه‌بازار" />
+        <Qr text={getLink("noghte", place, install)} label={t("کد نصب نقطه از کافه‌بازار")} />
       )}
     </div>
   );
@@ -156,12 +158,12 @@ export function TasksCard({
   return (
     <>
       <h3>
-        کارهای امروز <SyncBadge />
+        {t("کارهای امروز")} <SyncBadge />
       </h3>
       {rows.length === 0 && !signedIn && all.length === 0 ? (
-        <SignInHint head="کارهای گوشی‌ات، همین‌جا" place="tasks" onSignIn={onSignIn} />
+        <SignInHint head={t("کارهای گوشی‌ات، همین‌جا")} place="tasks" onSignIn={onSignIn} />
       ) : rows.length === 0 ? (
-        <div className="empty">برای امروز کاری نیست.</div>
+        <div className="empty">{t("برای امروز کاری نیست.")}</div>
       ) : (
         <ul className="tasks">
           {rows.map((r) => {
@@ -177,7 +179,7 @@ export function TasksCard({
                 <button
                   type="button"
                   className="cb"
-                  aria-label={done ? "برگرداندن" : "انجام شد"}
+                  aria-label={done ? t("برگرداندن") : t("انجام شد")}
                   aria-pressed={done}
                   onClick={() => {
                     toggleTask(r);
@@ -194,12 +196,13 @@ export function TasksCard({
                 >
                   {r.occurrence?.title ?? r.task.title}
                 </button>
+                <SiteLink notes={r.task.notes} />
                 <span
                   className="ld"
                   style={{ background: lists.get(r.task.listId)?.color ?? "transparent" }}
                 />
                 <span className={r.late ? "m late" : "m"}>
-                  {timeOf(r) || (r.late ? "عقب‌افتاده" : "")}
+                  {timeOf(r) || (r.late ? t("عقب‌افتاده") : "")}
                 </span>
               </li>
             );
@@ -218,8 +221,8 @@ export function TasksCard({
         <Icon name="plus" />
         <input
           value={draft}
-          placeholder="کار جدید…"
-          aria-label="کار جدید"
+          placeholder={t("کار جدید…")}
+          aria-label={t("کار جدید")}
           onChange={(e) => {
             setDraft(e.target.value);
           }}
@@ -242,14 +245,14 @@ export function SyncInvite({ place, onSignIn }: { place: string; onSignIn: () =>
   return (
     <div className="sync-invite">
       <div className="si-text">
-        <b>روی گوشی هم داشته باش</b>
-        <span>وارد شو؛ این‌جا و گوشی‌ات یکی می‌شوند.</span>
+        <b>{t("روی گوشی هم داشته باش")}</b>
+        <span>{t("وارد شو؛ این‌جا و گوشی‌ات یکی می‌شوند.")}</span>
         <button type="button" className="cta" onClick={onSignIn}>
-          ورود به نقطه
+          {t("ورود به نقطه")}
         </button>
       </div>
       {install !== null && (
-        <Qr text={getLink("noghte", place, install)} label="کد نصب نقطه از کافه‌بازار" />
+        <Qr text={getLink("noghte", place, install)} label={t("کد نصب نقطه از کافه‌بازار")} />
       )}
     </div>
   );
@@ -276,7 +279,7 @@ export function NotesCard({
   };
   return (
     <>
-      <h3>یادداشت‌ها</h3>
+      <h3>{t("یادداشت‌ها")}</h3>
       <form
         className="qnote"
         onSubmit={(e) => {
@@ -287,8 +290,8 @@ export function NotesCard({
         <textarea
           rows={4}
           value={draft}
-          placeholder="یادداشت سریع بنویس… خط اول، عنوانش می‌شود."
-          aria-label="یادداشت سریع"
+          placeholder={t("یادداشت سریع بنویس… خط اول، عنوانش می‌شود.")}
+          aria-label={t("یادداشت سریع")}
           onChange={(e) => {
             setDraft(e.target.value);
           }}
@@ -300,26 +303,28 @@ export function NotesCard({
           }}
         />
         <div className="qn-f">
-          <span>{signedIn ? "روی گوشی هم دیده می‌شود" : "روی همین مرورگر نگه داشته می‌شود"}</span>
+          <span>
+            {signedIn ? t("روی گوشی هم دیده می‌شود") : t("روی همین مرورگر نگه داشته می‌شود")}
+          </span>
           <button
             type="submit"
             className="qn-go"
             disabled={draft.trim() === ""}
-            aria-label="ذخیره‌ی یادداشت"
+            aria-label={t("ذخیره‌ی یادداشت")}
           >
             <Icon name="arrow-up" />
           </button>
         </div>
       </form>
       {notes.length === 0 && !signedIn ? (
-        <SignInHint head="یادداشت‌های گوشی‌ات، همین‌جا" place="notes" onSignIn={onSignIn} />
+        <SignInHint head={t("یادداشت‌های گوشی‌ات، همین‌جا")} place="notes" onSignIn={onSignIn} />
       ) : notes.length === 0 ? (
-        <div className="empty">هنوز یادداشتی نیست.</div>
+        <div className="empty">{t("هنوز یادداشتی نیست.")}</div>
       ) : (
-        <div className="rlist" aria-label="یادداشت‌های اخیر">
+        <div className="rlist" aria-label={t("یادداشت‌های اخیر")}>
           {notes.map((n) => (
             <div key={n.id} className={fresh.has(n.id) ? "rnote fresh" : "rnote"}>
-              <b>{noteTitle(n) || "یادداشت بی‌عنوان"}</b>
+              <b>{noteTitle(n) || t("یادداشت بی‌عنوان")}</b>
               <small>
                 {ago(n.updatedAt)}
                 {noteSnippet(n) !== "" && ` · ${noteSnippet(n)}`}
@@ -335,39 +340,39 @@ export function NotesCard({
 
 export function TodayCard() {
   const now = useNow(30_000);
-  const t = todayInfo(now);
+  const d = todayInfo(now);
   const ad = useAd(5);
   return (
     <>
       <div className="tday">
         <b>
-          {t.weekday} {t.dayMonth}
+          {d.weekday} {d.dayMonth}
         </b>
         <span>
-          {t.gregorian} · {t.hijri}
+          {d.gregorian} · {d.hijri}
         </span>
       </div>
-      {t.occasions.length > 0 && (
+      {d.occasions.length > 0 && (
         <div className="occ">
-          {t.occasions.slice(0, 4).map((o) => (
+          {d.occasions.slice(0, 4).map((o) => (
             <span key={o.event.id} className={o.event.holiday ? "hol" : ""}>
               {o.event.title}
             </span>
           ))}
         </div>
       )}
-      {t.occasions.length > 0 && ad !== null && (
+      {d.occasions.length > 0 && ad !== null && (
         <a className="occsp" href={ad.url} target="_blank" rel="noreferrer">
           {ad.title}
-          <span className="tag">{AD_LABEL}</span>
+          <span className="tag">{adLabel()}</span>
         </a>
       )}
-      {t.next !== null && (
+      {d.next !== null && (
         <div className="nextp">
           <span>
-            {t.next.name} · {t.place}
+            {d.next.name} · {d.place}
           </span>
-          <b>{t.next.time}</b>
+          <b>{d.next.time}</b>
         </div>
       )}
     </>
@@ -384,11 +389,13 @@ export function PaketCard() {
     <div className="pk-card">
       <PaketLogo size={36} />
       <div className="sc-text">
-        <b>{linked ? "پاکت وصل است" : "پولت را هم ببین"}</b>
+        <b>{linked ? t("پاکت وصل است") : t("پولت را هم ببین")}</b>
         <p>
           {linked
-            ? "موجودی و خرج ماهت در صفحه‌ی «پول» است."
-            : "پاکت را وصل کن تا موجودی، خرج ماه و دارایی‌هایت را همین‌جا ببینی؛ فقط خواندنی است."}
+            ? t("موجودی و خرج ماهت در صفحه‌ی «پول» است.")
+            : t(
+                "پاکت را وصل کن تا موجودی، خرج ماه و دارایی‌هایت را همین‌جا ببینی؛ فقط خواندنی است.",
+              )}
         </p>
         {linked ? (
           <a
@@ -397,7 +404,7 @@ export function PaketCard() {
             target="_blank"
             rel="noreferrer"
           >
-            باز کردن پاکت
+            {t("باز کردن پاکت")}
           </a>
         ) : (
           <button
@@ -407,7 +414,7 @@ export function PaketCard() {
               openPaketPair();
             }}
           >
-            ورود به پاکت
+            {t("ورود به پاکت")}
           </button>
         )}
       </div>

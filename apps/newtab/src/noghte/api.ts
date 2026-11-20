@@ -120,6 +120,54 @@ export async function verifyCode(
   return { session: s, created: r.created === true };
 }
 
+// ---- linking with the phone app's QR scanner ----
+
+/**
+ * Linking by QR (2026-11-20, the user: «توی اپ هم با کیوار اسکنر وصل شیم بهش توی تب افزونه»): this
+ * tab asks the server for a one-time link, shows it as a QR code, and waits; the phone app, already
+ * signed in, scans it in its «افزونه» tab and says yes; this tab then gets its own session for the
+ * same account. No phone number, no SMS — so it works in every country.
+ *
+ * `POST /auth/link/start` → `{ id, secret, url, expiresIn, pollEvery }`
+ * `POST /auth/link/poll` `{ id, secret }` → 202 waiting · 200 signed in · 410 expired
+ * (the server side is dotlife's `apps/server/src/auth`; until it is there, `start` fails with 404
+ * and the page offers the phone number alone).
+ */
+export type LinkStart = {
+  id: string;
+  /** Known only to this tab: the QR alone (seen over a shoulder) cannot collect the session. */
+  secret: string;
+  /** What the QR holds: `https://noghte.life/link?c=…`, opened by the app's scanner or a camera. */
+  url: string;
+  expiresIn: number;
+  pollEvery: number;
+};
+
+export async function startLink(): Promise<LinkStart> {
+  return call<LinkStart>("/auth/link/start", { body: { device: DEVICE } });
+}
+
+/** One look at the link: "waiting", "expired", or signed in (the session is kept like any other). */
+export async function pollLink(l: LinkStart): Promise<"waiting" | "expired" | "linked"> {
+  try {
+    const r = await call<SignedIn & { label?: string }>("/auth/link/poll", {
+      body: { id: l.id, secret: l.secret },
+    });
+    if (typeof r.accessToken !== "string") return "waiting";
+    await setSession({
+      accountId: r.account.id,
+      label: r.label ?? "",
+      accessToken: r.accessToken,
+      refreshToken: r.refreshToken,
+      expiresAt: Date.now() + r.expiresIn * 1000,
+    });
+    return "linked";
+  } catch (e) {
+    if (e instanceof ApiError && (e.status === 410 || e.code === "link_expired")) return "expired";
+    throw e;
+  }
+}
+
 export async function signOut(): Promise<void> {
   const s = session;
   if (s !== null) {

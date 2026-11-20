@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 
-import { AD_LABEL, useAd } from "../ads";
+import { adLabel, useAd } from "../ads";
 import { useSettings } from "../hooks";
+import { t } from "../i18n";
 import { faviconUrl, siteName, topSites, type Site } from "../platform";
 import {
   isFolder,
@@ -159,7 +160,7 @@ function Tile({
       <button
         type="button"
         className="x"
-        aria-label={`${removeLabel ?? "برداشتن"} ${site.title}`}
+        aria-label={t("{action} {name}", { action: removeLabel ?? t("برداشتن"), name: site.title })}
         title={removeLabel}
         onClick={(e) => {
           e.preventDefault();
@@ -188,7 +189,7 @@ function FolderTile({
     <button
       type="button"
       className={`lt fold ${dragClass ?? ""}`.trim()}
-      aria-label={`پوشه‌ی ${folder.name}`}
+      aria-label={t("پوشه‌ی {name}", { name: folder.name })}
       onClick={onOpen}
       {...dragProps}
     >
@@ -207,12 +208,12 @@ function AdTile({ slot, folder }: { slot: 1 | 2; folder?: string }) {
   const ad = useAd(slot);
   if (ad === null || (slot === 2 && ad.extra?.folder !== folder)) return null;
   return (
-    <a className="lt adt" href={ad.url} aria-label={`${ad.title} (${AD_LABEL})`}>
+    <a className="lt adt" href={ad.url} aria-label={`${ad.title} (${adLabel()})`}>
       <span className="ic" style={{ "--bc": ad.tint ?? "#D9862B" } as React.CSSProperties}>
         <span className="letter">{ad.glyph ?? ad.title.slice(0, 1)}</span>
       </span>
       <span className="lb">{ad.title}</span>
-      {slot === 1 ? <i className="sdot" /> : <span className="tag">{AD_LABEL}</span>}
+      {slot === 1 ? <i className="sdot" /> : <span className="tag">{adLabel()}</span>}
     </a>
   );
 }
@@ -260,7 +261,7 @@ export function Launcher() {
     const made: QuickFolder = {
       kind: "folder",
       id: newFolderId(),
-      name: "پوشه‌ی تازه",
+      name: t("پوشه‌ی تازه"),
       items: [dst, src],
     };
     put(items.flatMap((x, i) => (i === a ? [] : i === b ? [made] : [x])));
@@ -334,7 +335,7 @@ export function Launcher() {
           <button
             type="button"
             className="ic"
-            aria-label="بستن پوشه"
+            aria-label={t("بستن پوشه")}
             onClick={() => {
               setOpen(null);
               setNaming(false);
@@ -345,7 +346,7 @@ export function Launcher() {
           <input
             className="fname-in"
             value={folder.name}
-            aria-label="اسم پوشه"
+            aria-label={t("اسم پوشه")}
             autoFocus={naming}
             onFocus={(e) => {
               if (naming) e.currentTarget.select();
@@ -356,7 +357,7 @@ export function Launcher() {
             onBlur={() => {
               setNaming(false);
               if (folder.name.trim() === "")
-                put(items.map((x, i) => (i === at ? { ...folder, name: "پوشه" } : x)));
+                put(items.map((x, i) => (i === at ? { ...folder, name: t("پوشه") } : x)));
             }}
             onKeyDown={(e) => {
               if (e.key === "Enter" || e.key === "Escape") e.currentTarget.blur();
@@ -380,7 +381,7 @@ export function Launcher() {
                 setOverBack(false);
               },
             }}
-            removeLabel="بیرون آوردن از پوشه"
+            removeLabel={t("بیرون آوردن از پوشه")}
             onRemove={() => {
               takeOut(site);
             }}
@@ -390,7 +391,7 @@ export function Launcher() {
         <button
           type="button"
           className="lt"
-          aria-label="افزودن به این پوشه"
+          aria-label={t("افزودن به این پوشه")}
           onClick={() => {
             setAdding(true);
           }}
@@ -398,7 +399,7 @@ export function Launcher() {
           <span className="ic">
             <Icon name="plus" />
           </span>
-          <span className="lb">افزودن</span>
+          <span className="lb">{t("افزودن")}</span>
         </button>
         {adding && (
           <AddSite
@@ -439,7 +440,7 @@ export function Launcher() {
       <button
         type="button"
         className="lt"
-        aria-label="افزودن به دسترسی سریع"
+        aria-label={t("افزودن به دسترسی سریع")}
         onClick={() => {
           setAdding(true);
         }}
@@ -447,7 +448,7 @@ export function Launcher() {
         <span className="ic">
           <Icon name="plus" />
         </span>
-        <span className="lb">افزودن</span>
+        <span className="lb">{t("افزودن")}</span>
       </button>
       {adding && (
         <AddSite
@@ -463,10 +464,10 @@ export function Launcher() {
 
 /** A typed address as a full URL, or null when it is not one yet. */
 function typedUrl(raw: string): URL | null {
-  const t = raw.trim();
-  if (t === "") return null;
+  const v = raw.trim();
+  if (v === "") return null;
   try {
-    const u = new URL(/^https?:\/\//i.test(t) ? t : `https://${t}`);
+    const u = new URL(/^https?:\/\//i.test(v) ? v : `https://${v}`);
     return u.hostname.includes(".") ? u : null;
   } catch {
     return null;
@@ -478,11 +479,11 @@ function Preview({ url, title }: { url: string; title: string }) {
   // wait for a pause in typing, so every keystroke does not fetch an icon
   const [settled, setSettled] = useState<URL | null>(null);
   useEffect(() => {
-    const t = setTimeout(() => {
+    const timer = setTimeout(() => {
       setSettled(typedUrl(url));
     }, 400);
     return () => {
-      clearTimeout(t);
+      clearTimeout(timer);
     };
   }, [url]);
   const src = settled === null ? null : faviconUrl(settled.href, 64);
@@ -510,7 +511,7 @@ function Preview({ url, title }: { url: string; title: string }) {
           />
         )}
       </span>
-      <span className="lb">{name || "سایت تازه"}</span>
+      <span className="lb">{name || t("سایت تازه")}</span>
     </div>
   );
 }
@@ -569,7 +570,7 @@ function AddSite({ folderId, onClose }: { folderId: string | null; onClose: () =
     if (url.trim() === "") return;
     const u = typedUrl(url);
     if (u === null) {
-      setErr("این آدرس درست نیست.");
+      setErr(t("این آدرس درست نیست."));
       return;
     }
     const site = { title: title.trim() || siteName(u.href), url: u.href };
@@ -587,14 +588,14 @@ function AddSite({ folderId, onClose }: { folderId: string | null; onClose: () =
     >
       <div className="modal addsite" role="dialog" aria-modal="true" aria-labelledby="addTitle">
         <div className="card-h">
-          <h2 id="addTitle">افزودن به دسترسی سریع</h2>
-          <button type="button" className="rbtn" aria-label="بستن" onClick={onClose}>
+          <h2 id="addTitle">{t("افزودن به دسترسی سریع")}</h2>
+          <button type="button" className="rbtn" aria-label={t("بستن")} onClick={onClose}>
             <Icon name="close" />
           </button>
         </div>
         {top.length > 0 && (
           <>
-            <p>سایت‌هایی که زیاد باز می‌کنی</p>
+            <p>{t("سایت‌هایی که زیاد باز می‌کنی")}</p>
             <div className="sugg">
               {top.map((site) => (
                 <button
@@ -622,7 +623,7 @@ function AddSite({ folderId, onClose }: { folderId: string | null; onClose: () =
           }}
         >
           <label className="field">
-            آدرس
+            {t("آدرس")}
             <input
               className="ltr"
               value={url}
@@ -635,7 +636,7 @@ function AddSite({ folderId, onClose }: { folderId: string | null; onClose: () =
             />
           </label>
           <label className="field">
-            نام (اختیاری)
+            {t("نام (اختیاری)")}
             <input
               value={title}
               onChange={(e) => {
@@ -647,7 +648,7 @@ function AddSite({ folderId, onClose }: { folderId: string | null; onClose: () =
         </form>
         {err !== "" && <span className="err">{err}</span>}
         <button type="button" className="cta block" disabled={url.trim() === ""} onClick={addTyped}>
-          افزودن
+          {t("افزودن")}
         </button>
       </div>
     </div>,

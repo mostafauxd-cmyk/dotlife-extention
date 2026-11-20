@@ -1,6 +1,7 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 
 import { useRecordsVersion } from "../hooks";
+import { t } from "../i18n";
 import {
   addNote,
   addTask,
@@ -12,7 +13,7 @@ import {
   taskLists,
   today,
 } from "../noghte/model";
-import { AD_LABEL, useAd } from "../ads";
+import { adLabel, useAd } from "../ads";
 import { search, suggest } from "../platform";
 import { addDays } from "@dotlife/tasks";
 import { ago } from "../ui/fa";
@@ -88,7 +89,7 @@ function traceBox(box: HTMLElement): void {
   box.append(svg);
   const L = parts[0]?.p.getTotalLength() ?? 0;
   const T = 1000;
-  const ease = (t: number): number => 1 - Math.pow(1 - Math.min(1, Math.max(0, t)), 3);
+  const ease = (x: number): number => 1 - Math.pow(1 - Math.min(1, Math.max(0, x)), 3);
   let t0: number | null = null;
   const step = (now: number): void => {
     t0 ??= now;
@@ -139,14 +140,14 @@ export function SearchBox({
     }
     let live = true;
     // a short pause, so a fast typist does not ask for every letter
-    const t = setTimeout(() => {
+    const timer = setTimeout(() => {
       void suggest(text).then((list) => {
         if (live) setSugg(list.filter((x) => x !== text.trim()).slice(0, 6));
       });
     }, 120);
     return () => {
       live = false;
-      clearTimeout(t);
+      clearTimeout(timer);
     };
   }, [text, mode]);
   const showSugg = mode === "google" && focused && sugg.length > 0 && text.trim() !== "";
@@ -161,18 +162,31 @@ export function SearchBox({
     el.style.height = `${String(Math.min(el.scrollHeight, 150))}px`;
   }, [text]);
 
-  // typing goes straight into the box when the tab opens (public/focus.js brings the keyboard here)
+  // typing goes straight into the box when the tab opens (public/focus.js brings the keyboard here),
+  // with whatever was typed before the box existed
   useEffect(() => {
-    input.current?.focus({ preventScroll: true });
+    const w = window as Window & { __noghteTyped?: string; __noghteTaken?: boolean };
+    const early = w.__noghteTyped ?? "";
+    w.__noghteTaken = true;
+    w.__noghteTyped = "";
+    const el = input.current;
+    if (el === null) return;
+    el.focus({ preventScroll: true });
+    if (early !== "") {
+      setText(early);
+      requestAnimationFrame(() => {
+        el.setSelectionRange(early.length, early.length);
+      });
+    }
   }, []);
 
   useEffect(() => {
     if (traceAfter === null) return;
-    const t = setTimeout(() => {
+    const timer = setTimeout(() => {
       if (box.current !== null) traceBox(box.current);
     }, traceAfter);
     return () => {
-      clearTimeout(t);
+      clearTimeout(timer);
     };
   }, [traceAfter]);
 
@@ -244,7 +258,7 @@ export function SearchBox({
           <span
             key={swap}
             className={swap > 0 ? "gmark swap" : "gmark"}
-            title={mode === "google" ? "جستجو در گوگل" : M.go}
+            title={mode === "google" ? t("جستجو در گوگل") : t(M.go)}
           >
             {mode === "google" ? (
               <GMark />
@@ -256,8 +270,8 @@ export function SearchBox({
             ref={input}
             rows={1}
             value={text}
-            placeholder={M.ph}
-            aria-label={mode === "google" ? "جستجو در گوگل" : M.ph}
+            placeholder={t(M.ph)}
+            aria-label={mode === "google" ? t("جستجو در گوگل") : t(M.ph)}
             autoComplete="off"
             onChange={(e) => {
               setText(e.target.value);
@@ -299,32 +313,32 @@ export function SearchBox({
             type="button"
             className="act"
             aria-pressed={mode === "task"}
-            title="نوشتن کار تازه به‌جای جستجو"
+            title={t("نوشتن کار تازه به‌جای جستجو")}
             onClick={() => {
               pick("task");
             }}
           >
             <Icon name="tick-square" />
-            به کارها
+            {t("به کارها")}
           </button>
           <button
             type="button"
             className="act"
             aria-pressed={mode === "note"}
-            title="نوشتن یادداشت تازه به‌جای جستجو"
+            title={t("نوشتن یادداشت تازه به‌جای جستجو")}
             onClick={() => {
               pick("note");
             }}
           >
             <Icon name="sticker-note" />
-            به یادداشت‌ها
+            {t("به یادداشت‌ها")}
           </button>
           <span className="grow" />
-          <span className="hintk">{M.hint}</span>
+          <span className="hintk">{t(M.hint)}</span>
           <button
             type="submit"
             className={text.trim() !== "" ? "ibtn go ready" : "ibtn go"}
-            aria-label={M.go}
+            aria-label={t(M.go)}
           >
             <Icon name="arrow-up" />
           </button>
@@ -335,7 +349,7 @@ export function SearchBox({
         <ul
           className="sugg-list"
           role="listbox"
-          aria-label="پیشنهادهای گوگل"
+          aria-label={t("پیشنهادهای گوگل")}
           onMouseDown={(e) => {
             // a click keeps the caret in the box until the search goes
             e.preventDefault();
@@ -382,7 +396,7 @@ export function SearchBox({
                 {sponsored.title}
                 {sponsored.line !== undefined && ` · ${sponsored.line}`}
               </span>
-              <span className="tag">{AD_LABEL}</span>
+              <span className="tag">{adLabel()}</span>
             </li>
           )}
         </ul>
@@ -404,8 +418,8 @@ export function SearchBox({
                 className="ts-notes"
                 rows={3}
                 value={desc}
-                placeholder="توضیح… (اختیاری؛ عنوان همان متن بالاست)"
-                aria-label="توضیح یادداشت"
+                placeholder={t("توضیح… (اختیاری؛ عنوان همان متن بالاست)")}
+                aria-label={t("توضیح یادداشت")}
                 onChange={(e) => {
                   setDesc(e.target.value);
                 }}
@@ -422,8 +436,8 @@ export function SearchBox({
             </div>
           ) : (
             <div className="qp-sec">
-              <span className="qp-k">کی؟</span>
-              <div className="ts-chips" role="group" aria-label="زمان">
+              <span className="qp-k">{t("کی؟")}</span>
+              <div className="ts-chips" role="group" aria-label={t("زمان")}>
                 {(
                   [
                     ["today", "امروز"],
@@ -439,7 +453,7 @@ export function SearchBox({
                       setWhen(k);
                     }}
                   >
-                    {n}
+                    {t(n)}
                   </button>
                 ))}
               </div>
@@ -447,7 +461,7 @@ export function SearchBox({
           )}
           {lists.length > 0 && (
             <div className="qp-sec">
-              <span className="qp-k">در</span>
+              <span className="qp-k">{t("در")}</span>
               <div className="ts-chips">
                 {lists.map((l) => (
                   <button
@@ -472,13 +486,13 @@ export function SearchBox({
                   }}
                 >
                   <Icon name="plus" />
-                  دسته
+                  {t("دسته")}
                 </button>
               </div>
             </div>
           )}
           <div className="ts-div" />
-          <div className="qp-h">{mode === "note" ? "یادداشت‌های اخیر" : "کارهای اخیر"}</div>
+          <div className="qp-h">{mode === "note" ? t("یادداشت‌های اخیر") : t("کارهای اخیر")}</div>
           {mode === "note"
             ? recentNotes.map((n) => (
                 <button
@@ -493,7 +507,7 @@ export function SearchBox({
                     <Icon name="sticker-note" />
                   </span>
                   <span className="qt">
-                    <b>{noteTitle(n) || "یادداشت بی‌عنوان"}</b>
+                    <b>{noteTitle(n) || t("یادداشت بی‌عنوان")}</b>
                     <small>
                       {ago(n.updatedAt)}
                       {listName(n.folderId)}
@@ -501,31 +515,32 @@ export function SearchBox({
                   </span>
                 </button>
               ))
-            : recentTasks.map((t) => (
+            : recentTasks.map((task) => (
                 <button
-                  key={t.id}
+                  key={task.id}
                   type="button"
                   className="qrow"
                   onClick={() => {
-                    openEditor({ mode: "edit", task: t, occurrence: null });
+                    openEditor({ mode: "edit", task, occurrence: null });
                   }}
                 >
                   <span className="qi">
                     <Icon name="tick-square" />
                   </span>
                   <span className="qt">
-                    <b>{t.title}</b>
+                    <b>{task.title}</b>
                     <small>
-                      {ago(t.createdAt)}
-                      {listName(t.listId)}
+                      {ago(task.createdAt)}
+                      {listName(task.listId)}
                     </small>
                   </span>
                 </button>
               ))}
           {(mode === "note" ? recentNotes : recentTasks).length === 0 && (
             <p className="qp-none">
-              {mode === "note" ? "هنوز یادداشتی نیست." : "هنوز کاری نیست."} همین‌که ذخیره کنی،
-              این‌جا پیدایش می‌شود.
+              {mode === "note"
+                ? t("هنوز یادداشتی نیست. همین‌که ذخیره کنی، این‌جا پیدایش می‌شود.")
+                : t("هنوز کاری نیست. همین‌که ذخیره کنی، این‌جا پیدایش می‌شود.")}
             </p>
           )}
         </div>

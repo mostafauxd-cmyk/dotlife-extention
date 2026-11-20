@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 
-import { AD_LABEL, useAd } from "../ads";
+import { adLabel, useAd } from "../ads";
+import { t } from "../i18n";
 import { bookmarksBar, faviconUrl, type Bookmark } from "../platform";
 import { Icon } from "../ui/Icon";
 
@@ -47,14 +48,18 @@ export function Edge({
     );
 
   return (
-    <div className={pinned ? "edge pin" : "edge"} tabIndex={0} aria-label="بوکمارک‌ها و شخصی‌سازی">
+    <div
+      className={pinned ? "edge pin" : "edge"}
+      tabIndex={0}
+      aria-label={t("بوکمارک‌ها و شخصی‌سازی")}
+    >
       <span className="em" />
       <aside className="side2">
         {showBookmarks && (
           <>
-            <div className="sec">بوکمارک‌های کروم</div>
+            <div className="sec">{t("بوکمارک‌های کروم")}</div>
             {bar.length === 0 ? (
-              <div className="empty">نوار بوکمارک کروم خالی است.</div>
+              <div className="empty">{t("نوار بوکمارک کروم خالی است.")}</div>
             ) : (
               <div className="bml">{bar.map((b) => row(b))}</div>
             )}
@@ -64,7 +69,7 @@ export function Edge({
           <a className="spcard" href={ad.url} target="_blank" rel="noreferrer">
             <b>{ad.title}</b>
             {ad.line !== undefined && <small>{ad.line}</small>}
-            <span className="tag">{AD_LABEL}</span>
+            <span className="tag">{adLabel()}</span>
           </a>
         )}
         <button
@@ -73,7 +78,7 @@ export function Edge({
           style={{ alignSelf: "flex-start" }}
           onClick={onCustomize}
         >
-          شخصی‌سازی
+          {t("شخصی‌سازی")}
         </button>
       </aside>
     </div>

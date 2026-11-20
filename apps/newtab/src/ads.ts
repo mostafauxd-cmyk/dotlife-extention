@@ -4,6 +4,7 @@ import { pickAd, SAMPLE_ADS, type Ad, type AdContext } from "@dotlife/ads";
 
 import { traitsOf } from "./adTraits";
 import { useSettings } from "./hooks";
+import { t } from "./i18n";
 import { isOn } from "./settings";
 
 /**
@@ -41,7 +42,7 @@ export function useAd(slot: number, over: Partial<AdContext> = {}): Ad | null {
   const [, tick] = useState(0);
   useEffect(() => {
     const l = (): void => {
-      tick((t) => t + 1);
+      tick((n) => n + 1);
     };
     listeners.add(l);
     return () => {
@@ -54,7 +55,6 @@ export function useAd(slot: number, over: Partial<AdContext> = {}): Ad | null {
     const base: AdContext = {
       product: "newtab",
       now: new Date(),
-      persona: tr.persona,
       city: tr.city,
       season: tr.season,
       weekend: tr.weekend,
@@ -64,15 +64,18 @@ export function useAd(slot: number, over: Partial<AdContext> = {}): Ad | null {
     };
     // each topic the person follows and each occasion today is a way to match; the heaviest ad wins
     let best: Ad | null = null;
-    for (const topic of [...tr.topics, null]) {
-      for (const occasion of [...tr.occasions, null]) {
-        const ad = pickAd(bundle, slot, { ...base, topic, occasion });
-        if (ad !== null && (best === null || ad.weight > best.weight)) best = ad;
+    for (const persona of [...tr.personas, null]) {
+      for (const topic of [...tr.topics, null]) {
+        for (const occasion of [...tr.occasions, null]) {
+          const ad = pickAd(bundle, slot, { ...base, persona, topic, occasion });
+          if (ad !== null && (best === null || ad.weight > best.weight)) best = ad;
+        }
       }
     }
     return best;
-  }, [slot, s.persona, s.city, s.topics, s.off, key, tick]);
+  }, [slot, s.personas, s.city, s.topics, s.off, key, tick]);
 }
 
 /** The label every ad carries. */
 export const AD_LABEL = "معرفی‌شده";
+export const adLabel = (): string => t(AD_LABEL);

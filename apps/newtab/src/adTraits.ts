@@ -22,7 +22,8 @@ export function seasonOfMonth(solarMonth: number): Season {
 }
 
 export type Traits = {
-  persona: string | null;
+  /** Every persona picked (an ad for any of them matches). */
+  personas: string[];
   city: string | null;
   season: Season;
   weekend: boolean;
@@ -37,7 +38,7 @@ export function traitsOf(s: Settings, now: Date = new Date()): Traits {
   // 0 = Saturday … 5 = Thursday, 6 = Friday
   const wd = weekdayOfJdn(jdn);
   return {
-    persona: s.persona,
+    personas: s.personas,
     city: s.city,
     season: seasonOfMonth(fromJdn(jdn, "solar-hijri").month),
     weekend: wd === 5 || wd === 6,

@@ -139,7 +139,7 @@ export function noteSnippet(n: Note): string {
 /** A new task, as the app makes one: in the chosen list (or the default), last in order. */
 export function addTask(
   title: string,
-  opts: { listId?: string; day?: LocalDate | null } = {},
+  opts: { listId?: string; day?: LocalDate | null; notes?: string } = {},
 ): Task {
   const lists = taskLists();
   const tasks = records.all<Task>("task");
@@ -160,6 +160,7 @@ export function addTask(
     timeZone: TIME_ZONE,
     reminders: [],
     order: last === undefined ? FIRST_ORDER : orderBetween(last, undefined),
+    ...(opts.notes === undefined || opts.notes === "" ? {} : { notes: opts.notes }),
     createdAt: now,
     updatedAt: now,
   };

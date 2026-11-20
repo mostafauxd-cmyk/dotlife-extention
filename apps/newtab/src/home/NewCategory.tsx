@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import type { TaskList } from "@dotlife/tasks";
 
 import { availableListColors, LIST_COLORS } from "../listColors";
+import { t } from "../i18n";
 import { addFolder, liveLists } from "../noghte/model";
 import { Icon } from "../ui/Icon";
 
@@ -88,33 +89,33 @@ function Sheet({ ask, onClose }: { ask: Ask; onClose: () => void }) {
         className="modal cat"
         role="dialog"
         aria-modal="true"
-        aria-label="دسته‌ی تازه"
+        aria-label={t("دسته‌ی تازه")}
         onSubmit={(e) => {
           e.preventDefault();
           make();
         }}
       >
         <div className="card-h">
-          <h2>دسته‌ی تازه</h2>
-          <button type="button" className="rbtn sm" aria-label="بستن" onClick={onClose}>
+          <h2>{t("دسته‌ی تازه")}</h2>
+          <button type="button" className="rbtn sm" aria-label={t("بستن")} onClick={onClose}>
             <Icon name="close" />
           </button>
         </div>
-        <p className="cat-hint">با همین اسم و رنگ روی گوشی هم دیده می‌شود.</p>
+        <p className="cat-hint">{t("با همین اسم و رنگ روی گوشی هم دیده می‌شود.")}</p>
         <label className="cat-field">
           <i style={{ background: color }} />
           <input
             autoFocus
             value={name}
-            placeholder="اسم دسته…"
+            placeholder={t("اسم دسته…")}
             maxLength={40}
-            aria-label="اسم دسته"
+            aria-label={t("اسم دسته")}
             onChange={(e) => {
               setName(e.target.value);
             }}
           />
         </label>
-        <div className="cat-colors" role="radiogroup" aria-label="رنگ">
+        <div className="cat-colors" role="radiogroup" aria-label={t("رنگ")}>
           {palette.map((c) => {
             const used = taken.includes(c.toLowerCase());
             return (
@@ -123,7 +124,7 @@ function Sheet({ ask, onClose }: { ask: Ask; onClose: () => void }) {
                 type="button"
                 role="radio"
                 aria-checked={color === c}
-                aria-label={used ? `رنگ ${c}، برای دسته‌ی دیگری است` : `رنگ ${c}`}
+                aria-label={used ? t("رنگ {c}، برای دسته‌ی دیگری است", { c }) : t("رنگ {c}", { c })}
                 disabled={used}
                 className={used ? "used" : undefined}
                 style={{ background: c }}
@@ -135,7 +136,7 @@ function Sheet({ ask, onClose }: { ask: Ask; onClose: () => void }) {
           })}
         </div>
         <button type="submit" className="cta" disabled={!ok}>
-          ساختن
+          {t("ساختن")}
         </button>
       </form>
     </div>

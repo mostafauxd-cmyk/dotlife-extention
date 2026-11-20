@@ -1,5 +1,6 @@
 import { useEffect, useState, type RefObject } from "react";
 
+import { t } from "../i18n";
 import { Icon } from "../ui/Icon";
 import type { IconName } from "../ui/icons";
 
@@ -39,7 +40,7 @@ export function Rail({
 
   if (slides.length < 2) return null;
   return (
-    <nav className="rail" aria-label="اسلایدها">
+    <nav className="rail" aria-label={t("اسلایدها")}>
       {slides.map((s) => (
         <button
           key={s.id}

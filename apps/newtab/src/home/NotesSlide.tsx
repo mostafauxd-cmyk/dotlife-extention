@@ -48,10 +48,11 @@ import { faviconUrl } from "../platform";
 import { ago, fa } from "../ui/fa";
 import { Icon } from "../ui/Icon";
 import { SyncInvite } from "./Corners";
-import { AD_LABEL, useAd } from "../ads";
+import { adLabel, useAd } from "../ads";
 import { openNewCategory } from "./NewCategory";
 import { VoiceRecorder } from "./VoiceRecorder";
 import { onOpenNote } from "./openNote";
+import { t } from "../i18n";
 
 /**
  * The notes slide, as the app's notes: folders (which are task lists), the list with its pinned
@@ -127,7 +128,7 @@ export function NotesSlide({ signedIn, onSignIn }: { signedIn: boolean; onSignIn
         : live.filter((n) => n.folderId === folder);
   const searching = query.trim() !== "";
   const sections: NoteSection[] = searching
-    ? [{ key: "found", title: "نتیجه‌ها", notes: searchNotes(pool, query) }]
+    ? [{ key: "found", title: t("نتیجه‌ها"), notes: searchNotes(pool, query) }]
     : groupNotes(pool, today(), dayOf);
   const shown = sections.flatMap((s) => s.notes);
   const open = notes.find((n) => n.id === openId) ?? shown[0];
@@ -144,13 +145,13 @@ export function NotesSlide({ signedIn, onSignIn }: { signedIn: boolean; onSignIn
     <div className="s-pad notes-s">
       <aside className="card g folders">
         <div className="card-h">
-          <h2>یادداشت‌ها</h2>
+          <h2>{t("یادداشت‌ها")}</h2>
         </div>
         <div className="flist">
           <FolderRow
             on={folder === "all"}
             icon={<Icon name="sticker-note" />}
-            name="همه‌ی یادداشت‌ها"
+            name={t("همه‌ی یادداشت‌ها")}
             count={live.length}
             onPick={() => {
               setFolder("all");
@@ -172,7 +173,7 @@ export function NotesSlide({ signedIn, onSignIn }: { signedIn: boolean; onSignIn
           <FolderRow
             on={folder === "trash"}
             icon={<Icon name="delete" />}
-            name="حذف‌شده‌ها"
+            name={t("حذف‌شده‌ها")}
             count={trash.length}
             onPick={() => {
               setFolder("trash");
@@ -196,7 +197,7 @@ export function NotesSlide({ signedIn, onSignIn }: { signedIn: boolean; onSignIn
           }}
         >
           <Icon name="plus" />
-          دسته‌ی تازه
+          {t("دسته‌ی تازه")}
         </button>
       </aside>
 
@@ -205,9 +206,9 @@ export function NotesSlide({ signedIn, onSignIn }: { signedIn: boolean; onSignIn
           <Icon name="search" />
           <input
             value={query}
-            placeholder="جستجو در یادداشت‌ها…"
+            placeholder={t("جستجو در یادداشت‌ها…")}
             autoComplete="off"
-            aria-label="جستجو در یادداشت‌ها"
+            aria-label={t("جستجو در یادداشت‌ها")}
             onChange={(e) => {
               setQuery(e.target.value);
             }}
@@ -217,10 +218,10 @@ export function NotesSlide({ signedIn, onSignIn }: { signedIn: boolean; onSignIn
           {shown.length === 0 ? (
             <p className="none">
               {searching
-                ? "یادداشتی با این کلمه نیست."
+                ? t("یادداشتی با این کلمه نیست.")
                 : folder === "trash"
-                  ? "حذف‌شده‌ها خالی است."
-                  : "هنوز یادداشتی این‌جا نیست."}
+                  ? t("حذف‌شده‌ها خالی است.")
+                  : t("هنوز یادداشتی این‌جا نیست.")}
             </p>
           ) : (
             sections.map((s) => (
@@ -243,7 +244,7 @@ export function NotesSlide({ signedIn, onSignIn }: { signedIn: boolean; onSignIn
         {!signedIn && <SyncInvite place="notes-slide" onSignIn={onSignIn} />}
         <button type="button" className="cta newn" onClick={create}>
           <Icon name="edit" />
-          یادداشت تازه
+          {t("یادداشت تازه")}
         </button>
       </div>
 
@@ -253,7 +254,7 @@ export function NotesSlide({ signedIn, onSignIn }: { signedIn: boolean; onSignIn
         ) : (
           <div className="ed-empty">
             <Icon name="sticker-note" />
-            <p>یادداشتی را باز کن یا یکی تازه بنویس.</p>
+            <p>{t("یادداشتی را باز کن یا یکی تازه بنویس.")}</p>
           </div>
         )}
       </article>
@@ -391,10 +392,10 @@ function Editor({ note, focusTitle }: { note: Note; focusTitle: React.RefObject<
         <span className={`st ${sync.status}`}>
           <i />
           {sync.status === "signed-out"
-            ? "روی همین مرورگر"
+            ? t("روی همین مرورگر")
             : sync.status === "offline"
-              ? "آفلاین"
-              : "همگام"}{" "}
+              ? t("آفلاین")
+              : t("همگام")}{" "}
           · {ago(note.updatedAt)}
         </span>
         <span className="tools">
@@ -403,9 +404,9 @@ function Editor({ note, focusTitle }: { note: Note; focusTitle: React.RefObject<
               <button
                 type="button"
                 className="rbtn sm"
-                aria-label={note.pinned ? "برداشتن سنجاق" : "سنجاق"}
+                aria-label={note.pinned ? t("برداشتن سنجاق") : t("سنجاق")}
                 aria-pressed={note.pinned}
-                title={note.pinned ? "برداشتن سنجاق" : "سنجاق"}
+                title={note.pinned ? t("برداشتن سنجاق") : t("سنجاق")}
                 onClick={() => {
                   saveNote({ ...note, pinned: !note.pinned });
                 }}
@@ -417,8 +418,8 @@ function Editor({ note, focusTitle }: { note: Note; focusTitle: React.RefObject<
           <button
             type="button"
             className="rbtn sm"
-            aria-label={trashed ? "برگرداندن" : "حذف"}
-            title={trashed ? "برگرداندن" : "حذف"}
+            aria-label={trashed ? t("برگرداندن|note") : t("حذف")}
+            title={trashed ? t("برگرداندن|note") : t("حذف")}
             onClick={() => {
               trashNote(note, !trashed);
             }}
@@ -444,7 +445,7 @@ function Editor({ note, focusTitle }: { note: Note; focusTitle: React.RefObject<
         {task !== undefined && (
           <span>
             <Icon name="tick-square" />
-            کار: {task.title}
+            {t("کار: {title}", { title: task.title })}
           </span>
         )}
       </div>
@@ -468,7 +469,7 @@ function Editor({ note, focusTitle }: { note: Note; focusTitle: React.RefObject<
             );
           }
           let el: React.ReactNode;
-          if (b.kind === "title") el = <div>{box(b, i, "ed-title", "عنوان")}</div>;
+          if (b.kind === "title") el = <div>{box(b, i, "ed-title", t("عنوان"))}</div>;
           else if (b.kind === "heading") el = <div>{box(b, i, "b-h")}</div>;
           else if (b.kind === "bullet")
             el = (
@@ -482,7 +483,7 @@ function Editor({ note, focusTitle }: { note: Note; focusTitle: React.RefObject<
               <div className={b.done === true ? "b-c done" : "b-c"}>
                 <button
                   type="button"
-                  aria-label={b.done === true ? "انجام نشده" : "انجام شد"}
+                  aria-label={b.done === true ? t("انجام نشده") : t("انجام شد")}
                   aria-pressed={b.done === true}
                   disabled={trashed}
                   onClick={() => {
@@ -497,7 +498,7 @@ function Editor({ note, focusTitle }: { note: Note; focusTitle: React.RefObject<
           else
             el = (
               <div>
-                {box(b, i, "b-p", i === 1 && note.blocks.length === 2 ? "بنویس…" : undefined)}
+                {box(b, i, "b-p", i === 1 && note.blocks.length === 2 ? t("بنویس…") : undefined)}
               </div>
             );
           const links = urlsIn(b.text);
@@ -540,7 +541,7 @@ function Editor({ note, focusTitle }: { note: Note; focusTitle: React.RefObject<
             />
           </div>
         ) : (
-          <div className="ed-bar" role="toolbar" aria-label="قالب‌بندی">
+          <div className="ed-bar" role="toolbar" aria-label={t("قالب‌بندی")}>
             {FORMATS.map((f) => {
               const on = note.blocks[focused]?.kind === f.kind && focused > 0;
               return (
@@ -548,8 +549,8 @@ function Editor({ note, focusTitle }: { note: Note; focusTitle: React.RefObject<
                   key={f.kind}
                   type="button"
                   className="fmt"
-                  aria-label={f.label}
-                  title={f.label}
+                  aria-label={t(f.label)}
+                  title={t(f.label)}
                   aria-pressed={on}
                   onMouseDown={(e) => {
                     e.preventDefault();
@@ -566,8 +567,8 @@ function Editor({ note, focusTitle }: { note: Note; focusTitle: React.RefObject<
             <button
               type="button"
               className="fmt"
-              aria-label="ضبط صدا"
-              title="ضبط صدا"
+              aria-label={t("ضبط صدا")}
+              title={t("ضبط صدا")}
               onMouseDown={(e) => {
                 e.preventDefault();
               }}
@@ -621,8 +622,10 @@ function VoiceBlock({ voice, onRemove }: { voice: Voice; onRemove: (() => void) 
         <button
           type="button"
           className="play"
-          aria-label={playing ? "مکث" : "پخش"}
-          title={url === null ? "روی دستگاهی که ضبط شد پخش می‌شود" : playing ? "مکث" : "پخش"}
+          aria-label={playing ? t("مکث") : t("پخش")}
+          title={
+            url === null ? t("روی دستگاهی که ضبط شد پخش می‌شود") : playing ? t("مکث") : t("پخش")
+          }
           disabled={url === null || url === undefined}
           onClick={toggle}
         >
@@ -662,8 +665,8 @@ function VoiceBlock({ voice, onRemove }: { voice: Voice; onRemove: (() => void) 
           <button
             type="button"
             className="rm"
-            aria-label="حذف صدا"
-            title="حذف صدا"
+            aria-label={t("حذف صدا")}
+            title={t("حذف صدا")}
             onClick={onRemove}
           >
             <Icon name="close" />
@@ -693,7 +696,7 @@ function VoiceBlock({ voice, onRemove }: { voice: Voice; onRemove: (() => void) 
       )}
       {(words !== "" || url === null) && (
         <div className="tr">
-          {words !== "" ? words : "یادداشت صوتی؛ روی دستگاهی که ضبط شد پخش می‌شود."}
+          {words !== "" ? words : t("یادداشت صوتی؛ روی دستگاهی که ضبط شد پخش می‌شود.")}
         </div>
       )}
     </div>
@@ -706,11 +709,11 @@ function TemplateCard({ onMade }: { onMade: (id: string) => void }) {
   if (ad === null) return null;
   return (
     <div className="tpl">
-      <span className="sec">قالب پیشنهادی</span>
+      <span className="sec">{t("قالب پیشنهادی")}</span>
       <b>{ad.title}</b>
       <span>
         {ad.line}
-        <span className="tag">{AD_LABEL}</span>
+        <span className="tag">{adLabel()}</span>
       </span>
       <button
         type="button"
@@ -719,7 +722,7 @@ function TemplateCard({ onMade }: { onMade: (id: string) => void }) {
           onMade(addNote(ad.title, ad.extra?.body ?? "").id);
         }}
       >
-        {ad.cta ?? "استفاده از قالب"}
+        {ad.cta ?? t("استفاده از قالب")}
       </button>
     </div>
   );

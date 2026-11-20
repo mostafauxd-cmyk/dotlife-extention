@@ -1,6 +1,6 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 
-import { AD_LABEL, useAd } from "../ads";
+import { adLabel, useAd } from "../ads";
 import { useRecordsVersion, useSession, useSettings, useSyncState } from "../hooks";
 import {
   articleImage,
@@ -19,6 +19,7 @@ import {
   type Story,
 } from "../news";
 import { savedNoteOf, savedNotes, toggleSaved } from "../newsSaved";
+import { t } from "../i18n";
 import { updateSettings } from "../settings";
 import { Icon } from "../ui/Icon";
 import { Tabs } from "../ui/Tabs";
@@ -61,7 +62,7 @@ function Badge({ source }: { source: NewsSource | undefined }) {
   }
   return (
     <i className="nw-b" style={{ background: source?.color ?? "#6d6d6d" }} aria-hidden="true">
-      {source?.name.slice(0, 1) ?? "؟"}
+      {source?.name.slice(0, 1) ?? t("؟")}
     </i>
   );
 }
@@ -194,27 +195,27 @@ export function NewsSlide() {
 
       <section
         className="card g nw-feed"
-        aria-label="خبرها"
+        aria-label={t("خبرها")}
         style={{ "--nwh": `${String(headH)}px` } as React.CSSProperties}
       >
         {/* the bar and the chips float over the stories, which pass under them blurred */}
         <div className="nw-head" ref={head}>
           <div className="nw-bar">
             <Tabs
-              label="ترتیب خبرها"
+              label={t("ترتیب خبرها")}
               value={mode}
               onChange={setMode}
               items={[
-                { id: "you", label: "برای تو" },
-                { id: "latest", label: "تازه‌ترین" },
+                { id: "you", label: t("برای تو") },
+                { id: "latest", label: t("تازه‌ترین") },
               ]}
             />
             <label className="nw-search">
               <Icon name="search" />
               <input
                 value={q}
-                placeholder="جستجو در خبرها…"
-                aria-label="جستجو در خبرها"
+                placeholder={t("جستجو در خبرها…")}
+                aria-label={t("جستجو در خبرها")}
                 onChange={(e) => {
                   setQ(e.target.value);
                 }}
@@ -223,15 +224,15 @@ export function NewsSlide() {
             <button
               type="button"
               className="rbtn sm"
-              aria-label="خبر تازه بگیر"
-              title="خبر تازه بگیر"
+              aria-label={t("خبر تازه بگیر")}
+              title={t("خبر تازه بگیر")}
               disabled={loading}
               onClick={refresh}
             >
               <Icon name="refresh" />
             </button>
           </div>
-          <div className="nw-chips" role="tablist" aria-label="دسته‌ی خبر">
+          <div className="nw-chips" role="tablist" aria-label={t("دسته‌ی خبر")}>
             {NEWS_CATEGORIES.map(([id, name]) => (
               <button
                 key={id}
@@ -243,7 +244,7 @@ export function NewsSlide() {
                   setCat(id);
                 }}
               >
-                {name}
+                {t(name)}
               </button>
             ))}
           </div>
@@ -253,17 +254,17 @@ export function NewsSlide() {
           {top === undefined ? (
             <div className="nw-none">
               {loading ? (
-                <p>خبرها در راه است…</p>
+                <p>{t("خبرها در راه است…")}</p>
               ) : active.length === 0 ? (
-                <p>هیچ منبعی روشن نیست؛ از ستون کناری یکی را روشن کن.</p>
+                <p>{t("هیچ منبعی روشن نیست؛ از ستون کناری یکی را روشن کن.")}</p>
               ) : q !== "" ? (
-                <p>خبری با این کلمه پیدا نشد.</p>
+                <p>{t("خبری با این کلمه پیدا نشد.")}</p>
               ) : (
                 <>
-                  <p>{failed ? "الان به خبرها نمی‌رسم." : "در این دسته خبری نیست."}</p>
+                  <p>{failed ? t("الان به خبرها نمی‌رسم.") : t("در این دسته خبری نیست.")}</p>
                   {failed && (
                     <button type="button" className="cta" onClick={refresh}>
-                      دوباره
+                      {t("دوباره")}
                     </button>
                   )}
                 </>
@@ -290,7 +291,7 @@ export function NewsSlide() {
                 <SaveButton story={top} on={savedNoteOf(top.url) !== undefined} />
                 {twins.length > 0 && (
                   <div className="nw-twins">
-                    <span>همین خبر در {fa(twins.length)} منبع دیگر:</span>
+                    <span>{t("همین خبر در {n} منبع دیگر:", { n: fa(twins.length) })}</span>
                     {twins.slice(0, 4).map((t) => (
                       <a key={t.id} className="chip" href={t.url} target="_blank" rel="noreferrer">
                         <Badge source={src(t.source)} />
@@ -313,7 +314,7 @@ export function NewsSlide() {
                         </span>
                         <span className="nw-body">
                           <span className="nw-meta">
-                            <span className="chip">{AD_LABEL}</span>
+                            <span className="chip">{adLabel()}</span>
                             <small>{ad.line}</small>
                           </span>
                           <b>{ad.title}</b>
@@ -329,11 +330,11 @@ export function NewsSlide() {
         </div>
       </section>
 
-      <aside className="nw-side" aria-label="داغ‌ترین و ذخیره‌شده‌ها">
+      <aside className="nw-side" aria-label={t("داغ‌ترین و ذخیره‌شده‌ها")}>
         <div className="card g nw-hot">
-          <h2>داغ‌ترین امروز</h2>
+          <h2>{t("داغ‌ترین امروز")}</h2>
           {hot.length === 0 ? (
-            <p className="nw-empty">{loading ? "…" : "هنوز خبری نیست."}</p>
+            <p className="nw-empty">{loading ? "…" : t("هنوز خبری نیست.")}</p>
           ) : (
             <ol>
               {hot.map((x, i) => (
@@ -358,13 +359,13 @@ export function NewsSlide() {
           )}
         </div>
         <div className="card g nw-saved">
-          <h3>{fa(saved.length)} خبر ذخیره‌شده</h3>
+          <h3>{t("{n} خبر ذخیره‌شده", { n: fa(saved.length) })}</h3>
           <p>
             {session === null
-              ? "برای بعد؛ فقط روی همین مرورگر. با ورود به نقطه روی گوشی هم می‌آید."
+              ? t("برای بعد؛ فقط روی همین مرورگر. با ورود به نقطه روی گوشی هم می‌آید.")
               : sync.status === "error" || sync.status === "offline"
-                ? "برای بعد؛ هنوز به گوشی نرسیده، وقتی همگام شد می‌رسد."
-                : "برای بعد؛ روی گوشی هم در یادداشت‌های نقطه هست."}
+                ? t("برای بعد؛ هنوز به گوشی نرسیده، وقتی همگام شد می‌رسد.")
+                : t("برای بعد؛ روی گوشی هم در یادداشت‌های نقطه هست.")}
           </p>
           {saved.slice(0, 3).map((n) => (
             <button
@@ -409,8 +410,8 @@ function SaveButton({ story, on }: { story: Story; on: boolean }) {
       type="button"
       className={on ? "nw-save on" : "nw-save"}
       aria-pressed={on}
-      aria-label={on ? "از ذخیره‌شده‌ها بردار" : "ذخیره برای بعد"}
-      title={on ? "از ذخیره‌شده‌ها بردار" : "ذخیره برای بعد"}
+      aria-label={on ? t("از ذخیره‌شده‌ها بردار") : t("ذخیره برای بعد")}
+      title={on ? t("از ذخیره‌شده‌ها بردار") : t("ذخیره برای بعد")}
       onClick={() => {
         toggleSaved(story);
       }}
@@ -451,16 +452,18 @@ function Sources({ all, off }: { all: readonly NewsSource[]; off: readonly strin
   };
 
   return (
-    <section className="card g nw-src" aria-label="منبع‌های من">
-      <h2>منبع‌های من</h2>
-      <p className="nw-lead">هر رسانه روایت خودش را دارد. خودت انتخاب کن از کدام‌ها خبر بخوانی.</p>
+    <section className="card g nw-src" aria-label={t("منبع‌های من")}>
+      <h2>{t("منبع‌های من")}</h2>
+      <p className="nw-lead">
+        {t("هر رسانه روایت خودش را دارد. خودت انتخاب کن از کدام‌ها خبر بخوانی.")}
+      </p>
       <div className="nw-groups">
         {GROUPS.map(([group, name]) => {
           const rows = all.filter((x) => x.group === group);
           if (rows.length === 0) return null;
           return (
             <div key={group} className="nw-group">
-              <h4>{name}</h4>
+              <h4>{t(name)}</h4>
               {rows.map((x) => (
                 <div key={x.id} className="nw-srow">
                   <button
@@ -478,7 +481,7 @@ function Sources({ all, off }: { all: readonly NewsSource[]; off: readonly strin
                     <button
                       type="button"
                       className="nw-x"
-                      aria-label={`حذف ${x.name}`}
+                      aria-label={t("حذف {name}", { name: x.name })}
                       onClick={() => {
                         updateSettings({
                           newsOwn: s.newsOwn.filter((o) => o.id !== x.id),
@@ -508,13 +511,13 @@ function Sources({ all, off }: { all: readonly NewsSource[]; off: readonly strin
             dir="ltr"
             value={address}
             placeholder="https://example.com/feed"
-            aria-label="آدرس RSS"
+            aria-label={t("آدرس RSS")}
             onChange={(e) => {
               setAddress(e.target.value);
             }}
           />
           <button type="submit" className="cta" disabled={busy || address.trim() === ""}>
-            {busy ? "…" : "افزودن"}
+            {busy ? "…" : t("افزودن")}
           </button>
           {why !== "" && <p role="alert">{why}</p>}
         </form>
@@ -527,7 +530,7 @@ function Sources({ all, off }: { all: readonly NewsSource[]; off: readonly strin
           }}
         >
           <Icon name="plus" />
-          منبع دلخواه با آدرس RSS
+          {t("منبع دلخواه با آدرس RSS")}
         </button>
       )}
     </section>

@@ -10,6 +10,9 @@
   "chrome_url_overrides": {
     "newtab": "index.html"
   },
+  "background": {
+    "service_worker": "background.js"
+  },
   "permissions": [
     "storage",
     "unlimitedStorage",
@@ -17,7 +20,9 @@
     "favicon",
     "bookmarks",
     "topSites",
-    "identity"
+    "identity",
+    "contextMenus",
+    "activeTab"
   ],
   "host_permissions": [
     "https://noghte.life/*",
