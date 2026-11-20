@@ -1,5 +1,7 @@
 /** English for the shell part of the page (see `index.ts`). Keys are the Persian exactly as in the code. */
 export const SHELL: Readonly<Record<string, string>> = {
+  خبر: "News",
+  "پیشنهادهای معرفی‌شده": "Sponsored suggestions",
   // the page itself (App.tsx), the rail, the dot, the edge
   "از گوشی · همین حالا": "From your phone · just now",
   "از سرچ · همین حالا": "From the search · just now",

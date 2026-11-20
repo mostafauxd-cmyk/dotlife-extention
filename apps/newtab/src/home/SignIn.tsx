@@ -11,6 +11,7 @@ import {
   type LinkStart,
 } from "../noghte/api";
 import { updateSettings } from "../settings";
+import { allowEnglishNews } from "../news";
 import { useSettings } from "../hooks";
 import { fa, latin } from "../ui/fa";
 import { Icon } from "../ui/Icon";
@@ -262,6 +263,8 @@ export function SignIn({
                       className="lang"
                       onClick={() => {
                         updateSettings({ lang: l.id });
+                        // the English outlets' sites, asked on this click (Chrome asks only then)
+                        if (l.id === "en") void allowEnglishNews();
                       }}
                     >
                       {l.name}

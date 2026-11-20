@@ -1,5 +1,8 @@
 /** English for the notes part of the page (see `index.ts`). Keys are the Persian exactly as in the code. */
 export const NOTES: Readonly<Record<string, string>> = {
+  "برای خبرهای انگلیسی، کروم باید اجازه‌ی خواندن از Tehran Times و Mehr News را بدهد.":
+    "For English news, Chrome needs to let this page read Tehran Times and Mehr News.",
+  "اجازه بده": "Allow",
   "برگرداندن|note": "Restore",
   سرتیتر: "Heading",
   متن: "Text",

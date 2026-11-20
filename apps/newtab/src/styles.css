@@ -7605,11 +7605,12 @@ strong {
 .dia-foot .skip {
   white-space: nowrap;
 }
-/* numbered lists count in the page's own digits */
-:lang(fa) ol {
+/* the QR step's numbered list counts in the page's own digits (only there: other lists, like the
+   top stories, draw their own numbers) */
+:lang(fa) .dia .link-steps {
   list-style-type: persian;
 }
-:lang(en) ol {
+:lang(en) .dia .link-steps {
   list-style-type: decimal;
 }
 :lang(en) .upd-guide .steps li::before {
