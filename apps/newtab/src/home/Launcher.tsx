@@ -5,6 +5,7 @@ import { adLabel, useAd } from "../ads";
 import { useSettings } from "../hooks";
 import { t } from "../i18n";
 import { faviconUrl, siteName, topSites, type Site } from "../platform";
+import { folderLabel, siteLabel } from "../siteNames";
 import {
   isFolder,
   updateSettings,
@@ -139,7 +140,7 @@ function Tile({
     <a
       className={dragClass === undefined ? "lt" : `lt ${dragClass}`}
       href={site.url}
-      aria-label={site.title}
+      aria-label={siteLabel(site)}
       {...dragProps}
     >
       <span
@@ -151,16 +152,19 @@ function Tile({
         }
       >
         {look?.letter === true ? (
-          <span className="letter">{firstLetter(site.title)}</span>
+          <span className="letter">{firstLetter(siteLabel(site))}</span>
         ) : (
           <img src={icon ?? src} alt="" draggable={false} />
         )}
       </span>
-      <span className="lb">{site.title}</span>
+      <span className="lb">{siteLabel(site)}</span>
       <button
         type="button"
         className="x"
-        aria-label={t("{action} {name}", { action: removeLabel ?? t("برداشتن"), name: site.title })}
+        aria-label={t("{action} {name}", {
+          action: removeLabel ?? t("برداشتن"),
+          name: siteLabel(site),
+        })}
         title={removeLabel}
         onClick={(e) => {
           e.preventDefault();
@@ -189,7 +193,7 @@ function FolderTile({
     <button
       type="button"
       className={`lt fold ${dragClass ?? ""}`.trim()}
-      aria-label={t("پوشه‌ی {name}", { name: folder.name })}
+      aria-label={t("پوشه‌ی {name}", { name: folderLabel(folder) })}
       onClick={onOpen}
       {...dragProps}
     >
@@ -198,7 +202,7 @@ function FolderTile({
           <img key={x.url} src={faviconUrl(x.url, 32)} alt="" draggable={false} />
         ))}
       </span>
-      <span className="lb">{folder.name}</span>
+      <span className="lb">{folderLabel(folder)}</span>
     </button>
   );
 }
@@ -345,7 +349,7 @@ export function Launcher() {
           </button>
           <input
             className="fname-in"
-            value={folder.name}
+            value={folderLabel(folder)}
             aria-label={t("اسم پوشه")}
             autoFocus={naming}
             onFocus={(e) => {
