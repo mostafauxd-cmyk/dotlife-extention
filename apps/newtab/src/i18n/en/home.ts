@@ -42,7 +42,8 @@ export const HOME: Readonly<Record<string, string>> = {
   "نقطه را با این کد روی گوشی نصب کن.": "Install Noghte on your phone with this code.",
   "بعد با شماره‌ی موبایلت همین‌جا وارد شو.": "Then sign in here with your mobile number.",
   "اپ نقطه را روی گوشی باز کن.": "Open the Noghte app on your phone.",
-  "به «تنظیمات ← افزونه» برو و «اسکن کد» را بزن.": "Go to Settings → Extension and tap Scan code.",
+  "در پروفایل، «دستگاه‌ها و افزونه» را باز کن و «اسکن کد افزونه» را بزن.":
+    "In your profile, open Devices & extension and tap Scan extension code.",
   "دوربین را روی این کد بگیر؛ همین‌جا خودکار وصل می‌شوی.":
     "Point the camera at this code; you'll be connected here automatically.",
   "فعلاً نه": "Not now",
