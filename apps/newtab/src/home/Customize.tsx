@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 
 import { INTERESTS } from "../cities";
 import { useSession, useSettings, useSyncState } from "../hooks";
+import { LANGS, t } from "../i18n";
 import { signOut } from "../noghte/api";
 import { syncNow } from "../noghte/sync";
 import {
@@ -66,15 +67,15 @@ export function Customize({
     <>
       {/* a click anywhere outside the panel closes it */}
       <div className={leaving ? "cust-bg out" : "cust-bg"} onMouseDown={onClose} />
-      <aside className={leaving ? "cust out" : "cust"} aria-label="شخصی‌سازی">
+      <aside className={leaving ? "cust out" : "cust"} aria-label={t("شخصی‌سازی")}>
         <div className="cust-h">
-          <h2>شخصی‌سازی</h2>
-          <button type="button" className="rbtn" aria-label="بستن" onClick={onClose}>
+          <h2>{t("شخصی‌سازی")}</h2>
+          <button type="button" className="rbtn" aria-label={t("بستن")} onClick={onClose}>
             <Icon name="close" />
           </button>
         </div>
         <Tabs
-          label="بخش‌های شخصی‌سازی"
+          label={t("بخش‌های شخصی‌سازی")}
           size="sm"
           block
           value={pane}
@@ -83,9 +84,9 @@ export function Customize({
             body.current?.scrollTo({ top: 0 });
           }}
           items={[
-            { id: "me", label: "درباره‌ی من" },
-            { id: "page", label: "صفحه" },
-            { id: "look", label: "ظاهر" },
+            { id: "me", label: t("درباره‌ی من") },
+            { id: "page", label: t("صفحه") },
+            { id: "look", label: t("ظاهر") },
           ]}
         />
 
@@ -93,12 +94,33 @@ export function Customize({
           {pane === "me" && (
             <>
               <section className="cs">
-                <h3>حساب نقطه</h3>
+                <h3>{t("زبان")}</h3>
+                <div className="chint">{t("زبان همه‌ی نوشته‌های این صفحه.")}</div>
+                <div className="ab-chips" role="group" aria-label={t("زبان")}>
+                  {LANGS.map((l) => (
+                    <button
+                      key={l.id}
+                      type="button"
+                      aria-pressed={s.lang === l.id}
+                      dir={l.dir}
+                      lang={l.id}
+                      onClick={() => {
+                        updateSettings({ lang: l.id });
+                      }}
+                    >
+                      {l.name}
+                    </button>
+                  ))}
+                </div>
+              </section>
+
+              <section className="cs">
+                <h3>{t("حساب نقطه")}</h3>
                 {session === null ? (
                   <div className="acct">
-                    کارها و یادداشت‌ها با اپ نقطه یکی می‌شوند.
+                    {t("کارها و یادداشت‌ها با اپ نقطه یکی می‌شوند.")}
                     <button type="button" className="ghost" onClick={onSignIn}>
-                      ورود
+                      {t("ورود")}
                     </button>
                   </div>
                 ) : (
@@ -108,38 +130,44 @@ export function Customize({
                       <br />
                       <small style={{ color: "var(--ink-3)" }}>
                         {sync.lastAt === null
-                          ? "هنوز همگام نشده"
-                          : `همگام‌شده ${ago(new Date(sync.lastAt).toISOString())}`}
+                          ? t("هنوز همگام نشده")
+                          : t("همگام‌شده {when}", {
+                              when: ago(new Date(sync.lastAt).toISOString()),
+                            })}
                       </small>
                     </span>
                     <button type="button" className="ghost" onClick={() => void syncNow()}>
-                      همگام‌سازی
+                      {t("همگام‌سازی")}
                     </button>
                     <button type="button" className="ghost" onClick={() => void signOut()}>
-                      خروج
+                      {t("خروج")}
                     </button>
                   </div>
                 )}
               </section>
 
               <section className="cs">
-                <h3>کدام بیشتر شبیه توست؟</h3>
+                <h3>{t("کدام بیشتر شبیه توست؟")}</h3>
                 <div className="chint">
-                  پوشه‌ای از سایت‌های همین کار به دسترسی سریع زیر سرچ اضافه می‌شود.
+                  {t(
+                    "چند تا هم می‌شود؛ برای هر کدام پوشه‌ای از سایت‌هایش به دسترسی سریع زیر سرچ اضافه می‌شود.",
+                  )}
                 </div>
                 <PersonaPicker />
               </section>
 
               <section className="cs">
-                <h3>شهر تو</h3>
-                <div className="chint">برای رویدادها و پیشنهادهای نزدیک‌تر؛ اختیاری است.</div>
+                <h3>{t("شهر تو")}</h3>
+                <div className="chint">
+                  {t("برای رویدادها و پیشنهادهای نزدیک‌تر؛ اختیاری است.")}
+                </div>
                 <CityPicker />
               </section>
 
               <section className="cs">
-                <h3>علاقه‌هایت</h3>
-                <div className="chint">هر چند تا که خواستی؛ اختیاری است.</div>
-                <div className="ab-chips" role="group" aria-label="علاقه‌ها">
+                <h3>{t("علاقه‌هایت")}</h3>
+                <div className="chint">{t("هر چند تا که خواستی؛ اختیاری است.")}</div>
+                <div className="ab-chips" role="group" aria-label={t("علاقه‌ها")}>
                   {INTERESTS.map((tp) => (
                     <button
                       key={tp}
@@ -153,7 +181,7 @@ export function Customize({
                         });
                       }}
                     >
-                      {tp}
+                      {t(tp)}
                     </button>
                   ))}
                 </div>
@@ -164,9 +192,9 @@ export function Customize({
           {pane === "page" && (
             <>
               <section className="cs">
-                <h3>صفحه‌ی اول</h3>
+                <h3>{t("صفحه‌ی اول")}</h3>
                 <div className="chint">
-                  صفحه‌ی اول فقط نقطه و سرچ است؛ بقیه در گوشه‌ها و لبه منتظرند.
+                  {t("صفحه‌ی اول فقط نقطه و سرچ است؛ بقیه در گوشه‌ها و لبه منتظرند.")}
                 </div>
                 <div className="tgrid">
                   {BLOCKS.filter(([id]) => id !== "ads").map(([id, name]) => (
@@ -179,7 +207,7 @@ export function Customize({
                         toggleBlock(id);
                       }}
                     >
-                      {name}
+                      {t(name)}
                       <span className="sw" />
                     </button>
                   ))}
@@ -187,8 +215,10 @@ export function Customize({
               </section>
 
               <section className="cs">
-                <h3>اسلایدها</h3>
-                <div className="chint">زیر صفحه‌ی اول، به همین ترتیب. خانه همیشه اول است.</div>
+                <h3>{t("اسلایدها")}</h3>
+                <div className="chint">
+                  {t("زیر صفحه‌ی اول، به همین ترتیب. خانه همیشه اول است.")}
+                </div>
                 <div className="slist">
                   {orderedSlides(s).map((id, i, all) => (
                     <div key={id} className="srow3">
@@ -200,13 +230,13 @@ export function Customize({
                           toggleBlock(id);
                         }}
                       >
-                        {SLIDES.find(([x]) => x === id)?.[1]}
+                        {t(SLIDES.find(([x]) => x === id)?.[1] ?? "")}
                         <span className="sw" />
                       </button>
                       <span className="smove">
                         <button
                           type="button"
-                          aria-label="بالاتر"
+                          aria-label={t("بالاتر")}
                           disabled={i === 0}
                           onClick={() => {
                             moveSlide(id, -1);
@@ -216,7 +246,7 @@ export function Customize({
                         </button>
                         <button
                           type="button"
-                          aria-label="پایین‌تر"
+                          aria-label={t("پایین‌تر")}
                           disabled={i === all.length - 1}
                           onClick={() => {
                             moveSlide(id, 1);
@@ -235,44 +265,45 @@ export function Customize({
           {pane === "look" && (
             <>
               <section className="cs">
-                <h3>رنگ پس‌زمینه</h3>
+                <h3>{t("رنگ پس‌زمینه")}</h3>
                 <div className="wps">
-                  {THEMES.map((t) => (
+                  {THEMES.map((th) => (
                     <button
-                      key={t.id}
+                      key={th.id}
                       type="button"
                       className="wp"
-                      aria-pressed={s.theme === t.id}
+                      aria-pressed={s.theme === th.id}
                       onClick={() => {
-                        updateSettings({ theme: t.id });
+                        updateSettings({ theme: th.id });
                       }}
                     >
                       <i
                         style={{
-                          background: `radial-gradient(circle at 50% 50%, ${t.tint} 0 16%, transparent 17%), radial-gradient(circle at 50% 45%, ${t.tint}33, transparent 70%), ${t.bg}`,
+                          background: `radial-gradient(circle at 50% 50%, ${th.tint} 0 16%, transparent 17%), radial-gradient(circle at 50% 45%, ${th.tint}33, transparent 70%), ${th.bg}`,
                         }}
                       />
-                      {t.name}
+                      {t(th.name)}
                     </button>
                   ))}
                 </div>
               </section>
 
               <section className="cs">
-                <h3>از نو</h3>
+                <h3>{t("از نو")}</h3>
                 <div className="chint">
-                  چیدمان صفحه، اسلایدها و رنگ را به حالت اول برمی‌گرداند؛ شهر و علاقه‌هایت هم پاک
-                  می‌شود.
+                  {t(
+                    "چیدمان صفحه، اسلایدها و رنگ را به حالت اول برمی‌گرداند؛ شهر و علاقه‌هایت هم پاک می‌شود.",
+                  )}
                 </div>
                 <div>
                   <button
                     type="button"
                     className="ghost"
                     onClick={() => {
-                      updateSettings({ ...DEFAULTS });
+                      updateSettings({ ...DEFAULTS, lang: s.lang });
                     }}
                   >
-                    چیدمان پیش‌فرض
+                    {t("چیدمان پیش‌فرض")}
                   </button>
                 </div>
               </section>

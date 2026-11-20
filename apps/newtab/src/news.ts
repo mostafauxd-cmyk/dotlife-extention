@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 
+import { t } from "./i18n";
 import { usePaketNews, type NewsItem } from "./paket";
 import { faviconUrl, inExtension, load, save } from "./platform";
 
@@ -34,7 +35,7 @@ export const NEWS_CATEGORIES: readonly (readonly [NewsCategory | "all", string])
 ];
 
 export const categoryName = (c: NewsCategory): string =>
-  c === "general" ? "عمومی" : (NEWS_CATEGORIES.find(([id]) => id === c)?.[1] ?? "");
+  t(c === "general" ? "عمومی" : (NEWS_CATEGORIES.find(([id]) => id === c)?.[1] ?? ""));
 
 export type NewsFeed = {
   /** The feed, at its final address (a redirect would need a permission of its own). */
@@ -621,18 +622,18 @@ export async function checkOwnFeed(
   try {
     url = new URL(address.trim());
   } catch {
-    return { ok: false, why: "این آدرس درست نیست." };
+    return { ok: false, why: t("این آدرس درست نیست.") };
   }
-  if (url.protocol !== "https:") return { ok: false, why: "آدرس باید با https شروع شود." };
+  if (url.protocol !== "https:") return { ok: false, why: t("آدرس باید با https شروع شود.") };
   if (inExtension) {
     const granted = await chrome.permissions
       .request({ origins: [`${url.origin}/*`] })
       .catch(() => false);
-    if (!granted) return { ok: false, why: "بدون اجازه‌ی خواندن از این سایت نمی‌شود." };
+    if (!granted) return { ok: false, why: t("بدون اجازه‌ی خواندن از این سایت نمی‌شود.") };
   }
   const xml = await fetchText(url.href);
-  if (xml === null) return { ok: false, why: "به این آدرس نرسیدم." };
-  if (!/<item\b/i.test(xml)) return { ok: false, why: "این آدرس فید RSS نیست." };
+  if (xml === null) return { ok: false, why: t("به این آدرس نرسیدم.") };
+  if (!/<item\b/i.test(xml)) return { ok: false, why: t("این آدرس فید RSS نیست.") };
   return {
     ok: true,
     source: {

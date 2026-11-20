@@ -1,26 +1,31 @@
 import { useSettings } from "../hooks";
-import { applyPersona, PERSONAS } from "../personas";
+import { t } from "../i18n";
+import { PERSONAS, togglePersona } from "../personas";
 
 /**
- * «کدام بیشتر شبیه توست؟»: one button per kind of work; picking one puts that work's folder of sites in
- * the quick-access row, picking it again takes the folder away.
+ * «کدام بیشتر شبیه توست؟»: one button per kind of work, as many picked as the person does; each one
+ * picked puts that work's folder of sites in the quick-access row, picking it again takes it away.
  */
 export function PersonaPicker() {
   const s = useSettings();
   return (
-    <div className="personas" role="group" aria-label="کدام بیشتر شبیه توست؟">
+    <div
+      className="personas"
+      role="group"
+      aria-label={t("کدام بیشتر شبیه توست؟ (چند تا هم می‌شود)")}
+    >
       {PERSONAS.map((p) => (
         <button
           key={p.id}
           type="button"
           className="persona"
-          aria-pressed={s.persona === p.id}
+          aria-pressed={s.personas.includes(p.id)}
           onClick={() => {
-            applyPersona(s.persona === p.id ? null : p.id);
+            togglePersona(p.id);
           }}
         >
-          <b>{p.name}</b>
-          <small>{p.hint}</small>
+          <b>{t(p.name)}</b>
+          <small>{t(p.hint)}</small>
         </button>
       ))}
     </div>

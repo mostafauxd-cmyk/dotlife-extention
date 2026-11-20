@@ -2,7 +2,8 @@ import { Fragment, useState } from "react";
 
 import { localNow } from "@dotlife/tasks";
 
-import { AD_LABEL, useAd } from "../ads";
+import { adLabel, useAd } from "../ads";
+import { lang, t } from "../i18n";
 
 import {
   BADGE,
@@ -28,8 +29,8 @@ const DN = "#f0817a";
 
 const clockOf = (iso: string | null, persian = true): string => {
   if (iso === null) return "";
-  const t = localNow(TIME_ZONE, new Date(iso)).time;
-  return persian ? fa(t) : t;
+  const hm = localNow(TIME_ZONE, new Date(iso)).time;
+  return persian ? fa(hm) : hm;
 };
 
 /**
@@ -40,7 +41,7 @@ function Delta({ pct, latin = false }: { pct: number; latin?: boolean }) {
   const n = Math.abs(pct).toFixed(2);
   return (
     <>
-      {latin ? `${n}%` : `${fa(n).replace(".", "٫")}٪`}
+      {latin || lang() !== "fa" ? `${n}%` : `${fa(n).replace(".", "٫")}٪`}
       <i className="ar" aria-hidden="true">
         {pct >= 0 ? "▲" : "▼"}
       </i>
@@ -68,24 +69,24 @@ function Badge({ id, small }: { id: string; small?: boolean }) {
 
 // ---- the strip ----
 
-function TickerCell({ t }: { t: TickerItem }) {
+function TickerCell({ t: it }: { t: TickerItem }) {
   return (
-    <span className={t.live ? "tk-i" : "tk-i stale"}>
-      <Mark id={t.id} className="g" />
-      <span className="n">{t.name}</span>
+    <span className={it.live ? "tk-i" : "tk-i stale"}>
+      <Mark id={it.id} className="g" />
+      <span className="n">{t(it.name)}</span>
       <span className="v">
-        {t.unit === "USD" ? (
-          `$${usd(t.price)}`
+        {it.unit === "USD" ? (
+          `$${usd(it.price)}`
         ) : (
           <>
-            {Math.round(t.price).toLocaleString("en-US")}
-            <small>تومان</small>
+            {Math.round(it.price).toLocaleString("en-US")}
+            <small>{t("تومان")}</small>
           </>
         )}
       </span>
-      {t.changePct !== null && (
-        <span className={t.changePct >= 0 ? "c up" : "c dn"}>
-          <Delta pct={t.changePct} latin />
+      {it.changePct !== null && (
+        <span className={it.changePct >= 0 ? "c up" : "c dn"}>
+          <Delta pct={it.changePct} latin />
         </span>
       )}
     </span>
@@ -96,30 +97,30 @@ export function TickerStrip({ ticker }: { ticker: Ticker | null }) {
   const items = ticker?.items ?? [];
   const ad = useAd(10);
   return (
-    <div className="ticker" aria-label="قیمت جهانی و رمزارز">
+    <div className="ticker" aria-label={t("قیمت جهانی و رمزارز")}>
       <span className="tk-h">
         <i className={ticker?.live === true ? "" : "off"} />
-        جهانی و رمزارز
+        {t("جهانی و رمزارز")}
       </span>
       <div className="tk-vp">
         {items.length === 0 ? (
           <span className="tk-none">
-            {ticker === null ? "قیمت‌ها در راه است…" : "الان قیمتی در دسترس نیست."}
+            {ticker === null ? t("قیمت‌ها در راه است…") : t("الان قیمتی در دسترس نیست.")}
           </span>
         ) : (
           // the run is shown twice so it can slide round without a gap
           <div className="tk-track">
             {[0, 1].map((k) => (
               <span key={k} className="tk-run" aria-hidden={k === 1 ? true : undefined}>
-                {items.map((t, i) => (
-                  <Fragment key={t.id}>
-                    <TickerCell t={t} />
+                {items.map((x, i) => (
+                  <Fragment key={x.id}>
+                    <TickerCell t={x} />
                     {/* the partner's item sits among the symbols, after the fifth */}
                     {ad !== null && i === Math.min(4, items.length - 1) && (
                       <a className="tk-i ad" href={ad.url} target="_blank" rel="noreferrer">
                         <b>{ad.title}</b>
                         {ad.line}
-                        <span className="tag">{AD_LABEL}</span>
+                        <span className="tag">{adLabel()}</span>
                       </a>
                     )}
                   </Fragment>
@@ -131,7 +132,7 @@ export function TickerStrip({ ticker }: { ticker: Ticker | null }) {
       </div>
       <span className="tk-src">
         {ticker?.lastUpdated !== undefined && ticker.lastUpdated !== null
-          ? `به‌روز شده ${clockOf(ticker.lastUpdated, false)}`
+          ? t("به‌روز شده {time}", { time: clockOf(ticker.lastUpdated, false) })
           : ""}
       </span>
     </div>
@@ -168,10 +169,10 @@ function PriceChart({
   const back = hover === null ? 0 : vals.length - 1 - hover;
   const when =
     back === 0
-      ? "الان"
+      ? t("الان")
       : stepDays === 7
-        ? `${fa(back)} هفته پیش`
-        : `${fa(back * stepDays)} روز پیش`;
+        ? t("{n} هفته پیش", { n: fa(back) })
+        : t("{n} روز پیش", { n: fa(back * stepDays) });
   return (
     <div className="chart">
       <svg
@@ -250,10 +251,10 @@ function Row({
       <Badge id={it.id} small />
       <span className="nm2">
         <b>
-          {it.name}
+          {t(it.name)}
           <i className={it.live ? "live-dot" : "live-dot off"} />
         </b>
-        <small>{it.sub}</small>
+        <small>{t(it.sub)}</small>
       </span>
       <Spark vals={series} up={up} />
       <span className="pv">
@@ -322,11 +323,11 @@ export function MarketCard({
   return (
     <div className="card g mc mkt">
       <div className="mh">
-        <h2>قیمت روز</h2>
+        <h2>{t("قیمت روز")}</h2>
         {cur !== undefined && (
           <span className={cur.live ? "live" : "live off"}>
             <i />
-            {cur.live ? "زنده" : "آخرین قیمت"} · {clockOf(cur.asOf)}
+            {cur.live ? t("زنده") : t("آخرین قیمت")} · {clockOf(cur.asOf)}
           </span>
         )}
       </div>
@@ -334,42 +335,42 @@ export function MarketCard({
         <p className="none">
           {prices === null
             ? offline
-              ? "به پاکت وصل نشد؛ کمی بعد دوباره امتحان می‌کنم."
-              : "قیمت‌ها در راه است…"
-            : "الان قیمتی در دسترس نیست."}
+              ? t("به پاکت وصل نشد؛ کمی بعد دوباره امتحان می‌کنم.")
+              : t("قیمت‌ها در راه است…")
+            : t("الان قیمتی در دسترس نیست.")}
         </p>
       ) : (
         <>
           <div className="pxtop">
             <Badge id={cur.id} />
             <span className="nm2">
-              <b>{cur.name}</b>
-              <small>{cur.sub}</small>
+              <b>{t(cur.name)}</b>
+              <small>{t(cur.sub)}</small>
             </span>
             <Tabs
-              label="دوره‌ی نمودار"
+              label={t("دوره‌ی نمودار")}
               size="sm"
               value={period}
               onChange={setPeriod}
-              items={PERIODS.map(([id, label]) => ({ id, label }))}
+              items={PERIODS.map(([id, label]) => ({ id, label: t(label) }))}
             />
           </div>
           <div className="pxv">
             <b className="hn">{toman(String(Math.round(cur.price)))}</b>
-            <small>تومان</small>
+            <small>{t("تومان")}</small>
             {span !== null && (
               <span className={span >= 0 ? "pill up" : "pill dn"}>
-                <Delta pct={span} /> {PERIODS.find(([p]) => p === period)?.[2]}
+                <Delta pct={span} /> {t(PERIODS.find(([p]) => p === period)?.[2] ?? "")}
               </span>
             )}
           </div>
           <PriceChart
             vals={vals ?? []}
             stepDays={prices?.history?.stepDays ?? 1}
-            label={`نمودار ${cur.name}`}
+            label={t("نمودار {name}", { name: t(cur.name) })}
           />
           <Tabs
-            label="گروه قیمت"
+            label={t("گروه قیمت")}
             size="sm"
             block
             line
@@ -384,8 +385,8 @@ export function MarketCard({
               setSel(null);
             }}
             items={[
-              ...groups.map(([id, label]) => ({ id, label })),
-              { id: "mine" as const, label: "دارایی‌های من" },
+              ...groups.map(([id, label]) => ({ id, label: t(label) })),
+              { id: "mine" as const, label: t("دارایی‌های من") },
             ]}
           />
           <div className="plist">
@@ -429,7 +430,7 @@ function SponsoredRow() {
       <span className="nm2">
         <b>
           {ad.title}
-          <span className="tag">{AD_LABEL}</span>
+          <span className="tag">{adLabel()}</span>
         </b>
         <small>{ad.line}</small>
       </span>
@@ -453,13 +454,16 @@ function SponsoredRow() {
 function PortfolioInvite({ onClose }: { onClose: () => void }) {
   return (
     <PaketPairModal
-      title="دارایی‌هایت را هم همین‌جا ببین"
-      lead="پاکت را به این صفحه وصل کن تا دارایی‌هایت (طلا، سکه، ارز) را با قیمت روز و تغییر امروزشان همین‌جا ببینی. فقط خواندنی است؛ از این‌جا چیزی در پاکت عوض نمی‌شود."
+      title={t("دارایی‌هایت را هم همین‌جا ببین")}
+      lead={t(
+        "پاکت را به این صفحه وصل کن تا دارایی‌هایت (طلا، سکه، ارز) را با قیمت روز و تغییر امروزشان همین‌جا ببینی. فقط خواندنی است؛ از این‌جا چیزی در پاکت عوض نمی‌شود.",
+      )}
       linked={
         <div className="pf-body">
           <p>
-            هنوز دارایی‌ای در پاکت ثبت نشده. طلا، سکه یا ارزی که داری را آن‌جا بنویس؛ این‌جا هر لحظه
-            با قیمت روز ارزش‌شان و تغییر امروزشان را می‌بینی.
+            {t(
+              "هنوز دارایی‌ای در پاکت ثبت نشده. طلا، سکه یا ارزی که داری را آن‌جا بنویس؛ این‌جا هر لحظه با قیمت روز ارزش‌شان و تغییر امروزشان را می‌بینی.",
+            )}
           </p>
           <a
             className="cta"
@@ -467,7 +471,7 @@ function PortfolioInvite({ onClose }: { onClose: () => void }) {
             target="_blank"
             rel="noreferrer"
           >
-            باز کردن پاکت
+            {t("باز کردن پاکت")}
           </a>
         </div>
       }

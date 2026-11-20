@@ -3,8 +3,9 @@ import { useEffect, useRef, useState } from "react";
 import { fromJdn, monthName } from "@dotlife/calendar-core";
 import { dateToJdn, localNow } from "@dotlife/tasks";
 
-import { AD_LABEL, useAd } from "../ads";
+import { adLabel, useAd } from "../ads";
 import { useSettings } from "../hooks";
+import { isRtl, t } from "../i18n";
 import { useMarket, type Period } from "../market";
 import { TIME_ZONE } from "../noghte/model";
 import { paketCategory } from "../paketCategories";
@@ -33,16 +34,19 @@ import { PaketSync } from "./PaketSync";
 
 const solarDay = (iso: string): string => {
   const s = fromJdn(dateToJdn(iso.slice(0, 10)), "solar-hijri");
-  return fa(`${String(s.day)} ${monthName(s)}`);
+  return fa(`${String(s.day)} ${t(monthName(s))}`);
 };
 
 /** «۲٫۹م» for a big amount in a small place. */
 const compact = (minor: string): string => {
   const n = Number(minor);
   if (Math.abs(n) >= 1e6)
-    return `${fa((n / 1e6).toFixed(1).replace(/\.0$/, "")).replace(".", "٫")}م`;
+    return t("{n}م", { n: fa((n / 1e6).toFixed(1).replace(/\.0$/, "").replace(".", "٫")) });
   return toman(minor);
 };
+
+/** The «←» after a link's words, pointing the way the page reads. */
+const arrow = (): string => (isRtl() ? "←" : "→");
 
 /** Where a card's «← …» link goes: Paket's own site, marked with where it was clicked. */
 const paketLink = (place: string): string => `https://paket.life/?src=chrome&c=money-${place}`;
@@ -54,9 +58,9 @@ function More({ place, children }: { place: string; children: string }) {
       href={paketLink(place)}
       target="_blank"
       rel="noreferrer"
-      title="باز کردن در پاکت"
+      title={t("باز کردن در پاکت")}
     >
-      {children} ←
+      {t(children)} {arrow()}
     </a>
   );
 }
@@ -100,7 +104,7 @@ export function MoneySlide() {
           {data !== null && (
             <span className="msrc">
               <i className={error === null ? "" : "off"} />
-              {error === null ? "از پاکت" : "آخرین خلاصه‌ی پاکت"} ·{" "}
+              {error === null ? t("از پاکت") : t("آخرین خلاصه‌ی پاکت")} ·{" "}
               {fa(localNow(TIME_ZONE, new Date(data.generatedAt)).time)}
             </span>
           )}
@@ -112,10 +116,10 @@ export function MoneySlide() {
               updateSettings({ hideMoney: !hide });
             }}
           >
-            {hide ? "نمایش مبالغ" : "پنهان کردن مبالغ"}
+            {hide ? t("نمایش مبالغ") : t("پنهان کردن مبالغ")}
           </button>
           <button type="button" className="chip" onClick={() => void unlinkPaket()}>
-            قطع اتصال
+            {t("قطع اتصال")}
           </button>
         </div>
       )}
@@ -128,8 +132,8 @@ export function MoneySlide() {
         <div className="card g pk-wait">
           <p>
             {error === null
-              ? "خلاصه‌ی پاکت در راه است…"
-              : "خلاصه‌ی پاکت نرسید؛ کمی بعد دوباره امتحان می‌کنم."}
+              ? t("خلاصه‌ی پاکت در راه است…")
+              : t("خلاصه‌ی پاکت نرسید؛ کمی بعد دوباره امتحان می‌کنم.")}
           </p>
         </div>
       ) : (
@@ -164,7 +168,7 @@ function PaketCards({ data, hide }: { data: Snapshot; hide: boolean }) {
               dueDate: o.nextDueDate,
               amountMinor: o.amountMinor,
               currencyCode: o.currencyCode,
-              categoryName: o.kind === "claim" ? "طلب" : "قسط",
+              categoryName: o.kind === "claim" ? t("طلب") : t("قسط"),
               categoryIcon: null,
               categoryColor: o.kind === "claim" ? "#8add88" : "#5ab0ff",
             },
@@ -178,30 +182,32 @@ function PaketCards({ data, hide }: { data: Snapshot; hide: boolean }) {
     <>
       <div className="card g mc">
         <div className="mh">
-          <h2>موجودی</h2>
+          <h2>{t("موجودی")}</h2>
           <More place="accounts">حساب‌ها</More>
         </div>
         <div className="stats">
           <div>
-            <span className="sl2">جمع {fa(data.balance.accountCount)} حساب</span>
+            <span className="sl2">{t("جمع {n} حساب", { n: fa(data.balance.accountCount) })}</span>
             <b className="hn">
               {hide ? "••••" : total.value}
               <small>{hide ? "" : total.unit}</small>
             </b>
             {change !== null && (
               <span className={change >= 0 ? "pill up" : "pill dn"}>
-                {change >= 0 ? "↑" : "↓"} {fa(Math.abs(change).toFixed(1)).replace(".", "٫")}٪ این
-                ماه
+                {change >= 0 ? "↑" : "↓"}{" "}
+                {t("{pct}٪ این ماه", { pct: fa(Math.abs(change).toFixed(1).replace(".", "٫")) })}
               </span>
             )}
           </div>
           <div>
-            <span className="sl2">بدهی و طلب</span>
+            <span className="sl2">{t("بدهی و طلب")}</span>
             <b className="hn">
               {hide ? "••••" : `${net.startsWith("-") ? "−" : "+"}${netShort.value}`}
               <small>{hide ? "" : netShort.unit}</small>
             </b>
-            <span className="pill mut">{fa(data.obligations.openCount)} مورد باز</span>
+            <span className="pill mut">
+              {t("{n} مورد باز", { n: fa(data.obligations.openCount) })}
+            </span>
           </div>
         </div>
         <div className="rows">
@@ -220,12 +226,12 @@ function PaketCards({ data, hide }: { data: Snapshot; hide: boolean }) {
         </div>
 
         <div className="mh sub2">
-          <h3>۱۴ روز آینده</h3>
+          <h3>{t("{n} روز آینده", { n: fa(14) })}</h3>
           <More place="upcoming">خرج‌های پیش رو</More>
         </div>
         <div className="rows">
           {soon.length === 0 ? (
-            <p className="none">در دو هفته‌ی آینده قبض یا قسطی ثبت نشده.</p>
+            <p className="none">{t("در دو هفته‌ی آینده قبض یا قسطی ثبت نشده.")}</p>
           ) : (
             soon.map((u) => (
               <div key={u.id} className="rw up2">
@@ -250,13 +256,13 @@ function PaketCards({ data, hide }: { data: Snapshot; hide: boolean }) {
         {data.obligations.items.length > 0 && (
           <>
             <div className="mh sub2">
-              <h3>بدهی و طلب</h3>
+              <h3>{t("بدهی و طلب")}</h3>
             </div>
             <div className="rows">
               {data.obligations.items.map((o) => (
                 <div key={o.id} className="rw ob">
                   <span className={o.kind === "claim" ? "tg in" : "tg"}>
-                    {o.kind === "claim" ? "طلب" : "بدهی"}
+                    {o.kind === "claim" ? t("طلب") : t("بدهی")}
                   </span>
                   <span className="nm">
                     {o.title}
@@ -271,7 +277,7 @@ function PaketCards({ data, hide }: { data: Snapshot; hide: boolean }) {
 
         {data.pendingApprovals.count > 0 && (
           <div className="pend">
-            <b>{fa(data.pendingApprovals.count)}</b> پیامک بانکی منتظر تأیید در پاکت
+            <b>{fa(data.pendingApprovals.count)}</b> {t("پیامک بانکی منتظر تأیید در پاکت")}
           </div>
         )}
       </div>
@@ -279,11 +285,13 @@ function PaketCards({ data, hide }: { data: Snapshot; hide: boolean }) {
       <div className="card g mc">
         <Spending data={data} hide={hide} />
         <div className="mh sub2">
-          <h3>دسته‌های پرخرج</h3>
+          <h3>{t("دسته‌های پرخرج")}</h3>
           <More place="budgets">بودجه‌ها</More>
         </div>
         <div className="rows">
-          {data.categories.length === 0 && <p className="none">هنوز خرجی در این ماه ثبت نشده.</p>}
+          {data.categories.length === 0 && (
+            <p className="none">{t("هنوز خرجی در این ماه ثبت نشده.")}</p>
+          )}
           {data.categories.map((c) => {
             const spent = Number(c.spentMinor);
             const limit = c.limitMinor === null ? null : Number(c.limitMinor);
@@ -292,11 +300,11 @@ function PaketCards({ data, hide }: { data: Snapshot; hide: boolean }) {
             return (
               <div key={c.id} className="rw cat2">
                 <CategoryMark art={cat.art} color={c.color} />
-                <span className="nm" title={c.children?.map((k) => k.name).join("، ")}>
+                <span className="nm" title={c.children?.map((k) => k.name).join(t("، "))}>
                   {cat.name}
                   {/* its subcategories, biggest first; their spending is already in the figure */}
                   {c.children !== undefined && c.children.length > 0 && (
-                    <small>{c.children.map((k) => k.name).join("، ")}</small>
+                    <small>{c.children.map((k) => k.name).join(t("، "))}</small>
                   )}
                 </span>
                 <span className="am">{hide ? "••••" : compact(c.spentMinor)}</span>
@@ -319,22 +327,22 @@ function PaketCards({ data, hide }: { data: Snapshot; hide: boolean }) {
         </div>
 
         <div className="mh sub2">
-          <h3>آخرین تراکنش‌ها</h3>
+          <h3>{t("آخرین تراکنش‌ها")}</h3>
         </div>
         <div className="rows tx">
-          {data.transactions.slice(0, 6).map((t) => (
-            <div key={t.id} className="rw">
+          {data.transactions.slice(0, 6).map((tx) => (
+            <div key={tx.id} className="rw">
               <span className="dt">
-                {solarDay(localNow(TIME_ZONE, new Date(t.occurredAt)).date)}
+                {solarDay(localNow(TIME_ZONE, new Date(tx.occurredAt)).date)}
               </span>
-              <span className="nm">{t.title}</span>
-              <span className={t.direction === "credit" ? "am in" : "am"}>
-                {t.direction === "credit" ? "+" : ""}
-                {amt(t.amountMinor)}
+              <span className="nm">{tx.title}</span>
+              <span className={tx.direction === "credit" ? "am in" : "am"}>
+                {tx.direction === "credit" ? "+" : ""}
+                {amt(tx.amountMinor)}
               </span>
             </div>
           ))}
-          {data.transactions.length === 0 && <p className="none">هنوز تراکنشی نیست.</p>}
+          {data.transactions.length === 0 && <p className="none">{t("هنوز تراکنشی نیست.")}</p>}
         </div>
       </div>
     </>
@@ -366,7 +374,10 @@ function firstLetter(name: string): string {
 function Spending({ data, hide }: { data: Snapshot; hide: boolean }) {
   const b = data.budget;
   const spent = data.monthTotals.expenseMinor;
-  const title = data.month.monthName === "" ? "خرج این ماه" : `خرج ${data.month.monthName}`;
+  const title =
+    data.month.monthName === ""
+      ? t("خرج این ماه")
+      : t("خرج {month}", { month: t(data.month.monthName) });
   const limit = b?.limitMinor === undefined || b.limitMinor === null ? null : Number(b.limitMinor);
   const left = b?.remainingPerDayMinor ?? null;
   return (
@@ -378,15 +389,21 @@ function Spending({ data, hide }: { data: Snapshot; hide: boolean }) {
       <div className="hero2">
         <b className="hn big">
           {hide ? "••••" : toman(spent)}
-          <small>تومان</small>
+          <small>{t("تومان")}</small>
         </b>
         {b !== null && !hide && (
           <span className="sl2">
             {limit !== null &&
               (Number(b.spentMinor) > limit
-                ? `${toman(String(Number(b.spentMinor) - limit))} از سقف بودجه زدی بالا`
-                : `${toman(String(limit - Number(b.spentMinor)))} تا سقف بودجه مونده`)}
-            {left !== null && !left.startsWith("-") && ` · روزی ${toman(left)} می‌تونی خرج کنی`}
+                ? t("{amount} از سقف بودجه زدی بالا", {
+                    amount: toman(String(Number(b.spentMinor) - limit)),
+                  })
+                : t("{amount} تا سقف بودجه مونده", {
+                    amount: toman(String(limit - Number(b.spentMinor))),
+                  }))}
+            {left !== null &&
+              !left.startsWith("-") &&
+              ` · ${t("روزی {amount} می‌تونی خرج کنی", { amount: toman(left) })}`}
           </span>
         )}
       </div>
@@ -426,7 +443,7 @@ function SpendChart({ data, hide }: { data: Snapshot; hide: boolean }) {
     .join(" ");
   const lastDay = cum.length;
   const lastV = cum.at(-1) ?? 0;
-  const mname = data.month.monthName;
+  const mname = t(data.month.monthName);
   const endsAt = limit !== null || forecast !== null;
   return (
     <div className="chart spend">
@@ -434,15 +451,17 @@ function SpendChart({ data, hide }: { data: Snapshot; hide: boolean }) {
         <span className="legend">
           {forecast !== null && (
             <span className="lg-f">
-              پیش‌بینی آخر ماه {hide ? "••••" : compact(String(forecast))}
+              {t("پیش‌بینی آخر ماه")} {hide ? "••••" : compact(String(forecast))}
             </span>
           )}
           {limit !== null && (
-            <span className="lg-l">سقف بودجه {hide ? "••••" : compact(String(limit))}</span>
+            <span className="lg-l">
+              {t("سقف بودجه")} {hide ? "••••" : compact(String(limit))}
+            </span>
           )}
         </span>
       )}
-      <svg viewBox={`0 0 ${String(CW)} ${String(CH)}`} role="img" aria-label="خرج تجمعی ماه">
+      <svg viewBox={`0 0 ${String(CW)} ${String(CH)}`} role="img" aria-label={t("خرج تجمعی ماه")}>
         <defs>
           <linearGradient id="spg" x1="0" x2="0" y1="0" y2="1">
             <stop offset="0" stopColor="#8add88" stopOpacity=".28" />
@@ -530,7 +549,7 @@ function News({ items }: { items: ReturnType<typeof usePaketNews> }) {
   return (
     <div className="card g news">
       <div className="card-h">
-        <h2>خبر و پیشنهاد</h2>
+        <h2>{t("خبر و پیشنهاد")}</h2>
         <More place="news">همه‌ی خبرها</More>
       </div>
       <div className="ncards">
@@ -539,12 +558,16 @@ function News({ items }: { items: ReturnType<typeof usePaketNews> }) {
           return (
             <a key={n.id} className="ncard" href={n.ctaUrl ?? "#"} target="_blank" rel="noreferrer">
               <span className="kh">
-                <span className={`kind ${tone}`}>{kind}</span>
+                <span className={`kind ${tone}`}>{t(kind)}</span>
                 {n.pinned === true && <Icon name="pin" className="pn" />}
               </span>
               <b>{n.title}</b>
               <span className="nf">
-                {n.ctaLabel !== null && <em>{n.ctaLabel} ←</em>}
+                {n.ctaLabel !== null && (
+                  <em>
+                    {n.ctaLabel} {arrow()}
+                  </em>
+                )}
                 <small>{ago(n.publishedAt)}</small>
               </span>
             </a>
@@ -553,11 +576,15 @@ function News({ items }: { items: ReturnType<typeof usePaketNews> }) {
         {ad !== null && (
           <a className="ncard adcard" href={ad.url} target="_blank" rel="noreferrer">
             <span className="kh">
-              <span className="kind ad">{AD_LABEL}</span>
+              <span className="kind ad">{adLabel()}</span>
             </span>
             <b>{ad.title}</b>
             <span className="nf">
-              {ad.cta !== undefined && <em>{ad.cta} ←</em>}
+              {ad.cta !== undefined && (
+                <em>
+                  {ad.cta} {arrow()}
+                </em>
+              )}
               {ad.line !== undefined && <small>{ad.line}</small>}
             </span>
           </a>

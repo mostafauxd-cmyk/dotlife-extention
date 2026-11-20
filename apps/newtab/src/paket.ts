@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 
+import { t } from "./i18n";
 import { installId } from "./install";
 import { load, remove, save } from "./platform";
+import { fa } from "./ui/fa";
 
 /**
  * پاکت (the person's money app) for the money slide. Paket has its own accounts, so the two meet the
@@ -147,9 +149,20 @@ const changed = (): void => {
   for (const l of listeners) l();
 };
 
+/**
+ * The dev page's made-up data (`?paket=full|empty`, `paketSeed.ts`): linked, and never asks Paket.
+ * Read only behind `import.meta.env.DEV`, so the store build carries none of it.
+ */
+let SEED: { snapshot: Snapshot; news: NewsItem[] } | null = null;
+
 export async function loadPaket(): Promise<void> {
+  if (import.meta.env.DEV) {
+    const m = await import("./paketSeed");
+    const kind = m.seedKind();
+    if (kind !== null) SEED = { snapshot: m.seedSnapshot(kind), news: m.seedNews(kind) };
+  }
   stored = (await load<Stored>(KEY)) ?? null;
-  linked = stored !== null;
+  linked = SEED !== null || stored !== null;
   changed();
 }
 
@@ -360,6 +373,11 @@ export function useSnapshot(active = true): { data: Snapshot | null; error: stri
   const [data, setData] = useState<Snapshot | null>(null);
   const [error, setError] = useState<string | null>(null);
   useEffect(() => {
+    if (SEED !== null) {
+      setData(SEED.snapshot);
+      setError(null);
+      return;
+    }
     if (!on) {
       lastPull = null;
       setData(null);
@@ -407,6 +425,10 @@ let newsOnce: Promise<NewsItem[]> | null = null;
 export function usePaketNews(): NewsItem[] {
   const [items, setItems] = useState<NewsItem[]>([]);
   useEffect(() => {
+    if (SEED !== null) {
+      setItems(SEED.news);
+      return;
+    }
     newsOnce ??= paketNews().catch((e: unknown) => {
       newsOnce = null;
       throw e;
@@ -423,18 +445,17 @@ export function toman(minor: string): string {
   const neg = minor.startsWith("-");
   const digits = neg ? minor.slice(1) : minor;
   const grouped = digits.replace(/\B(?=(\d{3})+(?!\d))/g, "٬");
-  return (neg ? "−" : "") + grouped.replace(/\d/g, (d) => "۰۱۲۳۴۵۶۷۸۹"[Number(d)] ?? d);
+  return (neg ? "−" : "") + fa(grouped);
 }
 
 /** «۱۸۴٫۶ م» for big totals. */
 export function shortToman(minor: string): { value: string; unit: string } {
   const n = Number(minor);
   const abs = Math.abs(n);
-  const fa = (x: string): string =>
-    x.replace(/\d/g, (d) => "۰۱۲۳۴۵۶۷۸۹"[Number(d)] ?? d).replace(".", "٫");
-  if (abs >= 1e9) return { value: fa((n / 1e9).toFixed(1)), unit: "میلیارد" };
-  if (abs >= 1e6) return { value: fa((n / 1e6).toFixed(1)), unit: "م" };
-  return { value: toman(minor), unit: "تومان" };
+  const short = (x: string): string => fa(x.replace(".", "٫"));
+  if (abs >= 1e9) return { value: short((n / 1e9).toFixed(1)), unit: t("میلیارد") };
+  if (abs >= 1e6) return { value: short((n / 1e6).toFixed(1)), unit: t("م") };
+  return { value: toman(minor), unit: t("تومان") };
 }
 
 // ---- the code from the phone ----

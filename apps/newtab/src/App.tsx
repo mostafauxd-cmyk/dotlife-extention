@@ -15,10 +15,12 @@ import { SearchBox } from "./home/SearchBox";
 import { SignIn } from "./home/SignIn";
 import { NewCategoryHost } from "./home/NewCategory";
 import { PaketPairHost } from "./home/PaketPair";
+import { UpdateNotice } from "./home/UpdateNotice";
 import { SyncAvatar } from "./home/SyncAvatar";
 import { PaketLogo } from "./home/PaketSync";
 import { TaskEditorHost } from "./home/TaskEditor";
 import { useSession, useSettings } from "./hooks";
+import { t } from "./i18n";
 import { onArrival } from "./noghte/sync";
 import { isOn, orderedSlides, SLIDES, themeOf, updateSettings, type SlideId } from "./settings";
 import type { IconName } from "./ui/icons";
@@ -85,18 +87,18 @@ export function App() {
         const notes = changes
           .filter((c) => c.entity === "note" && c.data !== null)
           .map((c) => c.id);
-        if (tasks.length > 0) peek("tasks", "از گوشی · همین حالا", new Set(tasks));
-        if (notes.length > 0) peek("notes", "از گوشی · همین حالا", new Set(notes));
+        if (tasks.length > 0) peek("tasks", t("از گوشی · همین حالا"), new Set(tasks));
+        if (notes.length > 0) peek("notes", t("از گوشی · همین حالا"), new Set(notes));
       }),
     [s],
   );
 
   const saved = (kind: "task" | "note"): void => {
-    setToast("ذخیره شد · روی گوشی هم هست");
+    setToast(t("ذخیره شد · روی گوشی هم هست"));
     setTimeout(() => {
       setToast(null);
     }, 2200);
-    peek(kind === "task" ? "tasks" : "notes", "از سرچ · همین حالا", new Set());
+    peek(kind === "task" ? "tasks" : "notes", t("از سرچ · همین حالا"), new Set());
   };
 
   const signedIn = session !== null;
@@ -108,12 +110,12 @@ export function App() {
   // the first new tab after installing: what an account gives, once the page has drawn itself
   useEffect(() => {
     if (signedIn || s.welcomed) return;
-    const t = setTimeout(() => {
+    const timer = setTimeout(() => {
       updateSettings({ welcomed: true });
       setSignIn("hello");
     }, 900);
     return () => {
-      clearTimeout(t);
+      clearTimeout(timer);
     };
   }, []); // only on opening the tab
   const cls = ["nt", entering ? "enter" : "", hinting ? "hinting" : ""].filter(Boolean).join(" ");
@@ -134,11 +136,11 @@ export function App() {
   };
   const shownSlides = orderedSlides(s).filter((id) => isOn(s, id) && SLIDE_UI[id] !== undefined);
   const slides: SlideInfo[] = [
-    { id: "s-home", icon: "home", name: "خانه" },
+    { id: "s-home", icon: "home", name: t("خانه") },
     ...shownSlides.map((id) => ({
       id,
       icon: SLIDE_UI[id]?.icon ?? "home",
-      name: SLIDES.find(([x]) => x === id)?.[1] ?? "",
+      name: t(SLIDES.find(([x]) => x === id)?.[1] ?? ""),
     })),
   ];
   const empty = new Set<string>();
@@ -168,7 +170,7 @@ export function App() {
 
       {/* the slides, one screen each, snapping into place as you scroll; the home is always first */}
       <div className="slides" ref={scroller}>
-        <section className="slide" id="s-home" aria-label="خانه">
+        <section className="slide" id="s-home" aria-label={t("خانه")}>
           <main className="hero">
             <Dot drawAfter={entering ? 0 : null} />
             <SearchBox traceAfter={entering ? 350 : null} onSaved={saved} />
@@ -180,7 +182,7 @@ export function App() {
             <Corner
               pos="tr"
               icon="tick-square"
-              label="کارها"
+              label={t("کارها")}
               pinned={pinned}
               peek={peeks.tasks}
               dot={dots.tasks}
@@ -196,7 +198,7 @@ export function App() {
             <Corner
               pos="tl"
               icon="sticker-note"
-              label="یادداشت‌ها"
+              label={t("یادداشت‌ها")}
               pinned={pinned}
               peek={peeks.notes}
               dot={dots.notes}
@@ -212,7 +214,7 @@ export function App() {
             <Corner
               pos="bl"
               icon="calendar-face"
-              label="امروز"
+              label={t("امروز")}
               pinned={pinned}
               peek={null}
               dot={false}
@@ -226,7 +228,7 @@ export function App() {
               pos="br"
               icon="activity"
               mark={<PaketLogo size={22} />}
-              label="پاکت"
+              label={t("پاکت")}
               pinned={pinned}
               peek={null}
               dot={false}
@@ -279,7 +281,7 @@ export function App() {
           onClose={(created) => {
             setSignIn(null);
             if (created) {
-              setToast("حساب نقطه‌ات ساخته شد");
+              setToast(t("حساب نقطه‌ات ساخته شد"));
               setTimeout(() => {
                 setToast(null);
               }, 3200);
@@ -290,6 +292,7 @@ export function App() {
       <TaskEditorHost />
       <NewCategoryHost />
       <PaketPairHost />
+      <UpdateNotice />
       {toast !== null && <div className="toast">{toast}</div>}
     </div>
   );

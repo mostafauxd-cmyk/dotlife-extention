@@ -16,6 +16,7 @@ import {
 } from "@dotlife/prayer-times";
 import { dateToJdn, localNow, parseLocalDate } from "@dotlife/tasks";
 
+import { t } from "./i18n";
 import { TIME_ZONE } from "./noghte/model";
 import { fa } from "./ui/fa";
 
@@ -91,21 +92,21 @@ export function todayInfo(now: Date = new Date()): Today {
   const [h, m] = local.time.split(":").map(Number) as [number, number];
   const next = nextPrayer(times, h * 60 + m, ["fajr", "sunrise", "dhuhr", "maghrib", "midnight"]);
   return {
-    weekday: WEEKDAY_NAMES_FA[weekdayOfJdn(jdn)] ?? "",
-    solar: fa(`${String(solar.day)} ${monthName(solar)} ${String(solar.year)}`),
-    dayMonth: fa(`${String(solar.day)} ${monthName(solar)}`),
-    gregorian: fa(`${String(greg.day)} ${monthName(greg)} ${String(greg.year)}`),
-    hijri: fa(`${String(hijri.day)} ${monthName(hijri)} ${String(hijri.year)}`),
+    weekday: t(WEEKDAY_NAMES_FA[weekdayOfJdn(jdn)] ?? ""),
+    solar: fa(`${String(solar.day)} ${t(monthName(solar))} ${String(solar.year)}`),
+    dayMonth: fa(`${String(solar.day)} ${t(monthName(solar))}`),
+    gregorian: fa(`${String(greg.day)} ${t(monthName(greg))} ${String(greg.year)}`),
+    hijri: fa(`${String(hijri.day)} ${t(monthName(hijri))} ${String(hijri.year)}`),
     occasions,
     holiday: occasions.some((o) => o.event.holiday),
     next:
       next === null
         ? null
         : {
-            name: PRAYER_NAMES_FA[next.name],
+            name: t(PRAYER_NAMES_FA[next.name]),
             time: fa(formatMinutes(next.minutes)),
             inMinutes: next.remainingMinutes,
           },
-    place: PLACE.name,
+    place: t(PLACE.name),
   };
 }

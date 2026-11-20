@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 
+import { t } from "./i18n";
 import { inExtension, load, remove, save } from "./platform";
 
 /**
@@ -185,7 +186,7 @@ export async function listCalendars(): Promise<GCalendar[]> {
     .filter((c) => c.selected !== false || c.primary === true)
     .map((c) => ({
       id: c.id,
-      name: c.summaryOverride ?? (c.primary === true ? "شخصی" : c.summary),
+      name: c.summaryOverride ?? (c.primary === true ? t("شخصی") : c.summary),
       color: c.backgroundColor ?? "#5AB0FF",
       writable: c.accessRole === "owner" || c.accessRole === "writer",
       primary: c.primary === true,
@@ -231,7 +232,7 @@ const toEvent = (calendarId: string, e: RawEvent): GEvent | null => {
     key: `${calendarId}/${e.id}`,
     calendarId,
     id: e.id,
-    title: e.summary ?? "(بدون عنوان)",
+    title: e.summary ?? t("(بدون عنوان)"),
     description,
     location: e.location ?? "",
     start: (allDay ? e.start.date : e.start.dateTime) ?? "",

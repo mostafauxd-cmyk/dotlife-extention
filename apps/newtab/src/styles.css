@@ -41,6 +41,24 @@
 
 :root {
   color-scheme: dark;
+  /* the type scale: every text size and weight in the page is one of these roles, never a raw value */
+  --fs-caption: 12px; /* tags, units, the smallest notes */
+  --fs-footnote: 13px; /* dates, secondary lines, hints */
+  --fs-subhead: 14px; /* buttons, chips, compact rows */
+  --fs-body: 15px; /* rows and running text */
+  --fs-callout: 16px; /* emphasised body, list items in focus */
+  --fs-headline: 17px; /* card titles */
+  --fs-title3: 18px; /* section heads, small figures */
+  --fs-title2: 22px; /* sheet titles, mid figures */
+  --fs-title1: 26px; /* big figures */
+  --fs-large: 34px; /* the money and prices headline figures */
+  --fs-hero: 40px; /* the clock and the page's own headline */
+  --fw-light: 300;
+  --fw-regular: 400;
+  --fw-medium: 500;
+  /* nothing heavier than semibold (2026-11-20, the user: «از بولد استفاده نکن تا میشه رگیولار و…
+     نهایتا سمی بولد») */
+  --fw-semibold: 600;
   --ink: #f5f6f8;
   --ink-2: #a7a7a7;
   --ink-3: #6d6d6d;
@@ -84,7 +102,7 @@ body {
   background: #14161d;
   color: var(--ink);
   font-family: var(--font);
-  font-size: 17px;
+  font-size: var(--fs-headline);
   line-height: 1.8;
   -webkit-font-smoothing: antialiased;
   overflow: hidden;
@@ -222,7 +240,7 @@ svg {
   outline: 0;
   color: var(--ink);
   font: inherit;
-  font-size: 21px;
+  font-size: var(--fs-title2);
   line-height: 1.6;
   max-height: 150px;
   overflow-y: auto;
@@ -273,7 +291,7 @@ svg {
   flex: 1;
 }
 .act {
-  font-size: 15px;
+  font-size: var(--fs-body);
   height: 40px;
   padding: 0 14px 0 16px;
   border-radius: 999px;
@@ -300,7 +318,7 @@ svg {
   border-color: color-mix(in srgb, var(--tint) 55%, transparent);
 }
 .hintk {
-  font-size: 12px;
+  font-size: var(--fs-caption);
   color: var(--ink-3);
   margin-inline-end: 6px;
   opacity: 0;
@@ -377,7 +395,7 @@ svg {
   height: 46px;
   padding: 0 14px;
   border-radius: var(--row-r);
-  font-size: 17px;
+  font-size: var(--fs-headline);
   color: var(--ink-2);
   cursor: pointer;
 }
@@ -396,7 +414,7 @@ svg {
   text-overflow: ellipsis;
 }
 .sugg-list b {
-  font-weight: 600;
+  font-weight: var(--fw-semibold);
   color: var(--ink);
 }
 .qp-sec {
@@ -408,7 +426,7 @@ svg {
 .qp-k {
   flex: none;
   width: 30px;
-  font-size: 14px;
+  font-size: var(--fs-subhead);
   color: var(--ink-3);
 }
 .qp-sec .ts-seg {
@@ -425,8 +443,8 @@ svg {
 }
 .qp-h {
   padding: 2px 0 4px;
-  font-size: 13.5px;
-  font-weight: 600;
+  font-size: var(--fs-footnote);
+  font-weight: var(--fw-semibold);
   color: var(--ink-2);
 }
 .qrow {
@@ -471,20 +489,20 @@ svg {
   min-width: 0;
 }
 .qt b {
-  font-weight: 500;
-  font-size: 15.5px;
+  font-weight: var(--fw-medium);
+  font-size: var(--fs-body);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 .qt small {
-  font-size: 12.5px;
+  font-size: var(--fs-caption);
   color: var(--ink-3);
 }
 .qp-none {
   margin: 0;
   padding: 6px 0 8px;
-  font-size: 14px;
+  font-size: var(--fs-subhead);
   line-height: 1.8;
   color: var(--ink-3);
 }
@@ -615,8 +633,8 @@ svg {
   border-radius: 21px;
   display: grid;
   place-items: center;
-  font-weight: 700;
-  font-size: 22px;
+  font-weight: var(--fw-semibold);
+  font-size: var(--fs-title2);
   background: color-mix(in srgb, var(--bc) 15%, color-mix(in srgb, var(--bgc) 90%, #fff));
   border: 1px solid color-mix(in srgb, var(--bc) 26%, rgba(255, 255, 255, 0.1));
   transition:
@@ -634,8 +652,8 @@ svg {
   border-radius: 8px;
 }
 .lt .ic .letter {
-  font-size: 26px;
-  font-weight: 600;
+  font-size: var(--fs-title1);
+  font-weight: var(--fw-semibold);
   color: color-mix(in srgb, var(--tint) 70%, #fff);
 }
 .lt .ic .ico {
@@ -643,7 +661,7 @@ svg {
   height: 24px;
 }
 .lt .lb {
-  font-size: 13px;
+  font-size: var(--fs-footnote);
   color: var(--ink-2);
   max-width: 84px;
   white-space: nowrap;
@@ -688,7 +706,7 @@ svg {
   display: flex;
   align-items: center;
   gap: 12px;
-  font-size: 17px;
+  font-size: var(--fs-headline);
   color: var(--ink-2);
   flex-wrap: wrap;
   justify-content: center;
@@ -786,7 +804,7 @@ svg {
 }
 .cl {
   position: absolute;
-  font-size: 14px;
+  font-size: var(--fs-subhead);
   color: var(--ink-2);
   opacity: 0;
   transition: opacity 0.4s;
@@ -885,16 +903,16 @@ svg {
   display: flex;
   align-items: center;
   gap: 10px;
-  font-size: 19px;
-  font-weight: 600;
+  font-size: var(--fs-title3);
+  font-weight: var(--fw-semibold);
 }
 .sync {
   margin-inline-start: auto;
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 13px;
-  font-weight: 400;
+  font-size: var(--fs-footnote);
+  font-weight: var(--fw-regular);
   color: var(--ink-2);
 }
 .sync i {
@@ -923,7 +941,7 @@ svg {
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 13px;
+  font-size: var(--fs-footnote);
   color: color-mix(in srgb, var(--tint) 70%, #fff);
   margin-bottom: -4px;
   animation: fade 0.3s ease both;
@@ -962,7 +980,7 @@ svg {
 }
 .more {
   align-self: flex-start;
-  font-size: 15px;
+  font-size: var(--fs-body);
   color: var(--ink-2);
   background: none;
   border: 0;
@@ -974,7 +992,7 @@ svg {
   color: var(--ink);
 }
 .empty {
-  font-size: 15px;
+  font-size: var(--fs-body);
   color: var(--ink-2);
   line-height: 1.9;
 }
@@ -1026,7 +1044,7 @@ svg {
 .task .t {
   flex: 1;
   min-width: 0;
-  font-size: 17px;
+  font-size: var(--fs-headline);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -1042,7 +1060,7 @@ svg {
   flex: none;
 }
 .task .m {
-  font-size: 14px;
+  font-size: var(--fs-subhead);
   color: var(--ink-2);
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
@@ -1069,7 +1087,7 @@ svg {
   outline: 0;
   color: var(--ink);
   font: inherit;
-  font-size: 16px;
+  font-size: var(--fs-callout);
 }
 .add input::placeholder {
   color: rgba(255, 255, 255, 0.5);
@@ -1103,7 +1121,7 @@ svg {
   resize: none;
   color: var(--ink);
   font: inherit;
-  font-size: 16px;
+  font-size: var(--fs-callout);
   line-height: 1.8;
   scrollbar-width: none;
 }
@@ -1114,7 +1132,7 @@ svg {
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 13px;
+  font-size: var(--fs-footnote);
   color: var(--ink-3);
 }
 .qn-go {
@@ -1158,14 +1176,14 @@ svg {
   line-height: 1.6;
 }
 .rnote b {
-  font-size: 15px;
-  font-weight: 600;
+  font-size: var(--fs-body);
+  font-weight: var(--fw-semibold);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 .rnote small {
-  font-size: 13px;
+  font-size: var(--fs-footnote);
   color: var(--ink-2);
   white-space: nowrap;
   overflow: hidden;
@@ -1176,12 +1194,12 @@ svg {
 }
 .tday b {
   display: block;
-  font-size: 26px;
-  font-weight: 600;
+  font-size: var(--fs-title1);
+  font-weight: var(--fw-semibold);
   line-height: 1.4;
 }
 .tday span {
-  font-size: 14px;
+  font-size: var(--fs-subhead);
   color: var(--ink-2);
 }
 .occ {
@@ -1190,7 +1208,7 @@ svg {
   gap: 6px;
 }
 .occ span {
-  font-size: 14px;
+  font-size: var(--fs-subhead);
   padding: 2px 12px;
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.08);
@@ -1205,10 +1223,10 @@ svg {
   padding: 10px 16px;
   border-radius: var(--row-r);
   background: rgba(0, 0, 0, 0.18);
-  font-size: 16px;
+  font-size: var(--fs-callout);
 }
 .nextp b {
-  font-weight: 500;
+  font-weight: var(--fw-medium);
   font-variant-numeric: tabular-nums;
 }
 /* signed out: a bold line, a quiet line, the button; the app's code beside them. The code is as tall
@@ -1229,8 +1247,8 @@ svg {
   flex-direction: column;
 }
 .sc-text b {
-  font-size: 16px;
-  font-weight: 500;
+  font-size: var(--fs-callout);
+  font-weight: var(--fw-medium);
   line-height: 1.35;
   color: var(--ink);
   /* the line box sits a little above the letters; this lets their tops meet the code's */
@@ -1238,7 +1256,7 @@ svg {
 }
 .sc-text p {
   margin: 4px 0 0;
-  font-size: 13.5px;
+  font-size: var(--fs-footnote);
   line-height: 1.75;
   color: var(--ink-2);
 }
@@ -1246,7 +1264,7 @@ svg {
   margin-top: auto;
   height: 44px;
   padding: 0 22px;
-  font-size: 15px;
+  font-size: var(--fs-body);
   align-self: flex-start;
 }
 .signin-cta .qr {
@@ -1321,7 +1339,7 @@ svg {
   opacity: 0;
 }
 .sec {
-  font-size: 14px;
+  font-size: var(--fs-subhead);
   color: var(--ink-2);
 }
 .bml {
@@ -1343,7 +1361,7 @@ svg {
   border: 0;
   cursor: pointer;
   text-align: start;
-  font-size: 15px;
+  font-size: var(--fs-body);
   width: 100%;
 }
 .bml a:hover,
@@ -1370,7 +1388,7 @@ svg {
   text-overflow: ellipsis;
 }
 .ghost {
-  font-size: 15px;
+  font-size: var(--fs-body);
   border-radius: 999px;
   border: 1px solid var(--stroke-hi);
   background: none;
@@ -1387,8 +1405,8 @@ svg {
   padding: 10px 24px;
   background: #fff;
   color: #0b0d12;
-  font-size: 16px;
-  font-weight: 600;
+  font-size: var(--fs-callout);
+  font-weight: var(--fw-semibold);
   cursor: pointer;
 }
 .cta:disabled {
@@ -1447,8 +1465,8 @@ svg {
 }
 .cust-h h2 {
   margin: 0;
-  font-size: 24px;
-  font-weight: 600;
+  font-size: var(--fs-title1);
+  font-weight: var(--fw-semibold);
 }
 .rbtn {
   margin-inline-start: auto;
@@ -1469,12 +1487,12 @@ svg {
 }
 .cust h3 {
   margin: 6px 0 0;
-  font-size: 17px;
-  font-weight: 600;
+  font-size: var(--fs-headline);
+  font-weight: var(--fw-semibold);
   color: var(--ink-2);
 }
 .chint {
-  font-size: 14px;
+  font-size: var(--fs-subhead);
   color: var(--ink-3);
   margin-top: -8px;
 }
@@ -1493,7 +1511,7 @@ svg {
   padding: 7px 12px;
   border-radius: 14px;
   background: rgba(255, 255, 255, 0.04);
-  font-size: 16px;
+  font-size: var(--fs-callout);
   border: 0;
   color: var(--ink);
   cursor: pointer;
@@ -1538,7 +1556,7 @@ svg {
   cursor: pointer;
   background: none;
   color: var(--ink);
-  font-size: 13px;
+  font-size: var(--fs-footnote);
   display: flex;
   flex-direction: column;
   gap: 4px;
@@ -1559,10 +1577,10 @@ svg {
   padding: 10px 14px;
   border-radius: 16px;
   background: rgba(255, 255, 255, 0.04);
-  font-size: 15px;
+  font-size: var(--fs-body);
 }
 .acct b {
-  font-weight: 500;
+  font-weight: var(--fw-medium);
   direction: ltr;
 }
 .acct .ghost {
@@ -1600,8 +1618,8 @@ svg {
 }
 .modal h2 {
   margin: 0;
-  font-size: 24px;
-  font-weight: 600;
+  font-size: var(--fs-title1);
+  font-weight: var(--fw-semibold);
 }
 .modal .card-h {
   display: flex;
@@ -1610,7 +1628,7 @@ svg {
 }
 .modal p {
   margin: 0;
-  font-size: 15px;
+  font-size: var(--fs-body);
   color: var(--ink-2);
   line-height: 1.9;
 }
@@ -1618,7 +1636,7 @@ svg {
   display: flex;
   flex-direction: column;
   gap: 6px;
-  font-size: 15px;
+  font-size: var(--fs-body);
   color: var(--ink-2);
 }
 .field input {
@@ -1628,7 +1646,7 @@ svg {
   background: rgba(0, 0, 0, 0.3);
   color: var(--ink);
   font: inherit;
-  font-size: 19px;
+  font-size: var(--fs-title3);
   padding: 0 16px;
   outline: none;
 }
@@ -1653,7 +1671,7 @@ svg {
   gap: 18px;
 }
 .modal.addsite .card-h h2 {
-  font-size: 20px;
+  font-size: var(--fs-title2);
 }
 .modal.addsite .rbtn {
   width: 36px;
@@ -1664,7 +1682,7 @@ svg {
 .modal.addsite .field input {
   height: 48px;
   border-radius: 14px;
-  font-size: 16px;
+  font-size: var(--fs-callout);
 }
 .modal.addsite .sugg {
   grid-template-columns: repeat(auto-fill, minmax(84px, 1fr));
@@ -1705,7 +1723,7 @@ svg {
   margin-inline-start: auto;
 }
 .err {
-  font-size: 14px;
+  font-size: var(--fs-subhead);
   color: var(--amber);
 }
 .sugg {
@@ -1726,7 +1744,7 @@ svg {
   flex-direction: column;
   align-items: center;
   gap: 6px;
-  font-size: 13px;
+  font-size: var(--fs-footnote);
   position: relative;
   min-width: 0;
 }
@@ -1759,7 +1777,7 @@ svg {
   border-radius: 999px;
   background: color-mix(in srgb, var(--bgc) 80%, #fff);
   border: 1px solid var(--stroke-hi);
-  font-size: 15px;
+  font-size: var(--fs-body);
   animation: fade 0.25s ease both;
   white-space: nowrap;
 }
@@ -1840,8 +1858,8 @@ svg {
   background: rgba(255, 255, 255, 0.06);
   color: rgba(255, 255, 255, 0.82);
   font: inherit;
-  font-size: 15px;
-  font-weight: 500;
+  font-size: var(--fs-body);
+  font-weight: var(--fw-medium);
   cursor: pointer;
   transition:
     background 0.2s,
@@ -1879,7 +1897,7 @@ svg {
 .dia .again {
   margin-inline-start: auto;
   padding: 0;
-  font-size: 14px;
+  font-size: var(--fs-subhead);
   background: none;
   border: 0;
   color: var(--ink-3);
@@ -1907,14 +1925,14 @@ svg {
 }
 .dia h2 {
   margin: 0;
-  font-size: 40px;
-  font-weight: 700;
+  font-size: var(--fs-hero);
+  font-weight: var(--fw-semibold);
   line-height: 1.35;
   text-wrap: balance;
 }
 .dia .lead {
   margin: 0;
-  font-size: 16px;
+  font-size: var(--fs-callout);
   color: var(--ink-2);
   line-height: 1.9;
 }
@@ -1922,9 +1940,9 @@ svg {
   display: flex;
   flex-direction: column;
   gap: 8px;
-  font-size: 15px;
+  font-size: var(--fs-body);
   color: rgba(255, 255, 255, 0.78);
-  font-weight: 500;
+  font-weight: var(--fw-medium);
 }
 .dia .fl input {
   height: 56px;
@@ -1933,7 +1951,7 @@ svg {
   background: #111;
   color: var(--ink);
   font: inherit;
-  font-size: 18px;
+  font-size: var(--fs-title3);
   padding: 0 18px;
   outline: none;
 }
@@ -1966,7 +1984,7 @@ svg {
 }
 .dia-foot .legal {
   margin: 0;
-  font-size: 14px;
+  font-size: var(--fs-subhead);
   color: rgba(255, 255, 255, 0.6);
 }
 .dia-foot .next {
@@ -1975,8 +1993,8 @@ svg {
   border: 0;
   background: #fff;
   color: #000;
-  font-size: 18px;
-  font-weight: 600;
+  font-size: var(--fs-title3);
+  font-weight: var(--fw-semibold);
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -2010,7 +2028,7 @@ svg {
 
 /* the welcome: what an account gives, one line each, an icon beside */
 .dia h2.hello {
-  font-size: 34px;
+  font-size: var(--fs-large);
 }
 .dia .perks {
   margin: 6px 0 0;
@@ -2037,13 +2055,13 @@ svg {
   display: flex;
   flex-direction: column;
   gap: 2px;
-  font-size: 14px;
+  font-size: var(--fs-subhead);
   line-height: 1.7;
   color: var(--ink-2);
 }
 .dia .perks b {
-  font-size: 16px;
-  font-weight: 600;
+  font-size: var(--fs-callout);
+  font-weight: var(--fw-semibold);
   color: var(--ink);
 }
 
@@ -2068,15 +2086,15 @@ svg {
 .dia .inst > div {
   flex: 1;
   min-width: 0;
-  font-size: 14px;
+  font-size: var(--fs-subhead);
   color: var(--ink-2);
   line-height: 1.8;
 }
 .dia .inst b {
   display: block;
   color: var(--ink);
-  font-weight: 600;
-  font-size: 15px;
+  font-weight: var(--fw-semibold);
+  font-size: var(--fs-body);
 }
 
 /* the painted side; its edge toward the form breaks up into grain */
@@ -2176,7 +2194,7 @@ svg {
   align-items: flex-start;
   gap: 12px;
   padding: 22px 24px;
-  font-size: 18px;
+  font-size: var(--fs-title3);
   color: rgba(255, 255, 255, 0.62);
 }
 .dia-art .sx svg {
@@ -2215,13 +2233,13 @@ svg {
   display: flex;
   flex-direction: column;
   gap: 7px;
-  font-size: 13px;
+  font-size: var(--fs-footnote);
   line-height: 1.6;
   color: rgba(255, 255, 255, 0.8);
   box-shadow: 0 14px 40px rgba(0, 0, 0, 0.35);
 }
 .dia-art .mini b {
-  font-size: 14px;
+  font-size: var(--fs-subhead);
   color: #fff;
 }
 .dia-art .mini .r {
@@ -2241,7 +2259,7 @@ svg {
   border-color: #fff;
 }
 .dia-art .ping2 {
-  font-size: 11px;
+  font-size: var(--fs-caption);
   color: var(--tint);
 }
 .dia-art .phone2 {
@@ -2344,7 +2362,7 @@ svg {
   position: absolute;
   right: 62px;
   white-space: nowrap;
-  font-size: 15px;
+  font-size: var(--fs-body);
   padding: 2px 12px;
   border-radius: 999px;
   background: rgba(16, 18, 26, 0.8);
@@ -2374,7 +2392,7 @@ svg {
   right: 22px;
   background: none;
   padding: 0;
-  font-size: 14px;
+  font-size: var(--fs-subhead);
   color: var(--ink-2);
 }
 .rail:not(:hover):not(:focus-within) button[aria-current="true"] .tip {
@@ -2412,8 +2430,8 @@ svg {
 }
 .card.g .card-h h2 {
   margin: 0;
-  font-size: 22px;
-  font-weight: 600;
+  font-size: var(--fs-title2);
+  font-weight: var(--fw-semibold);
 }
 
 /* ---------- the notes slide: folders, the list, the open note ---------- */
@@ -2433,7 +2451,7 @@ svg {
 }
 .flist button {
   font: inherit;
-  font-size: 17px;
+  font-size: var(--fs-headline);
   color: var(--ink);
   background: none;
   border: 0;
@@ -2461,7 +2479,7 @@ svg {
   text-overflow: ellipsis;
 }
 .flist .fcount {
-  font-size: 14px;
+  font-size: var(--fs-subhead);
   color: var(--ink-2);
 }
 .flist button[aria-pressed="true"] {
@@ -2490,7 +2508,7 @@ svg {
   margin-top: auto;
   margin-bottom: 8px;
   font: inherit;
-  font-size: 16px;
+  font-size: var(--fs-callout);
   color: var(--ink-2);
   background: none;
   border: 1px dashed var(--stroke-hi);
@@ -2549,7 +2567,7 @@ svg {
   outline: 0;
   color: var(--ink);
   font: inherit;
-  font-size: 17px;
+  font-size: var(--fs-headline);
 }
 .nsearch input::placeholder {
   color: rgba(255, 255, 255, 0.55);
@@ -2569,14 +2587,14 @@ svg {
   gap: 4px;
 }
 .nitems .glbl {
-  font-size: 14px;
+  font-size: var(--fs-subhead);
   color: var(--ink-2);
   padding: 6px 12px 2px;
 }
 .nitems .none {
   margin: 0;
   padding: 10px 12px;
-  font-size: 15px;
+  font-size: var(--fs-body);
   line-height: 1.8;
   color: var(--ink-3);
 }
@@ -2601,8 +2619,8 @@ svg {
   border-color: rgba(255, 255, 255, 0.18);
 }
 .nitem b {
-  font-size: 17px;
-  font-weight: 600;
+  font-size: var(--fs-headline);
+  font-weight: var(--fw-semibold);
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -2612,7 +2630,7 @@ svg {
   align-items: center;
   gap: 8px;
   min-width: 0;
-  font-size: 14px;
+  font-size: var(--fs-subhead);
   color: var(--ink-2);
 }
 .nitem .prog {
@@ -2640,7 +2658,7 @@ svg {
   align-items: center;
   justify-content: center;
   gap: 8px;
-  font-size: 17px;
+  font-size: var(--fs-headline);
 }
 .newn .ico {
   width: 18px;
@@ -2657,7 +2675,7 @@ svg {
   display: flex;
   align-items: center;
   gap: 10px;
-  font-size: 14px;
+  font-size: var(--fs-subhead);
   color: var(--ink-2);
 }
 .ed-top .st {
@@ -2706,7 +2724,7 @@ svg {
   gap: 6px;
   padding: 3px 12px;
   border-radius: 999px;
-  font-size: 14px;
+  font-size: var(--fs-subhead);
   background: rgba(255, 255, 255, 0.08);
   color: var(--ink-2);
 }
@@ -2747,19 +2765,19 @@ svg {
   min-height: 0;
 }
 .ed-title {
-  font-size: 34px !important;
-  font-weight: 600 !important;
+  font-size: var(--fs-large) !important;
+  font-weight: var(--fw-semibold) !important;
   line-height: 1.45 !important;
 }
 .b-p {
-  font-size: 18px !important;
+  font-size: var(--fs-title3) !important;
   line-height: 2 !important;
   color: rgba(245, 246, 248, 0.92) !important;
 }
 .b-h {
   margin-top: 8px;
-  font-size: 22px !important;
-  font-weight: 600 !important;
+  font-size: var(--fs-title2) !important;
+  font-weight: var(--fw-semibold) !important;
   line-height: 1.7 !important;
 }
 .b-c,
@@ -2771,7 +2789,7 @@ svg {
 .b-c .tx,
 .b-b .tx {
   flex: 1;
-  font-size: 18px !important;
+  font-size: var(--fs-title3) !important;
   line-height: 1.9 !important;
 }
 .b-b i {
@@ -2855,7 +2873,7 @@ svg {
   cursor: pointer;
 }
 .b-v .time {
-  font-size: 14px;
+  font-size: var(--fs-subhead);
   color: var(--ink-2);
   font-variant-numeric: tabular-nums;
 }
@@ -2900,7 +2918,7 @@ svg {
   border-radius: 999px;
   background: rgba(140, 158, 255, 0.14);
   color: var(--noghte);
-  font-size: 14px;
+  font-size: var(--fs-subhead);
   text-decoration: none;
   transition: background 0.2s;
 }
@@ -2981,7 +2999,7 @@ svg {
 .rec.denied {
   justify-content: space-between;
   padding: 8px 14px;
-  font-size: 15px;
+  font-size: var(--fs-body);
   color: var(--ink-2);
 }
 .rec .dot {
@@ -3006,7 +3024,7 @@ svg {
 .rec .t {
   flex: none;
   min-width: 44px;
-  font-size: 16px;
+  font-size: var(--fs-callout);
   font-variant-numeric: tabular-nums;
 }
 .rec .live {
@@ -3030,7 +3048,7 @@ svg {
 .rec .cta.done {
   flex: none;
   padding: 10px 22px;
-  font-size: 15px;
+  font-size: var(--fs-body);
 }
 @media (prefers-reduced-motion: reduce) {
   .rec .dot {
@@ -3040,7 +3058,7 @@ svg {
 .b-v .tr {
   margin-top: 8px;
   padding: 0 4px;
-  font-size: 15px;
+  font-size: var(--fs-body);
   line-height: 1.7;
   color: var(--ink-2);
 }
@@ -3051,7 +3069,7 @@ svg {
   align-items: center;
   gap: 10px;
   color: var(--ink-3);
-  font-size: 16px;
+  font-size: var(--fs-callout);
 }
 .ed-empty .ico {
   width: 40px;
@@ -3080,12 +3098,12 @@ svg {
   align-items: flex-start;
 }
 .si-text b {
-  font-size: 15px;
-  font-weight: 600;
+  font-size: var(--fs-body);
+  font-weight: var(--fw-semibold);
   line-height: 1.5;
 }
 .si-text span {
-  font-size: 13.5px;
+  font-size: var(--fs-footnote);
   line-height: 1.6;
   color: var(--ink-2);
 }
@@ -3093,7 +3111,7 @@ svg {
   margin-top: 10px;
   height: 36px;
   padding: 0 18px;
-  font-size: 14px;
+  font-size: var(--fs-subhead);
 }
 .sync-invite .qr {
   flex: none;
@@ -3112,7 +3130,7 @@ svg {
 }
 .chip {
   font: inherit;
-  font-size: 15px;
+  font-size: var(--fs-body);
   padding: 6px 16px;
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.07);
@@ -3148,13 +3166,13 @@ svg {
 }
 .ptitle b {
   display: block;
-  font-size: 28px;
-  font-weight: 600;
+  font-size: var(--fs-title1);
+  font-weight: var(--fw-semibold);
   line-height: 1.35;
 }
 .ptitle span {
   display: block;
-  font-size: 15px;
+  font-size: var(--fs-body);
   color: var(--ink-2);
 }
 .ptools {
@@ -3175,7 +3193,7 @@ svg {
 .ptools .chip {
   height: 52px;
   padding: 0 22px;
-  font-size: 16px;
+  font-size: var(--fs-callout);
   border-radius: 999px;
 }
 .side {
@@ -3190,7 +3208,7 @@ svg {
   background: rgba(255, 255, 255, 0.1);
 }
 .side .sec {
-  font-size: 15px;
+  font-size: var(--fs-body);
   color: var(--ink-2);
   padding-inline: 8px;
 }
@@ -3211,13 +3229,13 @@ svg {
   min-width: 0;
 }
 .mini-h b {
-  font-size: 20px;
-  font-weight: 600;
+  font-size: var(--fs-title2);
+  font-weight: var(--fw-semibold);
   line-height: 1.3;
 }
 .mini-t > span {
-  font-size: 14px;
-  font-weight: 500;
+  font-size: var(--fs-subhead);
+  font-weight: var(--fw-medium);
   line-height: 1.4;
   color: var(--ink-2);
 }
@@ -3252,7 +3270,7 @@ svg {
 }
 .mini-wk span {
   text-align: center;
-  font-size: 13px;
+  font-size: var(--fs-footnote);
   color: var(--ink-2);
 }
 /* each day a 36px cell: the number in a 30px round mark, the occasion dot under it */
@@ -3267,7 +3285,7 @@ svg {
   background: none;
   color: var(--ink);
   font: inherit;
-  font-size: 15px;
+  font-size: var(--fs-body);
   cursor: pointer;
   display: grid;
   place-items: center;
@@ -3313,7 +3331,7 @@ svg {
 .mini-g button.tdy .nn {
   background: #fff;
   color: #0b0d12;
-  font-weight: 600;
+  font-weight: var(--fw-semibold);
 }
 .mini-g button.tdy i {
   background: #0b0d12;
@@ -3326,7 +3344,7 @@ svg {
 }
 .occl button {
   font: inherit;
-  font-size: 15px;
+  font-size: var(--fs-body);
   color: var(--ink);
   text-align: start;
   display: flex;
@@ -3347,7 +3365,7 @@ svg {
 .occl .dt {
   flex: none;
   width: 50px;
-  font-size: 13px;
+  font-size: var(--fs-footnote);
   color: var(--ink-2);
 }
 .occl .ot {
@@ -3366,12 +3384,12 @@ svg {
 }
 .cals .cgrp {
   padding: 6px 8px 0;
-  font-size: 12px;
+  font-size: var(--fs-caption);
   color: var(--ink-3);
 }
 .cals button {
   font: inherit;
-  font-size: 15px;
+  font-size: var(--fs-body);
   color: var(--ink);
   display: flex;
   align-items: center;
@@ -3430,7 +3448,7 @@ svg {
 }
 .dcell {
   font: inherit;
-  font-size: 15px;
+  font-size: var(--fs-body);
   color: var(--ink-2);
   display: flex;
   align-items: center;
@@ -3447,8 +3465,8 @@ svg {
   border-radius: 10px;
   display: grid;
   place-items: center;
-  font-size: 17px;
-  font-weight: 500;
+  font-size: var(--fs-headline);
+  font-weight: var(--fw-medium);
   color: var(--ink);
   background: rgba(255, 255, 255, 0.06);
 }
@@ -3465,7 +3483,7 @@ svg {
 }
 .ad-row .lbl {
   padding-top: 4px;
-  font-size: 13px;
+  font-size: var(--fs-footnote);
   color: var(--ink-2);
 }
 .acell {
@@ -3484,7 +3502,7 @@ svg {
   border-radius: 8px;
   border: 0;
   font: inherit;
-  font-size: 13px;
+  font-size: var(--fs-footnote);
   line-height: 1.7;
   text-align: start;
   background: rgba(242, 201, 76, 0.16);
@@ -3543,7 +3561,7 @@ svg {
   position: absolute;
   inset-inline-end: 10px;
   transform: translateY(-50%);
-  font-size: 13px;
+  font-size: var(--fs-footnote);
   color: var(--ink-3);
 }
 .pcol {
@@ -3562,19 +3580,19 @@ svg {
   padding: 3px 8px;
   border-radius: 10px;
   border-inline-start: 3px solid;
-  font-size: 14px;
+  font-size: var(--fs-subhead);
   line-height: 1.5;
   cursor: pointer;
   z-index: 1;
 }
 .ev b {
-  font-weight: 600;
+  font-weight: var(--fw-semibold);
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
 }
 .ev small {
-  font-size: 12px;
+  font-size: var(--fs-caption);
   color: rgba(255, 255, 255, 0.7);
 }
 .ev.done b {
@@ -3598,7 +3616,7 @@ svg {
   background: #fff;
   color: #0b0d12;
   font: inherit;
-  font-size: 12px;
+  font-size: var(--fs-caption);
   cursor: pointer;
 }
 .ev-done .ico {
@@ -3625,8 +3643,8 @@ svg {
   background: none;
   color: var(--ink);
   font: inherit;
-  font-size: 14px;
-  font-weight: 600;
+  font-size: var(--fs-subhead);
+  font-weight: var(--fw-semibold);
 }
 .pgrid {
   position: relative;
@@ -3670,7 +3688,7 @@ svg {
   outline: 0;
   color: var(--ink);
   font: inherit;
-  font-size: 18px;
+  font-size: var(--fs-title3);
 }
 .psearch input::placeholder {
   color: rgba(255, 255, 255, 0.55);
@@ -3690,7 +3708,7 @@ svg {
 }
 .pdrop button {
   font: inherit;
-  font-size: 16px;
+  font-size: var(--fs-callout);
   color: var(--ink);
   background: none;
   border: 0;
@@ -3713,12 +3731,12 @@ svg {
 }
 .pdrop button span {
   margin-inline-start: auto;
-  font-size: 13px;
+  font-size: var(--fs-footnote);
   color: var(--ink-2);
 }
 .pdrop .empty {
   padding: 8px 12px;
-  font-size: 15px;
+  font-size: var(--fs-body);
   color: var(--ink-3);
 }
 .todo-on .ptools {
@@ -3746,8 +3764,8 @@ svg {
   border-radius: 8px;
   background: #fff;
   color: #0b0d12;
-  font-size: 13px;
-  font-weight: 600;
+  font-size: var(--fs-footnote);
+  font-weight: var(--fw-semibold);
   z-index: 2;
 }
 
@@ -3765,12 +3783,12 @@ svg {
   align-items: center;
   gap: 10px;
   flex-wrap: wrap;
-  font-size: 16px;
+  font-size: var(--fs-callout);
   color: var(--ink-2);
 }
 .ef .when b {
   color: var(--ink);
-  font-weight: 500;
+  font-weight: var(--fw-medium);
 }
 .ef .when .ico {
   width: 20px;
@@ -3783,7 +3801,7 @@ svg {
   background: rgba(0, 0, 0, 0.3);
   color: var(--ink);
   font: inherit;
-  font-size: 20px;
+  font-size: var(--fs-title2);
   padding: 0 16px;
   outline: none;
 }
@@ -3791,7 +3809,7 @@ svg {
   border-color: var(--noghte);
 }
 .ef .sec {
-  font-size: 15px;
+  font-size: var(--fs-body);
   color: var(--ink-2);
 }
 .lchips {
@@ -3801,7 +3819,7 @@ svg {
 }
 .lchips button {
   font: inherit;
-  font-size: 15px;
+  font-size: var(--fs-body);
   display: inline-flex;
   align-items: center;
   gap: 8px;
@@ -3823,7 +3841,7 @@ svg {
   border-color: transparent;
 }
 .mfoot .cnt {
-  font-size: 15px;
+  font-size: var(--fs-body);
   color: var(--ink-2);
 }
 
@@ -3847,7 +3865,7 @@ svg {
 }
 .td-f button {
   font: inherit;
-  font-size: 14px;
+  font-size: var(--fs-subhead);
   color: var(--ink);
   display: inline-flex;
   align-items: center;
@@ -3864,7 +3882,7 @@ svg {
   border-radius: 50%;
 }
 .td-f button small {
-  font-size: 12px;
+  font-size: var(--fs-caption);
   color: var(--ink-3);
 }
 .td-f button[aria-pressed="true"] {
@@ -3901,14 +3919,14 @@ svg {
   background: none;
   color: var(--ink);
   font: inherit;
-  font-size: 17px;
+  font-size: var(--fs-headline);
 }
 .td-add input::placeholder {
   color: rgba(255, 255, 255, 0.55);
 }
 .td-in {
   flex: none;
-  font-size: 13px;
+  font-size: var(--fs-footnote);
   color: var(--ink-3);
 }
 .td-list {
@@ -3929,12 +3947,12 @@ svg {
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 14px;
-  font-weight: 600;
+  font-size: var(--fs-subhead);
+  font-weight: var(--fw-semibold);
   color: var(--ink-2);
 }
 .td-sec h4 small {
-  font-weight: 400;
+  font-weight: var(--fw-regular);
   color: var(--ink-3);
 }
 .td-sec.late h4 {
@@ -3946,7 +3964,7 @@ svg {
   gap: 12px;
   padding: 8px 6px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-  font-size: 16px;
+  font-size: var(--fs-callout);
 }
 .td-row .cb {
   flex: none;
@@ -3992,7 +4010,7 @@ svg {
 }
 .td-row .m {
   flex: none;
-  font-size: 13px;
+  font-size: var(--fs-footnote);
   color: var(--ink-2);
 }
 .td-row .m.late {
@@ -4005,7 +4023,7 @@ svg {
   background: none;
   color: var(--ink-3);
   font: inherit;
-  font-size: 14px;
+  font-size: var(--fs-subhead);
   cursor: pointer;
 }
 .td-done:hover {
@@ -4040,7 +4058,7 @@ svg {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  font-size: 14px;
+  font-size: var(--fs-subhead);
   color: var(--ink-3);
 }
 .ts-done {
@@ -4051,12 +4069,12 @@ svg {
   background: rgba(255, 255, 255, 0.12);
   color: var(--ink);
   font: inherit;
-  font-size: 14px;
-  font-weight: 600;
+  font-size: var(--fs-subhead);
+  font-weight: var(--fw-semibold);
   cursor: pointer;
 }
 .ts-done.plain {
-  font-weight: 400;
+  font-weight: var(--fw-regular);
 }
 .ts-done:hover {
   background: rgba(255, 255, 255, 0.18);
@@ -4077,19 +4095,19 @@ svg {
   padding: 8px 0;
   color: var(--ink);
   font: inherit;
-  font-size: 22px;
-  font-weight: 600;
+  font-size: var(--fs-title2);
+  font-weight: var(--fw-semibold);
   line-height: 1.5;
 }
 .ts-title::placeholder {
   color: var(--ink-3);
 }
+/* every list in sight: the chips wrap onto more rows instead of one row the mouse cannot scroll */
 .ts-chips {
   display: flex;
+  flex-wrap: wrap;
   gap: 8px;
   padding: 4px 0;
-  overflow-x: auto;
-  scrollbar-width: none;
 }
 .ts-chips button {
   flex: none;
@@ -4100,7 +4118,7 @@ svg {
   background: rgba(255, 255, 255, 0.06);
   color: var(--ink-2);
   font: inherit;
-  font-size: 14px;
+  font-size: var(--fs-subhead);
   display: inline-flex;
   align-items: center;
   gap: 6px;
@@ -4135,7 +4153,7 @@ svg {
   background: none;
   color: var(--ink);
   font: inherit;
-  font-size: 14px;
+  font-size: var(--fs-subhead);
   outline: none;
 }
 .ts-div {
@@ -4159,7 +4177,7 @@ svg {
   background: none;
   color: var(--ink-2);
   font: inherit;
-  font-size: 14px;
+  font-size: var(--fs-subhead);
   cursor: pointer;
 }
 .ts-seg button[aria-checked="true"] {
@@ -4176,7 +4194,7 @@ svg {
   background: none;
   color: var(--ink);
   font: inherit;
-  font-size: 15px;
+  font-size: var(--fs-body);
   text-align: start;
   cursor: pointer;
 }
@@ -4214,13 +4232,13 @@ label.ts-line {
   flex-direction: column;
 }
 .ts-line.note b {
-  font-weight: 400;
+  font-weight: var(--fw-regular);
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
 }
 .ts-line.note small {
-  font-size: 12.5px;
+  font-size: var(--fs-caption);
   color: var(--ink-3);
   overflow: hidden;
   white-space: nowrap;
@@ -4243,7 +4261,7 @@ label.ts-line {
   background: none;
   color: var(--ink);
   font: inherit;
-  font-size: 15px;
+  font-size: var(--fs-body);
   cursor: pointer;
 }
 .ts-notes {
@@ -4257,7 +4275,7 @@ label.ts-line {
   background: none;
   color: var(--ink);
   font: inherit;
-  font-size: 14.5px;
+  font-size: var(--fs-subhead);
   line-height: 1.8;
 }
 .ts-notes::placeholder {
@@ -4310,12 +4328,12 @@ label.ts-line {
   background: none;
   color: var(--ink);
   font: inherit;
-  font-size: 15px;
+  font-size: var(--fs-body);
   text-align: start;
   cursor: pointer;
 }
 .ts-opt small {
-  font-size: 15px;
+  font-size: var(--fs-body);
   color: var(--ink-3);
 }
 .ts-opt.on {
@@ -4329,8 +4347,8 @@ label.ts-line {
   background: #fff;
   color: #0b0d12;
   font: inherit;
-  font-size: 17px;
-  font-weight: 600;
+  font-size: var(--fs-headline);
+  font-weight: var(--fw-semibold);
   cursor: pointer;
 }
 .ts-tp {
@@ -4358,16 +4376,16 @@ label.ts-line {
   background: none;
   color: var(--ink-3);
   font: inherit;
-  font-size: 20px;
+  font-size: var(--fs-title2);
   cursor: pointer;
 }
 .ts-tp .col button.on {
   background: rgba(255, 255, 255, 0.12);
   color: var(--ink);
-  font-weight: 600;
+  font-weight: var(--fw-semibold);
 }
 .ts-tp > span {
-  font-size: 22px;
+  font-size: var(--fs-title2);
   color: var(--ink-2);
 }
 .ts-dp .h {
@@ -4378,8 +4396,8 @@ label.ts-line {
 }
 .ts-dp .h b {
   flex: 1;
-  font-size: 17px;
-  font-weight: 600;
+  font-size: var(--fs-headline);
+  font-weight: var(--fw-semibold);
 }
 .ts-dp .h button {
   width: 32px;
@@ -4404,7 +4422,7 @@ label.ts-line {
   justify-items: center;
 }
 .ts-dp .wk {
-  font-size: 13px;
+  font-size: var(--fs-footnote);
   color: var(--ink-3);
   padding-bottom: 4px;
 }
@@ -4416,7 +4434,7 @@ label.ts-line {
   background: none;
   color: var(--ink);
   font: inherit;
-  font-size: 15px;
+  font-size: var(--fs-body);
   cursor: pointer;
 }
 .ts-dp .g button:hover {
@@ -4431,7 +4449,7 @@ label.ts-line {
 .ts-dp .g button.on {
   background: #c6f135;
   color: #0b0d12;
-  font-weight: 600;
+  font-weight: var(--fw-semibold);
 }
 /* «فقط همین / این و بعدی‌ها / همه» */
 .ts-ask {
@@ -4448,7 +4466,7 @@ label.ts-line {
   gap: 6px;
 }
 .ts-ask b {
-  font-size: 15px;
+  font-size: var(--fs-body);
   padding-bottom: 6px;
 }
 .ts-ask button {
@@ -4458,7 +4476,7 @@ label.ts-line {
   background: rgba(255, 255, 255, 0.08);
   color: var(--ink);
   font: inherit;
-  font-size: 15px;
+  font-size: var(--fs-body);
   cursor: pointer;
 }
 .ts-ask button.danger {
@@ -4528,7 +4546,7 @@ label.ts-line {
   backdrop-filter: blur(30px) saturate(1.5);
   color: var(--ink);
   font: inherit;
-  font-size: 16px;
+  font-size: var(--fs-callout);
   white-space: nowrap;
   cursor: pointer;
   transition: background 0.2s;
@@ -4549,7 +4567,7 @@ label.ts-line {
   background: #1c1e24;
   border: 1px solid var(--stroke-hi);
   color: var(--ink-2);
-  font-size: 14px;
+  font-size: var(--fs-subhead);
   line-height: 1.7;
 }
 .gsync .glogo {
@@ -4587,7 +4605,7 @@ label.ts-line {
   background: rgba(255, 255, 255, 0.06);
   color: var(--ink);
   font: inherit;
-  font-size: 14px;
+  font-size: var(--fs-subhead);
   cursor: pointer;
 }
 .gout:hover {
@@ -4601,7 +4619,7 @@ label.ts-line {
   background: none;
   color: var(--ink);
   font: inherit;
-  font-size: 15px;
+  font-size: var(--fs-body);
   text-align: start;
   text-decoration: none;
   overflow: hidden;
@@ -4642,7 +4660,7 @@ a.ts-link {
 }
 .ts-err {
   margin: 4px 0 0;
-  font-size: 13.5px;
+  font-size: var(--fs-footnote);
   color: var(--amber);
 }
 .ts-seg[hidden] {
@@ -4716,14 +4734,14 @@ a.ts-link {
 }
 .mbar h2 {
   margin: 0;
-  font-size: 28px;
-  font-weight: 600;
+  font-size: var(--fs-title1);
+  font-weight: var(--fw-semibold);
 }
 .msrc {
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 14px;
+  font-size: var(--fs-subhead);
   color: var(--ink-2);
   margin-inline-end: auto;
 }
@@ -4753,13 +4771,13 @@ a.ts-link {
 }
 .mh h2 {
   margin: 0;
-  font-size: 18px;
-  font-weight: 600;
+  font-size: var(--fs-title3);
+  font-weight: var(--fw-semibold);
 }
 .mh h3 {
   margin: 0;
-  font-size: 15px;
-  font-weight: 600;
+  font-size: var(--fs-body);
+  font-weight: var(--fw-semibold);
   color: var(--ink-2);
 }
 .mh.sub2 {
@@ -4781,25 +4799,25 @@ a.ts-link {
   text-align: center;
 }
 .sl2 {
-  font-size: 14px;
+  font-size: var(--fs-subhead);
   color: var(--ink-2);
 }
 .hn {
-  font-size: 30px;
-  font-weight: 400;
+  font-size: var(--fs-large);
+  font-weight: var(--fw-regular);
   line-height: 1.2;
 }
 .hn.sm {
-  font-size: 22px;
+  font-size: var(--fs-title2);
 }
 .hn small {
-  font-size: 15px;
+  font-size: var(--fs-body);
   color: var(--ink-2);
   margin-inline-start: 5px;
 }
 .hn.big {
-  font-size: 38px;
-  font-weight: 300;
+  font-size: var(--fs-hero);
+  font-weight: var(--fw-light);
 }
 .rows {
   display: flex;
@@ -4812,11 +4830,11 @@ a.ts-link {
   gap: 10px;
   min-height: 38px;
   padding-inline: 8px;
-  font-size: 15px;
+  font-size: var(--fs-body);
   border-radius: 10px;
 }
 .rw .dt {
-  font-size: 13px;
+  font-size: var(--fs-footnote);
   color: var(--ink-3);
 }
 .rw .nm {
@@ -4826,7 +4844,7 @@ a.ts-link {
   text-overflow: ellipsis;
 }
 .rw .nm small {
-  font-size: 12px;
+  font-size: var(--fs-caption);
   color: var(--ink-3);
   margin-inline-start: 6px;
 }
@@ -4838,7 +4856,7 @@ a.ts-link {
 }
 .rw .tg {
   justify-self: start;
-  font-size: 12px;
+  font-size: var(--fs-caption);
   padding: 0 8px;
   border-radius: 7px;
   color: #f0817a;
@@ -4852,7 +4870,7 @@ a.ts-link {
 .news .none {
   margin: 0;
   padding: 6px 8px;
-  font-size: 14px;
+  font-size: var(--fs-subhead);
   color: var(--ink-3);
 }
 .bar {
@@ -4898,7 +4916,7 @@ a.ts-link {
   grid-template-rows: auto minmax(0, 1fr);
 }
 .news .card-h .sub {
-  font-size: 14px;
+  font-size: var(--fs-subhead);
   color: var(--ink-3);
   margin-inline-start: 10px;
 }
@@ -4922,8 +4940,8 @@ a.ts-link {
   background: rgba(255, 255, 255, 0.07);
 }
 .ncard b {
-  font-size: 16px;
-  font-weight: 600;
+  font-size: var(--fs-callout);
+  font-weight: var(--fw-semibold);
   line-height: 1.6;
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -4931,7 +4949,7 @@ a.ts-link {
   overflow: hidden;
 }
 .ncard span {
-  font-size: 14px;
+  font-size: var(--fs-subhead);
   color: var(--ink-2);
   line-height: 1.7;
   display: -webkit-box;
@@ -4942,7 +4960,7 @@ a.ts-link {
 .ncard em {
   margin-top: auto;
   font-style: normal;
-  font-size: 13px;
+  font-size: var(--fs-footnote);
   color: var(--ink-2);
 }
 /* not linked yet: what it shows and how to link, the app's code beside */
@@ -4980,12 +4998,12 @@ a.ts-link {
 }
 .pke-copy h2 {
   margin: 0;
-  font-size: 30px;
-  font-weight: 700;
+  font-size: var(--fs-large);
+  font-weight: var(--fw-semibold);
 }
 .pke-copy p {
   margin: 0;
-  font-size: 16px;
+  font-size: var(--fs-callout);
   line-height: 1.9;
   color: var(--ink-2);
 }
@@ -4995,11 +5013,11 @@ a.ts-link {
   display: flex;
   flex-direction: column;
   gap: 4px;
-  font-size: 15px;
+  font-size: var(--fs-body);
   color: rgba(255, 255, 255, 0.85);
 }
 .pke-steps b {
-  font-weight: 600;
+  font-weight: var(--fw-semibold);
   color: var(--ink);
 }
 .pke-form {
@@ -5020,7 +5038,7 @@ a.ts-link {
   background: rgba(0, 0, 0, 0.3);
   color: var(--ink);
   font: inherit;
-  font-size: 17px;
+  font-size: var(--fs-headline);
   letter-spacing: 0.12em;
   text-align: center;
   direction: ltr;
@@ -5033,11 +5051,11 @@ a.ts-link {
   height: auto;
   padding: 0 22px;
   min-width: 112px;
-  font-size: 15px;
+  font-size: var(--fs-body);
 }
 .pke-err {
   margin: 0;
-  font-size: 14px;
+  font-size: var(--fs-subhead);
   color: var(--amber);
 }
 .pke-qr {
@@ -5058,10 +5076,10 @@ a.ts-link {
 }
 .pke-qr b {
   margin-top: 6px;
-  font-size: 15px;
+  font-size: var(--fs-body);
 }
 .pke-qr small {
-  font-size: 13px;
+  font-size: var(--fs-footnote);
   line-height: 1.7;
   color: var(--ink-2);
 }
@@ -5156,8 +5174,8 @@ a.ts-link {
 }
 .fname-in {
   font: inherit;
-  font-size: 13px;
-  font-weight: 600;
+  font-size: var(--fs-footnote);
+  font-weight: var(--fw-semibold);
   width: 84px;
   text-align: center;
   color: var(--ink);
@@ -5195,11 +5213,11 @@ a.ts-link {
     border-color 0.2s;
 }
 .persona b {
-  font-size: 15px;
-  font-weight: 600;
+  font-size: var(--fs-body);
+  font-weight: var(--fw-semibold);
 }
 .persona small {
-  font-size: 12.5px;
+  font-size: var(--fs-caption);
   color: var(--ink-3);
   line-height: 1.6;
 }
@@ -5225,7 +5243,7 @@ a.ts-link {
   border-radius: 21px;
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid var(--stroke);
-  font-size: 14px;
+  font-size: var(--fs-subhead);
 }
 .tk-h {
   display: flex;
@@ -5233,7 +5251,7 @@ a.ts-link {
   gap: 8px;
   flex: none;
   color: var(--ink-2);
-  font-size: 13px;
+  font-size: var(--fs-footnote);
 }
 .tk-h i,
 .mh .live i {
@@ -5309,8 +5327,8 @@ a.ts-link {
   border-radius: 50%;
   display: grid;
   place-items: center;
-  font-size: 10.5px;
-  font-weight: 700;
+  font-size: var(--fs-caption);
+  font-weight: var(--fw-semibold);
   font-style: normal;
   color: #fff;
   flex: none;
@@ -5325,15 +5343,15 @@ a.ts-link {
 }
 .tk-i .v {
   font-variant-numeric: tabular-nums;
-  font-weight: 500;
+  font-weight: var(--fw-medium);
 }
 .tk-i .v small {
-  font-size: 11.5px;
+  font-size: var(--fs-caption);
   color: var(--ink-3);
   margin-inline-start: 3px;
 }
 .tk-i .c {
-  font-size: 12.5px;
+  font-size: var(--fs-caption);
   font-variant-numeric: tabular-nums;
 }
 .ar {
@@ -5350,7 +5368,7 @@ a.ts-link {
 }
 .tk-src {
   flex: none;
-  font-size: 12px;
+  font-size: var(--fs-caption);
   color: var(--ink-3);
 }
 @media (prefers-reduced-motion: reduce) {
@@ -5372,7 +5390,7 @@ a.ts-link {
   display: inline-flex;
   align-items: center;
   gap: 7px;
-  font-size: 13px;
+  font-size: var(--fs-footnote);
   color: var(--ink-2);
 }
 .ai {
@@ -5381,8 +5399,8 @@ a.ts-link {
   border-radius: 50%;
   display: grid;
   place-items: center;
-  font-size: 13px;
-  font-weight: 700;
+  font-size: var(--fs-footnote);
+  font-weight: var(--fw-semibold);
   font-style: normal;
   color: #fff;
   flex: none;
@@ -5391,7 +5409,7 @@ a.ts-link {
 .ai.sm {
   width: 30px;
   height: 30px;
-  font-size: 12px;
+  font-size: var(--fs-caption);
 }
 .nm2 {
   min-width: 0;
@@ -5400,13 +5418,13 @@ a.ts-link {
   line-height: 1.4;
 }
 .nm2 b {
-  font-weight: 500;
+  font-weight: var(--fw-medium);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 .nm2 small {
-  font-size: 12px;
+  font-size: var(--fs-caption);
   color: var(--ink-3);
   white-space: nowrap;
   overflow: hidden;
@@ -5420,8 +5438,8 @@ a.ts-link {
   padding-inline: 8px;
 }
 .pxtop .nm2 b {
-  font-size: 16px;
-  font-weight: 600;
+  font-size: var(--fs-callout);
+  font-weight: var(--fw-semibold);
 }
 .pxv {
   display: flex;
@@ -5431,17 +5449,17 @@ a.ts-link {
   padding-inline: 8px;
 }
 .pxv .hn {
-  font-size: 32px;
+  font-size: var(--fs-large);
 }
 .pxv > small {
-  font-size: 14px;
+  font-size: var(--fs-subhead);
   color: var(--ink-2);
 }
 .pxv .pill {
   margin-inline-start: auto;
 }
 .pill {
-  font-size: 13px;
+  font-size: var(--fs-footnote);
   line-height: 22px;
   padding: 0 9px;
   border-radius: 7px;
@@ -5484,7 +5502,7 @@ a.ts-link {
   border-radius: 12px;
   background: rgba(12, 13, 18, 0.92);
   border: 1px solid var(--stroke-hi);
-  font-size: 14px;
+  font-size: var(--fs-subhead);
   white-space: nowrap;
   transform: translate(-50%, -125%);
   z-index: 2;
@@ -5518,7 +5536,7 @@ a.ts-link {
   background: rgba(255, 255, 255, 0.08);
 }
 .prow .nm2 b {
-  font-size: 15px;
+  font-size: var(--fs-body);
 }
 .prow svg {
   width: 60px;
@@ -5533,12 +5551,12 @@ a.ts-link {
   line-height: 1.4;
 }
 .prow .pv b {
-  font-size: 15.5px;
-  font-weight: 500;
+  font-size: var(--fs-body);
+  font-weight: var(--fw-medium);
   font-variant-numeric: tabular-nums;
 }
 .prow .pv small {
-  font-size: 12.5px;
+  font-size: var(--fs-caption);
   font-variant-numeric: tabular-nums;
 }
 
@@ -5553,8 +5571,8 @@ a.ts-link {
   display: grid;
   place-items: center;
   font-style: normal;
-  font-size: 12px;
-  font-weight: 700;
+  font-size: var(--fs-caption);
+  font-weight: var(--fw-semibold);
   color: #fff;
 }
 .rw.up2 {
@@ -5603,7 +5621,7 @@ a.ts-link {
   align-items: center;
   gap: 10px;
   padding-inline: 8px;
-  font-size: 15px;
+  font-size: var(--fs-body);
   color: var(--ink-2);
 }
 .pend b {
@@ -5611,7 +5629,7 @@ a.ts-link {
   color: #0b1a0b;
   border-radius: 99px;
   padding: 0 9px;
-  font-size: 14px;
+  font-size: var(--fs-subhead);
 }
 .chart.spend {
   margin-top: 2px;
@@ -5645,8 +5663,8 @@ a.ts-link {
 }
 .tabs button {
   font: inherit;
-  font-size: 16px;
-  font-weight: 500;
+  font-size: var(--fs-callout);
+  font-weight: var(--fw-medium);
   padding: 0 16px;
   border: 0;
   border-radius: 999px;
@@ -5676,7 +5694,7 @@ a.ts-link {
   border-radius: 999px;
   display: grid;
   place-items: center;
-  font-size: 12px;
+  font-size: var(--fs-caption);
   background: rgba(255, 255, 255, 0.12);
 }
 .tabs button[aria-selected="true"] .n {
@@ -5688,7 +5706,7 @@ a.ts-link {
   padding: 2px;
 }
 .tabs.sm button {
-  font-size: 14px;
+  font-size: var(--fs-subhead);
   padding: 0 14px;
 }
 /* sharing the card's whole width */
@@ -5707,8 +5725,8 @@ a.ts-link {
   padding: 0 8px;
   border-radius: 999px;
   border: 1px solid var(--stroke-hi);
-  font-size: 11px;
-  font-weight: 400;
+  font-size: var(--fs-caption);
+  font-weight: var(--fw-regular);
   line-height: 18px;
   color: var(--ink-3);
   white-space: nowrap;
@@ -5719,7 +5737,7 @@ a.ts-link {
   cursor: pointer;
 }
 .tk-i.ad b {
-  font-weight: 600;
+  font-weight: var(--fw-semibold);
 }
 .tk-i.ad .tag {
   color: rgba(242, 201, 76, 0.8);
@@ -5730,7 +5748,7 @@ a.ts-link {
 }
 .mh .ml {
   margin-inline-start: auto;
-  font-size: 13px;
+  font-size: var(--fs-footnote);
   color: var(--ink-3);
   text-decoration: none;
 }
@@ -5747,7 +5765,7 @@ a.ts-link {
 }
 .news .card-h .ml {
   margin-inline-start: auto;
-  font-size: 14px;
+  font-size: var(--fs-subhead);
   color: var(--ink-2);
   text-decoration: none;
 }
@@ -5771,7 +5789,7 @@ a.ts-link {
 .kind {
   padding: 0 10px;
   border-radius: 8px;
-  font-size: 12px;
+  font-size: var(--fs-caption);
   line-height: 22px;
   background: rgba(255, 255, 255, 0.08);
   color: var(--ink-2);
@@ -5807,7 +5825,7 @@ a.ts-link {
   margin: 0;
 }
 .ncard .nf small {
-  font-size: 12px;
+  font-size: var(--fs-caption);
   color: var(--ink-3);
   white-space: nowrap;
 }
@@ -5832,7 +5850,7 @@ a.ts-link {
 .chart .legend span {
   padding: 0 10px;
   border-radius: 8px;
-  font-size: 12px;
+  font-size: var(--fs-caption);
   line-height: 22px;
   color: var(--ink-2);
   background: rgba(255, 255, 255, 0.08);
@@ -5847,14 +5865,14 @@ a.ts-link {
   padding-top: 4px;
 }
 .chart .axis small {
-  font-size: 12px;
+  font-size: var(--fs-caption);
   color: var(--ink-3);
 }
 .rw.cat2 {
   grid-template-columns: 10px minmax(0, 1fr) auto 64px 36px;
 }
 .rw.cat2 .bd {
-  font-size: 12px;
+  font-size: var(--fs-caption);
   color: var(--ink-3);
   text-align: start;
 }
@@ -5884,7 +5902,7 @@ a.ts-link {
   margin-top: 6px;
   padding: 6px 10px;
   border-radius: 10px;
-  font-size: 13.5px;
+  font-size: var(--fs-footnote);
   line-height: 1.7;
   color: var(--amber);
   background: rgba(242, 201, 76, 0.1);
@@ -5903,12 +5921,12 @@ a.ts-link {
   border: 1px dashed var(--stroke-hi);
 }
 .spcard b {
-  font-size: 14.5px;
-  font-weight: 600;
+  font-size: var(--fs-subhead);
+  font-weight: var(--fw-semibold);
   line-height: 1.6;
 }
 .spcard small {
-  font-size: 12.5px;
+  font-size: var(--fs-caption);
   color: var(--ink-2);
 }
 .spcard .tag {
@@ -5922,7 +5940,7 @@ a.ts-link {
   margin-inline-start: auto;
   flex: none;
   overflow: visible;
-  font-size: 11px;
+  font-size: var(--fs-caption);
   color: var(--ink-3);
 }
 
@@ -5943,8 +5961,8 @@ a.ts-link {
   border-radius: 12px;
   display: grid;
   place-items: center;
-  font-size: 12px;
-  font-weight: 700;
+  font-size: var(--fs-caption);
+  font-weight: var(--fw-semibold);
   color: #fff;
 }
 .spev > div {
@@ -5954,20 +5972,20 @@ a.ts-link {
   min-width: 0;
 }
 .spev b {
-  font-size: 15px;
-  font-weight: 600;
+  font-size: var(--fs-body);
+  font-weight: var(--fw-semibold);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 .spev span {
-  font-size: 13px;
+  font-size: var(--fs-footnote);
   color: var(--ink-2);
 }
 .spev button,
 .spev .btn {
   margin-inline-start: auto;
-  font-size: 13px;
+  font-size: var(--fs-footnote);
   border-radius: 999px;
   border: 1px solid var(--stroke-hi);
   background: none;
@@ -5986,7 +6004,7 @@ a.ts-link {
   padding: 2px 10px 2px 8px;
   background: none;
   color: var(--ink-2);
-  font-size: 13px;
+  font-size: var(--fs-footnote);
   display: flex;
   gap: 8px;
   align-items: center;
@@ -5998,7 +6016,7 @@ a.ts-link {
   gap: 10px;
   padding: 7px 14px;
   border-top: 1px solid var(--stroke);
-  font-size: 14.5px;
+  font-size: var(--fs-subhead);
   color: var(--ink-2);
   text-decoration: none;
 }
@@ -6022,15 +6040,15 @@ a.ts-link {
   gap: 4px;
 }
 .tpl .sec {
-  font-size: 13px;
+  font-size: var(--fs-footnote);
   color: var(--ink-3);
 }
 .tpl b {
-  font-size: 16px;
-  font-weight: 600;
+  font-size: var(--fs-callout);
+  font-weight: var(--fw-semibold);
 }
 .tpl > span:not(.sec) {
-  font-size: 13px;
+  font-size: var(--fs-footnote);
   color: var(--ink-2);
   display: flex;
   gap: 6px;
@@ -6039,7 +6057,7 @@ a.ts-link {
 }
 .tpl .chip {
   align-self: flex-start;
-  font-size: 14px;
+  font-size: var(--fs-subhead);
   padding: 3px 14px;
   margin-top: 4px;
 }
@@ -6050,34 +6068,34 @@ a.ts-link {
 /* the quick panel's words, a size up so they read as the rest of the page's */
 .qpanel .qp-k {
   width: 34px;
-  font-size: 15px;
+  font-size: var(--fs-body);
 }
 .qpanel .tabs.sm {
   flex: 1;
   height: 44px;
 }
 .qpanel .tabs.sm button {
-  font-size: 16px;
+  font-size: var(--fs-callout);
 }
 .qpanel .ts-chips button {
   height: 36px;
   padding: 0 16px;
-  font-size: 15px;
+  font-size: var(--fs-body);
 }
 .qpanel .qp-h {
-  font-size: 15px;
+  font-size: var(--fs-body);
 }
 .qpanel .qt b {
-  font-size: 17px;
+  font-size: var(--fs-headline);
 }
 .qpanel .qt small {
-  font-size: 14px;
+  font-size: var(--fs-subhead);
 }
 .qpanel .qp-none {
-  font-size: 15px;
+  font-size: var(--fs-body);
 }
 .qpanel .ts-notes {
-  font-size: 16px;
+  font-size: var(--fs-callout);
 }
 
 /* «شخصی‌سازی»: the city and topics the person may give, as small pills that wrap */
@@ -6089,7 +6107,7 @@ a.ts-link {
 }
 .ab-chips > span {
   width: 52px;
-  font-size: 14px;
+  font-size: var(--fs-subhead);
   color: var(--ink-3);
 }
 .ab-chips button {
@@ -6100,7 +6118,7 @@ a.ts-link {
   background: rgba(255, 255, 255, 0.06);
   color: var(--ink-2);
   font: inherit;
-  font-size: 14px;
+  font-size: var(--fs-subhead);
   cursor: pointer;
   transition:
     background 0.2s,
@@ -6145,13 +6163,13 @@ a.ts-link {
 }
 .cs h3 {
   margin: 0;
-  font-size: 16.5px;
-  font-weight: 600;
+  font-size: var(--fs-callout);
+  font-weight: var(--fw-semibold);
   color: var(--ink);
 }
 .cs .chint {
   margin: 0;
-  font-size: 13.5px;
+  font-size: var(--fs-footnote);
   line-height: 1.8;
   color: var(--ink-3);
 }
@@ -6192,7 +6210,7 @@ a.ts-link {
   background: none;
   color: var(--ink);
   font: inherit;
-  font-size: 15.5px;
+  font-size: var(--fs-body);
 }
 .cp-list {
   list-style: none;
@@ -6211,7 +6229,7 @@ a.ts-link {
   background: none;
   color: var(--ink-2);
   font: inherit;
-  font-size: 15px;
+  font-size: var(--fs-body);
   cursor: pointer;
 }
 .cp-list button:hover,
@@ -6235,7 +6253,7 @@ a.ts-link {
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.16);
   color: #fff;
-  font-size: 14.5px;
+  font-size: var(--fs-subhead);
 }
 .cp-chip button {
   width: 18px;
@@ -6338,7 +6356,7 @@ a.ts-link {
   border-radius: 0;
   padding: 0;
   position: relative;
-  font-size: 16px;
+  font-size: var(--fs-callout);
   color: var(--ink-3);
 }
 .tabs.line button[aria-selected="true"] {
@@ -6369,7 +6387,7 @@ a.ts-link {
 }
 .cat-hint {
   margin: -6px 0 0;
-  font-size: 14px;
+  font-size: var(--fs-subhead);
   color: var(--ink-3);
 }
 .cat-field {
@@ -6399,7 +6417,7 @@ a.ts-link {
   background: none;
   color: var(--ink);
   font: inherit;
-  font-size: 17px;
+  font-size: var(--fs-headline);
 }
 /* the colours on one sideways line that scrolls, as in the app's list sheet */
 .cat-colors {
@@ -6434,7 +6452,7 @@ a.ts-link {
 }
 .modal.cat .cta {
   height: 48px;
-  font-size: 16px;
+  font-size: var(--fs-callout);
 }
 .calnew {
   display: flex;
@@ -6445,7 +6463,7 @@ a.ts-link {
   background: none;
   color: var(--ink-3);
   font: inherit;
-  font-size: 14.5px;
+  font-size: var(--fs-subhead);
   cursor: pointer;
 }
 .calnew:hover {
@@ -6499,7 +6517,7 @@ a.ts-link {
 }
 .pf-body p {
   margin: 0;
-  font-size: 16px;
+  font-size: var(--fs-callout);
   line-height: 1.9;
   color: var(--ink-2);
 }
@@ -6521,8 +6539,8 @@ a.ts-link {
 }
 .news-s h2 {
   margin: 0;
-  font-size: 26px;
-  font-weight: 600;
+  font-size: var(--fs-title1);
+  font-weight: var(--fw-semibold);
 }
 .nw-b {
   flex: none;
@@ -6534,9 +6552,9 @@ a.ts-link {
   display: grid;
   place-items: center;
   color: #fff;
-  font-size: 12px;
+  font-size: var(--fs-caption);
   font-style: normal;
-  font-weight: 700;
+  font-weight: var(--fw-semibold);
 }
 .nw-src {
   padding: 24px 22px 18px;
@@ -6545,7 +6563,7 @@ a.ts-link {
 }
 .nw-lead {
   margin: 0 0 8px;
-  font-size: 15px;
+  font-size: var(--fs-body);
   line-height: 1.9;
   color: var(--ink-2);
 }
@@ -6560,8 +6578,8 @@ a.ts-link {
 }
 .nw-group h4 {
   margin: 10px 4px 4px;
-  font-size: 14px;
-  font-weight: 400;
+  font-size: var(--fs-subhead);
+  font-weight: var(--fw-regular);
   color: var(--ink-3);
 }
 .nw-srow {
@@ -6580,7 +6598,7 @@ a.ts-link {
   border-radius: 18px;
   background: none;
   color: var(--ink);
-  font-size: 17px;
+  font-size: var(--fs-headline);
   text-align: start;
   cursor: pointer;
 }
@@ -6590,7 +6608,7 @@ a.ts-link {
 .nw-srow .nw-b {
   width: 38px;
   height: 38px;
-  font-size: 17px;
+  font-size: var(--fs-headline);
 }
 .nw-srow span:not(.sw) {
   display: flex;
@@ -6599,7 +6617,7 @@ a.ts-link {
   min-width: 0;
 }
 .nw-srow small {
-  font-size: 12.5px;
+  font-size: var(--fs-caption);
   color: var(--ink-3);
 }
 .nw-srow button[aria-pressed="true"] .sw {
@@ -6636,7 +6654,7 @@ a.ts-link {
   border-radius: 20px;
   background: none;
   color: var(--ink-2);
-  font-size: 15px;
+  font-size: var(--fs-body);
   cursor: pointer;
 }
 .nw-add:hover {
@@ -6660,17 +6678,17 @@ a.ts-link {
   background: rgba(255, 255, 255, 0.08);
   color: var(--ink);
   font: inherit;
-  font-size: 14px;
+  font-size: var(--fs-subhead);
 }
 .nw-add .cta {
   height: 40px;
   padding-inline: 18px;
-  font-size: 14px;
+  font-size: var(--fs-subhead);
 }
 .nw-add p {
   flex-basis: 100%;
   margin: 0;
-  font-size: 13px;
+  font-size: var(--fs-footnote);
   color: #f0817a;
 }
 
@@ -6755,7 +6773,7 @@ a.ts-link {
   background: none;
   color: var(--ink);
   font: inherit;
-  font-size: 17px;
+  font-size: var(--fs-headline);
 }
 .nw-chips {
   flex: none;
@@ -6768,7 +6786,7 @@ a.ts-link {
 .nw-chips .chip {
   flex: none;
   padding: 8px 18px;
-  font-size: 15px;
+  font-size: var(--fs-body);
   background: none;
   border-color: rgba(255, 255, 255, 0.14);
   color: var(--ink-2);
@@ -6859,12 +6877,12 @@ a.ts-link {
   padding: 18px 22px 16px;
 }
 .nw-htx > b {
-  font-size: 24px;
-  font-weight: 600;
+  font-size: var(--fs-title1);
+  font-weight: var(--fw-semibold);
   line-height: 1.55;
 }
 .nw-sum {
-  font-size: 14.5px;
+  font-size: var(--fs-subhead);
   line-height: 1.85;
   color: var(--ink-2);
   display: -webkit-box;
@@ -6876,14 +6894,14 @@ a.ts-link {
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 13px;
+  font-size: var(--fs-footnote);
 }
 .nw-meta b {
-  font-size: 14px;
-  font-weight: 600;
+  font-size: var(--fs-subhead);
+  font-weight: var(--fw-semibold);
 }
 .nw-meta small {
-  font-size: 12.5px;
+  font-size: var(--fs-caption);
   color: var(--ink-3);
 }
 .nw-meta.big .nw-b {
@@ -6891,7 +6909,7 @@ a.ts-link {
   height: 26px;
 }
 .nw-meta.big b {
-  font-size: 17px;
+  font-size: var(--fs-headline);
 }
 .nw-twins {
   display: flex;
@@ -6899,7 +6917,7 @@ a.ts-link {
   align-items: center;
   gap: 8px;
   padding: 0 22px 16px;
-  font-size: 14px;
+  font-size: var(--fs-subhead);
   color: var(--ink-3);
 }
 .nw-twins .chip {
@@ -6907,13 +6925,13 @@ a.ts-link {
   align-items: center;
   gap: 8px;
   padding: 4px 12px 4px 6px;
-  font-size: 14px;
+  font-size: var(--fs-subhead);
   text-decoration: none;
 }
 .nw-twins .nw-b {
   width: 20px;
   height: 20px;
-  font-size: 11px;
+  font-size: var(--fs-caption);
 }
 .nw-card > a {
   display: flex;
@@ -6936,8 +6954,8 @@ a.ts-link {
   padding-inline-end: 34px;
 }
 .nw-body > b {
-  font-size: 17px;
-  font-weight: 600;
+  font-size: var(--fs-headline);
+  font-weight: var(--fw-semibold);
   line-height: 1.6;
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -6945,7 +6963,7 @@ a.ts-link {
   overflow: hidden;
 }
 .nw-body .nw-sum {
-  font-size: 13.5px;
+  font-size: var(--fs-footnote);
   line-height: 1.75;
 }
 .nw-top:hover,
@@ -6955,7 +6973,7 @@ a.ts-link {
 .nw-top.read b,
 .nw-card.read b {
   color: var(--ink-2);
-  font-weight: 500;
+  font-weight: var(--fw-medium);
 }
 .nw-ad {
   border-style: dashed;
@@ -6963,7 +6981,7 @@ a.ts-link {
 }
 .nw-ad .nw-meta .chip {
   padding: 2px 12px;
-  font-size: 13px;
+  font-size: var(--fs-footnote);
   cursor: default;
 }
 .nw-save {
@@ -7026,7 +7044,7 @@ a.ts-link {
   scrollbar-width: none;
 }
 .nw-hot h2 {
-  font-size: 19px;
+  font-size: var(--fs-title3);
 }
 .nw-hot ol {
   margin: 14px 0 0;
@@ -7047,9 +7065,9 @@ a.ts-link {
   flex: none;
   /* the rank numeral sits as far from the title as it does from the card's edge (16px, the card's padding) */
   width: 16px;
-  font-size: 19px;
+  font-size: var(--fs-title3);
   font-style: normal;
-  font-weight: 600;
+  font-weight: var(--fw-semibold);
   color: var(--ink-3);
 }
 .nw-hot li span {
@@ -7059,8 +7077,8 @@ a.ts-link {
   min-width: 0;
 }
 .nw-hot li b {
-  font-size: 14.5px;
-  font-weight: 500;
+  font-size: var(--fs-subhead);
+  font-weight: var(--fw-medium);
   line-height: 1.65;
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -7068,7 +7086,7 @@ a.ts-link {
   overflow: hidden;
 }
 .nw-hot li small {
-  font-size: 12.5px;
+  font-size: var(--fs-caption);
   color: var(--ink-3);
 }
 .nw-hot li a:hover b {
@@ -7085,12 +7103,12 @@ a.ts-link {
 }
 .nw-saved h3 {
   margin: 0;
-  font-size: 17px;
-  font-weight: 600;
+  font-size: var(--fs-headline);
+  font-weight: var(--fw-semibold);
 }
 .nw-saved p {
   margin: 0 0 4px;
-  font-size: 13px;
+  font-size: var(--fs-footnote);
   line-height: 1.8;
   color: var(--ink-2);
 }
@@ -7099,7 +7117,7 @@ a.ts-link {
   background: none;
   padding: 4px 0;
   color: var(--ink);
-  font-size: 13.5px;
+  font-size: var(--fs-footnote);
   text-align: start;
   white-space: nowrap;
   overflow: hidden;
@@ -7225,4 +7243,385 @@ a.ts-link {
   width: 100%;
   height: 100%;
   mix-blend-mode: plus-lighter;
+}
+
+/* ---------- a web page kept on a task (noghte/taskLink.ts) ---------- */
+.ts-fav {
+  flex: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+}
+.ts-linkin {
+  flex: 1;
+  min-width: 0;
+  height: 32px;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  background: none;
+  color: var(--ink);
+  font: inherit;
+  font-size: var(--fs-body);
+  text-align: right;
+}
+.ts-linkin::placeholder {
+  color: var(--ink-3);
+}
+.td-site {
+  flex: none;
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  display: grid;
+  place-items: center;
+  background: rgba(255, 255, 255, 0.08);
+}
+.td-site:hover {
+  background: rgba(255, 255, 255, 0.16);
+}
+.td-site img {
+  width: 16px;
+  height: 16px;
+  border-radius: 3px;
+}
+
+/* «قیمت روز» with every price our server has: the head, the chart and the tabs stay; the list scrolls */
+.card.mkt {
+  overflow: hidden;
+}
+.mkt .plist {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.14) transparent;
+  padding-bottom: 6px;
+  mask-image: linear-gradient(to bottom, #000 calc(100% - 22px), transparent);
+}
+
+/* ---------- updates (update.ts): a bar at the top, and the steps for this kind of install ---------- */
+.upd {
+  position: absolute;
+  z-index: 31;
+  top: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  max-width: calc(100% - 32px);
+  padding: 6px 6px 6px 16px;
+  padding-inline-start: 18px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--bgc) 78%, #fff);
+  border: 1px solid var(--stroke-hi);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+  font-size: var(--fs-subhead);
+  white-space: nowrap;
+  animation: fade 0.25s ease both;
+}
+.upd > span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.upd.done {
+  padding: 10px 18px;
+  gap: 8px;
+}
+.upd.done .ico {
+  width: 16px;
+  height: 16px;
+  color: var(--noghte);
+}
+.upd-go {
+  flex: none;
+  height: 32px;
+  padding: 0 14px;
+  border: 0;
+  border-radius: 999px;
+  background: #fff;
+  color: #0b0d12;
+  font: inherit;
+  font-size: var(--fs-subhead);
+  font-weight: var(--fw-semibold);
+  cursor: pointer;
+}
+.upd-x {
+  flex: none;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: none;
+  color: var(--ink-3);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+}
+.upd-x:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--ink);
+}
+.upd-x .ico {
+  width: 15px;
+  height: 15px;
+}
+.modal.upd-guide {
+  width: min(460px, calc((100vw / var(--z)) - 32px));
+  gap: 14px;
+}
+.upd-guide .lead,
+.upd-guide .note {
+  margin: 0;
+  font-size: var(--fs-subhead);
+  line-height: 1.8;
+  color: var(--ink-2);
+}
+.upd-guide .note {
+  color: #f0b37a;
+}
+.upd-guide .steps {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: step;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.upd-guide .steps li {
+  counter-increment: step;
+  display: grid;
+  grid-template-columns: 28px 1fr;
+  column-gap: 12px;
+  row-gap: 2px;
+}
+.upd-guide .steps li::before {
+  content: counter(step, persian);
+  grid-row: span 2;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: rgba(255, 255, 255, 0.1);
+  font-size: var(--fs-subhead);
+  font-weight: var(--fw-semibold);
+}
+.upd-guide .steps b {
+  font-size: var(--fs-body);
+  font-weight: var(--fw-semibold);
+}
+.upd-guide .steps span {
+  font-size: var(--fs-footnote);
+  line-height: 1.7;
+  color: var(--ink-3);
+}
+.upd-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.upd-actions .cta {
+  text-decoration: none;
+  font-size: var(--fs-body);
+}
+.cta.ghost {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--ink);
+}
+/* the dialog's × across from its title, at the far end of the head */
+.upd-guide .card-h .rbtn {
+  margin-inline-start: auto;
+}
+
+/* ---------- the money slide's rows, aligned (2026-11-20, the user: «اینها بهم ریخته ست … از نظر
+   الاینمنت هم درستش کن») ----------
+   - a name and its second line (a card number, the person, the subcategories) stack, so a final «ی»
+     or «ن» never runs into the next word and both get the full width;
+   - every amount sits in one column of the same width, its figures in one width each;
+   - the category's picture has a column as wide as itself. */
+.rw {
+  min-height: 44px;
+}
+.rw .nm {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  line-height: 1.4;
+}
+.rw .nm small {
+  margin: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-size: var(--fs-caption);
+}
+.rw .am {
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.rw .tg {
+  height: 22px;
+  line-height: 22px;
+  font-size: var(--fs-caption);
+  white-space: nowrap;
+}
+.rw.up2 {
+  grid-template-columns: 52px minmax(0, 1fr) 64px 96px;
+}
+.rw.up2 .tg {
+  justify-self: center;
+}
+.rw.ob {
+  grid-template-columns: 52px minmax(0, 1fr) 96px;
+}
+.rw.ob .tg {
+  justify-self: start;
+}
+.rw.acc {
+  grid-template-columns: 26px minmax(0, 1fr) 96px;
+}
+.rw.cat2 {
+  grid-template-columns: 26px minmax(0, 1fr) 52px 64px 36px;
+}
+.rw.cat2 .am {
+  text-align: left;
+}
+.rw.cat2 .bd {
+  text-align: left;
+  font-variant-numeric: tabular-nums;
+}
+.rows.tx .rw {
+  grid-template-columns: 52px minmax(0, 1fr) 96px;
+}
+
+/* the browser draws <b> and <strong> in bold (700): here they are semibold at most */
+b,
+strong {
+  font-weight: var(--fw-semibold);
+}
+
+/* ---------- the welcome's language step and the QR link (home/SignIn.tsx) ---------- */
+.dia .langs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.dia .lang {
+  height: 72px;
+  border-radius: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.05);
+  color: #fff;
+  font: inherit;
+  font-size: var(--fs-title3);
+  font-weight: var(--fw-medium);
+  cursor: pointer;
+}
+.dia .lang:hover {
+  background: rgba(255, 255, 255, 0.09);
+}
+.dia .lang[aria-checked="true"] {
+  background: rgba(255, 255, 255, 0.16);
+  border-color: rgba(255, 255, 255, 0.6);
+}
+.dia .link-qr {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  padding: 18px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+.dia .link-qr > .qr,
+.dia .link-qr > svg,
+.dia .link-qr > .qr-wait {
+  flex: none;
+}
+.dia .qr-wait {
+  display: block;
+  width: 148px;
+  height: 148px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.08);
+  animation: qrwait 1.2s ease-in-out infinite alternate;
+}
+@keyframes qrwait {
+  to {
+    background: rgba(255, 255, 255, 0.16);
+  }
+}
+.dia .link-steps {
+  margin: 0;
+  padding-inline-start: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  font-size: var(--fs-body);
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.82);
+}
+/* linking is the way; the phone number the second one, so its button steps back */
+.dia-foot .next.second {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  font-size: var(--fs-callout);
+  font-weight: var(--fw-medium);
+}
+.dia-foot .next.second:hover {
+  background: rgba(255, 255, 255, 0.16);
+}
+.dia-foot .skip {
+  height: 58px;
+  padding: 0 20px;
+  border: 0;
+  border-radius: 16px;
+  background: none;
+  color: rgba(255, 255, 255, 0.7);
+  font: inherit;
+  font-size: var(--fs-callout);
+  cursor: pointer;
+}
+.dia-foot .skip:hover {
+  color: #fff;
+}
+/* arrows drawn for right-to-left turn round in a left-to-right page */
+[dir="ltr"] .flip-dir {
+  transform: scaleX(-1);
+}
+.dia .link-qr .qr {
+  width: 148px;
+  height: 148px;
+}
+.dia-foot .next.second {
+  white-space: nowrap;
+  padding-inline: 18px;
+}
+.dia-foot .skip {
+  white-space: nowrap;
+}
+/* numbered lists count in the page's own digits */
+:lang(fa) ol {
+  list-style-type: persian;
+}
+:lang(en) ol {
+  list-style-type: decimal;
+}
+:lang(en) .upd-guide .steps li::before {
+  content: counter(step);
+}
+/* in English, Latin letters and digits come from Inter: the Yekan Bakh files are its «Fanum» build,
+   which draws Latin digits as Persian ones */
+:root:lang(en) {
+  --font: "Inter", "Yekan Bakh", "Vazirmatn", Tahoma, system-ui, sans-serif;
+}
+:lang(en) .money-s,
+:lang(en) .money-s input,
+:lang(en) .money-s button {
+  font-family: var(--font);
 }

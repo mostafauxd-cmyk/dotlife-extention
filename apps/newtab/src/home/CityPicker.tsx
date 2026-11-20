@@ -1,6 +1,7 @@
 import { useState } from "react";
 
 import { useSettings } from "../hooks";
+import { t } from "../i18n";
 import { CITIES, findCities, flat, POPULAR_CITIES } from "../cities";
 import { updateSettings } from "../settings";
 import { Icon } from "../ui/Icon";
@@ -27,7 +28,7 @@ export function CityPicker() {
           {s.city}
           <button
             type="button"
-            aria-label={`برداشتن ${s.city}`}
+            aria-label={t("برداشتن {city}", { city: s.city })}
             onClick={() => {
               updateSettings({ city: null });
             }}
@@ -44,9 +45,9 @@ export function CityPicker() {
         <Icon name="search" />
         <input
           value={q}
-          placeholder="شهرت را بنویس…"
+          placeholder={t("شهرت را بنویس…")}
           autoComplete="off"
-          aria-label="شهر"
+          aria-label={t("شهر")}
           onChange={(e) => {
             setQ(e.target.value);
           }}
@@ -60,7 +61,7 @@ export function CityPicker() {
         />
       </label>
       {q.trim() === "" ? (
-        <div className="ab-chips" role="group" aria-label="شهرهای پرتکرار">
+        <div className="ab-chips" role="group" aria-label={t("شهرهای پرتکرار")}>
           {POPULAR_CITIES.map((c) => (
             <button
               key={c}
@@ -74,7 +75,7 @@ export function CityPicker() {
           ))}
         </div>
       ) : (
-        <ul className="cp-list" role="listbox" aria-label="شهرها">
+        <ul className="cp-list" role="listbox" aria-label={t("شهرها")}>
           {found.map((c) => (
             <li key={c}>
               <button
@@ -100,7 +101,7 @@ export function CityPicker() {
                   pick(q.trim());
                 }}
               >
-                افزودن «{q.trim()}»
+                {t("افزودن «{city}»", { city: q.trim() })}
               </button>
             </li>
           )}

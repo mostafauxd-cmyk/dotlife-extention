@@ -27,10 +27,18 @@ const OURS: Readonly<Record<string, string>> = {
   mesghal: "mesghal",
   coin_emami: "coin.emami",
   coin_half: "coin.half",
+  coin_bahar: "coin.bahar",
+  coin_quarter: "coin.quarter",
+  coin_grami: "coin.gram",
   usd: "usd",
   eur: "eur",
   gbp: "gbp",
   aed: "aed",
+  try: "try",
+  cny: "cny",
+  cad: "cad",
+  aud: "aud",
+  chf: "chf",
   usdt: "usdt",
 };
 

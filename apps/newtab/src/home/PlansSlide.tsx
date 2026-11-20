@@ -19,6 +19,7 @@ import {
 } from "@dotlife/tasks";
 
 import { useNow, useRecordsVersion, useSettings } from "../hooks";
+import { t } from "../i18n";
 import {
   addTask,
   taskLists,
@@ -33,9 +34,10 @@ import { updateSettings } from "../settings";
 import { occasionsOn } from "../today";
 import { fa } from "../ui/fa";
 import { Icon } from "../ui/Icon";
-import { AD_LABEL, useAd } from "../ads";
+import { adLabel, useAd } from "../ads";
 import { Tabs } from "../ui/Tabs";
 import { openNewCategory } from "./NewCategory";
+import { SiteLink } from "./SiteLink";
 import { openEditor } from "./TaskEditor";
 import {
   connectGoogle,
@@ -83,7 +85,7 @@ const weekStart = (d: LocalDate): LocalDate => addDays(d, -weekdayOf(d));
 const clamp = (v: number, lo: number, hi: number): number => Math.min(hi, Math.max(lo, v));
 const dayMonth = (d: LocalDate): string => {
   const s = solarOf(d);
-  return `${fa(String(s.day))} ${monthName(s)}`;
+  return `${fa(String(s.day))} ${t(monthName(s))}`;
 };
 const hhmm = (m: number): string => fa(minutesToTime(clamp(m, 0, DAY_MIN - 1)));
 
@@ -197,28 +199,31 @@ export function PlansSlide() {
   const sLast = days.at(-1) ?? anchor;
   const sub =
     view === "todo"
-      ? `${fa(String(openCount))} کار باز`
+      ? t("{n} کار باز", { n: fa(String(openCount)) })
       : span === 1
-        ? `${WEEKDAY_NAMES_FA[weekdayOf(first)] ?? ""} ${dayMonth(first)}`
-        : `${span === 7 ? "هفته‌ی " : ""}${dayMonth(first)} تا ${dayMonth(sLast)}`;
+        ? `${t(WEEKDAY_NAMES_FA[weekdayOf(first)] ?? "")} ${dayMonth(first)}`
+        : t(span === 7 ? "هفته‌ی {from} تا {to}" : "{from} تا {to}", {
+            from: dayMonth(first),
+            to: dayMonth(sLast),
+          });
 
   return (
     <div className={view === "todo" ? "s-pad plans-s todo-on" : "s-pad plans-s"}>
       <div className="pbar">
         <div className="ptitle">
           <b>
-            {monthName(sFirst)} {fa(String(sFirst.year))}
+            {t(monthName(sFirst))} {fa(String(sFirst.year))}
           </b>
           <span>{sub}</span>
         </div>
         <Tabs
-          label="نما"
+          label={t("نما")}
           width={250}
           value={view}
           onChange={setView}
           items={[
-            { id: "cal", label: "تقویم" },
-            { id: "todo", label: "کارها", count: fa(String(openCount)) },
+            { id: "cal", label: t("تقویم") },
+            { id: "todo", label: t("کارها"), count: fa(String(openCount)) },
           ]}
         />
         <PlanSearch tasks={allTasks} onDay={goTo} />
@@ -240,12 +245,12 @@ export function PlansSlide() {
               google.status === "on"
                 ? (google.email ?? "")
                 : google.status === "unavailable"
-                  ? "اتصال گوگل فقط در افزونه‌ی نصب‌شده در کروم کار می‌کند"
-                  : "تقویم گوگل و گوگل میت"
+                  ? t("اتصال گوگل فقط در افزونه‌ی نصب‌شده در کروم کار می‌کند")
+                  : t("تقویم گوگل و گوگل میت")
             }
             onClick={() => {
               if (google.status === "unavailable") {
-                setGHint("اتصال گوگل فقط در افزونه‌ی نصب‌شده در کروم کار می‌کند.");
+                setGHint(t("اتصال گوگل فقط در افزونه‌ی نصب‌شده در کروم کار می‌کند."));
                 return;
               }
               if (google.status === "on") {
@@ -254,7 +259,7 @@ export function PlansSlide() {
               }
               setGHint(null);
               void connectGoogle().then((ok) => {
-                if (!ok) setGHint("به گوگل وصل نشد. دوباره امتحان کن.");
+                if (!ok) setGHint(t("به گوگل وصل نشد. دوباره امتحان کن."));
               });
             }}
           >
@@ -277,10 +282,10 @@ export function PlansSlide() {
               />
             </svg>
             {google.status === "on"
-              ? "همگام با تقویم گوگل"
+              ? t("همگام با تقویم گوگل")
               : google.status === "expired"
-                ? "دوباره به گوگل وصل شو"
-                : "اتصال تقویم گوگل"}
+                ? t("دوباره به گوگل وصل شو")
+                : t("اتصال تقویم گوگل")}
           </button>
           {gHint === null ? null : (
             <span className="ghint" role="status">
@@ -298,7 +303,7 @@ export function PlansSlide() {
                   void disconnectGoogle();
                 }}
               >
-                قطع اتصال
+                {t("قطع اتصال")}
               </button>
             </span>
           )}
@@ -306,19 +311,19 @@ export function PlansSlide() {
         {view === "cal" && (
           <div className="ptools">
             <Tabs
-              label="چند روز"
+              label={t("چند روز")}
               value={span}
               onChange={setSpan}
               items={[
-                { id: 1, label: "روز" },
-                { id: 3, label: "۳ روز" },
-                { id: 7, label: "هفته" },
+                { id: 1, label: t("روز") },
+                { id: 3, label: t("۳ روز") },
+                { id: 7, label: t("هفته") },
               ]}
             />
             <button
               type="button"
               className="rbtn sm"
-              aria-label="قبلی"
+              aria-label={t("قبلی")}
               onClick={() => {
                 setAnchor(addDays(anchor, -span));
               }}
@@ -328,7 +333,7 @@ export function PlansSlide() {
             <button
               type="button"
               className="rbtn sm"
-              aria-label="بعدی"
+              aria-label={t("بعدی")}
               onClick={() => {
                 setAnchor(addDays(anchor, span));
               }}
@@ -343,7 +348,7 @@ export function PlansSlide() {
                 if (body.current !== null) body.current.scrollTop = 8 * HOUR - 6;
               }}
             >
-              امروز
+              {t("امروز")}
             </button>
           </div>
         )}
@@ -357,24 +362,25 @@ export function PlansSlide() {
           onPick={goTo}
         />
         <div className="hr" />
-        <div className="sec">مناسبت‌ها</div>
+        <div className="sec">{t("مناسبت‌ها")}</div>
         <Upcoming from={todayD} onPick={goTo} />
         <CityEvent />
         <div className="hr" />
-        <div className="sec">تقویم‌ها</div>
+        <div className="sec">{t("تقویم‌ها")}</div>
         <div className="cals">
-          <span className="cgrp">دسته‌های نقطه · همان دسته‌های اپ</span>
+          <span className="cgrp">{t("دسته‌های نقطه · همان دسته‌های اپ")}</span>
           {lists.map((l) => (
             <CalSwitch key={l.id} id={l.id} name={l.name} color={l.color} hidden={hidden} />
           ))}
           <button type="button" className="calnew" onClick={() => openNewCategory()}>
             <Icon name="plus" />
-            دسته‌ی تازه
+            {t("دسته‌ی تازه")}
           </button>
           {gcals.length > 0 && (
             <>
               <span className="cgrp">
-                تقویم گوگل{google.status === "on" && google.email ? ` · ${google.email}` : ""}
+                {t("تقویم گوگل")}
+                {google.status === "on" && google.email ? ` · ${google.email}` : ""}
               </span>
               {gcals.map((c) => (
                 <CalSwitch
@@ -387,8 +393,8 @@ export function PlansSlide() {
               ))}
             </>
           )}
-          <span className="cgrp">دیگر</span>
-          <CalSwitch id="occ" name="مناسبت‌ها" color={OCC} hidden={hidden} />
+          <span className="cgrp">{t("دیگر")}</span>
+          <CalSwitch id="occ" name={t("مناسبت‌ها")} color={OCC} hidden={hidden} />
         </div>
       </aside>
 
@@ -412,13 +418,13 @@ export function PlansSlide() {
                   setSpan(1);
                 }}
               >
-                <span className="wn">{WEEKDAY_NAMES_FA[weekdayOf(d)]}</span>
+                <span className="wn">{t(WEEKDAY_NAMES_FA[weekdayOf(d)] ?? "")}</span>
                 <b>{fa(String(solarOf(d).day))}</b>
               </button>
             ))}
           </div>
           <div className="ad-row">
-            <span className="lbl">تمام‌روز</span>
+            <span className="lbl">{t("تمام‌روز")}</span>
             {days.map((d) => (
               <div key={d} className="acell">
                 {!hidden.has("occ") &&
@@ -610,29 +616,29 @@ function DayColumn({
         setDrag({ from: m, to: m });
       }}
     >
-      {timed.map((t) => {
-        const h = Math.max(22, y(t.end - t.start) - 2);
+      {timed.map((ev) => {
+        const h = Math.max(22, y(ev.end - ev.start) - 2);
         return (
           <div
-            key={t.key}
-            className={t.done ? "ev done" : "ev"}
+            key={ev.key}
+            className={ev.done ? "ev done" : "ev"}
             style={{
-              top: y(t.start) + 1,
+              top: y(ev.start) + 1,
               height: h,
-              insetInlineStart: `calc(${String((t.lane / t.lanes) * 100)}% + 3px)`,
-              width: `calc(${String(100 / t.lanes)}% - 6px)`,
-              background: `${t.color}33`,
-              borderColor: t.color,
+              insetInlineStart: `calc(${String((ev.lane / ev.lanes) * 100)}% + 3px)`,
+              width: `calc(${String(100 / ev.lanes)}% - 6px)`,
+              background: `${ev.color}33`,
+              borderColor: ev.color,
             }}
             onClick={() => {
-              t.open();
+              ev.open();
             }}
           >
-            <b>{t.title}</b>
-            {t.end - t.start >= 45 && (
+            <b>{ev.title}</b>
+            {ev.end - ev.start >= 45 && (
               <small>
                 <Icon name="time-circle" />
-                <bdi>{hhmm(t.start)}</bdi> تا <bdi>{hhmm(t.end)}</bdi>
+                <bdi>{hhmm(ev.start)}</bdi> {t("تا")} <bdi>{hhmm(ev.end)}</bdi>
               </small>
             )}
           </div>
@@ -645,7 +651,7 @@ function DayColumn({
         >
           <small>
             <Icon name="time-circle" />
-            <bdi>{hhmm(ghost.start)}</bdi> تا <bdi>{hhmm(ghost.end)}</bdi>
+            <bdi>{hhmm(ghost.start)}</bdi> {t("تا")} <bdi>{hhmm(ghost.end)}</bdi>
           </small>
         </div>
       )}
@@ -682,9 +688,9 @@ function TodoView({
     if (p.date === todayD) return p.time !== undefined ? fa(p.time) : "";
     const days = dateToJdn(p.date) - dateToJdn(todayD);
     if (s.kind === "range" && dateToJdn(s.start.date) <= dateToJdn(todayD) && days > 0)
-      return `تا ${WEEKDAY_NAMES_FA[weekdayOf(p.date)] ?? ""}`;
-    const t = p.time !== undefined ? ` ${fa(p.time)}` : "";
-    if (days > 0 && days < 7) return `${WEEKDAY_NAMES_FA[weekdayOf(p.date)] ?? ""}${t}`;
+      return t("تا {date}", { date: t(WEEKDAY_NAMES_FA[weekdayOf(p.date)] ?? "") });
+    const at = p.time !== undefined ? ` ${fa(p.time)}` : "";
+    if (days > 0 && days < 7) return `${t(WEEKDAY_NAMES_FA[weekdayOf(p.date)] ?? "")}${at}`;
     return dayMonth(p.date);
   };
   const row = (o: Occurrence, late = false): Row | null => {
@@ -738,7 +744,7 @@ function TodoView({
               setOnly(null);
             }}
           >
-            همه <small>{fa(String(openIn(null)))}</small>
+            {t("همه")} <small>{fa(String(openIn(null)))}</small>
           </button>
           {lists.map((l) => (
             <button
@@ -756,8 +762,8 @@ function TodoView({
           <button
             type="button"
             className="tdnew"
-            aria-label="دسته‌ی تازه"
-            title="دسته‌ی تازه"
+            aria-label={t("دسته‌ی تازه")}
+            title={t("دسته‌ی تازه")}
             onClick={() => {
               openNewCategory((l) => {
                 setOnly(l.id);
@@ -779,25 +785,25 @@ function TodoView({
           <Icon name="plus" />
           <input
             value={draft}
-            placeholder="کار تازه… (Enter)"
+            placeholder={t("کار تازه… (Enter)")}
             autoComplete="off"
-            aria-label="کار تازه"
+            aria-label={t("کار تازه")}
             onChange={(e) => {
               setDraft(e.target.value);
             }}
           />
-          <span className="td-in">در «{target?.name ?? "شخصی"}»</span>
+          <span className="td-in">{t("در «{list}»", { list: target?.name ?? t("شخصی") })}</span>
         </form>
       </div>
       <div className="td-list">
         {sections.every(([, , rs]) => rs.length === 0) && doneCount === 0 ? (
-          <p className="td-none">کاری در این دسته نیست.</p>
+          <p className="td-none">{t("کاری در این دسته نیست.")}</p>
         ) : (
           sections.map(([key, title, rs]) =>
             rs.length === 0 ? null : (
               <div key={key} className={key === "late" ? "td-sec late" : "td-sec"}>
                 <h4>
-                  {title} <small>{fa(String(rs.length))}</small>
+                  {t(title)} <small>{fa(String(rs.length))}</small>
                 </h4>
                 {rs.map((r) => {
                   const done = isDone(r);
@@ -806,7 +812,7 @@ function TodoView({
                       <button
                         type="button"
                         className="cb"
-                        aria-label={done ? "برگرداندن" : "انجام شد"}
+                        aria-label={done ? t("برگرداندن") : t("انجام شد")}
                         aria-pressed={done}
                         onClick={() => {
                           toggleTask({ occurrence: r.o, task: r.task, late: r.late });
@@ -827,6 +833,7 @@ function TodoView({
                       >
                         {r.o?.title ?? r.task.title}
                       </button>
+                      <SiteLink notes={r.task.notes} />
                       <span className={r.late ? "m late" : "m"}>{r.meta}</span>
                     </div>
                   );
@@ -843,7 +850,9 @@ function TodoView({
               setShowDone(!showDone);
             }}
           >
-            {showDone ? "پنهان کردن" : "نمایش"} {fa(String(doneCount))} انجام‌شده
+            {t(showDone ? "پنهان کردن {n} انجام‌شده" : "نمایش {n} انجام‌شده", {
+              n: fa(String(doneCount)),
+            })}
           </button>
         )}
       </div>
@@ -862,18 +871,19 @@ function PlanSearch({ tasks, onDay }: { tasks: readonly Task[]; onDay: (d: Local
   const query = normalize(q);
   if (query !== "") {
     const todayD = today();
-    for (const t of tasks) {
+    for (const task of tasks) {
       if (hits.length >= 4) break;
-      if (!normalize(t.title).includes(query)) continue;
-      const o = expandOccurrences(t, { from: addDays(todayD, -60), to: addDays(todayD, 400) }).find(
-        (x) => x.originalDate >= todayD,
-      );
+      if (!normalize(task.title).includes(query)) continue;
+      const o = expandOccurrences(task, {
+        from: addDays(todayD, -60),
+        to: addDays(todayD, 400),
+      }).find((x) => x.originalDate >= todayD);
       const d = o?.originalDate;
       hits.push({
-        key: `t${t.id}`,
-        title: t.title,
+        key: `t${task.id}`,
+        title: task.title,
         color: "#8C9EFF",
-        meta: d === undefined ? "کار" : dayMonth(d),
+        meta: d === undefined ? t("کار") : dayMonth(d),
         go: () => {
           if (d !== undefined) onDay(d);
         },
@@ -901,7 +911,7 @@ function PlanSearch({ tasks, onDay }: { tasks: readonly Task[]; onDay: (d: Local
         key: `n${n.id}`,
         title: noteTitle(n),
         color: "#B79CF0",
-        meta: "یادداشت",
+        meta: t("یادداشت"),
         go: () => {
           document.getElementById("s-notes")?.scrollIntoView({ behavior: "smooth" });
         },
@@ -913,9 +923,9 @@ function PlanSearch({ tasks, onDay }: { tasks: readonly Task[]; onDay: (d: Local
       <Icon name="search" />
       <input
         value={q}
-        placeholder="جستجو"
+        placeholder={t("جستجو")}
         autoComplete="off"
-        aria-label="جستجو در برنامه‌ها، مناسبت‌ها و یادداشت‌ها"
+        aria-label={t("جستجو در برنامه‌ها، مناسبت‌ها و یادداشت‌ها")}
         onChange={(e) => {
           setQ(e.target.value);
           setOpen(true);
@@ -935,7 +945,7 @@ function PlanSearch({ tasks, onDay }: { tasks: readonly Task[]; onDay: (d: Local
           }}
         >
           {hits.length === 0 ? (
-            <div className="empty">چیزی با «{q.trim()}» پیدا نشد.</div>
+            <div className="empty">{t("چیزی با «{q}» پیدا نشد.", { q: q.trim() })}</div>
           ) : (
             hits.map((h) => (
               <button
@@ -956,7 +966,7 @@ function PlanSearch({ tasks, onDay }: { tasks: readonly Task[]; onDay: (d: Local
             <a className="sprow" href={sponsored.url} target="_blank" rel="noreferrer">
               <i />
               {sponsored.title}
-              <span className="tag">{AD_LABEL}</span>
+              <span className="tag">{adLabel()}</span>
             </a>
           )}
         </div>
@@ -996,17 +1006,17 @@ function MiniMonth({
       <div className="mini-h">
         <div className="mini-t">
           <b>
-            {monthName({ calendar: "solar-hijri", year, month, day: 1 })} {fa(String(year))}
+            {t(monthName({ calendar: "solar-hijri", year, month, day: 1 }))} {fa(String(year))}
           </b>
           <span>
-            {monthName(g0)}
-            {g0.month !== g1.month ? ` – ${monthName(g1)}` : ""} {fa(String(g1.year))}
+            {t(monthName(g0))}
+            {g0.month !== g1.month ? ` – ${t(monthName(g1))}` : ""} {fa(String(g1.year))}
           </span>
         </div>
         <span className="mini-nav">
           <button
             type="button"
-            aria-label="ماه قبل"
+            aria-label={t("ماه قبل")}
             onClick={() => {
               setOffset(offset - 1);
             }}
@@ -1015,7 +1025,7 @@ function MiniMonth({
           </button>
           <button
             type="button"
-            aria-label="ماه بعد"
+            aria-label={t("ماه بعد")}
             onClick={() => {
               setOffset(offset + 1);
             }}
@@ -1026,7 +1036,7 @@ function MiniMonth({
       </div>
       <div className="mini-wk">
         {["ش", "ی", "د", "س", "چ", "پ", "ج"].map((w) => (
-          <span key={w}>{w}</span>
+          <span key={w}>{t(w)}</span>
         ))}
       </div>
       <div className="mini-g">
@@ -1100,13 +1110,13 @@ function Upcoming({ from, onPick }: { from: LocalDate; onPick: (d: LocalDate) =>
               onPick(o.d);
             }}
           >
-            <span className="dt">{o.d === from ? "امروز" : dayMonth(o.d)}</span>
+            <span className="dt">{o.d === from ? t("امروز") : dayMonth(o.d)}</span>
             <span className={o.holiday ? "ot hol" : "ot"}>{o.title}</span>
           </button>
           {ad !== null && i === at && (
             <a className="occsp row" href={ad.url} target="_blank" rel="noreferrer">
               {ad.title}
-              <span className="tag">{AD_LABEL}</span>
+              <span className="tag">{adLabel()}</span>
             </a>
           )}
         </Fragment>
@@ -1157,7 +1167,7 @@ function CityEvent() {
         <b>{ad.title}</b>
         <span>
           {ad.line}
-          <span className="tag">{AD_LABEL}</span>
+          <span className="tag">{adLabel()}</span>
         </span>
       </div>
       <button
@@ -1168,7 +1178,7 @@ function CityEvent() {
           });
         }}
       >
-        {ad.cta ?? "+ برنامه"}
+        {ad.cta ?? t("+ برنامه")}
       </button>
     </div>
   );

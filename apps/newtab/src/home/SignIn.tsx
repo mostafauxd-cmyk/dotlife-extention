@@ -1,8 +1,17 @@
 import { useEffect, useRef, useState } from "react";
 
+import { t, LANGS } from "../i18n";
 import { getLink, installId } from "../install";
-
-import { ApiError, requestCode, verifyCode } from "../noghte/api";
+import {
+  ApiError,
+  pollLink,
+  requestCode,
+  startLink,
+  verifyCode,
+  type LinkStart,
+} from "../noghte/api";
+import { updateSettings } from "../settings";
+import { useSettings } from "../hooks";
 import { fa, latin } from "../ui/fa";
 import { Icon } from "../ui/Icon";
 import type { IconName } from "../ui/icons";
@@ -11,12 +20,17 @@ import { Painting } from "./Painting";
 import { PersonaPicker } from "./PersonaPicker";
 
 /**
- * Signing in to نقطه, or signing up: a phone number, then the code sent to it by SMS — the same
- * `/auth/code/*` as the phone app. A number with no account gets one there and then, so most people
- * coming from Chrome never see a separate sign-up. The same account is the one Paket uses.
- * Beside the form, a QR code for getting the app on the phone (counted, see `install.ts`).
- * On the very first new tab it starts one step earlier, with what an account gives and «شروع».
+ * The welcome and signing in to نقطه (2026-11-20, the user: «از ابتدا زبان رو بگیریم … سینک کردن رو
+ * از شماره موبایل در بیاریم و … ببریم اخرین گزینه و قابل اسکیپ و اونجا بهش کیوارکد نشون بدیم …
+ * اتصال با شماره موبایل گزینه دوم باشه»).
+ *
+ * The first new tab: the language → what نقطه is → personas → linking with the phone, last and
+ * skippable. Linking shows a QR code the phone app scans in its «افزونه» tab (`startLink`); the
+ * phone number and an SMS code are the second way, the same `/auth/code/*` as the app (a number
+ * with no account gets one there and then). Signing in later starts at the linking step.
  */
+
+type Step = "lang" | "hello" | "persona" | "link" | "phone" | "code";
 
 const PERKS: readonly [IconName, string, string][] = [
   ["tick-square", "کارهای گوشی، روی هر تب تازه", "تیک بزنی، روی گوشی هم تیک می‌خورد."],
@@ -39,13 +53,63 @@ const REASONS: Record<string, string> = {
 };
 const reason = (e: unknown): string =>
   e instanceof ApiError
-    ? (REASONS[e.code] ?? "مشکلی پیش آمد؛ دوباره امتحان کن.")
-    : "مشکلی پیش آمد.";
+    ? t(REASONS[e.code] ?? "مشکلی پیش آمد؛ دوباره امتحان کن.")
+    : t("مشکلی پیش آمد.");
 
 /** The wait before another code: seconds under a minute, else «۳۰:۴۱» (not «۱۸۴۱ ثانیه»). */
 function waitText(s: number): string {
-  if (s < 60) return `${fa(s)} ثانیه`;
+  if (s < 60) return t("{n} ثانیه", { n: fa(s) });
   return fa(`${String(Math.floor(s / 60))}:${String(s % 60).padStart(2, "0")}`);
+}
+
+/**
+ * The QR to scan with the phone app. A link lives a few minutes: a fresh one is asked for when it
+ * runs out. `null` while asking; `"none"` when the server has no linking yet (or is out of reach).
+ */
+function useLink(on: boolean, onLinked: () => void): LinkStart | null | "none" {
+  const [link, setLink] = useState<LinkStart | null | "none">(null);
+  const [round, setRound] = useState(0);
+  useEffect(() => {
+    if (!on) return;
+    let live = true;
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    setLink(null);
+    void startLink().then(
+      (l) => {
+        if (!live) return;
+        setLink(l);
+        const until = Date.now() + l.expiresIn * 1000;
+        const look = (): void => {
+          if (!live) return;
+          if (Date.now() > until) {
+            setRound((r) => r + 1);
+            return;
+          }
+          void pollLink(l).then(
+            (r) => {
+              if (!live) return;
+              if (r === "expired") setRound((x) => x + 1);
+              else if (r === "linked") onLinked();
+              else timer = setTimeout(look, Math.max(1, l.pollEvery) * 1000);
+            },
+            () => {
+              if (live) timer = setTimeout(look, 5000);
+            },
+          );
+        };
+        timer = setTimeout(look, Math.max(1, l.pollEvery) * 1000);
+      },
+      () => {
+        if (live) setLink("none");
+      },
+    );
+    return () => {
+      live = false;
+      clearTimeout(timer);
+    };
+    // onLinked is the dialog's own close, the same for its whole life
+  }, [on, round]);
+  return link;
 }
 
 export function SignIn({
@@ -55,7 +119,12 @@ export function SignIn({
   start?: "hello" | "phone";
   onClose: (created: boolean) => void;
 }) {
-  const [step, setStep] = useState<"hello" | "persona" | "phone" | "code">(start);
+  const steps: Step[] =
+    start === "hello"
+      ? ["lang", "hello", "persona", "link", "phone", "code"]
+      : ["link", "phone", "code"];
+  const [step, setStep] = useState<Step>(steps[0] ?? "link");
+  const s = useSettings();
   const [phone, setPhone] = useState("");
   const [code, setCode] = useState("");
   const [busy, setBusy] = useState(false);
@@ -63,6 +132,9 @@ export function SignIn({
   const [wait, setWait] = useState(0);
   const codeInput = useRef<HTMLInputElement>(null);
   const [install, setInstall] = useState<string | null>(null);
+  const link = useLink(step === "link", () => {
+    onClose(false);
+  });
 
   useEffect(() => {
     void installId().then(setInstall);
@@ -70,11 +142,11 @@ export function SignIn({
 
   useEffect(() => {
     if (wait <= 0) return;
-    const t = setTimeout(() => {
+    const tm = setTimeout(() => {
       setWait((w) => w - 1);
     }, 1000);
     return () => {
-      clearTimeout(t);
+      clearTimeout(tm);
     };
   }, [wait]);
 
@@ -108,14 +180,31 @@ export function SignIn({
     }
   };
 
+  const go = (to: Step): void => {
+    setErr("");
+    setStep(to);
+  };
+  /** The step before this one, for «برگشت» (none on the first). */
+  const prev: Step | undefined =
+    step === "code" ? "phone" : step === "phone" ? "link" : steps[steps.indexOf(step) - 1];
+
   const ready =
-    step === "hello" || step === "persona"
-      ? true
-      : step === "phone"
-        ? latin(phone).replace(/\D/g, "").length >= 10
-        : latin(code).trim().length >= 4;
-  const steps = start === "hello" ? ["hello", "persona", "phone", "code"] : ["phone", "code"];
+    step === "phone"
+      ? latin(phone).replace(/\D/g, "").length >= 10
+      : step === "code"
+        ? latin(code).trim().length >= 4
+        : true;
   const progress = `${String(((steps.indexOf(step) + 1) / steps.length) * 100)}%`;
+  const next =
+    step === "lang" || step === "persona"
+      ? t("ادامه")
+      : step === "hello"
+        ? t("شروع")
+        : step === "link"
+          ? t("با شماره‌ی موبایل وارد شو")
+          : step === "phone"
+            ? t("فرستادن کد")
+            : t("ورود");
 
   return (
     <div
@@ -129,15 +218,11 @@ export function SignIn({
           className="dia-form"
           onSubmit={(e) => {
             e.preventDefault();
-            if (step === "hello") {
-              setStep("persona");
-              return;
-            }
-            if (step === "persona") {
-              setStep("phone");
-              return;
-            }
-            if (ready && !busy) void (step === "phone" ? ask() : verify());
+            if (step === "lang") go("hello");
+            else if (step === "hello") go("persona");
+            else if (step === "persona") go("link");
+            else if (step === "link") go("phone");
+            else if (ready && !busy) void (step === "phone" ? ask() : verify());
           }}
         >
           <div className="dia-top">
@@ -147,8 +232,8 @@ export function SignIn({
             <button
               type="button"
               className="later"
-              aria-label="بعداً"
-              title="بعداً"
+              aria-label={t("بعداً")}
+              title={t("بعداً")}
               onClick={() => {
                 onClose(false);
               }}
@@ -159,21 +244,48 @@ export function SignIn({
             </button>
           </div>
           <div className="dia-body">
-            {step === "hello" ? (
+            {step === "lang" ? (
+              <>
+                <h2 id="signTitle">زبان · Language</h2>
+                <p className="lead">
+                  {t("نقطه را به چه زبانی ببینی؟ بعداً هم در شخصی‌سازی عوض می‌شود.")}
+                </p>
+                <div className="langs" role="radiogroup" aria-label="Language">
+                  {LANGS.map((l) => (
+                    <button
+                      key={l.id}
+                      type="button"
+                      role="radio"
+                      aria-checked={s.lang === l.id}
+                      dir={l.dir}
+                      lang={l.id}
+                      className="lang"
+                      onClick={() => {
+                        updateSettings({ lang: l.id });
+                      }}
+                    >
+                      {l.name}
+                    </button>
+                  ))}
+                </div>
+              </>
+            ) : step === "hello" ? (
               <>
                 <h2 id="signTitle" className="hello">
-                  نقطه،
+                  {t("نقطه،")}
                   <br />
-                  صفحه‌ی اول کروم تو
+                  {t("صفحه‌ی اول کروم تو")}
                 </h2>
-                <p className="lead">با یک حساب نقطه، این صفحه و گوشی‌ات یکی می‌شوند.</p>
+                <p className="lead">
+                  {t("کارها، یادداشت‌ها، تقویم و قیمت‌های روز، روی هر تب تازه.")}
+                </p>
                 <ul className="perks">
                   {PERKS.map(([icon, title, line]) => (
                     <li key={title}>
                       <Icon name={icon} />
                       <span>
-                        <b>{title}</b>
-                        {line}
+                        <b>{t(title)}</b>
+                        {t(line)}
                       </span>
                     </li>
                   ))}
@@ -181,22 +293,58 @@ export function SignIn({
               </>
             ) : step === "persona" ? (
               <>
-                <h2 id="signTitle">کدام بیشتر شبیه توست؟</h2>
+                <h2 id="signTitle">{t("کدام بیشتر شبیه توست؟")}</h2>
                 <p className="lead">
-                  دسترسی سریع زیر سرچ را با سایت‌های کارت می‌چینیم؛ هر وقت خواستی در شخصی‌سازی عوضش
-                  کن.
+                  {t(
+                    "هر چند تا که به تو می‌خورد را انتخاب کن؛ دسترسی سریع زیر سرچ را با سایت‌های همین کارها می‌چینیم. هر وقت خواستی در شخصی‌سازی عوضش کن.",
+                  )}
                 </p>
                 <PersonaPicker />
               </>
+            ) : step === "link" ? (
+              <>
+                <h2 id="signTitle">{t("به نقطه‌ی گوشی‌ات وصل شو")}</h2>
+                <p className="lead">
+                  {t(
+                    "کارها و یادداشت‌ها بین این صفحه و گوشی یکی می‌شوند. اختیاری است؛ بدون آن هم همه چیز روی همین مرورگر کار می‌کند.",
+                  )}
+                </p>
+                <div className="link-qr">
+                  {link !== null && link !== "none" ? (
+                    <Qr text={link.url} label={t("کد اتصال به اپ نقطه")} />
+                  ) : link === null ? (
+                    <span className="qr-wait" aria-label={t("در حال ساختن کد…")} />
+                  ) : install !== null ? (
+                    <Qr text={getLink("noghte", "signin", install)} label={t("کد نصب نقطه")} />
+                  ) : (
+                    <span className="qr-wait" />
+                  )}
+                  <ol className="link-steps">
+                    {link === "none" ? (
+                      <>
+                        <li>{t("نقطه را با این کد روی گوشی نصب کن.")}</li>
+                        <li>{t("بعد با شماره‌ی موبایلت همین‌جا وارد شو.")}</li>
+                      </>
+                    ) : (
+                      <>
+                        <li>{t("اپ نقطه را روی گوشی باز کن.")}</li>
+                        <li>{t("به «تنظیمات ← افزونه» برو و «اسکن کد» را بزن.")}</li>
+                        <li>{t("دوربین را روی این کد بگیر؛ همین‌جا خودکار وصل می‌شوی.")}</li>
+                      </>
+                    )}
+                  </ol>
+                </div>
+              </>
             ) : step === "phone" ? (
               <>
-                <h2 id="signTitle">با شماره‌ات وارد شو</h2>
+                <h2 id="signTitle">{t("با شماره‌ات وارد شو")}</h2>
                 <p className="lead">
-                  حساب نداری؟ با همین شماره ساخته می‌شود. هر چه این‌جا بنویسی روی گوشی هم دیده
-                  می‌شود.
+                  {t(
+                    "حساب نداری؟ با همین شماره ساخته می‌شود. هر چه این‌جا بنویسی روی گوشی هم دیده می‌شود.",
+                  )}
                 </p>
                 <label className="fl">
-                  شماره‌ی موبایل
+                  {t("شماره‌ی موبایل")}
                   <input
                     className="ltr"
                     inputMode="tel"
@@ -208,28 +356,13 @@ export function SignIn({
                     }}
                   />
                 </label>
-                {install !== null && (
-                  <div className="inst">
-                    <Qr
-                      text={getLink("noghte", "signin", install)}
-                      label="کد نصب نقطه از کافه‌بازار"
-                    />
-                    <div>
-                      <b>نقطه را روی گوشی هم داشته باش</b>
-                      <span>
-                        با دوربین گوشی اسکن کن تا نقطه در کافه‌بازار باز شود. با همین شماره وارد شو؛
-                        کارها و یادداشت‌ها همگام می‌شوند.
-                      </span>
-                    </div>
-                  </div>
-                )}
               </>
             ) : (
               <>
-                <h2 id="signTitle">کد را بنویس</h2>
-                <p className="lead">کدی که به {fa(phone)} پیامک شد.</p>
+                <h2 id="signTitle">{t("کد را بنویس")}</h2>
+                <p className="lead">{t("کدی که به {phone} پیامک شد.", { phone: fa(phone) })}</p>
                 <label className="fl">
-                  کد ورود
+                  {t("کد ورود")}
                   <input
                     ref={codeInput}
                     className="ltr"
@@ -248,7 +381,7 @@ export function SignIn({
                   disabled={wait > 0 || busy}
                   onClick={() => void ask()}
                 >
-                  {wait > 0 ? `کد تازه تا ${waitText(wait)}` : "کد تازه بفرست"}
+                  {wait > 0 ? t("کد تازه تا {wait}", { wait: waitText(wait) }) : t("کد تازه بفرست")}
                 </button>
               </>
             )}
@@ -259,63 +392,63 @@ export function SignIn({
             {err !== "" && (
               <span className="err" role="alert">
                 {err}
-                {step === "phone" && wait > 0 ? ` کد تازه تا ${waitText(wait)}.` : ""}
+                {step === "phone" && wait > 0
+                  ? ` ${t("کد تازه تا {wait}.", { wait: waitText(wait) })}`
+                  : ""}
               </span>
             )}
-            {step === "hello" && <p className="legal">رایگان است و کمتر از یک دقیقه طول می‌کشد.</p>}
-            {step === "phone" && <p className="legal">با ادامه، حریم خصوصی نقطه را می‌پذیرم.</p>}
+            {step === "hello" && (
+              <p className="legal">{t("رایگان است و کمتر از یک دقیقه طول می‌کشد.")}</p>
+            )}
+            {step === "phone" && (
+              <p className="legal">{t("با ادامه، حریم خصوصی نقطه را می‌پذیرم.")}</p>
+            )}
             <div className="dia-actions">
-              {step === "code" && (
+              {prev !== undefined && (
                 <button
                   type="button"
                   className="back"
                   onClick={() => {
-                    setStep("phone");
-                    setCode("");
-                    setErr("");
+                    if (step === "code") setCode("");
+                    go(prev);
                   }}
                 >
-                  <svg className="ic" viewBox="0 0 24 24" aria-hidden="true">
+                  <svg className="ic flip-dir" viewBox="0 0 24 24" aria-hidden="true">
                     <path d="m10 6 6 6-6 6" />
                   </svg>
-                  برگشت
+                  {t("برگشت")}
                 </button>
               )}
-              {step === "persona" && (
+              {step === "link" && (
                 <button
                   type="button"
-                  className="back"
+                  className="skip"
                   onClick={() => {
-                    setStep("hello");
+                    onClose(false);
                   }}
                 >
-                  <svg className="ic" viewBox="0 0 24 24" aria-hidden="true">
-                    <path d="m10 6 6 6-6 6" />
-                  </svg>
-                  برگشت
+                  {t("فعلاً نه")}
                 </button>
               )}
               <button
                 type="submit"
-                className="next"
+                className={step === "link" ? "next second" : "next"}
                 disabled={busy || !ready}
-                autoFocus={step === "hello"}
+                autoFocus={step === "hello" || step === "lang"}
               >
-                {step === "hello"
-                  ? "شروع"
-                  : step === "persona"
-                    ? "ادامه"
-                    : step === "phone"
-                      ? "فرستادن کد"
-                      : "ورود"}{" "}
-                <svg className="kbd" viewBox="0 0 24 24" aria-hidden="true">
-                  <path d="M19 6v5a3 3 0 0 1-3 3H6m0 0 4-4m-4 4 4 4" />
-                </svg>
+                {next}{" "}
+                {step !== "link" && (
+                  <svg className="kbd flip-dir" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M19 6v5a3 3 0 0 1-3 3H6m0 0 4-4m-4 4 4 4" />
+                  </svg>
+                )}
               </button>
             </div>
           </div>
         </form>
-        <Painting step={step === "persona" ? "hello" : step} />
+        <Painting
+          step={step === "code" ? "code" : step === "phone" || step === "link" ? "phone" : "hello"}
+        />
       </div>
     </div>
   );

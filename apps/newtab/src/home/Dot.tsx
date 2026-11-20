@@ -1,5 +1,7 @@
 import { useEffect, useRef } from "react";
 
+import { t } from "../i18n";
+
 /**
  * نقطه's dot: the app's own pen scribble (dotlife apps/mobile/src/ui/BrandMark.tsx) — one seeded
  * spiral of loops — drawn in the theme's tint. The pen draws it as the tab opens, and again on a
@@ -80,7 +82,7 @@ export function Dot({ drawAfter }: { drawAfter: number | null }) {
     <button
       type="button"
       className="dotlogo"
-      aria-label="نقطه؛ برای کشیدن دوباره بزن"
+      aria-label={t("نقطه؛ برای کشیدن دوباره بزن")}
       onClick={() => {
         draw();
       }}

@@ -1,4 +1,5 @@
 import { useNow, useRecordsVersion, useSession, useSyncState } from "../hooks";
+import { t } from "../i18n";
 import { myAvatar } from "../noghte/avatar";
 import { ago } from "../ui/fa";
 
@@ -17,22 +18,25 @@ export function SyncAvatar({ onOpen }: { onOpen: () => void }) {
   // the face the phone shows; signed out, or before its settings arrive, the plain person icon
   const face = session === null ? null : myAvatar();
   const status = session === null ? "signed-out" : sync.status;
-  const when = sync.lastAt === null ? "" : ` · ${ago(new Date(sync.lastAt).toISOString())}`;
   const say =
     status === "signed-out"
-      ? "وارد نقطه نشده‌ای؛ کارها و یادداشت‌ها فقط روی همین مرورگرند"
+      ? t("وارد نقطه نشده‌ای؛ کارها و یادداشت‌ها فقط روی همین مرورگرند")
       : status === "syncing"
-        ? "در حال همگام‌سازی با گوشی…"
+        ? t("در حال همگام‌سازی با گوشی…")
         : status === "offline"
-          ? "آفلاین؛ وقتی وصل شدی می‌فرستم"
+          ? t("آفلاین؛ وقتی وصل شدی می‌فرستم")
           : status === "error"
-            ? "همگام نشد؛ دوباره امتحان می‌کنم"
-            : `همگام با گوشی${when}`;
+            ? t("همگام نشد؛ دوباره امتحان می‌کنم")
+            : sync.lastAt === null
+              ? t("همگام با گوشی")
+              : t("همگام با گوشی · {when}", {
+                  when: ago(new Date(sync.lastAt).toISOString()),
+                });
   return (
     <button
       type="button"
       className={`me ${status}`}
-      aria-label={`شخصی‌سازی و حساب — ${say}`}
+      aria-label={t("شخصی‌سازی و حساب — {status}", { status: say })}
       title={say}
       onClick={onOpen}
     >

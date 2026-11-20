@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { newId } from "../noghte/model";
 import { barsPath, clock, resample, type Voice } from "../noghte/notes";
 import { keepVoice } from "../noghte/voiceStore";
+import { t } from "../i18n";
 import { fa } from "../ui/fa";
 import { Icon } from "../ui/Icon";
 
@@ -220,9 +221,9 @@ export function VoiceRecorder({
   if (phase === "denied") {
     return (
       <div className="rec denied" role="alert">
-        <span>برای ضبط صدا، اجازه‌ی میکروفون را در مرورگر بده.</span>
+        <span>{t("برای ضبط صدا، اجازه‌ی میکروفون را در مرورگر بده.")}</span>
         <button type="button" className="chip" onClick={onClose}>
-          باشه
+          {t("باشه")}
         </button>
       </div>
     );
@@ -250,8 +251,8 @@ export function VoiceRecorder({
       <button
         type="button"
         className={sure ? "rbtn sm del sure" : "rbtn sm del"}
-        aria-label={sure ? "دور بریز؟ دوباره بزن" : "دور بریز"}
-        title={sure ? "دور بریز؟ دوباره بزن" : "دور بریز"}
+        aria-label={sure ? t("دور بریز؟ دوباره بزن") : t("دور بریز")}
+        title={sure ? t("دور بریز؟ دوباره بزن") : t("دور بریز")}
         onClick={() => {
           if (sure) void end(false);
           else setSure(true);
@@ -262,8 +263,8 @@ export function VoiceRecorder({
       <button
         type="button"
         className="rbtn sm"
-        aria-label={phase === "paused" ? "ادامه" : "مکث"}
-        title={phase === "paused" ? "ادامه" : "مکث"}
+        aria-label={phase === "paused" ? t("ادامه") : t("مکث")}
+        title={phase === "paused" ? t("ادامه") : t("مکث")}
         disabled={phase === "starting"}
         onClick={pause}
       >
@@ -277,7 +278,7 @@ export function VoiceRecorder({
           void end(true);
         }}
       >
-        تمام
+        {t("تمام")}
       </button>
     </div>
   );

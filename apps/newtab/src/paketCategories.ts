@@ -1,3 +1,5 @@
+import { lang } from "./i18n";
+
 /**
  * Paket's built-in categories as the app shows them. The snapshot sends a category's stored name,
  * which for the built-in ones is the English `displayName` of Paket's seed
@@ -71,5 +73,12 @@ export function paketCategory(
 ): { name: string; art: string | null } {
   const hit = BUILT_IN[name.trim()];
   const art = icon !== undefined && icon !== null && ART.has(icon) ? icon : (hit?.[0] ?? null);
+  if (lang() === "en") {
+    const english =
+      hit !== undefined
+        ? name.trim()
+        : Object.keys(BUILT_IN).find((k) => BUILT_IN[k]?.[1] === name.trim());
+    return { name: english ?? name, art };
+  }
   return { name: hit?.[1] ?? name, art };
 }

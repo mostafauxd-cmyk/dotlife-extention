@@ -104,24 +104,32 @@ export const personaById = (id: string | null): Persona | undefined =>
   PERSONAS.find((p) => p.id === id);
 
 /**
- * Picks a persona: its folder of sites joins the end of the row (the previous persona's folder goes,
- * the person's own tiles and folders stay). Null takes the persona folder away.
+ * The personas picked, all at once: each one has its folder of sites in the row. A folder already
+ * there stays as the person left it (in its place, with what they changed in it); a newly picked
+ * persona's folder joins the end; an unpicked one's folder goes. Their own tiles and folders stay.
  */
-export function applyPersona(id: string | null): void {
+export function applyPersonas(ids: readonly string[]): void {
   const s = settings();
-  const kept = s.sites.filter((i) => !(isFolder(i) && i.persona !== undefined));
-  const p = personaById(id);
-  const folder: QuickFolder[] =
-    p === undefined
-      ? []
-      : [
-          {
-            kind: "folder",
-            id: `persona-${p.id}`,
-            name: p.folder,
-            items: [...p.sites],
-            persona: p.id,
-          },
-        ];
-  updateSettings({ persona: id, sites: [...kept, ...folder] });
+  const picked = PERSONAS.filter((p) => ids.includes(p.id)).map((p) => p.id);
+  const order = ids.filter((id) => picked.includes(id));
+  const kept = s.sites.filter(
+    (i) => !(isFolder(i) && i.persona !== undefined && !order.includes(i.persona)),
+  );
+  const has = new Set(
+    kept.flatMap((i) => (isFolder(i) && i.persona !== undefined ? [i.persona] : [])),
+  );
+  const added: QuickFolder[] = order.flatMap((id) => {
+    const p = personaById(id);
+    if (p === undefined || has.has(id)) return [];
+    return [
+      { kind: "folder", id: `persona-${p.id}`, name: p.folder, items: [...p.sites], persona: p.id },
+    ];
+  });
+  updateSettings({ personas: order, persona: order[0] ?? null, sites: [...kept, ...added] });
+}
+
+/** Picks a persona alongside the others, or unpicks it. */
+export function togglePersona(id: string): void {
+  const now = settings().personas;
+  applyPersonas(now.includes(id) ? now.filter((x) => x !== id) : [...now, id]);
 }

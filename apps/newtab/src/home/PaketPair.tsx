@@ -1,6 +1,7 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 
+import { t } from "../i18n";
 import { usePaketLinked } from "../paket";
 import { Icon } from "../ui/Icon";
 import { PaketLogo, PaketSync } from "./PaketSync";
@@ -27,7 +28,7 @@ export function PaketPairHost() {
   const [, setTick] = useState(0);
   useEffect(() => {
     const l = (): void => {
-      setTick((t) => t + 1);
+      setTick((n) => n + 1);
     };
     listeners.add(l);
     return () => {
@@ -52,7 +53,7 @@ export function PaketPairHost() {
  * is, `linked` (or a plain line and a link to Paket).
  */
 export function PaketPairModal({
-  title = "پاکت را به نقطه وصل کن",
+  title: rawTitle = "پاکت را به نقطه وصل کن",
   lead,
   linked,
   onClose,
@@ -64,6 +65,7 @@ export function PaketPairModal({
   onClose: () => void;
 }) {
   const isLinked = usePaketLinked();
+  const title = t(rawTitle);
   useEffect(() => {
     const onKey = (e: KeyboardEvent): void => {
       if (e.key === "Escape") onClose();
@@ -84,21 +86,21 @@ export function PaketPairModal({
         <div className="card-h">
           <PaketLogo size={40} />
           <h2>{title}</h2>
-          <button type="button" className="rbtn sm" aria-label="بستن" onClick={onClose}>
+          <button type="button" className="rbtn sm" aria-label={t("بستن")} onClick={onClose}>
             <Icon name="close" />
           </button>
         </div>
         {isLinked ? (
           (linked ?? (
             <div className="pf-body">
-              <p>پاکت به این صفحه وصل است.</p>
+              <p>{t("پاکت به این صفحه وصل است.")}</p>
               <a
                 className="cta"
                 href="https://paket.life/?src=chrome&c=pair"
                 target="_blank"
                 rel="noreferrer"
               >
-                باز کردن پاکت
+                {t("باز کردن پاکت")}
               </a>
             </div>
           ))
